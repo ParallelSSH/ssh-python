@@ -20,3 +20,5 @@ cimport c_agent
 cimport c_auth
 cimport c_channels
 cimport c_misc
+cimport c_crypto
+cimport c_wrapper
