@@ -16,3 +16,4 @@
 
 
 cimport c_ssh
+cimport c_agent
