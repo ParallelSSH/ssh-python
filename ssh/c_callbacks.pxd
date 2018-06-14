@@ -14,19 +14,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
+from c_ssh cimport ssh_session, ssh_buffer, ssh_string, uint8_t
 
-cimport c_ssh
-cimport c_agent
-cimport c_auth
-cimport c_channels
-cimport c_misc
-cimport c_crypto
-cimport c_wrapper
-cimport c_kex
-cimport c_keys
-cimport c_knownhosts
-cimport c_legacy
-cimport c_messages
-cimport c_options
-cimport c_callbacks
-cimport c_packet
+cdef extern from "libssh/include/callbacks.h" nogil:
+    ctypedef ssh_string (*void) (ssh_session, const char*,
+                                 int, ssh_string *, void *)
+    ctypedef int (*ssh_packet_callback) (ssh_session session, uint8_t type, ssh_buffer packet, void *user)
+    struct ssh_packet_callbacks_struct:
+        uint8_t start
+        uint8_t n_callbacks
+        void *user
+    ctypedef ssh_packet_callbacks_struct *ssh_packet_callbacks

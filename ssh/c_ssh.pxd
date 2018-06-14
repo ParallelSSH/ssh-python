@@ -20,6 +20,8 @@ from posix.types cimport mode_t
 
 
 cdef extern from "libssh/include/libssh.h" nogil:
+    ctypedef unsigned char uint8_t
+    ctypedef unsigned short uint16_t
     ctypedef unsigned int uint32_t
     ctypedef unsigned long long uint64_t
     ctypedef int socket_t

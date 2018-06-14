@@ -14,19 +14,10 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
+from c_ssh cimport ssh_session, ssh_kex_types_e
 
-cimport c_ssh
-cimport c_agent
-cimport c_auth
-cimport c_channels
-cimport c_misc
-cimport c_crypto
-cimport c_wrapper
-cimport c_kex
-cimport c_keys
-cimport c_knownhosts
-cimport c_legacy
-cimport c_messages
-cimport c_options
-cimport c_callbacks
-cimport c_packet
+cdef extern from "libssh/include/options.h" nogil:
+    int ssh_config_parse_file(ssh_session session, const char *filename)
+    int ssh_options_set_algo(ssh_session session, ssh_kex_types_e algo,
+                             const char *list)
+    int ssh_options_apply(ssh_session session)
