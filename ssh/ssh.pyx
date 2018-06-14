@@ -40,3 +40,4 @@ cimport c_session
 cimport c_pki_priv
 cimport c_scp
 cimport c_sftp
+cimport c_ssh2
