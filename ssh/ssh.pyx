@@ -37,3 +37,4 @@ cimport c_gssapi
 cimport c_socket
 cimport c_priv
 cimport c_session
+cimport c_pki_priv
