@@ -14,21 +14,24 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
+from c_ssh cimport ssh_session, ssh_buffer, uint32_t, uint8_t, ssh_keytypes_e
+from c_wrapper cimport ssh_hmac_e
+from c_callbacks cimport ssh_packet_callbacks
+from c_ed25519 cimport ed25519_pubkey, ed25519_privkey
 
-cimport c_ssh
-cimport c_agent
-cimport c_auth
-cimport c_channels
-cimport c_misc
-cimport c_crypto
-cimport c_wrapper
-cimport c_kex
-cimport c_keys
-cimport c_knownhosts
-cimport c_legacy
-cimport c_messages
-cimport c_options
-cimport c_callbacks
-cimport c_packet
-cimport c_ed25519
-cimport c_pki
+cdef extern from "libssh/include/pki.h" nogil:
+    enum:
+        MAX_PUBKEY_SIZE
+        MAX_PRIVKEY_SIZE
+        SSH_KEY_FLAG_EMPTY
+        SSH_KEY_FLAG_PUBLIC
+        SSH_KEY_FLAG_PRIVATE
+    struct ssh_key_struct:
+        ssh_keytypes_e type
+        int flags
+        const char *type_c
+        int ecdsa_nid
+        ed25519_pubkey *ed25519_pubkey
+        ed25519_privkey *ed25519_privkey
+        void *cert
+        ssh_keytypes_e cert_type

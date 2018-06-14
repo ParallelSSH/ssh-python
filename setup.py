@@ -23,17 +23,15 @@ else:
 ON_WINDOWS = platform.system() == 'Windows'
 
 ext = 'pyx' if USING_CYTHON else 'c'
-sources = glob('ssh2/*.%s' % (ext,))
-_libs = ['ssh2'] if not ON_WINDOWS else [
-    'Ws2_32', 'libssh2', 'user32',
+sources = glob('ssh/*.%s' % (ext,))
+_libs = ['ssh'] if not ON_WINDOWS else [
+    'Ws2_32', 'libssh', 'user32',
     'libeay32MD', 'ssleay32MD',
     'zlibstatic',
 ]
 
 # _comp_args = ["-ggdb"]
 _comp_args = ["-O3"] if not ON_WINDOWS else None
-_embedded_lib = bool(int(os.environ.get('EMBEDDED_LIB', 1)))
-_have_agent_fwd = bool(int(os.environ.get('HAVE_AGENT_FWD', 1)))
 cython_directives = {'embedsignature': True,
                      'boundscheck': False,
                      'optimize.use_switch': True,
@@ -42,8 +40,7 @@ cython_directives = {'embedsignature': True,
 cython_args = {
     'cython_directives': cython_directives,
     'cython_compile_time_env': {
-        'EMBEDDED_LIB': _embedded_lib,
-        'HAVE_AGENT_FWD': _have_agent_fwd,
+        '_WIN32': ON_WINDOWS,
     }} \
     if USING_CYTHON else {}
 
