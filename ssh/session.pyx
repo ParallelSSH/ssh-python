@@ -14,32 +14,19 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
+from libc.stdlib cimport malloc, free
 
 cimport c_ssh
-cimport c_agent
-cimport c_auth
-cimport c_channels
-cimport c_misc
-cimport c_crypto
-cimport c_wrapper
-cimport c_kex
-cimport c_keys
-cimport c_knownhosts
-cimport c_legacy
-cimport c_messages
-cimport c_options
-cimport c_callbacks
-cimport c_packet
-cimport c_ed25519
-cimport c_pki
-cimport c_poll
-cimport c_gssapi
-cimport c_socket
-cimport c_priv
-cimport c_session
-cimport c_pki_priv
-cimport c_scp
-cimport c_sftp
-cimport c_ssh2
-cimport c_string
-cimport c_threads
+
+cdef class Session:
+    cdef c_ssh.ssh_session _session
+
+    def __cinit__(self):
+        self._session = c_ssh.ssh_new()
+        if self._session is NULL:
+            raise MemoryError
+
+    def __dealloc__(self):
+        if self._session is not NULL:
+            c_ssh.ssh_free(self._session)
+        self._session = NULL

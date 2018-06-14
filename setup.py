@@ -23,7 +23,7 @@ else:
 ON_WINDOWS = platform.system() == 'Windows'
 
 ext = 'pyx' if USING_CYTHON else 'c'
-sources = glob('ssh/*.%s' % (ext,))
+sources = glob('ssh/session.%s' % (ext,))
 _libs = ['ssh'] if not ON_WINDOWS else [
     'Ws2_32', 'libssh', 'user32',
     'libeay32MD', 'ssleay32MD',
