@@ -23,7 +23,7 @@ else:
 ON_WINDOWS = platform.system() == 'Windows'
 
 ext = 'pyx' if USING_CYTHON else 'c'
-sources = glob('ssh/session.%s' % (ext,))
+sources = glob('ssh/*.%s' % (ext,))
 _libs = ['ssh'] if not ON_WINDOWS else [
     'Ws2_32', 'libssh', 'user32',
     'libeay32MD', 'ssleay32MD',
@@ -40,7 +40,7 @@ cython_directives = {'embedsignature': True,
 cython_args = {
     'cython_directives': cython_directives,
     'cython_compile_time_env': {
-        '_WIN32': ON_WINDOWS,
+        # '_WIN32': ON_WINDOWS,
     }} \
     if USING_CYTHON else {}
 

@@ -479,13 +479,13 @@ cdef extern from "libssh/libssh.h" nogil:
     int ssh_service_request(ssh_session session, const char *service)
     int ssh_set_agent_channel(ssh_session session, ssh_channel channel)
     int ssh_set_agent_socket(ssh_session session, socket_t fd)
-    ssh_set_blocking(ssh_session session, int blocking)
-    ssh_set_counters(ssh_session session, ssh_counter scounter,
-                     ssh_counter rcounter)
-    ssh_set_fd_except(ssh_session session)
-    ssh_set_fd_toread(ssh_session session)
-    _set_fd_towrite(ssh_session session)
-    ssh_silent_disconnect(ssh_session session)
+    void ssh_set_blocking(ssh_session session, int blocking)
+    void ssh_set_counters(ssh_session session, ssh_counter scounter,
+                          ssh_counter rcounter)
+    void ssh_set_fd_except(ssh_session session)
+    void ssh_set_fd_toread(ssh_session session)
+    void _set_fd_towrite(ssh_session session)
+    void ssh_silent_disconnect(ssh_session session)
     int ssh_set_pcap_file(ssh_session session, ssh_pcap_file pcapfile)
 
     # Userauth
@@ -498,8 +498,8 @@ cdef extern from "libssh/libssh.h" nogil:
                                const char *username,
                                const ssh_key privkey)
     # #ifndef _WIN32
-    # LIBSSH_API int ssh_userauth_agent(ssh_session session,
-    #                                   const char *username);
+    int ssh_userauth_agent(ssh_session session,
+                           const char *username)
     # #endif
     int ssh_userauth_publickey_auto(ssh_session session,
                                     const char *username,
