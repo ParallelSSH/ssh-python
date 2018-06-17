@@ -17,7 +17,7 @@
 from c_ssh cimport ssh_session, ssh_channel, ssh_buffer, ssh_string, \
     uint32_t, uint8_t, ssh_key_struct, ssh_auth_callback, ssh_message
 
-cdef extern from "libssh/include/callbacks.h" nogil:
+cdef extern from "libssh/callbacks.h" nogil:
     ctypedef void (*ssh_callback_int) (int code, void *user)
     ctypedef int (*ssh_callback_data) (const void *data, size_t len, void *user)
     ctypedef void (*ssh_callback_int_int) (

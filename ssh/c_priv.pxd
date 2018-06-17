@@ -17,7 +17,7 @@
 from c_ssh cimport ssh_connector, ssh_event, ssh_buffer, ssh_session, \
     socket_t, ssh_key
 
-cdef extern from "libssh/include/priv.h" nogil:
+cdef extern from "libssh/priv.h" nogil:
     struct timeval:
         pass
     int gettimeofday(timeval *__p, void *__t)

@@ -16,5 +16,5 @@
 
 from c_ssh cimport ssh_session
 
-cdef extern from "libssh/include/knownhosts.h" nogil:
+cdef extern from "libssh/knownhosts.h" nogil:
     char **ssh_knownhosts_algorithms(ssh_session session)

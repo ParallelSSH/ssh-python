@@ -16,7 +16,7 @@
 
 cimport c_ssh
 
-cdef extern from "libssh/include/agent.h" nogil:
+cdef extern from "libssh/agent.h" nogil:
     # Messages for the authentication agent connection.
     enum:
         SSH_AGENTC_REQUEST_RSA_IDENTITIES

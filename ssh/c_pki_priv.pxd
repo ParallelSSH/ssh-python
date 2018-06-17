@@ -18,7 +18,7 @@ from c_ssh cimport uint8_t, ssh_keytypes_e, ssh_string, ssh_auth_callback, \
     ssh_buffer, ssh_keycmp_e, ssh_session
 from c_pki cimport ssh_key_struct, ssh_signature
 
-cdef extern from "libssh/include/pki_priv.h" nogil:
+cdef extern from "libssh/pki_priv.h" nogil:
     ctypedef ssh_key_struct *ssh_key
     int bcrypt_pbkdf(const char *,
                      size_t passlen,

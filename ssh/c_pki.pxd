@@ -22,7 +22,7 @@ from c_ed25519 cimport ed25519_pubkey, ed25519_privkey
 from c_priv cimport ssh_key
 from c_legacy cimport ssh_private_key, ssh_public_key
 
-cdef extern from "libssh/include/pki.h" nogil:
+cdef extern from "libssh/pki.h" nogil:
     enum:
         MAX_PUBKEY_SIZE
         MAX_PRIVKEY_SIZE

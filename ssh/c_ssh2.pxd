@@ -14,7 +14,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-cdef extern from "libssh/include/ssh2.h" nogil:
+cdef extern from "libssh/ssh2.h" nogil:
     enum:
         SSH2_MSG_DISCONNECT
         SSH2_MSG_IGNORE

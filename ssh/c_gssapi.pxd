@@ -19,7 +19,7 @@ from c_wrapper cimport ssh_hmac_e
 from c_callbacks cimport ssh_packet_callbacks
 from c_ed25519 cimport ed25519_pubkey, ed25519_privkey
 
-cdef extern from "libssh/include/gssapi.h" nogil:
+cdef extern from "libssh/gssapi.h" nogil:
     enum:
         SSH_OID_TAG
     struct ssh_gssapi_struct:

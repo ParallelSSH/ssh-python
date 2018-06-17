@@ -16,7 +16,7 @@
 
 from c_ssh cimport ssh_session
 
-cdef extern from "libssh/include/misc.h" nogil:
+cdef extern from "libssh/misc.h" nogil:
     char *ssh_get_user_home_dir()
     char *ssh_get_local_username()
     int ssh_file_readaccess_ok(const char *file)

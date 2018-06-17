@@ -16,7 +16,7 @@
 
 from c_ssh cimport ssh_session, ssh_kex_types_e
 
-cdef extern from "libssh/include/options.h" nogil:
+cdef extern from "libssh/options.h" nogil:
     int ssh_config_parse_file(ssh_session session, const char *filename)
     int ssh_options_set_algo(ssh_session session, ssh_kex_types_e algo,
                              const char *list)

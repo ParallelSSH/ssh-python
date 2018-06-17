@@ -19,7 +19,7 @@ from posix.select cimport fd_set
 from c_ssh cimport socket_t, ssh_session
 from c_callbacks cimport ssh_socket_callbacks
 
-cdef extern from "libssh/include/socket.h" nogil:
+cdef extern from "libssh/socket.h" nogil:
     struct ssh_poll_handle_struct:
         pass
     struct ssh_socket_struct:

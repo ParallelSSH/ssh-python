@@ -17,7 +17,7 @@
 from c_ssh cimport ssh_session, ssh_string, ssh_message, uint32_t, ssh_keytypes_e
 from c_keys cimport ssh_private_key_struct, ssh_public_key_struct
 
-cdef extern from "libssh/include/legacy.h" nogil:
+cdef extern from "libssh/legacy.h" nogil:
     ctypedef ssh_private_key_struct* ssh_private_key
     ctypedef ssh_public_key_struct* ssh_public_key
     int ssh_auth_list(ssh_session session)

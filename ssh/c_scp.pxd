@@ -17,7 +17,7 @@
 from c_ssh cimport ssh_scp, ssh_scp_request_types, ssh_channel, uint64_t, \
     ssh_session
 
-cdef extern from "libssh/include/scp.h" nogil:
+cdef extern from "libssh/scp.h" nogil:
     enum ssh_scp_states:
         SSH_SCP_NEW,
         SSH_SCP_WRITE_INITED,

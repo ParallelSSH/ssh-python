@@ -18,7 +18,7 @@
 
 from c_ssh cimport uint32_t
 
-cdef extern from "libssh/include/auth.h" nogil:
+cdef extern from "libssh/auth.h" nogil:
     struct ssh_kbdint_struct:
         uint32_t nprompts
         uint32_t nanswers

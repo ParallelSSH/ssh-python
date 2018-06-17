@@ -18,7 +18,7 @@ from c_ssh cimport ssh_session, ssh_buffer, uint32_t, uint8_t
 from c_wrapper cimport ssh_hmac_e
 from c_callbacks cimport ssh_packet_callbacks
 
-cdef extern from "libssh/include/packet.h" nogil:
+cdef extern from "libssh/packet.h" nogil:
     struct ssh_socket_struct:
         pass
     struct packet_struct:

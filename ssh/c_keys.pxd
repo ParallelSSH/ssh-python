@@ -16,7 +16,7 @@
 
 from c_ssh cimport ssh_session, ssh_string
 
-cdef extern from "libssh/include/keys.h" nogil:
+cdef extern from "libssh/keys.h" nogil:
     struct ssh_public_key_struct:
         int type
         const char *type_c

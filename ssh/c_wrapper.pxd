@@ -17,7 +17,7 @@
 from c_ssh cimport ssh_session
 from c_crypto cimport ssh_cipher_struct, ssh_crypto_struct
 
-cdef extern from "libssh/include/wrapper.h" nogil:
+cdef extern from "libssh/wrapper.h" nogil:
     enum ssh_mac_e:
         SSH_MAC_SHA1,
         SSH_MAC_SHA256,

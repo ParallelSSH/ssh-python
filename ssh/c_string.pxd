@@ -16,7 +16,7 @@
 
 from c_ssh cimport uint32_t
 
-cdef extern from "libssh/include/string.h" nogil:
+cdef extern from "libssh/string.h" nogil:
     struct ssh_string_struct:
         uint32_t size;
         unsigned char data[1]

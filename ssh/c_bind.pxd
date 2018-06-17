@@ -18,7 +18,7 @@ cimport c_priv
 cimport c_session
 
 
-cdef extern from "libssh/include/bind.h" nogil:
+cdef extern from "libssh/bind.h" nogil:
     struct ssh_bind_struct:
         ssh_common_struct common
         ssh_bind_callbacks_struct *bind_callbacks

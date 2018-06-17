@@ -18,7 +18,7 @@ cimport c_ssh
 from c_ssh cimport uint32_t, ssh_channel, ssh_session, ssh_buffer, ssh_counter
 from c_misc cimport ssh_list
 
-cdef extern from "libssh/include/channels.h" nogil:
+cdef extern from "libssh/channels.h" nogil:
     enum ssh_channel_request_state_e:
         SSH_CHANNEL_REQ_STATE_NONE,
         SSH_CHANNEL_REQ_STATE_PENDING,

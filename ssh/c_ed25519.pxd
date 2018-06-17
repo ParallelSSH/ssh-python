@@ -16,7 +16,7 @@
 
 from c_ssh cimport uint8_t
 
-cdef extern from "libssh/include/ed25519.h" nogil:
+cdef extern from "libssh/ed25519.h" nogil:
     enum:
         ED25519_PK_LEN
         ED25519_SK_LEN

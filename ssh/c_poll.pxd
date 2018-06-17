@@ -17,7 +17,7 @@
 from c_ssh cimport ssh_session, ssh_buffer, ssh_string, uint32_t, uint8_t, ssh_event, socket_t
 from c_callbacks cimport ssh_packet_callbacks, ssh_packet_callbacks_struct
 
-cdef extern from "libssh/include/poll.h" nogil:
+cdef extern from "libssh/poll.h" nogil:
     ctypedef unsigned long int nfds_t
     void ssh_poll_init();
     void ssh_poll_cleanup();

@@ -17,7 +17,7 @@
 from c_ssh cimport uint64_t, uint32_t, uint8_t, ssh_string, ssh_buffer, \
     ssh_channel, ssh_session
 
-cdef extern from "libssh/include/sftp.h" nogil:
+cdef extern from "libssh/sftp.h" nogil:
     ctypedef sftp_attributes_struct* sftp_attributes
     ctypedef sftp_client_message_struct* sftp_client_message
     ctypedef sftp_dir_struct* sftp_dir

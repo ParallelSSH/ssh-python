@@ -16,7 +16,7 @@
 
 from c_ssh cimport ssh_session, ssh_kex_types_e, uint32_t
 
-cdef extern from "libssh/include/kex.h" nogil:
+cdef extern from "libssh/kex.h" nogil:
     enum:
         SSH_KEX_METHODS
     struct ssh_kex_struct:

@@ -17,7 +17,7 @@
 from c_ssh cimport ssh_session, ssh_string, ssh_message, ssh_channel, uint32_t, uint16_t, \
     uint8_t, ssh_key_struct, ssh_buffer
 
-cdef extern from "libssh/include/messages.h" nogil:
+cdef extern from "libssh/messages.h" nogil:
     struct ssh_auth_request:
         char *username
         int method

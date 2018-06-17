@@ -29,7 +29,7 @@ from c_packet cimport PACKET
 from c_socket cimport ssh_socket_struct
 from c_priv cimport error_struct
 
-cdef extern from "libssh/include/session.h" nogil:
+cdef extern from "libssh/session.h" nogil:
     enum ssh_session_state_e:
         SSH_SESSION_STATE_NONE,
         SSH_SESSION_STATE_CONNECTING,

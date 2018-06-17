@@ -17,7 +17,7 @@
 from c_ssh cimport ssh_string
 from c_wrapper cimport ssh_mac_e, ssh_hmac_e, ssh_des_e, ssh_hmac_struct
 
-cdef extern from "libssh/include/crypto.h" nogil:
+cdef extern from "libssh/crypto.h" nogil:
     enum:
         DIGEST_MAX_LEN
     enum ssh_key_exchange_e:
