@@ -532,7 +532,7 @@ cdef extern from "libssh/libssh.h" nogil:
     ssh_string ssh_string_new(size_t size)
     const char *ssh_string_get_char(ssh_string str)
     char *ssh_string_to_char(ssh_string str)
-    ssh_string_free_char(char *s)
+    void ssh_string_free_char(char *s)
 
     int ssh_getpass(const char *prompt, char *buf, size_t len, int echo,
                     int verify)

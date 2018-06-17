@@ -16,6 +16,10 @@
 
 from cpython.version cimport PY_MAJOR_VERSION
 
+from c_ssh cimport ssh_error_types_e, ssh_get_error
+
+from exceptions import RequestDenied, FatalError, OtherError
+
 
 ENCODING='utf-8'
 
@@ -41,5 +45,14 @@ cdef object to_str_len(char *c_str, int length):
     return c_str[:length].decode(ENCODING)
 
 
-cpdef int handle_error_codes(int errcode) except -1:
-    return errcode
+cdef int handle_error_codes(int errcode, void *caller) except -1:
+    if errcode == ssh_error_types_e.SSH_NO_ERROR:
+        return 0
+    elif errcode == ssh_error_types_e.SSH_REQUEST_DENIED:
+        raise RequestDenied(ssh_get_error(caller))
+    elif errcode == ssh_error_types_e.SSH_FATAL:
+        raise FatalError(ssh_get_error(caller))
+    else:
+        if errcode < 0:
+            raise OtherError(ssh_get_error(caller))
+        return errcode

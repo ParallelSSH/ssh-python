@@ -19,6 +19,9 @@ from libc.stdlib cimport malloc, free
 from libc.string cimport const_char
 
 from utils cimport to_bytes, to_str, handle_error_codes
+from options cimport Option
+
+from exceptions import OptionError
 
 cimport c_ssh
 
@@ -40,7 +43,7 @@ cdef class Session:
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_blocking_flush(self._session, timeout)
-        return handle_error_codes(rc)
+        return handle_error_codes(rc, self._session)
 
     def new_channel(self):
         cdef c_ssh.ssh_channel _channel
@@ -51,7 +54,7 @@ cdef class Session:
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_connect(self._session)
-        return handle_error_codes(rc)
+        return handle_error_codes(rc, self._session)
 
     def disconnect(self):
         with nogil:
@@ -70,21 +73,21 @@ cdef class Session:
 
     def cancel_forward(self, address, int port):
         cdef bytes b_address = to_bytes(address)
-        cdef char c_address = b_address[:len(b_address)]
+        cdef char *c_address = b_address
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_channel_cancel_forward(
-                self._session, &c_address, port)
-        return handle_error_codes(rc)
+                self._session, c_address, port)
+        return handle_error_codes(rc, self._session)
 
     def listen_forward(self, address, int port, int bound_port):
         cdef bytes b_address = to_bytes(address)
-        cdef char c_address = b_address[:len(b_address)]
+        cdef char *c_address = b_address
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_channel_listen_forward(
-                self._session, &c_address, port, &bound_port)
-        return handle_error_codes(rc)
+                self._session, c_address, port, &bound_port)
+        return handle_error_codes(rc, self._session)
 
     def get_disconnect_message(self):
         cdef const char *message
@@ -157,55 +160,86 @@ cdef class Session:
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_options_copy(self._session, &destination._session)
-        return handle_error_codes(rc)
+        return handle_error_codes(rc, self._session)
 
     def options_getopt(self):
         raise NotImplementedError
 
     def options_parse_config(self, filepath):
         cdef bytes b_filepath = to_bytes(filepath)
-        cdef char c_filepath = b_filepath[:len(b_filepath)]
+        cdef char *c_filepath = b_filepath
         cdef int rc
         with nogil:
-            rc = c_ssh.ssh_options_parse_config(self._session, &c_filepath)
-        return handle_error_codes(rc)
+            rc = c_ssh.ssh_options_parse_config(self._session, c_filepath)
+        return handle_error_codes(rc, self._session)
 
-    def options_set(self):
-        raise NotImplementedError
+    def options_set_port(self, int port):
+        cdef int rc
+        with nogil:
+            rc = c_ssh.ssh_options_set(
+                self._session, c_ssh.ssh_options_e.SSH_OPTIONS_PORT, &port)
+        return handle_error_codes(rc, self._session)
 
-    def options_get(self):
-        raise NotImplementedError
+    def options_set(self, Option option, value):
+        """Set an option for session.
+
+        :param option: An SSH option object from one of
+          :py:mod:`ssh.options`.
+        :type option: :py:class:`ssh.options.Option`
+        """
+        cdef bytes b_value = to_bytes(value)
+        cdef char *c_value
+        cdef int rc
+        c_value = b_value
+        with nogil:
+            rc = c_ssh.ssh_options_set(self._session, option._option, c_value)
+        return handle_error_codes(rc, self._session)
+
+    def options_get(self, Option option):
+        cdef char *_value
+        cdef char **value = NULL
+        cdef int rc
+        cdef bytes b_value
+        with nogil:
+            rc = c_ssh.ssh_options_get(
+                self._session, option._option, value)
+        if rc < 0:
+            raise OptionError
+        _value = value[0]
+        b_value = _value
+        c_ssh.ssh_string_free_char(_value)
+        return to_str(b_value)
 
     def options_get_port(self, unsigned int port_target):
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_options_get_port(self._session, &port_target)
-        return handle_error_codes(rc)
+        return handle_error_codes(rc, self._session)
 
     def send_ignore(self, bytes data):
-        cdef char c_data = data[:len(data)]
+        cdef char *c_data = data
         cdef int rc
         with nogil:
-            rc = c_ssh.ssh_send_ignore(self._session, &c_data)
-        return handle_error_codes(rc)
+            rc = c_ssh.ssh_send_ignore(self._session, c_data)
+        return handle_error_codes(rc, self._session)
 
     def send_debug(self, bytes message, int always_display):
-        cdef char c_message = message[:len(message)]
+        cdef char *c_message = message
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_send_debug(
-                self._session, &c_message, always_display)
-        return handle_error_codes(rc)
+                self._session, c_message, always_display)
+        return handle_error_codes(rc, self._session)
 
     def gssapi_set_creds(self, creds):
         raise NotImplementedError
 
     def service_request(self, bytes service):
         cdef int rc
-        cdef char c_service = service[:len(service)]
+        cdef char *c_service = service
         with nogil:
-            rc = c_ssh.ssh_service_request(self._session, &c_service)
-        return handle_error_codes(rc)
+            rc = c_ssh.ssh_service_request(self._session, c_service)
+        return handle_error_codes(rc, self._session)
 
     def set_agent_channel(self, channel):
         raise NotImplementedError
@@ -214,7 +248,7 @@ cdef class Session:
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_set_agent_socket(self._session, fd)
-        return handle_error_codes(rc)
+        return handle_error_codes(rc, self._session)
 
     def set_blocking(self, int blocking):
         with nogil:
@@ -240,74 +274,70 @@ cdef class Session:
         with nogil:
             c_ssh.ssh_silent_disconnect(self._session)
 
-    def userauth_none(self, username):
-        cdef bytes b_username = to_bytes(username)
-        cdef char c_username = b_username[:len(b_username)]
+    def userauth_none(self):
         cdef int rc
         with nogil:
-            rc = c_ssh.ssh_userauth_none(self._session, &c_username)
-        return handle_error_codes(rc)
+            rc = c_ssh.ssh_userauth_none(self._session, NULL)
+        return handle_error_codes(rc, self._session)
 
-    def userauth_list(self, username):
-        cdef bytes b_username = to_bytes(username)
-        cdef char c_username = b_username[:len(b_username)]
+    def userauth_list(self):
         cdef int rc
         with nogil:
-            rc = c_ssh.ssh_userauth_list(self._session, &c_username)
-        return handle_error_codes(rc)
+            rc = c_ssh.ssh_userauth_list(self._session, NULL)
+        return handle_error_codes(rc, self._session)
 
     def userauth_try_publickey(self, username, pubkey):
         cdef bytes b_username = to_bytes(username)
-        cdef char c_username = b_username[:len(b_username)]
+        cdef char *c_username = b_username
         cdef int rc
         raise NotImplementedError
 
     def userauth_publickey(self, username, privkey):
         cdef bytes b_username = to_bytes(username)
-        cdef char c_username = b_username[:len(b_username)]
+        cdef char *c_username = b_username
         cdef int rc
         raise NotImplementedError
 
     def userauth_agent(self, username):
         cdef bytes b_username = to_bytes(username)
-        cdef char c_username = b_username[:len(b_username)]
+        cdef char *c_username = b_username
         cdef int rc
         with nogil:
-            rc = c_ssh.ssh_userauth_agent(self._session, &c_username)
-        return handle_error_codes(rc)
+            rc = c_ssh.ssh_userauth_agent(self._session, c_username)
+        return handle_error_codes(rc, self._session)
 
     def userauth_publickey_auto(self, username, passphrase):
         cdef bytes b_username = to_bytes(username)
         cdef bytes b_passphrase = to_bytes(passphrase)
-        cdef char c_username = b_username[:len(b_username)]
-        cdef char c_passphrase = b_passphrase[:len(b_passphrase)]
+        cdef char *c_username = b_username
+        cdef char *c_passphrase = b_passphrase
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_userauth_publickey_auto(
-                self._session, &c_username, &c_passphrase)
-        return handle_error_codes(rc)
+                self._session, c_username, c_passphrase)
+        return handle_error_codes(rc, self._session)
 
     def userauth_password(self, username, password):
         cdef bytes b_username = to_bytes(username)
         cdef bytes b_password = to_bytes(password)
-        cdef char c_username = b_username[:len(b_username)]
-        cdef char c_password = b_password[:len(b_password)]
+        cdef char *c_username = b_username
+        cdef char *c_password = b_password
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_userauth_password(
-                self._session, &c_username, &c_password)
-        return handle_error_codes(rc)
+                self._session, c_username, c_password)
+        return handle_error_codes(rc, self._session)
 
     def userauth_kbdint(self, username, submethods):
         cdef bytes b_username = to_bytes(username)
         cdef bytes b_submethods = to_bytes(submethods)
-        cdef char c_username = b_username[:len(b_username)]
-        cdef char c_submethods = b_submethods[:len(b_submethods)]
+        cdef char *c_username = b_username
+        cdef char *c_submethods = b_submethods
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_userauth_kbdint(
-                self._session, &c_username, &c_submethods)
-        return handle_error_codes(rc)
+                self._session, c_username, c_submethods)
+        return handle_error_codes(rc, self._session)
 
     def userauth_kbdint_getinstruction(self):
         cdef bytes b_instruction
@@ -334,10 +364,10 @@ cdef class Session:
     def userauth_kbdint_getprompt(self, unsigned int i, bytes echo):
         cdef const_char *_prompt
         cdef bytes b_prompt
-        cdef char c_echo = echo[:len(echo)]
+        cdef char *c_echo = echo
         with nogil:
             _prompt = c_ssh.ssh_userauth_kbdint_getprompt(
-                self._session, i, &c_echo)
+                self._session, i, c_echo)
         b_prompt = _prompt
         return b_prompt
 
@@ -357,25 +387,24 @@ cdef class Session:
         return b_answer
 
     def userauth_kbdint_setanswer(self, unsigned int i, bytes answer):
-        cdef char c_answer
+        cdef char *c_answer = answer
         cdef int rc
-        c_answer = answer[:len(answer)]
         with nogil:
             rc = c_ssh.ssh_userauth_kbdint_setanswer(
-                self._session, i, <const_char *>(&c_answer))
-        return handle_error_codes(rc)
+                self._session, i, <const_char *>(c_answer))
+        return handle_error_codes(rc, self._session)
 
     def userauth_gssapi(self):
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_userauth_gssapi(self._session)
-        return handle_error_codes(rc)
+        return handle_error_codes(rc, self._session)
 
     def write_knownhost(self):
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_write_knownhost(self._session)
-        return handle_error_codes(rc)
+        return handle_error_codes(rc, self._session)
 
     def dump_knownhost(self):
         cdef const_char *_known_host
@@ -440,3 +469,19 @@ cdef class Session:
             _hmac = c_ssh.ssh_get_hmac_out(self._session)
         hmac = _hmac
         return hmac
+
+    def get_error(self):
+        cdef const_char *error
+        cdef bytes b_error
+        with nogil:
+            error = c_ssh.ssh_get_error(self._session)
+        if error is NULL:
+            return
+        b_error = error
+        return to_str(b_error)
+
+    def get_error_code(self):
+        cdef int rc
+        with nogil:
+            rc = c_ssh.ssh_get_error_code(self._session)
+        return rc

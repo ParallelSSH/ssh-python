@@ -1,5 +1,5 @@
 # This file is part of ssh-python.
-# Copyright (C) 2017-2018 Panos Kittenis
+# Copyright (C) 2018 Panos Kittenis
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -12,9 +12,24 @@
 #
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-cdef bytes to_bytes(_str)
-cdef object to_str(char *c_str)
-cdef object to_str_len(char *c_str, int length)
-cdef int handle_error_codes(int errcode, void *caller) except -1
+
+class OptionError(Exception):
+    """Raised on errors getting/setting options"""
+
+
+class BaseSSHError(Exception):
+    """Base class for all errors produced by libssh"""
+
+
+class RequestDenied(BaseSSHError):
+    """Raised on request denied by server errors"""
+
+
+class FatalError(BaseSSHError):
+    """Raised on unrecoverable errors"""
+
+
+class OtherError(BaseSSHError):
+    """Raised on other non-specific fatal errors"""
