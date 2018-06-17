@@ -33,3 +33,11 @@ class FatalError(BaseSSHError):
 
 class OtherError(BaseSSHError):
     """Raised on other non-specific fatal errors"""
+
+
+class AuthenticationDenied(BaseSSHError):
+    """Raised on authentication denied errors"""
+
+
+class AuthenticationError(BaseSSHError):
+    """Raised on fatal errors authenticating"""

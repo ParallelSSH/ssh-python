@@ -58,12 +58,7 @@ class SSHTestCase(unittest.TestCase):
         self.session.options_set(options.HOST, self.host)
         self.session.options_set_port(self.port)
         self.session.options_set(options.USER, self.user)
-        # self.session.handshake(self.sock)
+        # self.session.options_set(options.LOG_VERBOSITY, '1')
 
     def tearDown(self):
         del self.session
-
-    # def _auth(self):
-    #     return self.session.userauth_publickey_fromfile(
-    #         self.user, self.user_pub_key, self.user_key,
-    #         '')

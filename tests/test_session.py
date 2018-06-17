@@ -28,4 +28,5 @@ class SessionTest(SSHTestCase):
     def test_connect(self):
         self.assertEqual(self.session.connect(), 0)
         self.assertRaises(RequestDenied, self.session.userauth_none)
-        
+        self.assertRaises(
+            RequestDenied, self.session.userauth_publickey_auto, self.user, '')
