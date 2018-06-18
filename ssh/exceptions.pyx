@@ -57,3 +57,11 @@ class KeyImportError(BaseSSHError):
 
 class KeyGenerationError(BaseSSHError):
     """Raised on errors generating key"""
+
+
+class SSHError(BaseSSHError):
+    """Raised on SSH errors"""
+
+
+class EOF(BaseSSHError):
+    """Raised on EOF errors"""

@@ -19,6 +19,7 @@ import unittest
 from .base_test import SSHTestCase
 
 from ssh.session import Session
+from ssh.channel import Channel
 from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
 from ssh import options
 from ssh.exceptions import RequestDenied, KeyImportError
@@ -44,3 +45,8 @@ class SessionTest(SSHTestCase):
         pkey = import_privkey_file(self.user_key)
         self.assertEqual(
             self.session.userauth_publickey(pkey), 0)
+
+    def test_open_channel(self):
+        self._auth()
+        chan = self.session.channel_new()
+        self.assertIsInstance(chan, Channel)

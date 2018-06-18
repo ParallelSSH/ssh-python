@@ -18,6 +18,7 @@ from cpython cimport PyObject_AsFileDescriptor
 from libc.stdlib cimport malloc, free
 from libc.string cimport const_char
 
+from channel cimport Channel
 from utils cimport to_bytes, to_str, handle_ssh_error_codes, \
     handle_auth_error_codes
 from options cimport Option
@@ -47,10 +48,13 @@ cdef class Session:
             rc = c_ssh.ssh_blocking_flush(self._session, timeout)
         return handle_ssh_error_codes(rc, self._session)
 
-    def new_channel(self):
+    def channel_new(self):
         cdef c_ssh.ssh_channel _channel
+        cdef Channel channel
         with nogil:
             _channel = c_ssh.ssh_channel_new(self._session)
+        channel = Channel.from_ptr(_channel, self)
+        return channel
 
     def connect(self):
         cdef int rc

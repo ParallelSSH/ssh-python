@@ -16,10 +16,12 @@
 
 from cpython.version cimport PY_MAJOR_VERSION
 
-from c_ssh cimport ssh_error_types_e, ssh_get_error, ssh_auth_e
+from c_ssh cimport ssh_error_types_e, ssh_get_error, ssh_auth_e, \
+    SSH_OK, SSH_ERROR, SSH_AGAIN, SSH_EOF
 
 from exceptions import RequestDenied, FatalError, OtherError, \
-    AuthenticationPartial, AuthenticationDenied, AuthenticationError
+    AuthenticationPartial, AuthenticationDenied, AuthenticationError, \
+    SSHError, EOF
 
 
 ENCODING='utf-8'
@@ -44,6 +46,21 @@ cdef object to_str_len(char *c_str, int length):
     if PY_MAJOR_VERSION < 3:
         return c_str[:length]
     return c_str[:length].decode(ENCODING)
+
+
+cdef int handle_ok_error_codes(int errcode) except -1:
+    if errcode == SSH_OK:
+        return SSH_OK
+    elif errcode == SSH_ERROR:
+        raise SSHError
+    elif errcode == SSH_EOF:
+        raise EOF
+    elif errcode == SSH_AGAIN:
+        return SSH_AGAIN
+    else:
+        if errcode < 0:
+            raise OtherError
+        return errcode
 
 
 cdef int handle_ssh_error_codes(int errcode, void *caller) except -1:

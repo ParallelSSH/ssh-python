@@ -66,5 +66,6 @@ class SSHTestCase(unittest.TestCase):
         del self.session
 
     def _auth(self):
+        self.assertEqual(self.session.connect(), 0)
         self.assertEqual(
             self.session.userauth_publickey(self.pkey), 0)
