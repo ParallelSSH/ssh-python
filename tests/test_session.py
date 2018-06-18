@@ -15,6 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
 import unittest
+import socket
 
 from .base_test import SSHTestCase
 
@@ -26,6 +27,19 @@ from ssh.exceptions import RequestDenied, KeyImportError
 
 
 class SessionTest(SSHTestCase):
+
+    def test_socket_connect(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((self.host, self.port))
+        session = Session()
+        session.options_set(options.USER, self.user)
+        session.options_set(options.HOST, self.host)
+        session.options_set_port(self.port)
+        self.assertEqual(session.set_socket(sock), 0)
+        self.assertEqual(self.session.connect(), 0)
+        self.assertRaises(RequestDenied, self.session.userauth_none)
+        self.assertEqual(
+            self.session.userauth_publickey(self.pkey), 0)
 
     def test_connect(self):
         self.assertEqual(self.session.connect(), 0)

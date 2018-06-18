@@ -36,11 +36,28 @@ cdef class Session:
         self._session = c_ssh.ssh_new()
         if self._session is NULL:
             raise MemoryError
+        self.sock = None
 
     def __dealloc__(self):
         if self._session is not NULL:
             c_ssh.ssh_free(self._session)
         self._session = NULL
+
+    def set_socket(self, socket):
+        """Set socket to use for session.
+
+        Not part of libssh API but needs to be done in C to be able to
+        translate python sockets to file descriptors to be used by libssh.
+        """
+        cdef c_ssh.socket_t _sock = PyObject_AsFileDescriptor(socket)
+        cdef c_ssh.ssh_options_e fd = c_ssh.ssh_options_e.SSH_OPTIONS_FD
+        cdef int rc
+        with nogil:
+            rc = c_ssh.ssh_options_set(self._session, fd, &_sock)
+        handle_ssh_error_codes(rc, self._session)
+        self._sock = _sock
+        self.sock = socket
+        return rc
 
     def blocking_flush(self, int timeout):
         cdef int rc
@@ -247,8 +264,11 @@ cdef class Session:
             rc = c_ssh.ssh_service_request(self._session, c_service)
         return handle_ssh_error_codes(rc, self._session)
 
-    def set_agent_channel(self, channel):
-        raise NotImplementedError
+    def set_agent_channel(self, Channel channel):
+        cdef int rc
+        with nogil:
+            rc = c_ssh.ssh_set_agent_channel(self._session, channel._channel)
+        return handle_ssh_error_codes(rc, self._session)
 
     def set_agent_socket(self, c_ssh.socket_t fd):
         cdef int rc
