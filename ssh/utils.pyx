@@ -1,5 +1,5 @@
 # This file is part of ssh-python.
-# Copyright (C) 2017-2018 Panos Kittenis
+# Copyright (C) 2018 Panos Kittenis
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -16,9 +16,10 @@
 
 from cpython.version cimport PY_MAJOR_VERSION
 
-from c_ssh cimport ssh_error_types_e, ssh_get_error
+from c_ssh cimport ssh_error_types_e, ssh_get_error, ssh_auth_e
 
-from exceptions import RequestDenied, FatalError, OtherError
+from exceptions import RequestDenied, FatalError, OtherError, \
+    AuthenticationPartial, AuthenticationDenied, AuthenticationError
 
 
 ENCODING='utf-8'
@@ -45,13 +46,30 @@ cdef object to_str_len(char *c_str, int length):
     return c_str[:length].decode(ENCODING)
 
 
-cdef int handle_error_codes(int errcode, void *caller) except -1:
+cdef int handle_ssh_error_codes(int errcode, void *caller) except -1:
     if errcode == ssh_error_types_e.SSH_NO_ERROR:
         return 0
     elif errcode == ssh_error_types_e.SSH_REQUEST_DENIED:
         raise RequestDenied(ssh_get_error(caller))
     elif errcode == ssh_error_types_e.SSH_FATAL:
         raise FatalError(ssh_get_error(caller))
+    else:
+        if errcode < 0:
+            raise OtherError(ssh_get_error(caller))
+        return errcode
+
+
+cdef int handle_auth_error_codes(int errcode, void *caller) except -1:
+    if errcode == ssh_auth_e.SSH_AUTH_SUCCESS:
+        return ssh_auth_e.SSH_AUTH_SUCCESS
+    elif errcode == ssh_auth_e.SSH_AUTH_DENIED:
+        raise AuthenticationDenied(ssh_get_error(caller))
+    elif errcode == ssh_auth_e.SSH_AUTH_ERROR:
+        raise AuthenticationError(ssh_get_error(caller))
+    elif errcode == ssh_auth_e.SSH_AUTH_PARTIAL:
+        raise AuthenticationPartial(ssh_get_error(caller))
+    elif errcode == ssh_auth_e.SSH_AUTH_AGAIN:
+        return ssh_auth_e.SSH_AUTH_AGAIN
     else:
         if errcode < 0:
             raise OtherError(ssh_get_error(caller))

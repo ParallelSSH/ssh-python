@@ -43,6 +43,10 @@ class AuthenticationError(BaseSSHError):
     """Raised on fatal errors authenticating"""
 
 
+class AuthenticationPartial(BaseSSHError):
+    """Raised on partial authentication"""
+
+
 class KeyExportError(BaseSSHError):
     """Raised on errors exporting key"""
 
@@ -50,7 +54,6 @@ class KeyExportError(BaseSSHError):
 class KeyImportError(BaseSSHError):
     """Raised on errors importing key"""
 
-    
+
 class KeyGenerationError(BaseSSHError):
     """Raised on errors generating key"""
-

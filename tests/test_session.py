@@ -19,8 +19,9 @@ import unittest
 from .base_test import SSHTestCase
 
 from ssh.session import Session
+from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
 from ssh import options
-from ssh.exceptions import RequestDenied
+from ssh.exceptions import RequestDenied, KeyImportError
 
 
 class SessionTest(SSHTestCase):
@@ -29,4 +30,17 @@ class SessionTest(SSHTestCase):
         self.assertEqual(self.session.connect(), 0)
         self.assertRaises(RequestDenied, self.session.userauth_none)
         self.assertRaises(
-            RequestDenied, self.session.userauth_publickey_auto, self.user, '')
+            RequestDenied, self.session.userauth_publickey_auto, '')
+
+    def test_key_auth(self):
+        self.assertEqual(self.session.connect(), 0)
+        self.assertRaises(KeyImportError, import_pubkey_file, self.user_key)
+        key = import_pubkey_file(self.user_pub_key)
+        self.assertIsInstance(key, SSHKey)
+        self.assertEqual(
+            self.session.userauth_try_publickey(key), 0)
+        # Private key as public key import error
+        self.assertRaises(KeyImportError, import_privkey_file, self.user_pub_key)
+        pkey = import_privkey_file(self.user_key)
+        self.assertEqual(
+            self.session.userauth_publickey(pkey), 0)

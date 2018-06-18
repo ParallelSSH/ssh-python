@@ -17,4 +17,5 @@
 cdef bytes to_bytes(_str)
 cdef object to_str(char *c_str)
 cdef object to_str_len(char *c_str, int length)
-cdef int handle_error_codes(int errcode, void *caller) except -1
+cdef int handle_ssh_error_codes(int errcode, void *caller) except -1
+cdef int handle_auth_error_codes(int errcode, void *caller) except -1
