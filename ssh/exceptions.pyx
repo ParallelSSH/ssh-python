@@ -41,3 +41,16 @@ class AuthenticationDenied(BaseSSHError):
 
 class AuthenticationError(BaseSSHError):
     """Raised on fatal errors authenticating"""
+
+
+class KeyExportError(BaseSSHError):
+    """Raised on errors exporting key"""
+
+
+class KeyImportError(BaseSSHError):
+    """Raised on errors importing key"""
+
+    
+class KeyGenerationError(BaseSSHError):
+    """Raised on errors generating key"""
+
