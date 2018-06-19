@@ -19,6 +19,7 @@ from libc.stdlib cimport malloc, free
 from libc.string cimport const_char
 
 from channel cimport Channel
+from connector cimport Connector
 from utils cimport to_bytes, to_str, handle_ssh_error_codes, \
     handle_auth_error_codes
 from options cimport Option
@@ -91,16 +92,23 @@ cdef class Session:
         with nogil:
             c_ssh.ssh_disconnect(self._session)
 
-    def new_connector(self):
+    def connector_new(self):
         cdef c_ssh.ssh_connector _connector
         with nogil:
             _connector = c_ssh.ssh_connector_new(self._session)
+        if _connector is NULL:
+            return
+        return Connector.from_ptr(_connector, self)
 
     def accept_forward(self, int timeout, int dest_port):
         cdef c_ssh.ssh_channel _channel
         with nogil:
+            _check_connected(self._session)
             _channel = c_ssh.ssh_channel_accept_forward(
                 self._session, timeout, &dest_port)
+        if _channel is NULL:
+            return
+        return Channel.from_ptr(_channel, self)
 
     def cancel_forward(self, address, int port):
         cdef bytes b_address = to_bytes(address)

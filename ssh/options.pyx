@@ -21,10 +21,13 @@ cdef class Option:
     """Class for representing an SSH option."""
 
     @staticmethod
-    cdef object from_option(ssh_options_e option):
+    cdef Option from_option(ssh_options_e option):
         cdef Option _option = Option.__new__(Option)
         _option._option = option
         return _option
+
+    def __eq__(self, Option other):
+        return self._option == other._option
 
     @property
     def value(self):

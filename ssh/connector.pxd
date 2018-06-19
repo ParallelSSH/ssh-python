@@ -14,11 +14,21 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from c_ssh cimport ssh_options_e
+from session cimport Session
+
+cimport c_ssh
 
 
-cdef class Option:
-    cdef ssh_options_e _option
+cdef class Flag:
+    cdef c_ssh.ssh_connector_flags_e _flag
 
     @staticmethod
-    cdef Option from_option(ssh_options_e option)
+    cdef Flag from_flag(c_ssh.ssh_connector_flags_e flag)
+
+
+cdef class Connector:
+    cdef c_ssh.ssh_connector _connector
+    cdef Session session
+
+    @staticmethod
+    cdef Connector from_ptr(c_ssh.ssh_connector _connector, Session session)

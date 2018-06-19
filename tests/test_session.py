@@ -49,6 +49,7 @@ class SessionTest(SSHTestCase):
         self.assertIsNone(session.get_hmac_in())
         self.assertIsNone(session.get_hmac_out())
         self.assertIsNotNone(session.get_error_code())
+        session.connector_new()
 
     def test_socket_connect(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
