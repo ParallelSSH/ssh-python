@@ -60,7 +60,7 @@ class SSHTestCase(unittest.TestCase):
         self.session.options_set_port(self.port)
         self.session.options_set(options.USER, self.user)
         self.pkey = import_privkey_file(self.user_key)
-        # self.session.options_set(options.LOG_VERBOSITY, '1')
+        self.session.options_set(options.LOG_VERBOSITY, '1')
 
     def tearDown(self):
         del self.session
