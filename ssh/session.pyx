@@ -32,8 +32,7 @@ cimport c_ssh
 cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
     if not c_ssh.ssh_is_connected(session):
         with gil:
-            raise InvalidAPIUse(
-                "Session is not connected - cannot authenticate")
+            raise InvalidAPIUse("Session is not connected")
     return 0
 
 
@@ -77,6 +76,7 @@ cdef class Session:
         cdef c_ssh.ssh_channel _channel
         cdef Channel channel
         with nogil:
+            _check_connected(self._session)
             _channel = c_ssh.ssh_channel_new(self._session)
         channel = Channel.from_ptr(_channel, self)
         return channel
@@ -124,11 +124,12 @@ cdef class Session:
         cdef const char *message
         cdef bytes b_message
         with nogil:
+            _check_connected(self._session)
             message = c_ssh.ssh_get_disconnect_message(self._session)
         b_message = message
         return b_message
 
-    def ssh_get_fd(self):
+    def get_fd(self):
         cdef c_ssh.socket_t _sock
         with nogil:
             _sock = c_ssh.ssh_get_fd(self._session)
@@ -138,6 +139,7 @@ cdef class Session:
         cdef char *_banner
         cdef bytes banner
         with nogil:
+            _check_connected(self._session)
             _banner = c_ssh.ssh_get_issue_banner(self._session)
         banner = _banner
         return banner
@@ -145,6 +147,7 @@ cdef class Session:
     def get_openssh_version(self):
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_get_openssh_version(self._session)
         return rc
 
@@ -212,7 +215,9 @@ cdef class Session:
         return handle_ssh_error_codes(rc, self._session)
 
     def options_set(self, Option option, value):
-        """Set an option for session.
+        """Set an option for session. This function can only be used for
+        string options like host. For numeric options, port etc, use the
+        individual functions.
 
         :param option: An SSH option object from one of
           :py:mod:`ssh.options`.
@@ -227,6 +232,9 @@ cdef class Session:
         return handle_ssh_error_codes(rc, self._session)
 
     def options_get(self, Option option):
+        """Get option value. This function can only be used for string optinos.
+        For numeric or other options use the individual functions.
+        """
         cdef char *_value
         cdef char **value = NULL
         cdef int rc
@@ -462,6 +470,8 @@ cdef class Session:
         cdef bytes b_known_host
         with nogil:
             _known_host = c_ssh.ssh_dump_knownhost(self._session)
+        if _known_host is NULL:
+            return
         b_known_host = _known_host
         return b_known_host
 
@@ -469,8 +479,9 @@ cdef class Session:
         cdef const_char *_banner
         cdef bytes banner
         with nogil:
-            _check_connected(self._session)
             _banner = c_ssh.ssh_get_clientbanner(self._session)
+        if _banner is NULL:
+            return
         banner = _banner
         return banner
 
@@ -478,8 +489,9 @@ cdef class Session:
         cdef const_char *_banner
         cdef bytes banner
         with nogil:
-            _check_connected(self._session)
             _banner = c_ssh.ssh_get_serverbanner(self._session)
+        if _banner is NULL:
+            return
         banner = _banner
         return banner
 
@@ -488,6 +500,8 @@ cdef class Session:
         cdef bytes algo
         with nogil:
             _algo = c_ssh.ssh_get_kex_algo(self._session)
+        if _algo is NULL:
+            return
         algo = _algo
         return algo
 
@@ -496,6 +510,8 @@ cdef class Session:
         cdef bytes cipher
         with nogil:
             _cipher = c_ssh.ssh_get_cipher_in(self._session)
+        if _cipher is NULL:
+            return
         cipher = _cipher
         return cipher
 
@@ -504,6 +520,8 @@ cdef class Session:
         cdef bytes cipher
         with nogil:
             _cipher = c_ssh.ssh_get_cipher_out(self._session)
+        if _cipher is NULL:
+            return
         cipher = _cipher
         return cipher
 
@@ -512,6 +530,8 @@ cdef class Session:
         cdef bytes hmac
         with nogil:
             _hmac = c_ssh.ssh_get_hmac_in(self._session)
+        if _hmac is NULL:
+            return
         hmac = _hmac
         return hmac
 
@@ -520,6 +540,8 @@ cdef class Session:
         cdef bytes hmac
         with nogil:
             _hmac = c_ssh.ssh_get_hmac_out(self._session)
+        if _hmac is NULL:
+            return
         hmac = _hmac
         return hmac
 

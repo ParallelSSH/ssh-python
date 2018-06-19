@@ -28,13 +28,27 @@ from ssh.exceptions import RequestDenied, KeyImportError, InvalidAPIUse
 
 class SessionTest(SSHTestCase):
 
-    def test_error_should_not_segfault(self):
+    def test_should_not_segfault(self):
         session = Session()
+        self.assertEqual(session.get_error(), '')
         self.assertRaises(InvalidAPIUse, session.userauth_none)
         self.assertRaises(InvalidAPIUse, session.userauth_publickey, self.pkey)
         key = import_pubkey_file(self.user_pub_key)
         self.assertRaises(InvalidAPIUse, session.userauth_try_publickey, key)
         self.assertRaises(InvalidAPIUse, session.userauth_publickey_auto, '')
+        self.assertRaises(InvalidAPIUse, session.channel_new)
+        self.assertRaises(InvalidAPIUse, session.get_disconnect_message)
+        self.assertRaises(InvalidAPIUse, session.get_issue_banner)
+        self.assertRaises(InvalidAPIUse, session.get_openssh_version)
+        self.assertIsNone(session.dump_knownhost())
+        self.assertIsNone(session.get_clientbanner())
+        self.assertIsNone(session.get_serverbanner())
+        self.assertIsNone(session.get_kex_algo())
+        self.assertIsNone(session.get_cipher_in())
+        self.assertIsNone(session.get_cipher_out())
+        self.assertIsNone(session.get_hmac_in())
+        self.assertIsNone(session.get_hmac_out())
+        self.assertIsNotNone(session.get_error_code())
 
     def test_socket_connect(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
