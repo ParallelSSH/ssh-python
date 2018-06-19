@@ -65,3 +65,7 @@ class SSHError(BaseSSHError):
 
 class EOF(BaseSSHError):
     """Raised on EOF errors"""
+
+
+class InvalidAPIUse(BaseSSHError):
+    """Raised on invalid uses of the API"""

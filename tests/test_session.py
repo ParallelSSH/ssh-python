@@ -23,10 +23,18 @@ from ssh.session import Session
 from ssh.channel import Channel
 from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
 from ssh import options
-from ssh.exceptions import RequestDenied, KeyImportError
+from ssh.exceptions import RequestDenied, KeyImportError, InvalidAPIUse
 
 
 class SessionTest(SSHTestCase):
+
+    def test_error_should_not_segfault(self):
+        session = Session()
+        self.assertRaises(InvalidAPIUse, session.userauth_none)
+        self.assertRaises(InvalidAPIUse, session.userauth_publickey, self.pkey)
+        key = import_pubkey_file(self.user_pub_key)
+        self.assertRaises(InvalidAPIUse, session.userauth_try_publickey, key)
+        self.assertRaises(InvalidAPIUse, session.userauth_publickey_auto, '')
 
     def test_socket_connect(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -36,10 +44,10 @@ class SessionTest(SSHTestCase):
         session.options_set(options.HOST, self.host)
         session.options_set_port(self.port)
         self.assertEqual(session.set_socket(sock), 0)
-        self.assertEqual(self.session.connect(), 0)
-        self.assertRaises(RequestDenied, self.session.userauth_none)
+        self.assertEqual(session.connect(), 0)
+        self.assertRaises(RequestDenied, session.userauth_none)
         self.assertEqual(
-            self.session.userauth_publickey(self.pkey), 0)
+            session.userauth_publickey(self.pkey), 0)
 
     def test_connect(self):
         self.assertEqual(self.session.connect(), 0)

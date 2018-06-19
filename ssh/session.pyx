@@ -24,9 +24,17 @@ from utils cimport to_bytes, to_str, handle_ssh_error_codes, \
 from options cimport Option
 from key cimport SSHKey
 
-from exceptions import OptionError
+from exceptions import OptionError, InvalidAPIUse
 
 cimport c_ssh
+
+
+cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
+    if not c_ssh.ssh_is_connected(session):
+        with gil:
+            raise InvalidAPIUse(
+                "Session is not connected - cannot authenticate")
+    return 0
 
 
 cdef class Session:
@@ -303,18 +311,21 @@ cdef class Session:
     def userauth_none(self):
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_none(self._session, NULL)
         return handle_ssh_error_codes(rc, self._session)
 
     def userauth_list(self):
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_list(self._session, NULL)
         return handle_ssh_error_codes(rc, self._session)
 
     def userauth_try_publickey(self, SSHKey pubkey):
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_try_publickey(
                 self._session, NULL, pubkey._key)
         return handle_auth_error_codes(rc, self._session)
@@ -322,6 +333,7 @@ cdef class Session:
     def userauth_publickey(self, SSHKey privkey):
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_publickey(
                 self._session, NULL, privkey._key)
         return handle_auth_error_codes(rc, self._session)
@@ -331,6 +343,7 @@ cdef class Session:
         cdef char *c_username = b_username
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_agent(self._session, c_username)
         return handle_ssh_error_codes(rc, self._session)
 
@@ -339,6 +352,7 @@ cdef class Session:
         cdef char *c_passphrase = b_passphrase
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_publickey_auto(
                 self._session, NULL, c_passphrase)
         return handle_ssh_error_codes(rc, self._session)
@@ -350,6 +364,7 @@ cdef class Session:
         cdef char *c_password = b_password
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_password(
                 self._session, c_username, c_password)
         return handle_ssh_error_codes(rc, self._session)
@@ -361,6 +376,7 @@ cdef class Session:
         cdef char *c_submethods = b_submethods
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_kbdint(
                 self._session, c_username, c_submethods)
         return handle_ssh_error_codes(rc, self._session)
@@ -369,6 +385,7 @@ cdef class Session:
         cdef bytes b_instruction
         cdef const_char *_instruction
         with nogil:
+            _check_connected(self._session)
             _instruction = c_ssh.ssh_userauth_kbdint_getinstruction(
                 self._session)
         b_instruction = to_str(<char *>_instruction)
@@ -378,6 +395,7 @@ cdef class Session:
         cdef bytes b_name
         cdef const_char *_name
         with nogil:
+            _check_connected(self._session)
             _name = c_ssh.ssh_userauth_kbdint_getname(self._session)
         b_name = to_str(<char *>_name)
         return b_name
@@ -385,6 +403,7 @@ cdef class Session:
     def userauth_kbdint_getnprompts(self):
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_kbdint_getnprompts(self._session)
         return rc
 
@@ -393,6 +412,7 @@ cdef class Session:
         cdef bytes b_prompt
         cdef char *c_echo = echo
         with nogil:
+            _check_connected(self._session)
             _prompt = c_ssh.ssh_userauth_kbdint_getprompt(
                 self._session, i, c_echo)
         b_prompt = _prompt
@@ -401,6 +421,7 @@ cdef class Session:
     def userauth_kbdint_getnanswers(self):
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_kbdint_getnanswers(self._session)
         return rc
 
@@ -408,6 +429,7 @@ cdef class Session:
         cdef const_char *_answer
         cdef bytes b_answer
         with nogil:
+            _check_connected(self._session)
             _answer = c_ssh.ssh_userauth_kbdint_getanswer(
                 self._session, i)
         b_answer = _answer
@@ -417,6 +439,7 @@ cdef class Session:
         cdef char *c_answer = answer
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_kbdint_setanswer(
                 self._session, i, <const_char *>(c_answer))
         return handle_ssh_error_codes(rc, self._session)
@@ -424,6 +447,7 @@ cdef class Session:
     def userauth_gssapi(self):
         cdef int rc
         with nogil:
+            _check_connected(self._session)
             rc = c_ssh.ssh_userauth_gssapi(self._session)
         return handle_ssh_error_codes(rc, self._session)
 
@@ -445,6 +469,7 @@ cdef class Session:
         cdef const_char *_banner
         cdef bytes banner
         with nogil:
+            _check_connected(self._session)
             _banner = c_ssh.ssh_get_clientbanner(self._session)
         banner = _banner
         return banner
@@ -453,6 +478,7 @@ cdef class Session:
         cdef const_char *_banner
         cdef bytes banner
         with nogil:
+            _check_connected(self._session)
             _banner = c_ssh.ssh_get_serverbanner(self._session)
         banner = _banner
         return banner
