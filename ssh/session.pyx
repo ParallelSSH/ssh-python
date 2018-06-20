@@ -110,7 +110,7 @@ cdef class Session:
             return
         return Channel.from_ptr(_channel, self)
 
-    def cancel_forward(self, address, int port):
+    def cancel_forward(self, address not None, int port):
         cdef bytes b_address = to_bytes(address)
         cdef char *c_address = b_address
         cdef int rc
@@ -119,7 +119,7 @@ cdef class Session:
                 self._session, c_address, port)
         return handle_ssh_error_codes(rc, self._session)
 
-    def listen_forward(self, address, int port, int bound_port):
+    def listen_forward(self, address not None, int port, int bound_port):
         cdef bytes b_address = to_bytes(address)
         cdef char *c_address = b_address
         cdef int rc
@@ -338,7 +338,7 @@ cdef class Session:
             rc = c_ssh.ssh_userauth_list(self._session, NULL)
         return handle_ssh_error_codes(rc, self._session)
 
-    def userauth_try_publickey(self, SSHKey pubkey):
+    def userauth_try_publickey(self, SSHKey pubkey not None):
         cdef int rc
         with nogil:
             _check_connected(self._session)
@@ -346,7 +346,7 @@ cdef class Session:
                 self._session, NULL, pubkey._key)
         return handle_auth_error_codes(rc, self._session)
 
-    def userauth_publickey(self, SSHKey privkey):
+    def userauth_publickey(self, SSHKey privkey not None):
         cdef int rc
         with nogil:
             _check_connected(self._session)
@@ -354,7 +354,7 @@ cdef class Session:
                 self._session, NULL, privkey._key)
         return handle_auth_error_codes(rc, self._session)
 
-    def userauth_agent(self, username):
+    def userauth_agent(self, username not None):
         cdef bytes b_username = to_bytes(username)
         cdef char *c_username = b_username
         cdef int rc
@@ -363,7 +363,7 @@ cdef class Session:
             rc = c_ssh.ssh_userauth_agent(self._session, c_username)
         return handle_ssh_error_codes(rc, self._session)
 
-    def userauth_publickey_auto(self, passphrase):
+    def userauth_publickey_auto(self, passphrase not None):
         cdef bytes b_passphrase = to_bytes(passphrase)
         cdef char *c_passphrase = b_passphrase
         cdef int rc
@@ -373,7 +373,7 @@ cdef class Session:
                 self._session, NULL, c_passphrase)
         return handle_ssh_error_codes(rc, self._session)
 
-    def userauth_password(self, username, password):
+    def userauth_password(self, username not None, password not None):
         cdef bytes b_username = to_bytes(username)
         cdef bytes b_password = to_bytes(password)
         cdef char *c_username = b_username
@@ -385,7 +385,7 @@ cdef class Session:
                 self._session, c_username, c_password)
         return handle_ssh_error_codes(rc, self._session)
 
-    def userauth_kbdint(self, username, submethods):
+    def userauth_kbdint(self, username not None, submethods not None):
         cdef bytes b_username = to_bytes(username)
         cdef bytes b_submethods = to_bytes(submethods)
         cdef char *c_username = b_username

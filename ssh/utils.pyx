@@ -17,7 +17,7 @@
 from cpython.version cimport PY_MAJOR_VERSION
 
 from c_ssh cimport ssh_error_types_e, ssh_get_error, ssh_auth_e, \
-    SSH_OK, SSH_ERROR, SSH_AGAIN, SSH_EOF
+    SSH_OK, SSH_ERROR, SSH_AGAIN, SSH_EOF, ssh_session
 
 from exceptions import RequestDenied, FatalError, OtherError, \
     AuthenticationPartial, AuthenticationDenied, AuthenticationError, \
@@ -63,31 +63,31 @@ cdef int handle_ok_error_codes(int errcode) except -1:
         return errcode
 
 
-cdef int handle_ssh_error_codes(int errcode, void *caller) except -1:
+cdef int handle_ssh_error_codes(int errcode, ssh_session session) except -1:
     if errcode == ssh_error_types_e.SSH_NO_ERROR:
         return 0
     elif errcode == ssh_error_types_e.SSH_REQUEST_DENIED:
-        raise RequestDenied(ssh_get_error(caller))
+        raise RequestDenied(ssh_get_error(session))
     elif errcode == ssh_error_types_e.SSH_FATAL:
-        raise FatalError(ssh_get_error(caller))
+        raise FatalError(ssh_get_error(session))
     else:
         if errcode < 0:
-            raise OtherError(ssh_get_error(caller))
+            raise OtherError(ssh_get_error(session))
         return errcode
 
 
-cdef int handle_auth_error_codes(int errcode, void *caller) except -1:
+cdef int handle_auth_error_codes(int errcode, ssh_session session) except -1:
     if errcode == ssh_auth_e.SSH_AUTH_SUCCESS:
         return ssh_auth_e.SSH_AUTH_SUCCESS
     elif errcode == ssh_auth_e.SSH_AUTH_DENIED:
-        raise AuthenticationDenied(ssh_get_error(caller))
+        raise AuthenticationDenied(ssh_get_error(session))
     elif errcode == ssh_auth_e.SSH_AUTH_ERROR:
-        raise AuthenticationError(ssh_get_error(caller))
+        raise AuthenticationError(ssh_get_error(session))
     elif errcode == ssh_auth_e.SSH_AUTH_PARTIAL:
-        raise AuthenticationPartial(ssh_get_error(caller))
+        raise AuthenticationPartial(ssh_get_error(session))
     elif errcode == ssh_auth_e.SSH_AUTH_AGAIN:
         return ssh_auth_e.SSH_AUTH_AGAIN
     else:
         if errcode < 0:
-            raise OtherError(ssh_get_error(caller))
+            raise OtherError(ssh_get_error(session))
         return errcode

@@ -15,7 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
 from session cimport Session
-from channel cimport Channel
+from connector cimport Connector
 
 cimport c_ssh
 
@@ -24,7 +24,7 @@ cdef class Event:
     cdef c_ssh.ssh_event _event
     cdef object _sock
     cdef Session session
-    cdef Channel channel
+    cdef Connector connector
 
     @staticmethod
     cdef Event from_ptr(c_ssh.ssh_event _event)

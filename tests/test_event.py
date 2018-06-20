@@ -22,8 +22,17 @@ from .base_test import SSHTestCase
 from ssh.session import Session
 from ssh import options
 from ssh.event import Event
+from ssh.callbacks import Callbacks
 from ssh.connector import CONNECTOR_STDOUT, CONNECTOR_STDERR, \
     CONNECTOR_BOTH
+from ssh.exceptions import OtherError
+
+
+class CallbacksTest(SSHTestCase):
+
+    def test_callbacks(self):
+        cb = Callbacks()
+        self.assertEqual(cb.set_callbacks(self.session), 0)
 
 
 class EventTest(SSHTestCase):
@@ -39,22 +48,15 @@ class EventTest(SSHTestCase):
 
     def test_event_connector(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((self.host, self.port))
-        session = Session()
-        session.options_set(options.USER, self.user)
-        session.options_set(options.HOST, self.host)
-        session.options_set_port(self.port)
-        self.assertEqual(session.set_socket(sock), 0)
-        self.assertEqual(session.connect(), 0)
-        self.assertEqual(
-            session.userauth_publickey(self.pkey), 0)
-        
         event = Event()
-        connector = session.connector_new()
-        chan = session.channel_new()
-        connector.set_in_channel(chan, CONNECTOR_STDOUT)
-        connector.set_out_fd(sock)
-        self.assertEqual(event.add_connector(connector), 0)
-        # self.assertEqual(connector, event.connector)
-        # self.assertEqual(event.remove_connector(connector), 0)
-        # self.assertIsNone(event.connector)
+        self.assertEqual(event.add_fd(sock, 1), 0)
+        self.assertEqual(sock, event.socket)
+        self.assertEqual(event.remove_fd(sock), 0)
+        self.assertIsNone(event.socket)
+        self.assertEqual(event.add_fd(sock, 1, callback=lambda: 1), 0)
+        connector = self.session.connector_new()
+        self.assertIsNone(event.connector)
+        self.assertRaises(OtherError, event.add_connector, connector)
+        self.assertIsNone(event.connector)
+        self.assertEqual(event.remove_connector(connector), 0)
+        self.assertIsNone(event.connector)

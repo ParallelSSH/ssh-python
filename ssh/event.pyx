@@ -41,8 +41,12 @@ cdef class Event:
         return self.session
 
     @property
-    def channel(self):
-        return self.channel
+    def connector(self):
+        return self.connector
+
+    @property
+    def socket(self):
+        return self._sock
 
     @staticmethod
     cdef Event from_ptr(c_ssh.ssh_event _event):
@@ -58,16 +62,15 @@ cdef class Event:
         except Exception:
             return -1
 
-    def add_fd(self, socket, short events=0, callback=None):
-        cdef c_ssh.socket_t _sock = PyObject_AsFileDescriptor(socket)
+    def add_fd(self, sock, short events, callback=None):
+        cdef c_ssh.socket_t _sock = PyObject_AsFileDescriptor(sock)
         cdef c_ssh.ssh_event_callback cb = <c_ssh.ssh_event_callback>&Event.event_callback
         cdef int rc
         cdef void *_cb = NULL if callback is None else <void *>callback
-        cb = NULL if callback is None else cb
         rc = c_ssh.ssh_event_add_fd(
             self._event, _sock, events, cb, _cb)
         if rc == 0:
-            self._sock = socket
+            self._sock = sock
         return rc
 
     def remove_fd(self, socket):
@@ -94,7 +97,7 @@ cdef class Event:
                 self._event, connector._connector)
         if rc == 0:
             self.connector = connector
-        return rc
+        return handle_ssh_error_codes(rc, connector.session._session)
 
     def dopoll(self, int timeout):
         cdef int rc
@@ -117,4 +120,4 @@ cdef class Event:
                 self._event, connector._connector)
         if rc == 0:
             self.connector = None
-        return rc
+        return handle_ssh_error_codes(rc, connector.session._session)

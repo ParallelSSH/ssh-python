@@ -102,6 +102,7 @@ cdef extern from "libssh/callbacks.h" nogil:
         ssh_gssapi_verify_mic_callback gssapi_verify_mic_function
     ctypedef ssh_server_callbacks_struct *ssh_server_callbacks
     int ssh_set_server_callbacks(ssh_session session, ssh_server_callbacks cb)
+    void ssh_callbacks_init(void *cb)
     struct ssh_socket_callbacks_struct:
         void *userdata
         ssh_callback_data data
