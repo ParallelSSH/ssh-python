@@ -60,6 +60,7 @@ cdef class Event:
             func = <object>userdata
             return func()
         except Exception:
+            # TODO - pass back exception
             return -1
 
     def add_fd(self, sock, short events, callback=None):

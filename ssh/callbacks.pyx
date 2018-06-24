@@ -21,16 +21,18 @@ from session cimport Session
 from utils cimport handle_ssh_error_codes
 
 cimport c_callbacks
-# from c_ssh cimport ssh_auth_callback
+from c_ssh cimport ssh_auth_callback
 
 
-# cdef int auth_callback(const char *prompt, char *buf, size_t len,
-#                        int echo, int verify, void *userdata):
-#     # (void) verify;
-#     # (void) userdata;
-
-#     return 0
-#     # ssh_getpass(prompt, buf, len, echo, verify);
+cdef int auth_callback(const char *prompt, char *buf, size_t len,
+                       int echo, int verify, void *userdata):
+    try:
+        func = <object>userdata
+        return func()
+    except Exception:
+        # TODO - pass back exception
+        return -1
+    # ssh_getpass(prompt, buf, len, echo, verify);
 
 
 cdef class Callbacks:

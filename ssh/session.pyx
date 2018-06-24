@@ -24,10 +24,12 @@ from utils cimport to_bytes, to_str, handle_ssh_error_codes, \
     handle_auth_error_codes
 from options cimport Option
 from key cimport SSHKey
+from sftp cimport SFTP
 
 from exceptions import OptionError, InvalidAPIUse
 
 cimport c_ssh
+from c_sftp cimport sftp_session, sftp_new
 
 
 cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
@@ -81,6 +83,17 @@ cdef class Session:
             _channel = c_ssh.ssh_channel_new(self._session)
         channel = Channel.from_ptr(_channel, self)
         return channel
+
+    def sftp_new(self):
+        cdef sftp_session _sftp
+        cdef SFTP sftp
+        with nogil:
+            _check_connected(self._session)
+            _sftp = sftp_new(self._session)
+        if _sftp is NULL:
+            return handle_ssh_error_codes(
+                c_ssh.ssh_get_error_code(self._session), self._session)
+        return SFTP.from_ptr(_sftp, self)
 
     def connect(self):
         cdef int rc

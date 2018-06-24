@@ -27,7 +27,6 @@ cdef class Channel:
 
     def __cinit__(self, Session session):
         self.session = session
-        self._channel = NULL
 
     def __dealloc__(self):
         if self._channel is not NULL:
