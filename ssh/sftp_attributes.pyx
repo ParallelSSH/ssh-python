@@ -17,8 +17,10 @@
 from libc.stdlib cimport malloc, free
 
 from sftp cimport SFTP
+from utils cimport ssh_string_to_bytes
 
 cimport c_sftp
+from c_ssh cimport ssh_string
 
 
 cdef class SFTPAttributes:
@@ -134,18 +136,24 @@ cdef class SFTPAttributes:
     def mtime_nseconds(self):
         return self._attrs.mtime_nseconds if self._attrs is not NULL else None
 
-    # @property
-    # def acl(self):
-    #     return self._attrs.acl if self._attrs is not NULL else None
+    @property
+    def acl(self):
+        if self._attrs is NULL:
+            return
+        return ssh_string_to_bytes(self._attrs.acl)
 
     @property
     def extended_count(self):
         return self._attrs.extended_count if self._attrs is not NULL else None
 
-    # @property
-    # def extended_type(self):
-    #     return self._attrs.extended_type if self._attrs is not NULL else None
+    @property
+    def extended_type(self):
+        if self._attrs is NULL:
+            return
+        return ssh_string_to_bytes(self._attrs.extended_type)
 
-    # @property
-    # def extended_data(self):
-    #     return self._attrs.extended_data if self._attrs is not NULL else None
+    @property
+    def extended_data(self):
+        if self._attrs is NULL:
+            return
+        return ssh_string_to_bytes(self._attrs.extended_data)

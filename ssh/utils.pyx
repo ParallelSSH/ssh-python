@@ -17,7 +17,8 @@
 from cpython.version cimport PY_MAJOR_VERSION
 
 from c_ssh cimport ssh_error_types_e, ssh_get_error, ssh_auth_e, \
-    SSH_OK, SSH_ERROR, SSH_AGAIN, SSH_EOF, ssh_session
+    SSH_OK, SSH_ERROR, SSH_AGAIN, SSH_EOF, ssh_session, ssh_string, \
+    ssh_string_get_char, ssh_string_free, ssh_string_len
 
 from exceptions import RequestDenied, FatalError, OtherError, \
     AuthenticationPartial, AuthenticationDenied, AuthenticationError, \
@@ -46,6 +47,24 @@ cdef object to_str_len(char *c_str, int length):
     if PY_MAJOR_VERSION < 3:
         return c_str[:length]
     return c_str[:length].decode(ENCODING)
+
+
+cdef bytes ssh_string_to_bytes(ssh_string _str):
+    if _str is NULL:
+        return
+    cdef const char *c_str
+    cdef size_t str_len
+    cdef bytes b_str = None
+    with nogil:
+        str_len = ssh_string_len(_str)
+        c_str = ssh_string_get_char(_str)
+    if c_str is NULL:
+        raise MemoryError
+    try:
+        b_str = c_str[:str_len]
+        return b_str
+    finally:
+        ssh_string_free(_str)
 
 
 cdef int handle_ok_error_codes(int errcode) except -1:

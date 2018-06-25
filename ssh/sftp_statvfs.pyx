@@ -34,3 +34,47 @@ cdef class SFTPStatVFS:
         cdef SFTPStatVFS _vfs = SFTPStatVFS.__new__(SFTPStatVFS, sftp)
         _vfs._stats = stats
         return _vfs
+
+    @property
+    def f_bsize(self):
+        return self._stats.f_bsize if self._stats is not NULL else None
+
+    @property
+    def f_frsize(self):
+        return self._stats.f_frsize if self._stats is not NULL else None
+
+    @property
+    def f_blocks(self):
+        return self._stats.f_blocks if self._stats is not NULL else None
+
+    @property
+    def f_bfree(self):
+        return self._stats.f_bfree if self._stats is not NULL else None
+
+    @property
+    def f_bavail(self):
+        return self._stats.f_bavail if self._stats is not NULL else None
+
+    @property
+    def f_files(self):
+        return self._stats.f_files if self._stats is not NULL else None
+
+    @property
+    def f_ffree(self):
+        return self._stats.f_ffree if self._stats is not NULL else None
+
+    @property
+    def f_favail(self):
+        return self._stats.f_favail if self._stats is not NULL else None
+
+    @property
+    def f_fsid(self):
+        return self._stats.f_fsid if self._stats is not NULL else None
+
+    @property
+    def f_flag(self):
+        return self._stats.f_flag if self._stats is not NULL else None
+
+    @property
+    def f_namemax(self):
+        return self._stats.f_namemax if self._stats is not NULL else None
