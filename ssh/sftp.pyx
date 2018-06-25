@@ -21,6 +21,7 @@ from sftp_handles cimport SFTPFile, SFTPDir
 from sftp_attributes cimport SFTPAttributes
 from sftp_statvfs cimport SFTPStatVFS
 from utils cimport handle_ssh_error_codes, to_bytes
+from .exceptions import SFTPHandleError
 
 cimport c_sftp
 from c_ssh cimport ssh_get_error_code, timeval
@@ -97,9 +98,12 @@ cdef class SFTP:
         with nogil:
             c_dir = c_sftp.sftp_opendir(self._sftp, c_path)
         if c_dir is NULL:
-            return handle_ssh_error_codes(
+            # May or may not be an 'ssh error' which only handles
+            # three error types
+            handle_ssh_error_codes(
                 ssh_get_error_code(self.session._session),
                 self.session._session)
+            raise SFTPHandleError
         _dir = SFTPDir.from_ptr(c_dir, self)
         return _dir
 
@@ -111,9 +115,10 @@ cdef class SFTP:
         with nogil:
             c_attrs = c_sftp.sftp_stat(self._sftp, c_path)
         if c_attrs is NULL:
-            return handle_ssh_error_codes(
+            handle_ssh_error_codes(
                 ssh_get_error_code(self.session._session),
                 self.session._session)
+            raise SFTPHandleError
         _attrs = SFTPAttributes.from_ptr(c_attrs, self)
         return _attrs
 
@@ -125,9 +130,10 @@ cdef class SFTP:
         with nogil:
             c_attrs = c_sftp.sftp_lstat(self._sftp, c_path)
         if c_attrs is NULL:
-            return handle_ssh_error_codes(
+            handle_ssh_error_codes(
                 ssh_get_error_code(self.session._session),
                 self.session._session)
+            raise SFTPHandleError
         _attrs = SFTPAttributes.from_ptr(c_attrs, self)
         return _attrs
 
@@ -139,9 +145,10 @@ cdef class SFTP:
         with nogil:
             c_file = c_sftp.sftp_open(self._sftp, c_path, accesstype, mode)
         if c_file is NULL:
-            return handle_ssh_error_codes(
+            handle_ssh_error_codes(
                 ssh_get_error_code(self.session._session),
                 self.session._session)
+            raise SFTPHandleError
         _file = SFTPFile.from_ptr(c_file, self)
         return _file
 

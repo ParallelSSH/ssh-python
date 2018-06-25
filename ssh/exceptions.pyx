@@ -153,3 +153,7 @@ class UnknownChannelType(BaseSSHError):
 
 class ResourceShortage(BaseSSHError):
     """Raised on resource shortage errors"""
+
+
+class SFTPHandleError(BaseSSHError):
+    """Raised on errors SFTP handle errors"""

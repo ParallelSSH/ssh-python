@@ -15,6 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
 from sftp cimport SFTP
+from sftp_attributes cimport SFTPAttributes
 
 cimport c_sftp
 
@@ -33,3 +34,5 @@ cdef class SFTPDir:
 
     @staticmethod
     cdef SFTPDir from_ptr(c_sftp.sftp_dir _dir, SFTP sftp)
+
+    cpdef SFTPAttributes readdir(self)
