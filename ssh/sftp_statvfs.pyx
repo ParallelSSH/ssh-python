@@ -14,14 +14,23 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from session cimport Session
+from sftp cimport SFTP
 
 cimport c_sftp
 
 
-cdef class SFTP:
-    cdef c_sftp.sftp_session _sftp
-    cdef Session session
+cdef class SFTPStatVFS:
+
+    def __cinit__(self, SFTP sftp):
+        self.sftp = sftp
+
+    def __dealloc__(self):
+        if self._stats is not NULL:
+            c_sftp.sftp_statvfs_free(self._stats)
+            self._stats = NULL
 
     @staticmethod
-    cdef SFTP from_ptr(c_sftp.sftp_session sftp, Session session)
+    cdef SFTPStatVFS from_ptr(c_sftp.sftp_statvfs_t stats, SFTP sftp):
+        cdef SFTPStatVFS _vfs = SFTPStatVFS.__new__(SFTPStatVFS, sftp)
+        _vfs._stats = stats
+        return _vfs

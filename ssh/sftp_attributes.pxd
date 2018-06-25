@@ -14,14 +14,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from session cimport Session
+from sftp cimport SFTP
 
 cimport c_sftp
 
 
-cdef class SFTP:
-    cdef c_sftp.sftp_session _sftp
-    cdef Session session
+cdef class SFTPAttributes:
+    cdef c_sftp.sftp_attributes _attrs
+    cdef SFTP sftp
 
     @staticmethod
-    cdef SFTP from_ptr(c_sftp.sftp_session sftp, Session session)
+    cdef SFTPAttributes from_ptr(c_sftp.sftp_attributes attrs, SFTP sftp)

@@ -20,10 +20,10 @@ from posix.types cimport mode_t
 
 cdef extern from "libssh/libssh.h" nogil:
     ctypedef long time_t
-    ctypedef long subseconds_t
+    ctypedef long suseconds_t
     cdef struct timeval:
         time_t       tv_sec
-        subseconds_t tv_usec
+        suseconds_t  tv_usec
     ctypedef unsigned char uint8_t
     ctypedef unsigned short uint16_t
     ctypedef unsigned int uint32_t
