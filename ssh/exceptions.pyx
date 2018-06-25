@@ -69,3 +69,87 @@ class EOF(BaseSSHError):
 
 class InvalidAPIUse(BaseSSHError):
     """Raised on invalid uses of the API"""
+
+
+class Disconnected(BaseSSHError):
+    """Raised on disconnection errors"""
+
+
+class UnImplemented(BaseSSHError):
+    """Raised on unimplemented errors"""
+
+
+class GSSAPIError(BaseSSHError):
+    """Raised on GSS API errors"""
+
+
+class GSSAPIErrorTok(BaseSSHError):
+    """Raised on GSS API token errors"""
+
+
+class RequestFailure(BaseSSHError):
+    """Raised on SSH request failures"""
+
+
+class ChannelOpenFailure(BaseSSHError):
+    """Raised on SSH channel open failures"""
+
+
+class HostNotAllowedToConnect(BaseSSHError):
+    """Raised on host not allowed to connect errors"""
+
+
+class ProtocolError(BaseSSHError):
+    """Raised on protocol errors"""
+
+
+class KeyExchangeFailed(BaseSSHError):
+    """Raised on key exchange failures"""
+
+
+class HostAuthenticationFailed(BaseSSHError):
+    """Raised on host authentication failures"""
+
+
+class MACError(BaseSSHError):
+    """Raised on MAC errors"""
+
+
+class CompressionError(BaseSSHError):
+    """Raised on compression errors"""
+
+
+class ServiceNotAvailable(BaseSSHError):
+    """Raised on service not available errors"""
+
+
+class ProtocolVersionNotSupport(BaseSSHError):
+    """Raised on protocol version not supported"""
+
+
+class HostKeyNotVerifiable(BaseSSHError):
+    """Raised on host key not verifiable errors"""
+
+
+class ConnectionLost(BaseSSHError):
+    """Raised on connection lost"""
+
+
+class TooManyConnections(BaseSSHError):
+    """Raised on too many connection errors"""
+
+
+class AdministrativelyProhibited(BaseSSHError):
+    """Raised on administratively prohibited errors"""
+
+
+class ConnectFailed(BaseSSHError):
+    """Raised on connect failure"""
+
+
+class UnknownChannelType(BaseSSHError):
+    """Raised on unknown channel type"""
+
+
+class ResourceShortage(BaseSSHError):
+    """Raised on resource shortage errors"""
