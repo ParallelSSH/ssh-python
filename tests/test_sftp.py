@@ -31,6 +31,8 @@ from ssh.sftp_handles import SFTPDir, SFTPFile
 from ssh.sftp_attributes import SFTPAttributes
 from ssh.exceptions import InvalidAPIUse, SFTPHandleError, SFTPError
 from ssh.error_codes import SSH_AGAIN
+from ssh.helper import wait_socket
+
 
 from .base_test import SSHTestCase
 
@@ -387,7 +389,7 @@ class SFTPTest(SSHTestCase):
     #                                    'remote_test_file'])
     #     with open(remote_filename, 'wb') as test_fh:
     #         test_fh.write(test_file_data)
-    #     self.session.set_blocking(False)
+    #     # self.session.set_blocking(False)
     #     try:
     #         with sftp.open(remote_filename, os.O_RDONLY, 0) as remote_fh:
     #             self.assertIsInstance(remote_fh, SFTPFile)
@@ -395,13 +397,12 @@ class SFTPTest(SSHTestCase):
     #             remote_data = b""
     #             async_id = remote_fh.async_read_begin()
     #             self.assertNotEqual(async_id, 0)
-    #             # import ipdb; ipdb.set_trace()
+    #             import ipdb; ipdb.set_trace()
     #             size, data = remote_fh.async_read(async_id)
     #             while size > 0 or size == SSH_AGAIN:
     #                 if size == SSH_AGAIN:
     #                     print("Would try again")
-    #                     select((sock,), (sock,), ())
-    #                     time.sleep(1)
+    #                     wait_socket(sock, self.session, timeout=1)
     #                     size, data = remote_fh.async_read(async_id)
     #                     continue
     #                 remote_data += data

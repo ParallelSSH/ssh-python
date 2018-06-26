@@ -32,6 +32,13 @@ cimport c_ssh
 from c_sftp cimport sftp_session, sftp_new, sftp_init
 
 
+# SSH status flags
+SSH_CLOSED = c_ssh.SSH_CLOSED
+SSH_READ_PENDING = c_ssh.SSH_READ_PENDING
+SSH_CLOSED_ERROR = c_ssh.SSH_CLOSED_ERROR
+SSH_WRITE_PENDING = c_ssh.SSH_WRITE_PENDING
+
+
 cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
     if not c_ssh.ssh_is_connected(session):
         with gil:
@@ -51,9 +58,9 @@ cdef class Session:
     def __dealloc__(self):
         if self._session is not NULL:
             c_ssh.ssh_free(self._session)
-        self._session = NULL
+            self._session = NULL
 
-    def set_socket(self, socket):
+    def set_socket(self, socket not None):
         """Set socket to use for session.
 
         Not part of libssh API but needs to be done in C to be able to
@@ -122,6 +129,8 @@ cdef class Session:
         return handle_ssh_error_codes(rc, self._session)
 
     def disconnect(self):
+        if self._session is NULL:
+            return
         with nogil:
             c_ssh.ssh_disconnect(self._session)
 
@@ -327,16 +336,16 @@ cdef class Session:
             rc = c_ssh.ssh_set_agent_channel(self._session, channel._channel)
         return handle_ssh_error_codes(rc, self._session)
 
-    def set_agent_socket(self, c_ssh.socket_t fd):
+    def set_agent_socket(self, socket not None):
         cdef int rc
+        cdef c_ssh.socket_t _sock = PyObject_AsFileDescriptor(socket)
         with nogil:
-            rc = c_ssh.ssh_set_agent_socket(self._session, fd)
+            rc = c_ssh.ssh_set_agent_socket(self._session, _sock)
         return handle_ssh_error_codes(rc, self._session)
 
     def set_blocking(self, int blocking):
         with nogil:
             c_ssh.ssh_set_blocking(self._session, blocking)
-        return
 
     def set_counters(self, scounter, rcounter):
         raise NotImplementedError
@@ -456,7 +465,7 @@ cdef class Session:
             rc = c_ssh.ssh_userauth_kbdint_getnprompts(self._session)
         return rc
 
-    def userauth_kbdint_getprompt(self, unsigned int i, bytes echo):
+    def userauth_kbdint_getprompt(self, unsigned int i, bytes echo not None):
         cdef const_char *_prompt
         cdef bytes b_prompt
         cdef char *c_echo = echo
@@ -484,7 +493,7 @@ cdef class Session:
         b_answer = _answer
         return b_answer
 
-    def userauth_kbdint_setanswer(self, unsigned int i, bytes answer):
+    def userauth_kbdint_setanswer(self, unsigned int i, bytes answer not None):
         cdef char *c_answer = answer
         cdef int rc
         with nogil:
@@ -601,3 +610,11 @@ cdef class Session:
         with nogil:
             rc = c_ssh.ssh_get_error_code(self._session)
         return rc
+
+    def scp_new(self, int mode, location not None):
+        cdef c_ssh.ssh_scp _scp
+        cdef bytes b_location = to_bytes(location)
+        cdef char *c_location = b_location
+        raise NotImplementedError
+        with nogil:
+            pass
