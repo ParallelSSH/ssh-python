@@ -70,7 +70,7 @@ class SFTPTest(SSHTestCase):
             self.assertEqual(attrs.name, b'.')
             self.assertTrue(len(attrs.longname) > 1)
 
-    def test_sftp_file(self):
+    def test_sftp_file_read(self):
         self._auth()
         sftp = self.session.sftp_new()
         sftp.init()
@@ -83,17 +83,12 @@ class SFTPTest(SSHTestCase):
         with open(remote_filename, 'wb') as test_fh:
             test_fh.write(test_file_data)
         try:
-            remote_fh = sftp.open(remote_filename, os.O_RDONLY, 0)
-            self.assertIsInstance(remote_fh, SFTPFile)
+            with sftp.open(remote_filename, os.O_RDONLY, 0) as remote_fh:
+                self.assertIsInstance(remote_fh, SFTPFile)
+                remote_data = b""
+                for rc, data in remote_fh:
+                    remote_data += data
+                self.assertEqual(remote_fh.close(), 0)
+                self.assertEqual(remote_data, test_file_data)
         finally:
             os.unlink(remote_filename)
-        # with sftp.open(remote_filename, 0, 0) as remote_fh:
-        #     try:
-        #         self.assertTrue(remote_fh is not None)
-        #         remote_data = b""
-        #         for rc, data in remote_fh:
-        #             remote_data += data
-        #         self.assertEqual(remote_fh.close(), 0)
-        #         self.assertEqual(remote_data, test_file_data)
-        #     finally:
-        #         os.unlink(remote_filename)

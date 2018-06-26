@@ -14,11 +14,13 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
+from libc.stdlib cimport malloc, free
+
 from sftp_attributes cimport SFTPAttributes
 
 from .exceptions import SFTPHandleError
 
-from c_ssh cimport uint32_t, uint64_t
+from c_ssh cimport uint32_t, uint64_t, ssh_get_error
 cimport c_sftp
 
 
@@ -26,6 +28,10 @@ cdef class SFTPFile:
 
     def __cinit__(self, SFTP sftp):
         self.sftp = sftp
+        self.closed = False
+
+    def __dealloc__(self):
+        pass
 
     @staticmethod
     cdef SFTPFile from_ptr(c_sftp.sftp_file _file, SFTP sftp):
@@ -44,8 +50,8 @@ cdef class SFTPFile:
 
     def __next__(self):
         size, data = self.read()
-        while size > 0:
-            return size
+        if size > 0:
+            return size, data
         raise StopIteration
 
     @property
@@ -53,19 +59,50 @@ cdef class SFTPFile:
         return self.sftp
 
     def fstat(self):
-        pass
+        cdef SFTPAttributes _attrs
+        cdef c_sftp.sftp_attributes c_attrs
+        with nogil:
+            c_attrs = c_sftp.sftp_fstat(self._file)
+        if c_attrs is NULL:
+            raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
+        _attrs = SFTPAttributes.from_ptr(c_attrs, self.sftp)
+        return _attrs
 
     def close(self):
-        pass
+        cdef int rc
+        if self.closed:
+            return 0
+        with nogil:
+            rc = c_sftp.sftp_close(self._file)
+        if rc < 0:
+            raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
+        self.closed = True
+        return rc
 
     def set_nonblocking(self):
-        pass
+        with nogil:
+            c_sftp.sftp_file_set_nonblocking(self._file)
 
     def set_blocking(self):
-        pass
+        with nogil:
+            c_sftp.sftp_file_set_blocking(self._file)
 
     def read(self, size_t count=1024000):
-        pass
+        cdef ssize_t size
+        cdef bytes buf = b''
+        cdef char *c_buf
+        with nogil:
+            c_buf = <char *>malloc(sizeof(char) * count)
+            if c_buf is NULL:
+                with gil:
+                    raise MemoryError
+            size = c_sftp.sftp_read(self._file, c_buf, count)
+        try:
+            if size > 0:
+                buf = c_buf[:size]
+        finally:
+            free(c_buf)
+        return size, buf
 
     def async_read_begin(self, uint32_t length=1024000):
         pass
