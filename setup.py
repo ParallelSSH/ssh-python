@@ -4,7 +4,8 @@ import platform
 import os
 import sys
 from glob import glob
-from multiprocessing import cpu_count
+# from multiprocessing import cpu_count
+from subprocess import check_call
 
 import versioneer
 from setuptools import setup, find_packages
@@ -20,6 +21,21 @@ except ImportError:
 else:
     USING_CYTHON = True
 
+
+def build_ssh():
+    cmd = './ci/build_ssh.sh'
+    return check_call(cmd, env=os.environ, shell=True)
+
+
+# Only build libssh if running a build
+if (len(sys.argv) >= 2 and not (
+        '--help' in sys.argv[1:] or
+        sys.argv[1] in (
+            '--help-commands', 'egg_info', '--version', 'clean',
+            '--long-description')) and
+        __name__ == '__main__'):
+    build_ssh()
+
 ON_WINDOWS = platform.system() == 'Windows'
 
 ext = 'pyx' if USING_CYTHON else 'c'
@@ -32,10 +48,11 @@ _libs = ['ssh'] if not ON_WINDOWS else [
 
 # _comp_args = ["-ggdb"]
 _comp_args = ["-O3"] if not ON_WINDOWS else None
-cython_directives = {'embedsignature': True,
-                     'boundscheck': False,
-                     'optimize.use_switch': True,
-                     'wraparound': False,
+cython_directives = {
+    'embedsignature': True,
+    'boundscheck': False,
+    'optimize.use_switch': True,
+    'wraparound': False,
 }
 cython_args = {
     'cython_directives': cython_directives,
@@ -47,13 +64,18 @@ cython_args = {
 if USING_CYTHON:
     sys.stdout.write("Cython arguments: %s%s" % (cython_args, os.linesep))
 
+
+_lib_dir = os.path.abspath("./src/src")
 extensions = [
-    Extension(sources[i].split('.')[0].replace(os.path.sep, '.'),
-              sources=[sources[i]],
-              include_dirs=["libssh/include"],
-              libraries=_libs,
-              extra_compile_args=_comp_args,
-              **cython_args
+    Extension(
+        sources[i].split('.')[0].replace(os.path.sep, '.'),
+        sources=[sources[i]],
+        include_dirs=["libssh/include"],
+        libraries=_libs,
+        library_dirs=[_lib_dir],
+        runtime_library_dirs=[_lib_dir],
+        extra_compile_args=_comp_args,
+        **cython_args
     )
     for i in range(len(sources))]
 
