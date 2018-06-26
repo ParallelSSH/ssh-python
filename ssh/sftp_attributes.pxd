@@ -22,6 +22,7 @@ cimport c_sftp
 cdef class SFTPAttributes:
     cdef c_sftp.sftp_attributes _attrs
     cdef SFTP sftp
+    cdef bint self_made
 
     @staticmethod
     cdef SFTPAttributes from_ptr(c_sftp.sftp_attributes attrs, SFTP sftp)

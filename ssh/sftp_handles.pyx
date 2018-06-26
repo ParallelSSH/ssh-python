@@ -17,10 +17,11 @@
 from libc.stdlib cimport malloc, free
 
 from sftp_attributes cimport SFTPAttributes
+from sftp_statvfs cimport SFTPStatVFS
 
-from .exceptions import SFTPHandleError
+from .exceptions import SFTPError, SFTPHandleError
 
-from c_ssh cimport uint32_t, uint64_t, ssh_get_error
+from c_ssh cimport uint32_t, uint64_t, ssh_get_error, SSH_ERROR, SSH_AGAIN
 cimport c_sftp
 
 
@@ -87,52 +88,116 @@ cdef class SFTPFile:
         with nogil:
             c_sftp.sftp_file_set_blocking(self._file)
 
-    def read(self, size_t count=1024000):
-        cdef ssize_t size
+    def read(self, size_t size=1048576):
+        cdef ssize_t _size
         cdef bytes buf = b''
         cdef char *c_buf
         with nogil:
-            c_buf = <char *>malloc(sizeof(char) * count)
+            c_buf = <char *>malloc(sizeof(char) * size)
             if c_buf is NULL:
                 with gil:
                     raise MemoryError
-            size = c_sftp.sftp_read(self._file, c_buf, count)
+            _size = c_sftp.sftp_read(self._file, c_buf, size)
+        try:
+            if _size > 0:
+                buf = c_buf[:_size]
+        finally:
+            free(c_buf)
+        return _size, buf
+
+    def async_read_begin(self, uint32_t length=1048576):
+        cdef int rc
+        with nogil:
+            rc = c_sftp.sftp_async_read_begin(self._file, length)
+        if rc < 0:
+            raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
+        return rc
+
+    def async_read(self, uint32_t _id, uint32_t length=1048576):
+        cdef int size
+        cdef bytes buf = b''
+        cdef char *c_buf
+        with nogil:
+            c_buf = <char *>malloc(sizeof(char) * length)
+            if c_buf is NULL:
+                with gil:
+                    raise MemoryError
+            size = c_sftp.sftp_async_read(self._file, c_buf, length, _id)
         try:
             if size > 0:
                 buf = c_buf[:size]
+            elif size < 0:
+                if size == SSH_ERROR:
+                    raise SFTPError(ssh_get_error(self.sftp.session._session))
+                elif size == SSH_AGAIN:
+                    return SSH_AGAIN
         finally:
             free(c_buf)
         return size, buf
 
-    def async_read_begin(self, uint32_t length=1024000):
-        pass
-
-    def async_read(self, uint32_t length, uint32_t, _id):
-        pass
-
-    def write(self, size_t count=1024000):
-        pass
+    def write(self, bytes data):
+        cdef ssize_t rc
+        cdef const char *c_data = data
+        cdef size_t data_len = len(data)
+        with nogil:
+            rc = c_sftp.sftp_write(self._file, c_data, data_len)
+        if rc < 0:
+            raise SFTPError(ssh_get_error(self.sftp.session._session))
+        return rc
 
     def seek(self, uint32_t offset):
-        pass
+        cdef int rc
+        with nogil:
+            rc = c_sftp.sftp_seek(self._file, offset)
+        if rc < 0:
+            raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
+        return rc
 
     def seek64(self, uint64_t offset):
-        pass
+        cdef int rc
+        with nogil:
+            rc = c_sftp.sftp_seek64(self._file, offset)
+        if rc < 0:
+            raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
+        return rc
 
     def tell(self):
-        pass
+        cdef unsigned long rc
+        with nogil:
+            rc = c_sftp.sftp_tell(self._file)
+        if rc < 0:
+            raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
+        return rc
 
     def tell64(self):
-        pass
+        cdef uint64_t rc
+        with nogil:
+            rc = c_sftp.sftp_tell64(self._file)
+        if rc < 0:
+            raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
+        return rc
 
     def rewind(self):
-        pass
+        with nogil:
+            c_sftp.sftp_rewind(self._file)
 
     def fstatvfs(self):
-        pass
+        cdef SFTPStatVFS vfs
+        cdef c_sftp.sftp_statvfs_t c_vfs
+        with nogil:
+            c_vfs = c_sftp.sftp_fstatvfs(self._file)
+        if c_vfs is NULL:
+            raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
+        vfs = SFTPStatVFS.from_ptr(c_vfs, self.sftp)
+        return vfs
 
     def fsync(self):
-        pass
+        cdef int rc
+        with nogil:
+            rc = c_sftp.sftp_fsync(self._file)
+        if rc < 0:
+            raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
+        return rc
 
 
 cdef class SFTPDir:

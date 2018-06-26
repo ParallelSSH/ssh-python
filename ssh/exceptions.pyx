@@ -155,5 +155,9 @@ class ResourceShortage(BaseSSHError):
     """Raised on resource shortage errors"""
 
 
-class SFTPHandleError(BaseSSHError):
-    """Raised on errors SFTP handle errors"""
+class SFTPError(BaseSSHError):
+    """Raised on SFTP errors"""
+
+
+class SFTPHandleError(SFTPError):
+    """Raised on SFTP handle errors"""
