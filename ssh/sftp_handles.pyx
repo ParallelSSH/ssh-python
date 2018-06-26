@@ -29,10 +29,10 @@ cdef class SFTPFile:
 
     def __cinit__(self, SFTP sftp):
         self.sftp = sftp
-        self.closed = False
 
     def __dealloc__(self):
-        pass
+        if not self.closed:
+            self.close()
 
     @staticmethod
     cdef SFTPFile from_ptr(c_sftp.sftp_file _file, SFTP sftp):
@@ -54,10 +54,6 @@ cdef class SFTPFile:
         if size > 0:
             return size, data
         raise StopIteration
-
-    @property
-    def sftp_session(self):
-        return self.sftp
 
     def fstat(self):
         cdef SFTPAttributes _attrs
@@ -205,6 +201,10 @@ cdef class SFTPDir:
     def __cinit__(self, SFTP sftp):
         self.sftp = sftp
 
+    def __dealloc__(self):
+        if not self.closed:
+            self.closedir()
+
     @staticmethod
     cdef SFTPDir from_ptr(c_sftp.sftp_dir _dir, SFTP sftp):
         cdef SFTPDir _fh = SFTPDir.__new__(SFTPDir, sftp)
@@ -239,8 +239,13 @@ cdef class SFTPDir:
 
     def closedir(self):
         cdef int rc
+        if self.closed:
+            return 0
         with nogil:
             rc = c_sftp.sftp_closedir(self._dir)
+        if rc < 0:
+            raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
+        self.closed = True
         return rc
 
     cpdef SFTPAttributes readdir(self):

@@ -81,6 +81,14 @@ class SFTPTest(SSHTestCase):
             self.assertTrue(attrs.size > 0)
             self.assertEqual(attrs.name, b'.')
             self.assertTrue(len(attrs.longname) > 1)
+            self.assertFalse(_dir.closed)
+            self.assertEqual(_dir.closedir(), 0)
+            self.assertTrue(_dir.closed)
+        del _dir
+        with sftp.opendir('.') as _dir:
+            pass
+        self.assertTrue(_dir.closed)
+        del _dir
 
     def test_sftp_file_read(self):
         self._auth()
@@ -104,6 +112,10 @@ class SFTPTest(SSHTestCase):
                 self.assertEqual(remote_fh.close(), 0)
                 self.assertTrue(remote_fh.closed)
                 self.assertEqual(remote_data, test_file_data)
+            self.assertTrue(remote_fh.closed)
+            del remote_fh
+            with sftp.open(remote_filename, os.O_RDONLY, 0) as remote_fh:
+                pass
             self.assertTrue(remote_fh.closed)
         finally:
             os.unlink(remote_filename)

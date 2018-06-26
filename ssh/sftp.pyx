@@ -21,7 +21,7 @@ from sftp_handles cimport SFTPFile, SFTPDir
 from sftp_attributes cimport SFTPAttributes
 from sftp_statvfs cimport SFTPStatVFS
 from utils cimport handle_ssh_error_codes, to_bytes
-from .exceptions import SFTPError
+from .exceptions import SFTPError, SFTPHandleError
 
 cimport c_sftp
 from c_ssh cimport ssh_get_error, ssh_get_error_code, timeval
@@ -98,7 +98,7 @@ cdef class SFTP:
         with nogil:
             c_dir = c_sftp.sftp_opendir(self._sftp, c_path)
         if c_dir is NULL:
-            raise SFTPError(ssh_get_error(self.session._session))
+            raise SFTPHandleError(ssh_get_error(self.session._session))
         _dir = SFTPDir.from_ptr(c_dir, self)
         return _dir
 
@@ -134,7 +134,7 @@ cdef class SFTP:
         with nogil:
             c_file = c_sftp.sftp_open(self._sftp, c_path, accesstype, mode)
         if c_file is NULL:
-            raise SFTPError(ssh_get_error(self.session._session))
+            raise SFTPHandleError(ssh_get_error(self.session._session))
         _file = SFTPFile.from_ptr(c_file, self)
         return _file
 
@@ -144,7 +144,9 @@ cdef class SFTP:
         cdef int rc
         with nogil:
             rc = c_sftp.sftp_unlink(self._sftp, c_path)
-        return handle_ssh_error_codes(rc, self.session._session)
+        if rc < 0:
+            raise SFTPError(ssh_get_error(self.session._session))
+        return rc
 
     def rmdir(self, path not None):
         cdef bytes b_path = to_bytes(path)
@@ -152,7 +154,9 @@ cdef class SFTP:
         cdef int rc
         with nogil:
             rc = c_sftp.sftp_rmdir(self._sftp, c_path)
-        return handle_ssh_error_codes(rc, self.session._session)
+        if rc < 0:
+            raise SFTPError(ssh_get_error(self.session._session))
+        return rc
 
     def mkdir(self, path not None, c_sftp.mode_t mode):
         cdef bytes b_path = to_bytes(path)
@@ -170,7 +174,9 @@ cdef class SFTP:
         cdef int rc
         with nogil:
             rc = c_sftp.sftp_rename(self._sftp, c_orig, c_newname)
-        return handle_ssh_error_codes(rc, self.session._session)
+        if rc < 0:
+            raise SFTPError(ssh_get_error(self.session._session))
+        return rc
 
     def setstat(self, path not None, SFTPAttributes attr):
         cdef bytes b_path = to_bytes(path)
@@ -187,7 +193,9 @@ cdef class SFTP:
         cdef int rc
         with nogil:
             rc = c_sftp.sftp_chown(self._sftp, c_path, owner, group)
-        return handle_ssh_error_codes(rc, self.session._session)
+        if rc < 0:
+            raise SFTPError(ssh_get_error(self.session._session))
+        return rc
 
     def chmod(self, path not None, c_sftp.mode_t mode):
         cdef bytes b_path = to_bytes(path)
@@ -195,7 +203,9 @@ cdef class SFTP:
         cdef int rc
         with nogil:
             rc = c_sftp.sftp_chmod(self._sftp, c_path, mode)
-        return handle_ssh_error_codes(rc, self.session._session)
+        if rc < 0:
+            raise SFTPError(ssh_get_error(self.session._session))
+        return rc
 
     def utimes(self, path not None, long seconds, long microseconds):
         cdef bytes b_path = to_bytes(path)
@@ -211,7 +221,9 @@ cdef class SFTP:
             _val.tv_usec = microseconds
             rc = c_sftp.sftp_utimes(self._sftp, c_path, _val)
             free(_val)
-        return handle_ssh_error_codes(rc, self.session._session)
+        if rc < 0:
+            raise SFTPError(ssh_get_error(self.session._session))
+        return rc
 
     def symlink(self, source not None, dest not None):
         cdef bytes b_source = to_bytes(source)
@@ -221,7 +233,9 @@ cdef class SFTP:
         cdef int rc
         with nogil:
             rc = c_sftp.sftp_symlink(self._sftp, c_source, c_dest)
-        return handle_ssh_error_codes(rc, self.session._session)
+        if rc < 0:
+            raise SFTPError(ssh_get_error(self.session._session))
+        return rc
 
     def readlink(self, path not None):
         cdef bytes b_path = to_bytes(path)
@@ -231,9 +245,7 @@ cdef class SFTP:
         with nogil:
             _link = c_sftp.sftp_readlink(self._sftp, c_path)
         if _link is NULL:
-            return handle_ssh_error_codes(
-                ssh_get_error_code(self.session._session),
-                self.session._session)
+            raise SFTPError(ssh_get_error(self.session._session))
         b_link = _link
         return b_link
 
@@ -245,9 +257,7 @@ cdef class SFTP:
         with nogil:
             c_vfs = c_sftp.sftp_statvfs(self._sftp, c_path)
         if c_vfs is NULL:
-            return handle_ssh_error_codes(
-                ssh_get_error_code(self.session._session),
-                self.session._session)
+            raise SFTPError(ssh_get_error(self.session._session))
         vfs = SFTPStatVFS.from_ptr(c_vfs, self)
         return vfs
 
@@ -259,9 +269,7 @@ cdef class SFTP:
         with nogil:
             _rpath = c_sftp.sftp_canonicalize_path(self._sftp, c_path)
         if _rpath is NULL:
-            return handle_ssh_error_codes(
-                ssh_get_error_code(self.session._session),
-                self.session._session)
+            raise SFTPError(ssh_get_error(self.session._session))
         b_rpath = _rpath
         return b_rpath
 
@@ -269,4 +277,4 @@ cdef class SFTP:
         cdef int rc
         with nogil:
             rc = c_sftp.sftp_server_version(self._sftp)
-        return rc
+        return handle_ssh_error_codes(rc, self.session._session)

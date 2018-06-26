@@ -21,7 +21,7 @@ cimport c_sftp
 
 cdef class SFTP:
     cdef c_sftp.sftp_session _sftp
-    cdef Session session
+    cdef readonly Session session
 
     @staticmethod
     cdef SFTP from_ptr(c_sftp.sftp_session sftp, Session session)

@@ -22,7 +22,7 @@ cimport c_sftp
 
 cdef class SFTPFile:
     cdef c_sftp.sftp_file _file
-    cdef SFTP sftp
+    cdef readonly SFTP sftp
     cdef readonly bint closed
 
     @staticmethod
@@ -31,7 +31,8 @@ cdef class SFTPFile:
 
 cdef class SFTPDir:
     cdef c_sftp.sftp_dir _dir
-    cdef SFTP sftp
+    cdef readonly SFTP sftp
+    cdef readonly bint closed
 
     @staticmethod
     cdef SFTPDir from_ptr(c_sftp.sftp_dir _dir, SFTP sftp)
