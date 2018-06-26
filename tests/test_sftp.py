@@ -18,11 +18,19 @@ import unittest
 import os
 import platform
 import stat
+from sys import version_info
+import shutil
+import socket
+from select import select
+import time
 
+from ssh.session import Session
+from ssh import options
 from ssh.sftp import SFTP
 from ssh.sftp_handles import SFTPDir, SFTPFile
 from ssh.sftp_attributes import SFTPAttributes
-from ssh.exceptions import InvalidAPIUse, SFTPHandleError
+from ssh.exceptions import InvalidAPIUse, SFTPHandleError, SFTPError
+from ssh.error_codes import SSH_AGAIN
 
 from .base_test import SSHTestCase
 
@@ -34,6 +42,9 @@ class SFTPTest(SSHTestCase):
         sftp = self.session.sftp_new()
         self.assertIsInstance(sftp, SFTP)
         self.assertEqual(sftp.init(), 0)
+        del sftp
+        sftp = self.session.sftp_init()
+        self.assertIsInstance(sftp, SFTP)
 
     def test_sftp_fail(self):
         self.assertRaises(InvalidAPIUse, self.session.sftp_new)
@@ -158,3 +169,235 @@ class SFTPTest(SSHTestCase):
         self.assertEqual(attrs.extended_count, 15)
         del attrs
 
+    def test_sftp_stat(self):
+        self._auth()
+        sftp = self.session.sftp_init()
+        self.assertIsInstance(sftp, SFTP)
+        test_data = b"data"
+        remote_filename = os.sep.join([os.path.dirname(__file__),
+                                       "remote_test_file"])
+        with open(remote_filename, 'wb') as fh:
+            fh.write(test_data)
+        _mask = int('0644') if version_info <= (2,) else 0o644
+        os.chmod(remote_filename, _mask)
+        _size = os.stat(remote_filename).st_size
+        try:
+            attrs = sftp.stat(remote_filename)
+            self.assertTrue(isinstance(attrs, SFTPAttributes))
+            self.assertEqual(attrs.uid, os.getuid())
+            self.assertEqual(attrs.gid, os.getgid())
+            self.assertEqual(stat.S_IMODE(attrs.permissions), 420)
+            self.assertTrue(attrs.atime > 0)
+            self.assertTrue(attrs.mtime > 0)
+            self.assertTrue(attrs.flags > 0)
+            self.assertEqual(attrs.size, _size)
+        except Exception:
+            raise
+        finally:
+            os.unlink(remote_filename)
+        self.assertRaises(SFTPError, sftp.stat, remote_filename)
+        self.assertNotEqual(sftp.get_error(), 0)
+
+    def test_sftp_fstat(self):
+        self._auth()
+        sftp = self.session.sftp_init()
+        self.assertTrue(sftp is not None)
+        test_data = b"data"
+        remote_filename = os.sep.join([os.path.dirname(__file__),
+                                       "remote_test_file"])
+        with open(remote_filename, 'wb') as fh:
+            fh.write(test_data)
+        try:
+            with sftp.open(remote_filename, 0, 0) as fh:
+                attrs = fh.fstat()
+                self.assertTrue(isinstance(attrs, SFTPAttributes))
+                self.assertEqual(attrs.uid, os.getuid())
+                self.assertEqual(attrs.gid, os.getgid())
+                self.assertTrue(attrs.flags > 0)
+        except Exception:
+            raise
+        finally:
+            os.unlink(remote_filename)
+
+    def test_sftp_setstat(self):
+        self._auth()
+        sftp = self.session.sftp_init()
+        self.assertTrue(sftp is not None)
+        test_data = b"data"
+        remote_filename = os.sep.join([os.path.dirname(__file__),
+                                       "remote_test_file"])
+        with open(remote_filename, 'wb') as fh:
+            fh.write(test_data)
+        _mask = int('0644') if version_info <= (2,) else 0o644
+        os.chmod(remote_filename, _mask)
+        attrs = sftp.stat(remote_filename)
+        attrs.permissions = 0400
+        try:
+            self.assertEqual(sftp.setstat(remote_filename, attrs), 0)
+            attrs = sftp.stat(remote_filename)
+            self.assertEqual(attrs.permissions, 33024)
+        except Exception:
+            raise
+        finally:
+            os.unlink(remote_filename)
+
+    def test_canonicalize_path(self):
+        self._auth()
+        sftp = self.session.sftp_init()
+        self.assertTrue(sftp is not None)
+        self.assertIsNotNone(sftp.canonicalize_path('.'))
+
+    def test_sftp_symlink_realpath_lstat(self):
+        self._auth()
+        sftp = self.session.sftp_init()
+        self.assertTrue(sftp is not None)
+        test_data = b"data"
+        remote_filename = os.sep.join([os.path.dirname(__file__),
+                                       "remote_test_file"])
+        with open(remote_filename, 'wb') as fh:
+            fh.write(test_data)
+        symlink_target = os.sep.join([os.path.dirname(__file__),
+                                      'remote_symlink'])
+        try:
+            self.assertEqual(sftp.symlink(remote_filename, symlink_target), 0)
+            lstat = sftp.lstat(symlink_target)
+            self.assertTrue(lstat is not None)
+            self.assertEqual(lstat.size, os.lstat(symlink_target).st_size)
+            realpath = sftp.canonicalize_path(symlink_target)
+            self.assertTrue(realpath is not None)
+            self.assertEqual(realpath, remote_filename)
+        except Exception:
+            raise
+        finally:
+            os.unlink(symlink_target)
+            os.unlink(remote_filename)
+
+    def test_readdir(self):
+        self._auth()
+        sftp = self.session.sftp_init()
+        dir_data = [_dir for _dir in sftp.opendir('.')]
+        self.assertTrue(len(dir_data) > 0)
+        self.assertTrue(b'.' in (_ls.name for _ls in dir_data))
+        self.assertTrue(b'..' in (_ls.name for _ls in dir_data))
+
+    def test_readdir_failure(self):
+        self._auth()
+        sftp = self.session.sftp_init()
+        self.assertRaises(SFTPError, sftp.opendir, 'fakeyfakey')
+
+    def test_fsync(self):
+        self._auth()
+        sftp = self.session.sftp_init()
+        test_data = b"data"
+        remote_filename = os.sep.join([os.path.dirname(__file__),
+                                       "remote_test_file"])
+        with open(remote_filename, 'wb') as fh:
+            fh.write(test_data)
+        try:
+            with sftp.open(remote_filename, 0, 0) as fh:
+                self.assertEqual(fh.fsync(), 0)
+        except Exception:
+            raise
+        finally:
+            os.unlink(remote_filename)
+
+    def test_statvfs(self):
+        self._auth()
+        sftp = self.session.sftp_init()
+        vfs = sftp.statvfs('.')
+        self.assertTrue(vfs is not None)
+        self.assertTrue(vfs.f_files > 0)
+        self.assertTrue(vfs.f_bsize > 0)
+        self.assertTrue(vfs.f_namemax > 0)
+
+    def test_fstatvfs(self):
+        self._auth()
+        sftp = self.session.sftp_init()
+        test_data = b"data"
+        remote_filename = os.sep.join([os.path.dirname(__file__),
+                                       "remote_test_file"])
+        with open(remote_filename, 'wb') as fh:
+            fh.write(test_data)
+        try:
+            with sftp.open(remote_filename, 0, 0) as fh:
+                vfs = fh.fstatvfs()
+                self.assertTrue(vfs is not None)
+                self.assertTrue(vfs.f_files > 0)
+                self.assertTrue(vfs.f_bsize > 0)
+                self.assertTrue(vfs.f_namemax > 0)
+        except Exception:
+            raise
+        finally:
+            os.unlink(remote_filename)
+
+    def test_mkdir(self):
+        mode = 0644
+        _path = 'tmp'
+        abspath = os.path.join(os.path.expanduser('~'), _path)
+        self._auth()
+        sftp = self.session.sftp_init()
+        try:
+            shutil.rmtree(abspath)
+        except OSError:
+            pass
+        sftp.mkdir(_path, mode)
+        try:
+            self.assertTrue(os.path.isdir(abspath))
+        finally:
+            shutil.rmtree(abspath)
+
+    def test_handle_open_nonblocking(self):
+        self._auth()
+        sftp = self.session.sftp_init()
+        self.session.set_blocking(False)
+        fh = sftp.open('.', 0, 0)
+        self.assertIsInstance(fh, SFTPFile)
+        fh.set_nonblocking()
+        fh.close()
+
+    # def test_async_read(self):
+    #     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #     sock.connect((self.host, self.port))
+    #     self.session = Session()
+    #     self.session.options_set(options.USER, self.user)
+    #     self.session.options_set(options.HOST, self.host)
+    #     self.session.options_set_port(self.port)
+    #     self.assertEqual(self.session.set_socket(sock), 0)
+    #     self.assertEqual(self.session.connect(), 0)
+    #     self.assertEqual(self.session.userauth_publickey(self.pkey), 0)
+    #     sftp = self.session.sftp_new()
+    #     sftp.init()
+    #     if int(platform.python_version_tuple()[0]) >= 3:
+    #         test_file_data = b'test' + bytes(os.linesep, 'utf-8')
+    #     else:
+    #         test_file_data = b'test' + os.linesep
+    #     remote_filename = os.sep.join([os.path.dirname(__file__),
+    #                                    'remote_test_file'])
+    #     with open(remote_filename, 'wb') as test_fh:
+    #         test_fh.write(test_file_data)
+    #     self.session.set_blocking(False)
+    #     try:
+    #         with sftp.open(remote_filename, os.O_RDONLY, 0) as remote_fh:
+    #             self.assertIsInstance(remote_fh, SFTPFile)
+    #             remote_fh.set_nonblocking()
+    #             remote_data = b""
+    #             async_id = remote_fh.async_read_begin()
+    #             self.assertNotEqual(async_id, 0)
+    #             # import ipdb; ipdb.set_trace()
+    #             size, data = remote_fh.async_read(async_id)
+    #             while size > 0 or size == SSH_AGAIN:
+    #                 if size == SSH_AGAIN:
+    #                     print("Would try again")
+    #                     select((sock,), (sock,), ())
+    #                     time.sleep(1)
+    #                     size, data = remote_fh.async_read(async_id)
+    #                     continue
+    #                 remote_data += data
+    #                 size, data = remote_fh.async_read(async_id)
+    #             self.assertFalse(remote_fh.closed)
+    #             self.assertEqual(remote_fh.close(), 0)
+    #             self.assertTrue(remote_fh.closed)
+    #             self.assertEqual(remote_data, test_file_data)
+    #         self.assertTrue(remote_fh.closed)
+    #     finally:
+    #         os.unlink(remote_filename)

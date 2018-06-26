@@ -130,7 +130,7 @@ cdef class SFTPFile:
                 if size == SSH_ERROR:
                     raise SFTPError(ssh_get_error(self.sftp.session._session))
                 elif size == SSH_AGAIN:
-                    return SSH_AGAIN
+                    return SSH_AGAIN, buf
         finally:
             free(c_buf)
         return size, buf

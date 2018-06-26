@@ -29,7 +29,7 @@ from sftp cimport SFTP
 from exceptions import OptionError, InvalidAPIUse
 
 cimport c_ssh
-from c_sftp cimport sftp_session, sftp_new
+from c_sftp cimport sftp_session, sftp_new, sftp_init
 
 
 cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
@@ -94,6 +94,26 @@ cdef class Session:
             return handle_ssh_error_codes(
                 c_ssh.ssh_get_error_code(self._session), self._session)
         return SFTP.from_ptr(_sftp, self)
+
+    def sftp_init(self):
+        """Convenience function for creating and initialising new SFTP
+        session.
+
+        Not part of libssh API."""
+        cdef sftp_session _sftp
+        cdef SFTP sftp
+        cdef int rc
+        with nogil:
+            _check_connected(self._session)
+            _sftp = sftp_new(self._session)
+            if _sftp is NULL:
+                with gil:
+                    return handle_ssh_error_codes(
+                        c_ssh.ssh_get_error_code(self._session), self._session)
+            rc = sftp_init(_sftp)
+        sftp = SFTP.from_ptr(_sftp, self)
+        handle_ssh_error_codes(rc, self._session)
+        return sftp
 
     def connect(self):
         cdef int rc
