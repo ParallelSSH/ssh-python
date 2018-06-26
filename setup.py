@@ -40,7 +40,7 @@ cython_directives = {'embedsignature': True,
 cython_args = {
     'cython_directives': cython_directives,
     'cython_compile_time_env': {
-        # '_WIN32': ON_WINDOWS,
+        # Compile flags here
     }} \
     if USING_CYTHON else {}
 
@@ -50,7 +50,7 @@ if USING_CYTHON:
 extensions = [
     Extension(sources[i].split('.')[0].replace(os.path.sep, '.'),
               sources=[sources[i]],
-              # include_dirs=["libssh/include"],
+              include_dirs=["libssh/include"],
               libraries=_libs,
               extra_compile_args=_comp_args,
               **cython_args
