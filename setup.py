@@ -79,7 +79,7 @@ extensions = [
     )
     for i in range(len(sources))]
 
-package_data = {'ssh': ['*.pxd', 'libssh.so.4']}
+package_data = {'ssh': ['*.pxd', 'libssh.so*']}
 
 if ON_WINDOWS:
     package_data['ssh'].extend([
