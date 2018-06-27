@@ -8,3 +8,4 @@ mkdir -p src && cd src
 cmake -DCMAKE_BUILD_TYPE=Release ../libssh
 make -j6
 cd ..
+cp src/src/libssh.so.4 ssh/

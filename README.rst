@@ -1,25 +1,27 @@
 ssh-python
 ============
 
-Wrapper for libssh_ C library.
-
+Bindings for libssh_ C library.
 
 Installation
 _____________
 
 Currently only installation from source is provided. Binary wheels to follow.
 
-To install from source, run the following after cloning the repository
+To install from source, run the following:
 
 .. code-block:: shell
 
-   python setup.py install
+   pip install ssh-python
+
+
+Project is beta status.
 
 
 Prerequisites
 --------------
 
-* OpenSSL library and development headers
+* OpenSSL *or* gcrypt library and development headers
 * Optionally Zlib library and development headers for compression
 
 ``Libssh`` source code is embedded in this project and will be built when installation is triggered per above instructions. Versions of ``libssh`` other than the one embedded in this project are not supported.
@@ -71,8 +73,7 @@ _________
 The library uses `Cython`_ based native code extensions as wrappers to ``libssh``.
 
 * Thread safe - GIL is released as much as possible
-* Very low overhead
-* Super fast as a consequence of the excellent C library it uses and prodigious use of native code
+* Very low overhead thin wrapper
 * Object oriented - memory freed automatically and safely as objects are garbage collected by Python
 * Use Python semantics where applicable, such as context manager and iterator support for opening and reading from channels and SFTP file handles
 * Raise errors as Python exceptions

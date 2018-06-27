@@ -32,7 +32,7 @@ if (len(sys.argv) >= 2 and not (
         '--help' in sys.argv[1:] or
         sys.argv[1] in (
             '--help-commands', 'egg_info', '--version', 'clean',
-            '--long-description')) and
+            'sdist', '--long-description')) and
         __name__ == '__main__'):
     build_ssh()
 
@@ -73,13 +73,13 @@ extensions = [
         include_dirs=["libssh/include"],
         libraries=_libs,
         library_dirs=[_lib_dir],
-        runtime_library_dirs=[_lib_dir],
+        runtime_library_dirs=["$ORIGIN/."],
         extra_compile_args=_comp_args,
         **cython_args
     )
     for i in range(len(sources))]
 
-package_data = {'ssh': ['*.pxd']}
+package_data = {'ssh': ['*.pxd', 'libssh.so.4']}
 
 if ON_WINDOWS:
     package_data['ssh'].extend([
@@ -108,9 +108,11 @@ setup(
     include_package_data=True,
     platforms='any',
     classifiers=[
+        'Development Status :: 4 - Beta',
         'License :: OSI Approved :: GNU Lesser General Public License v2 (LGPLv2)',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
+        'Programming Language :: C',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
@@ -119,9 +121,15 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.7',
+        'Topic :: System :: Shells',
+        'Topic :: System :: Networking',
+        'Topic :: Software Development :: Libraries',
         'Topic :: Software Development :: Libraries :: Python Modules',
+        'Operating System :: POSIX',
         'Operating System :: POSIX :: Linux',
         'Operating System :: POSIX :: BSD',
+        'Operating System :: MacOS :: MacOS X',
     ],
     ext_modules=extensions,
     package_data=package_data,
