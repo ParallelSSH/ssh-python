@@ -3,6 +3,13 @@ ssh-python
 
 Bindings for libssh_ C library.
 
+.. image:: https://img.shields.io/badge/License-LGPL%20v2-blue.svg
+   :target: https://pypi.python.org/pypi/ssh-python
+   :alt: License
+.. image:: https://img.shields.io/pypi/v/ssh-python.svg
+   :target: https://pypi.python.org/pypi/ssh-python
+   :alt: Latest Version
+
 Installation
 _____________
 
