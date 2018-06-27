@@ -26,6 +26,20 @@ from ssh.exceptions import RequestDenied, KeyImportError
 
 class ChannelTest(SSHTestCase):
 
+    def test_close(self):
+        self._auth()
+        chan = self.session.channel_new()
+        self.assertEqual(chan.open_session(), 0)
+        self.assertFalse(chan.closed)
+        chan.request_exec('echo me')
+        chan.read()
+        self.assertFalse(chan.closed)
+        chan.close()
+        self.assertTrue(chan.closed)
+        chan.close()
+        self.session.disconnect()
+        chan.close()
+
     def test_channel_exec(self):
         self._auth()
         chan = self.session.channel_new()

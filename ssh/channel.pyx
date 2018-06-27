@@ -27,16 +27,14 @@ cdef class Channel:
 
     def __cinit__(self, Session session):
         self.session = session
+        self.closed = False
 
     def __dealloc__(self):
         if self._channel is not NULL:
+            if not self.closed:
+                c_ssh.ssh_channel_close(self._channel)
             c_ssh.ssh_channel_free(self._channel)
             self._channel = NULL
-
-    @property
-    def session(self):
-        """The originating session for this channel."""
-        return self.session
 
     @staticmethod
     cdef Channel from_ptr(c_ssh.ssh_channel _chan, Session session):
@@ -46,8 +44,12 @@ cdef class Channel:
 
     def close(self):
         cdef int rc
+        if self.closed:
+            return 0
         with nogil:
             rc = c_ssh.ssh_channel_close(self._channel)
+        if rc == 0:
+            self.closed = True
         return handle_ssh_error_codes(rc, self.session._session)
 
     def get_exit_status(self):
@@ -144,7 +146,7 @@ cdef class Channel:
                 self._channel, timeout, is_stderr)
         return handle_ok_error_codes(rc)
 
-    def read(self, c_ssh.uint32_t size=1024, bint is_stderr=False):
+    def read(self, c_ssh.uint32_t size=1024*1024, bint is_stderr=False):
         cdef int rc
         cdef bytes buf = b''
         cdef char* cbuf
@@ -161,7 +163,7 @@ cdef class Channel:
             free(cbuf)
         return handle_ok_error_codes(rc), buf
 
-    def read_nonblocking(self, c_ssh.uint32_t size=1024, bint is_stderr=False):
+    def read_nonblocking(self, c_ssh.uint32_t size=1024*1024, bint is_stderr=False):
         cdef int rc
         cdef bytes buf = b''
         cdef char* cbuf
@@ -180,7 +182,7 @@ cdef class Channel:
         return handle_ok_error_codes(rc), buf
 
     def read_timeout(self, int timeout,
-                     c_ssh.uint32_t size=1024, bint is_stderr=False):
+                     c_ssh.uint32_t size=1024*1024, bint is_stderr=False):
         cdef int rc
         cdef bytes buf = b''
         cdef char* cbuf

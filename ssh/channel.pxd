@@ -21,7 +21,8 @@ cimport c_ssh
 
 cdef class Channel:
     cdef c_ssh.ssh_channel _channel
-    cdef Session session
+    cdef readonly Session session
+    cdef readonly bint closed
 
     @staticmethod
     cdef Channel from_ptr(c_ssh.ssh_channel _chan, Session session)

@@ -52,15 +52,12 @@ class SessionTest(SSHTestCase):
         session.connector_new()
 
     def test_disconnect(self):
-        session = Session()
-        session.options_set(options.HOST, self.host)
-        session.options_set_port(self.port)
-        session.options_set(options.USER, self.user)
-        self.assertEqual(session.connect(), 0)
-        self.assertEqual(
-            session.userauth_publickey(self.pkey), 0)
-        session.disconnect()
-        del session
+        self._auth()
+        chan = self.session.channel_new()
+        chan.open_session()
+        chan.close()
+        self.session.disconnect()
+        del chan
 
     def test_socket_connect(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
