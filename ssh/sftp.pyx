@@ -20,23 +20,21 @@ from session cimport Session
 from sftp_handles cimport SFTPFile, SFTPDir
 from sftp_attributes cimport SFTPAttributes
 from sftp_statvfs cimport SFTPStatVFS
-from utils cimport handle_ssh_error_codes, to_bytes
+from utils cimport handle_ssh_error_codes, to_bytes, to_str
 from .exceptions import SFTPError, SFTPHandleError
 
-cimport c_sftp
 from c_ssh cimport ssh_get_error, ssh_get_error_code, timeval
+cimport c_sftp
 
 
 cdef class SFTP:
 
     @staticmethod
     cdef SFTP from_ptr(c_sftp.sftp_session sftp, Session session):
-        cdef SFTP _sftp = SFTP.__new__(SFTP, session)
+        cdef SFTP _sftp = SFTP.__new__(SFTP)
         _sftp._sftp = sftp
+        _sftp.session = session
         return _sftp
-
-    def __cinit__(self, Session session):
-        self.session = session
 
     def __dealloc__(self):
         if self._sftp is not NULL:
@@ -247,7 +245,7 @@ cdef class SFTP:
         if _link is NULL:
             raise SFTPError(ssh_get_error(self.session._session))
         b_link = _link
-        return b_link
+        return to_str(b_link)
 
     def statvfs(self, path not None):
         cdef bytes b_path = to_bytes(path)
@@ -271,7 +269,7 @@ cdef class SFTP:
         if _rpath is NULL:
             raise SFTPError(ssh_get_error(self.session._session))
         b_rpath = _rpath
-        return b_rpath
+        return to_str(b_rpath)
 
     def server_version(self):
         cdef int rc

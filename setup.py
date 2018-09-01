@@ -1,11 +1,8 @@
-from __future__ import print_function
-
 import platform
 import os
 import sys
 from glob import glob
-# from multiprocessing import cpu_count
-from subprocess import check_call
+from _setup_libssh import build_ssh
 
 import versioneer
 from setuptools import setup, find_packages
@@ -20,11 +17,6 @@ except ImportError:
     USING_CYTHON = False
 else:
     USING_CYTHON = True
-
-
-def build_ssh():
-    cmd = './ci/build_ssh.sh'
-    return check_call(cmd, env=os.environ, shell=True)
 
 
 # Only build libssh if running a build

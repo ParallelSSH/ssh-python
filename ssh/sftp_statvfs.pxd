@@ -21,7 +21,7 @@ cimport c_sftp
 
 cdef class SFTPStatVFS:
     cdef c_sftp.sftp_statvfs_t _stats
-    cdef SFTP sftp
+    cdef readonly SFTP sftp
 
     @staticmethod
     cdef SFTPStatVFS from_ptr(c_sftp.sftp_statvfs_t stats, SFTP sftp)

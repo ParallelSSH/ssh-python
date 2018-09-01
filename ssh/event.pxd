@@ -23,8 +23,8 @@ cimport c_ssh
 cdef class Event:
     cdef c_ssh.ssh_event _event
     cdef object _sock
-    cdef Session session
-    cdef Connector connector
+    cdef readonly Session session
+    cdef readonly Connector connector
 
     @staticmethod
     cdef Event from_ptr(c_ssh.ssh_event _event)

@@ -28,7 +28,7 @@ cdef class Flag:
 
 cdef class Connector:
     cdef c_ssh.ssh_connector _connector
-    cdef Session session
+    cdef readonly Session session
 
     @staticmethod
     cdef Connector from_ptr(c_ssh.ssh_connector _connector, Session session)

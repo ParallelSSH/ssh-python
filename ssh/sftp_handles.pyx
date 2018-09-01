@@ -27,9 +27,6 @@ cimport c_sftp
 
 cdef class SFTPFile:
 
-    def __cinit__(self, SFTP sftp):
-        self.sftp = sftp
-
     def __dealloc__(self):
         if not self.closed:
             self.close()
@@ -38,6 +35,7 @@ cdef class SFTPFile:
     cdef SFTPFile from_ptr(c_sftp.sftp_file _file, SFTP sftp):
         cdef SFTPFile _fh = SFTPFile.__new__(SFTPFile, sftp)
         _fh._file = _file
+        _fh.sftp = sftp
         return _fh
 
     def __enter__(self):
@@ -198,9 +196,6 @@ cdef class SFTPFile:
 
 cdef class SFTPDir:
 
-    def __cinit__(self, SFTP sftp):
-        self.sftp = sftp
-
     def __dealloc__(self):
         if not self.closed:
             self.closedir()
@@ -209,6 +204,7 @@ cdef class SFTPDir:
     cdef SFTPDir from_ptr(c_sftp.sftp_dir _dir, SFTP sftp):
         cdef SFTPDir _fh = SFTPDir.__new__(SFTPDir, sftp)
         _fh._dir = _dir
+        _fh.sftp = sftp
         return _fh
 
     def __enter__(self):

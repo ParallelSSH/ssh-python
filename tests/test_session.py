@@ -16,6 +16,7 @@
 
 import unittest
 import socket
+import os
 
 from .base_test import SSHTestCase
 
@@ -24,6 +25,7 @@ from ssh.channel import Channel
 from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
 from ssh import options
 from ssh.exceptions import RequestDenied, KeyImportError, InvalidAPIUse
+from ssh.scp import SCP, SSH_SCP_READ, SSH_SCP_WRITE, SSH_SCP_RECURSIVE
 
 
 class SessionTest(SSHTestCase):
@@ -95,3 +97,22 @@ class SessionTest(SSHTestCase):
         self._auth()
         chan = self.session.channel_new()
         self.assertIsInstance(chan, Channel)
+
+    def test_scp_push(self):
+        self._auth()
+        scp = self.session.scp_new(SSH_SCP_WRITE, 'test_file')
+        self.assertIsInstance(scp, SCP)
+        test_data = b"data\n"
+        remote_filename = os.sep.join([os.path.dirname(__file__),
+                                       "remote_test_file"])
+        to_copy = os.sep.join([os.path.dirname(__file__),
+                               "copied"])
+        with open(remote_filename, 'wb') as fh:
+            fh.write(test_data)
+        try:
+            fileinfo = os.stat(remote_filename)
+            scp.push_file64(to_copy, fileinfo.st_size, fileinfo.st_mode & 777)
+            scp.write(test_data)
+            del scp
+        finally:
+            os.unlink(remote_filename)

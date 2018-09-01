@@ -21,9 +21,6 @@ cimport c_sftp
 
 cdef class SFTPStatVFS:
 
-    def __cinit__(self, SFTP sftp):
-        self.sftp = sftp
-
     def __dealloc__(self):
         if self._stats is not NULL:
             c_sftp.sftp_statvfs_free(self._stats)
@@ -31,8 +28,9 @@ cdef class SFTPStatVFS:
 
     @staticmethod
     cdef SFTPStatVFS from_ptr(c_sftp.sftp_statvfs_t stats, SFTP sftp):
-        cdef SFTPStatVFS _vfs = SFTPStatVFS.__new__(SFTPStatVFS, sftp)
+        cdef SFTPStatVFS _vfs = SFTPStatVFS.__new__(SFTPStatVFS)
         _vfs._stats = stats
+        _vfs.sftp = sftp
         return _vfs
 
     @property

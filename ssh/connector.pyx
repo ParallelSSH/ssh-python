@@ -19,9 +19,8 @@ from cpython cimport PyObject_AsFileDescriptor
 from channel cimport Channel
 from session cimport Session
 
-cimport c_ssh
-
 from utils cimport handle_ssh_error_codes
+cimport c_ssh
 
 
 cdef class Flag:
@@ -32,7 +31,7 @@ cdef class Flag:
         _flag._flag = flag
         return _flag
 
-    def __eq__(self, Flag other):
+    def __eq__(self, Flag other not None):
         return self._flag == other._flag
 
     def __str__(self):

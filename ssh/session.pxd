@@ -19,4 +19,4 @@ cimport c_ssh
 cdef class Session:
     cdef c_ssh.ssh_session _session
     cdef c_ssh.socket_t _sock
-    cdef object sock
+    cdef readonly object sock

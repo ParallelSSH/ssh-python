@@ -25,11 +25,12 @@ from utils cimport to_bytes, to_str, handle_ssh_error_codes, \
 from options cimport Option
 from key cimport SSHKey
 from sftp cimport SFTP
+from scp cimport SCP
 
 from exceptions import OptionError, InvalidAPIUse
 
-cimport c_ssh
 from c_sftp cimport sftp_session, sftp_new, sftp_init
+cimport c_ssh
 
 
 # SSH status flags
@@ -132,6 +133,9 @@ cdef class Session:
 
     def disconnect(self):
         """No-op. Handled by object de-allocation."""
+        # Due to bug in libssh that segfaults if session
+        # is disconnected before freeing channels spawned
+        # by that session - even if channels are closed.
         pass
         # if not c_ssh.ssh_is_connected(self._session):
         #     return
@@ -616,9 +620,19 @@ cdef class Session:
         return rc
 
     def scp_new(self, int mode, location not None):
+        """Create and initialise SCP channel"""
         cdef c_ssh.ssh_scp _scp
         cdef bytes b_location = to_bytes(location)
         cdef char *c_location = b_location
-        raise NotImplementedError
         with nogil:
-            pass
+            _scp = c_ssh.ssh_scp_new(self._session, mode, c_location)
+            if _scp is NULL:
+                with gil:
+                    return handle_ssh_error_codes(
+                        c_ssh.ssh_get_error_code(self._session), self._session)
+            if c_ssh.ssh_scp_init(_scp) != c_ssh.SSH_OK:
+                c_ssh.ssh_scp_free(_scp)
+                with gil:
+                    return handle_ssh_error_codes(
+                        c_ssh.ssh_get_error_code(self._session), self._session)
+        return SCP.from_ptr(_scp, self)

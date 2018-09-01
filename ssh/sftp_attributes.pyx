@@ -19,14 +19,13 @@ from libc.stdlib cimport malloc, free
 from sftp cimport SFTP
 from utils cimport ssh_string_to_bytes
 
-cimport c_sftp
 from c_ssh cimport ssh_string, uint8_t, uint32_t, uint64_t
+cimport c_sftp
 
 
 cdef class SFTPAttributes:
 
-    def __cinit__(self, SFTP sftp):
-        self.sftp = sftp
+    def __cinit__(self):
         self.self_made = False
 
     def __dealloc__(self):
@@ -39,9 +38,9 @@ cdef class SFTPAttributes:
 
     @staticmethod
     cdef SFTPAttributes from_ptr(c_sftp.sftp_attributes attrs, SFTP sftp):
-        cdef SFTPAttributes _attrs = SFTPAttributes.__new__(
-            SFTPAttributes, sftp)
+        cdef SFTPAttributes _attrs = SFTPAttributes.__new__(SFTPAttributes)
         _attrs._attrs = attrs
+        _attrs.sftp = sftp
         return _attrs
 
     @staticmethod
@@ -92,7 +91,7 @@ cdef class SFTPAttributes:
             return
         cdef bytes b_longname = self._attrs.longname
         return b_longname
-        
+
     @property
     def flags(self):
         return self._attrs.flags if self._attrs is not NULL else None
@@ -191,7 +190,8 @@ cdef class SFTPAttributes:
 
     @property
     def createtime_nseconds(self):
-        return self._attrs.createtime_nseconds if self._attrs is not NULL else None
+        return self._attrs.createtime_nseconds \
+            if self._attrs is not NULL else None
 
     @createtime_nseconds.setter
     def createtime_nseconds(self, uint32_t nseconds):

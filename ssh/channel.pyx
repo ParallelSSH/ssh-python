@@ -25,8 +25,7 @@ cimport c_ssh
 
 cdef class Channel:
 
-    def __cinit__(self, Session session):
-        self.session = session
+    def __cinit__(self):
         self.closed = False
 
     def __dealloc__(self):
@@ -38,8 +37,9 @@ cdef class Channel:
 
     @staticmethod
     cdef Channel from_ptr(c_ssh.ssh_channel _chan, Session session):
-        cdef Channel chan = Channel.__new__(Channel, session)
+        cdef Channel chan = Channel.__new__(Channel)
         chan._channel = _chan
+        chan.session = session
         return chan
 
     def close(self):
@@ -97,7 +97,8 @@ cdef class Channel:
             rc = c_ssh.ssh_channel_open_auth_agent(self._channel)
         return handle_ok_error_codes(rc)
 
-    def open_forward(self, remotehost, int remoteport, sourcehost, int sourceport):
+    def open_forward(self, remotehost, int remoteport,
+                     sourcehost, int sourceport):
         cdef bytes b_remotehost = to_bytes(remotehost)
         cdef const_char *c_remotehost = b_remotehost
         cdef bytes b_sourcehost = to_bytes(sourcehost)
@@ -105,7 +106,8 @@ cdef class Channel:
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_channel_open_forward(
-                self._channel, c_remotehost, remoteport, c_sourcehost, sourceport)
+                self._channel, c_remotehost, remoteport,
+                c_sourcehost, sourceport)
         return handle_ok_error_codes(rc)
 
     def open_session(self):
@@ -163,7 +165,8 @@ cdef class Channel:
             free(cbuf)
         return handle_ok_error_codes(rc), buf
 
-    def read_nonblocking(self, c_ssh.uint32_t size=1024*1024, bint is_stderr=False):
+    def read_nonblocking(self, c_ssh.uint32_t size=1024*1024,
+                         bint is_stderr=False):
         cdef int rc
         cdef bytes buf = b''
         cdef char* cbuf
@@ -311,3 +314,7 @@ cdef class Channel:
         with nogil:
             size = c_ssh.ssh_channel_window_size(self._channel)
         return size
+
+    def select(self, channels not None, outchannels not None, maxfd,
+               readfds, timeout=None):
+        raise NotImplementedError

@@ -33,7 +33,7 @@ cdef extern from "libssh/sftp.h" nogil:
     ctypedef sftp_session_struct* sftp_session
     ctypedef sftp_status_message_struct* sftp_status_message
     ctypedef sftp_statvfs_struct* sftp_statvfs_t
-    
+
     struct sftp_session_struct:
         ssh_session session
         ssh_channel channel
@@ -98,8 +98,8 @@ cdef extern from "libssh/sftp.h" nogil:
         uint32_t status
         ssh_string error_unused
         ssh_string lang_unused
-        char *errormsg;
-        char *langmsg;
+        char *errormsg
+        char *langmsg
 
     struct sftp_attributes_struct:
         char *name
@@ -172,9 +172,11 @@ cdef extern from "libssh/sftp.h" nogil:
     int sftp_unlink(sftp_session sftp, const char *file)
     int sftp_rmdir(sftp_session sftp, const char *directory)
     int sftp_mkdir(sftp_session sftp, const char *directory, mode_t mode)
-    int sftp_rename(sftp_session sftp, const char *original, const  char *newname)
+    int sftp_rename(
+        sftp_session sftp, const char *original, const  char *newname)
     int sftp_setstat(sftp_session sftp, const char *file, sftp_attributes attr)
-    int sftp_chown(sftp_session sftp, const char *file, uid_t owner, gid_t group)
+    int sftp_chown(
+        sftp_session sftp, const char *file, uid_t owner, gid_t group)
     int sftp_chmod(sftp_session sftp, const char *file, mode_t mode)
     int sftp_utimes(sftp_session sftp, const char *file, const timeval *times)
     int sftp_symlink(sftp_session sftp, const char *target, const char *dest)
@@ -185,8 +187,8 @@ cdef extern from "libssh/sftp.h" nogil:
     int sftp_fsync(sftp_file file)
     char *sftp_canonicalize_path(sftp_session sftp, const char *path)
     int sftp_server_version(sftp_session sftp)
-    
-    ## Server
+
+    # # Server
     # sftp_session sftp_server_new(ssh_session session, ssh_channel chan)
     # int sftp_server_init(sftp_session sftp)
     enum:
@@ -221,7 +223,7 @@ cdef extern from "libssh/sftp.h" nogil:
         SSH_FILEXFER_ATTR_SIZE
         SSH_FILEXFER_ATTR_PERMISSIONS
         SSH_FILEXFER_ATTR_ACCESSTIME
-        SSH_FILEXFER_ATTR_ACMODTIME 
+        SSH_FILEXFER_ATTR_ACMODTIME
         SSH_FILEXFER_ATTR_CREATETIME
         SSH_FILEXFER_ATTR_MODIFYTIME
         SSH_FILEXFER_ATTR_ACL

@@ -14,15 +14,16 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from sftp cimport SFTP
+from session cimport Session
 
-cimport c_sftp
+cimport c_ssh
 
 
-cdef class SFTPAttributes:
-    cdef c_sftp.sftp_attributes _attrs
-    cdef readonly SFTP sftp
-    cdef bint self_made
+cdef class SCP:
+    cdef c_ssh.ssh_scp _scp
+    cdef readonly Session session
+    cdef readonly bint closed
 
     @staticmethod
-    cdef SFTPAttributes from_ptr(c_sftp.sftp_attributes attrs, SFTP sftp)
+    cdef SCP from_ptr(c_ssh.ssh_scp _scp, Session session)
+    cpdef close(self)

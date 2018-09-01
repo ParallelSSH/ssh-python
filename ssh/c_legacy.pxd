@@ -14,7 +14,8 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from c_ssh cimport ssh_session, ssh_string, ssh_message, uint32_t, ssh_keytypes_e
+from c_ssh cimport ssh_session, ssh_string, ssh_message, uint32_t, \
+    ssh_keytypes_e
 from c_keys cimport ssh_private_key_struct, ssh_public_key_struct
 
 cdef extern from "libssh/legacy.h" nogil:
@@ -29,11 +30,13 @@ cdef extern from "libssh/legacy.h" nogil:
     int ssh_userauth_agent_pubkey(ssh_session session, const char *username,
                                   ssh_public_key publickey)
     int ssh_userauth_autopubkey(ssh_session session, const char *passphrase)
-    int ssh_userauth_privatekey_file(ssh_session session, const char *username,
-                                     const char *filename, const char *passphrase)
+    int ssh_userauth_privatekey_file(
+        ssh_session session, const char *username,
+        const char *filename, const char *passphrase)
     void privatekey_free(ssh_private_key prv)
-    ssh_private_key privatekey_from_file(ssh_session session, const char *filename,
-                                         int type, const char *passphrase)
+    ssh_private_key privatekey_from_file(
+        ssh_session session, const char *filename,
+        int type, const char *passphrase)
     void publickey_free(ssh_public_key key)
     int ssh_publickey_to_file(ssh_session session, const char *file,
                               ssh_string pubkey, int type)

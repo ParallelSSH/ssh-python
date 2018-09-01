@@ -15,6 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
 import unittest
+from time import sleep
 
 from .base_test import SSHTestCase
 
@@ -49,13 +50,14 @@ class ChannelTest(SSHTestCase):
         self.assertEqual(chan.request_exec(self.cmd), 0)
         self.assertFalse(chan.is_eof())
         self.assertFalse(chan.is_closed())
-        all_data = ""
+        all_data = b""
         size, data = chan.read()
         while size > 0:
             all_data += data
             size, data = chan.read()
         lines = [s.decode('utf-8') for s in all_data.splitlines()]
         self.assertEqual(lines[0], self.resp)
+        sleep(1)
         self.assertTrue(chan.is_eof())
         self.assertFalse(chan.is_open())
         self.assertTrue(chan.is_closed())

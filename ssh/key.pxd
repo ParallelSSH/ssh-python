@@ -19,6 +19,6 @@ cimport c_ssh
 
 cdef class SSHKey:
     cdef c_ssh.ssh_key _key
-    
+
     @staticmethod
     cdef SSHKey from_ptr(c_ssh.ssh_key key)

@@ -81,7 +81,7 @@ class SFTPTest(SSHTestCase):
             self.assertIsNotNone(attrs.owner)
             self.assertIsNotNone(attrs.group)
             self.assertTrue(attrs.size > 0)
-            self.assertEqual(attrs.name, b'.')
+            self.assertTrue(isinstance(attrs.name, bytes))
             self.assertTrue(len(attrs.longname) > 1)
             self.assertFalse(_dir.closed)
             self.assertEqual(_dir.closedir(), 0)
@@ -129,7 +129,7 @@ class SFTPTest(SSHTestCase):
         data = b"test file data"
         remote_filename = os.sep.join([os.path.dirname(__file__),
                                        "remote_test_file"])
-        mode = 0666
+        mode = int("0666") if version_info <= (2,) else 0o666
         with sftp.open(remote_filename,
                        os.O_CREAT | os.O_WRONLY,
                        mode) as remote_fh:
@@ -245,7 +245,7 @@ class SFTPTest(SSHTestCase):
         _mask = int('0644') if version_info <= (2,) else 0o644
         os.chmod(remote_filename, _mask)
         attrs = sftp.stat(remote_filename)
-        attrs.permissions = 0400
+        attrs.permissions = int("0400") if version_info <= (2,) else 0o400
         try:
             self.assertEqual(sftp.setstat(remote_filename, attrs), 0)
             attrs = sftp.stat(remote_filename)
@@ -345,7 +345,7 @@ class SFTPTest(SSHTestCase):
             os.unlink(remote_filename)
 
     def test_mkdir(self):
-        mode = 0644
+        mode = int("0644") if version_info <= (2,) else 0o644
         _path = 'tmp'
         abspath = os.path.join(os.path.expanduser('~'), _path)
         self._auth()
