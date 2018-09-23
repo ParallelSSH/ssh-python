@@ -1,11 +1,16 @@
-from subprocess import check_call
 import os
+
+from sys import stderr
+from subprocess import check_call
 from glob import glob
 from shutil import copy2
 from multiprocessing import cpu_count
 
 
 def build_ssh():
+    if bool(os.environ.get('SYSTEM_LIBSSH', False)):
+        stderr.write("Using system libssh..%s" % (os.sep))
+        return
     if os.path.exists('/usr/local/opt/openssl'):
         os.environ['OPENSSL_ROOT_DIR'] = '/usr/local/opt/openssl'
 

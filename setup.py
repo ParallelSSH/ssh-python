@@ -29,6 +29,7 @@ if (len(sys.argv) >= 2 and not (
     build_ssh()
 
 ON_WINDOWS = platform.system() == 'Windows'
+SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0))
 
 ext = 'pyx' if USING_CYTHON else 'c'
 sources = glob('ssh/*.%s' % (ext,))
@@ -57,15 +58,18 @@ if USING_CYTHON:
     sys.stdout.write("Cython arguments: %s%s" % (cython_args, os.linesep))
 
 
-_lib_dir = os.path.abspath("./src/src")
+runtime_library_dirs = ["$ORIGIN/."] if not SYSTEM_LIBSSH else None
+_lib_dir = os.path.abspath("./src/src") if not SYSTEM_LIBSSH else "/usr/local/lib"
+include_dirs = ["libssh/include"] if not SYSTEM_LIBSSH else ["/usr/local/include"]
+
 extensions = [
     Extension(
         sources[i].split('.')[0].replace(os.path.sep, '.'),
         sources=[sources[i]],
-        include_dirs=["libssh/include"],
+        include_dirs=include_dirs,
         libraries=_libs,
         library_dirs=[_lib_dir],
-        runtime_library_dirs=["$ORIGIN/."],
+        runtime_library_dirs=runtime_library_dirs,
         extra_compile_args=_comp_args,
         **cython_args
     )

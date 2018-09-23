@@ -1,6 +1,7 @@
 #!/bin/bash -xe
 
 # Compile wheels
+rm -rf /io/build
 for PYBIN in `ls -1d /opt/python/*/bin | grep -v cpython`; do
     "${PYBIN}/pip" wheel /io/ -w wheelhouse/
 done
