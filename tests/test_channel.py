@@ -19,10 +19,12 @@ from time import sleep
 
 from .base_test import SSHTestCase
 
-from ssh.channel import Channel
 from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
 from ssh import options
 from ssh.exceptions import RequestDenied, KeyImportError
+from ssh.utils import wait_socket
+from ssh.error_codes import SSH_AGAIN
+from ssh.exceptions import EOF
 
 
 class ChannelTest(SSHTestCase):
@@ -59,10 +61,54 @@ class ChannelTest(SSHTestCase):
         self.assertEqual(lines[0], self.resp)
         sleep(1)
         self.assertTrue(chan.is_eof())
+        self.assertEqual(chan.close(), 0)
         self.assertFalse(chan.is_open())
         self.assertTrue(chan.is_closed())
-        self.assertEqual(chan.close(), 0)
-        
+
+    def test_channel_non_blocking_exec(self):
+        self._auth()
+        self.session.set_blocking(0)
+        chan = self.session.channel_new()
+        while chan == SSH_AGAIN:
+            wait_socket(self.session, self.sock)
+            chan = self.session.channel_new()
+        chan.set_blocking(0)
+        rc = chan.open_session()
+        while rc == SSH_AGAIN:
+            wait_socket(self.session, self.sock)
+            rc = chan.open_session()
+        self.assertEqual(rc, 0)
+        self.assertTrue(chan.is_open())
+        self.assertFalse(chan.is_closed())
+        rc = chan.request_exec(self.cmd)
+        while rc == SSH_AGAIN:
+            wait_socket(self.session, self.sock)
+            rc = chan.request_exec(self.cmd)
+        self.assertEqual(rc, 0)
+        self.assertFalse(chan.is_eof())
+        self.assertFalse(chan.is_closed())
+        all_data = b""
+        wait_socket(self.session, self.sock)
+        size, data = chan.read_nonblocking()
+        while size > 0:
+            all_data += data
+            try:
+                size, data = chan.read_nonblocking()
+            except EOF:
+                pass
+        lines = [s.decode('utf-8') for s in all_data.splitlines()]
+        self.assertEqual(lines[0], self.resp)
+        wait_socket(self.session, self.sock)
+        size, data = chan.read()
+        self.assertTrue(chan.is_eof())
+        rc = chan.close()
+        while rc == SSH_AGAIN:
+            wait_socket(self.session, self.sock)
+            rc = chan.close()
+        self.assertEqual(rc, 0)
+        self.assertFalse(chan.is_open())
+        self.assertTrue(chan.is_closed())
+
     def test_exit_code(self):
         self._auth()
         chan = self.session.channel_new()

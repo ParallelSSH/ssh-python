@@ -21,7 +21,7 @@ from libc.string cimport const_char
 from channel cimport Channel
 from connector cimport Connector
 from utils cimport to_bytes, to_str, handle_ssh_error_codes, \
-    handle_auth_error_codes
+    handle_auth_error_codes, handle_ok_error_codes
 from options cimport Option
 from key cimport SSHKey
 from sftp cimport SFTP
@@ -38,6 +38,15 @@ SSH_CLOSED = c_ssh.SSH_CLOSED
 SSH_READ_PENDING = c_ssh.SSH_READ_PENDING
 SSH_CLOSED_ERROR = c_ssh.SSH_CLOSED_ERROR
 SSH_WRITE_PENDING = c_ssh.SSH_WRITE_PENDING
+
+
+# Authentication codes
+SSH_AUTH_SUCCESS = c_ssh.ssh_auth_e.SSH_AUTH_SUCCESS
+SSH_AUTH_DENIED = c_ssh.ssh_auth_e.SSH_AUTH_DENIED
+SSH_AUTH_PARTIAL = c_ssh.ssh_auth_e.SSH_AUTH_PARTIAL
+SSH_AUTH_INFO = c_ssh.ssh_auth_e.SSH_AUTH_INFO
+SSH_AUTH_AGAIN = c_ssh.ssh_auth_e.SSH_AUTH_AGAIN
+SSH_AUTH_ERROR = c_ssh.ssh_auth_e.SSH_AUTH_ERROR
 
 
 cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
@@ -91,6 +100,9 @@ cdef class Session:
         with nogil:
             _check_connected(self._session)
             _channel = c_ssh.ssh_channel_new(self._session)
+        if _channel is NULL:
+            return handle_ok_error_codes(
+                c_ssh.ssh_get_error_code(self._session), self._session)
         channel = Channel.from_ptr(_channel, self)
         return channel
 
@@ -103,7 +115,8 @@ cdef class Session:
         if _sftp is NULL:
             return handle_ssh_error_codes(
                 c_ssh.ssh_get_error_code(self._session), self._session)
-        return SFTP.from_ptr(_sftp, self)
+        sftp = SFTP.from_ptr(_sftp, self)
+        return sftp
 
     def sftp_init(self):
         """Convenience function for creating and initialising new SFTP

@@ -60,7 +60,7 @@ class KeyGenerationError(BaseSSHError):
 
 
 class SSHError(BaseSSHError):
-    """Raised on SSH errors"""
+    """Raised on errors using the libssh API and unknown errors from servers"""
 
 
 class EOF(BaseSSHError):

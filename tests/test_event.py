@@ -25,7 +25,7 @@ from ssh.event import Event
 from ssh.callbacks import Callbacks
 from ssh.connector import CONNECTOR_STDOUT, CONNECTOR_STDERR, \
     CONNECTOR_BOTH
-from ssh.exceptions import OtherError
+from ssh.exceptions import SSHError
 
 
 class CallbacksTest(SSHTestCase):
@@ -56,7 +56,7 @@ class EventTest(SSHTestCase):
         self.assertEqual(event.add_fd(sock, 1, callback=lambda: 1), 0)
         connector = self.session.connector_new()
         self.assertIsNone(event.connector)
-        self.assertRaises(OtherError, event.add_connector, connector)
+        self.assertRaises(SSHError, event.add_connector, connector)
         self.assertIsNone(event.connector)
         self.assertEqual(event.remove_connector(connector), 0)
         self.assertIsNone(event.connector)

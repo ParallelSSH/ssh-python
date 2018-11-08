@@ -1179,7 +1179,7 @@ static PyTypeObject *__pyx_ptype_3ssh_7session_Session = 0;
 /* Module declarations from 'ssh.utils' */
 static PyObject *(*__pyx_f_3ssh_5utils_to_bytes)(PyObject *); /*proto*/
 static PyObject *(*__pyx_f_3ssh_5utils_to_str)(char *); /*proto*/
-static int (*__pyx_f_3ssh_5utils_handle_ok_error_codes)(int); /*proto*/
+static int (*__pyx_f_3ssh_5utils_handle_ok_error_codes)(int, ssh_session); /*proto*/
 static int (*__pyx_f_3ssh_5utils_handle_ssh_error_codes)(int, ssh_session); /*proto*/
 
 /* Module declarations from 'ssh.scp' */
@@ -1556,7 +1556,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_4accept_request(struct __pyx_obj_3ssh_3
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_accept_request(self._scp)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
   {
       #ifdef WITH_THREAD
@@ -1570,7 +1570,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_4accept_request(struct __pyx_obj_3ssh_3
  *         cdef int rc
  *         with nogil:
  *             rc = c_ssh.ssh_scp_accept_request(self._scp)             # <<<<<<<<<<<<<<
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  */
         __pyx_v_rc = ssh_scp_accept_request(__pyx_v_self->_scp);
@@ -1581,7 +1581,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_4accept_request(struct __pyx_obj_3ssh_3
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_accept_request(self._scp)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -1598,12 +1598,12 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_4accept_request(struct __pyx_obj_3ssh_3
   /* "ssh/scp.pyx":61
  *         with nogil:
  *             rc = c_ssh.ssh_scp_accept_request(self._scp)
- *         return handle_ok_error_codes(rc)             # <<<<<<<<<<<<<<
+ *         return handle_ok_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
  * 
  *     def deny_request(self, reason=None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 61, __pyx_L1_error)
   __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
@@ -1630,7 +1630,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_4accept_request(struct __pyx_obj_3ssh_3
 }
 
 /* "ssh/scp.pyx":63
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def deny_request(self, reason=None):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -1767,7 +1767,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_6deny_request(struct __pyx_obj_3ssh_3sc
  *             _reason = b_reason
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_deny_request(self._scp, _reason)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
   {
       #ifdef WITH_THREAD
@@ -1781,7 +1781,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_6deny_request(struct __pyx_obj_3ssh_3sc
  *             _reason = b_reason
  *         with nogil:
  *             rc = c_ssh.ssh_scp_deny_request(self._scp, _reason)             # <<<<<<<<<<<<<<
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  */
         __pyx_v_rc = ssh_scp_deny_request(__pyx_v_self->_scp, __pyx_v__reason);
@@ -1792,7 +1792,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_6deny_request(struct __pyx_obj_3ssh_3sc
  *             _reason = b_reason
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_deny_request(self._scp, _reason)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -1809,12 +1809,12 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_6deny_request(struct __pyx_obj_3ssh_3sc
   /* "ssh/scp.pyx":72
  *         with nogil:
  *             rc = c_ssh.ssh_scp_deny_request(self._scp, _reason)
- *         return handle_ok_error_codes(rc)             # <<<<<<<<<<<<<<
+ *         return handle_ok_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
  * 
  *     cpdef close(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_5 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_5 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 72, __pyx_L1_error)
   __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
@@ -1822,7 +1822,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_6deny_request(struct __pyx_obj_3ssh_3sc
   goto __pyx_L0;
 
   /* "ssh/scp.pyx":63
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def deny_request(self, reason=None):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -1842,7 +1842,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_6deny_request(struct __pyx_obj_3ssh_3sc
 }
 
 /* "ssh/scp.pyx":74
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     cpdef close(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -1956,7 +1956,7 @@ static PyObject *__pyx_f_3ssh_3scp_3SCP_close(struct __pyx_obj_3ssh_3scp_SCP *__
  *             rc = c_ssh.ssh_scp_close(self._scp)
  *             if rc == 0:             # <<<<<<<<<<<<<<
  *                 self.closed = True
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
         __pyx_t_5 = ((__pyx_v_rc == 0) != 0);
         if (__pyx_t_5) {
@@ -1965,7 +1965,7 @@ static PyObject *__pyx_f_3ssh_3scp_3SCP_close(struct __pyx_obj_3ssh_3scp_SCP *__
  *             rc = c_ssh.ssh_scp_close(self._scp)
  *             if rc == 0:
  *                 self.closed = True             # <<<<<<<<<<<<<<
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  */
           __pyx_v_self->closed = 1;
@@ -1975,7 +1975,7 @@ static PyObject *__pyx_f_3ssh_3scp_3SCP_close(struct __pyx_obj_3ssh_3scp_SCP *__
  *             rc = c_ssh.ssh_scp_close(self._scp)
  *             if rc == 0:             # <<<<<<<<<<<<<<
  *                 self.closed = True
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
         }
       }
@@ -2002,12 +2002,12 @@ static PyObject *__pyx_f_3ssh_3scp_3SCP_close(struct __pyx_obj_3ssh_3scp_SCP *__
   /* "ssh/scp.pyx":82
  *             if rc == 0:
  *                 self.closed = True
- *         return handle_ok_error_codes(rc)             # <<<<<<<<<<<<<<
+ *         return handle_ok_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
  * 
  *     def init(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_6 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_6 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(0, 82, __pyx_L1_error)
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
@@ -2015,7 +2015,7 @@ static PyObject *__pyx_f_3ssh_3scp_3SCP_close(struct __pyx_obj_3ssh_3scp_SCP *__
   goto __pyx_L0;
 
   /* "ssh/scp.pyx":74
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     cpdef close(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -2074,7 +2074,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_8close(struct __pyx_obj_3ssh_3scp_SCP *
 }
 
 /* "ssh/scp.pyx":84
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def init(self):             # <<<<<<<<<<<<<<
  *         """Handled by session.scp_new"""
@@ -2108,7 +2108,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_10init(struct __pyx_obj_3ssh_3scp_SCP *
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_init(self._scp)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
   {
       #ifdef WITH_THREAD
@@ -2122,7 +2122,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_10init(struct __pyx_obj_3ssh_3scp_SCP *
  *         cdef int rc
  *         with nogil:
  *             rc = c_ssh.ssh_scp_init(self._scp)             # <<<<<<<<<<<<<<
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  */
         __pyx_v_rc = ssh_scp_init(__pyx_v_self->_scp);
@@ -2133,7 +2133,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_10init(struct __pyx_obj_3ssh_3scp_SCP *
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_init(self._scp)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -2150,12 +2150,12 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_10init(struct __pyx_obj_3ssh_3scp_SCP *
   /* "ssh/scp.pyx":89
  *         with nogil:
  *             rc = c_ssh.ssh_scp_init(self._scp)
- *         return handle_ok_error_codes(rc)             # <<<<<<<<<<<<<<
+ *         return handle_ok_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
  * 
  *     def leave_directory(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 89, __pyx_L1_error)
   __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
@@ -2163,7 +2163,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_10init(struct __pyx_obj_3ssh_3scp_SCP *
   goto __pyx_L0;
 
   /* "ssh/scp.pyx":84
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def init(self):             # <<<<<<<<<<<<<<
  *         """Handled by session.scp_new"""
@@ -2182,7 +2182,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_10init(struct __pyx_obj_3ssh_3scp_SCP *
 }
 
 /* "ssh/scp.pyx":91
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def leave_directory(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -2216,7 +2216,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_12leave_directory(struct __pyx_obj_3ssh
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_leave_directory(self._scp)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
   {
       #ifdef WITH_THREAD
@@ -2230,7 +2230,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_12leave_directory(struct __pyx_obj_3ssh
  *         cdef int rc
  *         with nogil:
  *             rc = c_ssh.ssh_scp_leave_directory(self._scp)             # <<<<<<<<<<<<<<
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  */
         __pyx_v_rc = ssh_scp_leave_directory(__pyx_v_self->_scp);
@@ -2241,7 +2241,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_12leave_directory(struct __pyx_obj_3ssh
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_leave_directory(self._scp)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -2258,12 +2258,12 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_12leave_directory(struct __pyx_obj_3ssh
   /* "ssh/scp.pyx":95
  *         with nogil:
  *             rc = c_ssh.ssh_scp_leave_directory(self._scp)
- *         return handle_ok_error_codes(rc)             # <<<<<<<<<<<<<<
+ *         return handle_ok_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
  * 
  *     def pull_request(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 95, __pyx_L1_error)
   __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
@@ -2271,7 +2271,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_12leave_directory(struct __pyx_obj_3ssh
   goto __pyx_L0;
 
   /* "ssh/scp.pyx":91
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def leave_directory(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -2290,7 +2290,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_12leave_directory(struct __pyx_obj_3ssh
 }
 
 /* "ssh/scp.pyx":97
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def pull_request(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -2324,7 +2324,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_14pull_request(struct __pyx_obj_3ssh_3s
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_pull_request(self._scp)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
   {
       #ifdef WITH_THREAD
@@ -2338,7 +2338,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_14pull_request(struct __pyx_obj_3ssh_3s
  *         cdef int rc
  *         with nogil:
  *             rc = c_ssh.ssh_scp_pull_request(self._scp)             # <<<<<<<<<<<<<<
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  */
         __pyx_v_rc = ssh_scp_pull_request(__pyx_v_self->_scp);
@@ -2349,7 +2349,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_14pull_request(struct __pyx_obj_3ssh_3s
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_pull_request(self._scp)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -2366,12 +2366,12 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_14pull_request(struct __pyx_obj_3ssh_3s
   /* "ssh/scp.pyx":101
  *         with nogil:
  *             rc = c_ssh.ssh_scp_pull_request(self._scp)
- *         return handle_ok_error_codes(rc)             # <<<<<<<<<<<<<<
+ *         return handle_ok_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
  * 
  *     def push_directory(self, dirname not None, int mode):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 101, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 101, __pyx_L1_error)
   __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
@@ -2379,7 +2379,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_14pull_request(struct __pyx_obj_3ssh_3s
   goto __pyx_L0;
 
   /* "ssh/scp.pyx":97
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def pull_request(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -2398,7 +2398,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_14pull_request(struct __pyx_obj_3ssh_3s
 }
 
 /* "ssh/scp.pyx":103
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def push_directory(self, dirname not None, int mode):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -2516,7 +2516,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_16push_directory(struct __pyx_obj_3ssh_
  *         cdef const char *_dirname = b_dirname
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_push_directory(self._scp, _dirname, mode)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
   {
       #ifdef WITH_THREAD
@@ -2530,7 +2530,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_16push_directory(struct __pyx_obj_3ssh_
  *         cdef const char *_dirname = b_dirname
  *         with nogil:
  *             rc = c_ssh.ssh_scp_push_directory(self._scp, _dirname, mode)             # <<<<<<<<<<<<<<
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  */
         __pyx_v_rc = ssh_scp_push_directory(__pyx_v_self->_scp, __pyx_v__dirname, __pyx_v_mode);
@@ -2541,7 +2541,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_16push_directory(struct __pyx_obj_3ssh_
  *         cdef const char *_dirname = b_dirname
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_push_directory(self._scp, _dirname, mode)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -2558,12 +2558,12 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_16push_directory(struct __pyx_obj_3ssh_
   /* "ssh/scp.pyx":109
  *         with nogil:
  *             rc = c_ssh.ssh_scp_push_directory(self._scp, _dirname, mode)
- *         return handle_ok_error_codes(rc)             # <<<<<<<<<<<<<<
+ *         return handle_ok_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
  * 
  *     def push_file(self, filename not None, size_t size, int perms):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 109, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 109, __pyx_L1_error)
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 109, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
@@ -2571,7 +2571,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_16push_directory(struct __pyx_obj_3ssh_
   goto __pyx_L0;
 
   /* "ssh/scp.pyx":103
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def push_directory(self, dirname not None, int mode):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -2591,7 +2591,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_16push_directory(struct __pyx_obj_3ssh_
 }
 
 /* "ssh/scp.pyx":111
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def push_file(self, filename not None, size_t size, int perms):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -2720,7 +2720,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_18push_file(struct __pyx_obj_3ssh_3scp_
  *         cdef const char *_filename = b_filename
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_push_file(self._scp, _filename, size, perms)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
   {
       #ifdef WITH_THREAD
@@ -2734,7 +2734,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_18push_file(struct __pyx_obj_3ssh_3scp_
  *         cdef const char *_filename = b_filename
  *         with nogil:
  *             rc = c_ssh.ssh_scp_push_file(self._scp, _filename, size, perms)             # <<<<<<<<<<<<<<
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  */
         __pyx_v_rc = ssh_scp_push_file(__pyx_v_self->_scp, __pyx_v__filename, __pyx_v_size, __pyx_v_perms);
@@ -2745,7 +2745,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_18push_file(struct __pyx_obj_3ssh_3scp_
  *         cdef const char *_filename = b_filename
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_push_file(self._scp, _filename, size, perms)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -2762,12 +2762,12 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_18push_file(struct __pyx_obj_3ssh_3scp_
   /* "ssh/scp.pyx":117
  *         with nogil:
  *             rc = c_ssh.ssh_scp_push_file(self._scp, _filename, size, perms)
- *         return handle_ok_error_codes(rc)             # <<<<<<<<<<<<<<
+ *         return handle_ok_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
  * 
  *     def push_file64(self, filename not None, c_ssh.uint64_t size, int perms):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 117, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 117, __pyx_L1_error)
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
@@ -2775,7 +2775,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_18push_file(struct __pyx_obj_3ssh_3scp_
   goto __pyx_L0;
 
   /* "ssh/scp.pyx":111
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def push_file(self, filename not None, size_t size, int perms):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -2795,7 +2795,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_18push_file(struct __pyx_obj_3ssh_3scp_
 }
 
 /* "ssh/scp.pyx":119
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def push_file64(self, filename not None, c_ssh.uint64_t size, int perms):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -2924,7 +2924,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_20push_file64(struct __pyx_obj_3ssh_3sc
  *         cdef const char *_filename = b_filename
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_push_file64(self._scp, _filename, size, perms)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
   {
       #ifdef WITH_THREAD
@@ -2938,7 +2938,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_20push_file64(struct __pyx_obj_3ssh_3sc
  *         cdef const char *_filename = b_filename
  *         with nogil:
  *             rc = c_ssh.ssh_scp_push_file64(self._scp, _filename, size, perms)             # <<<<<<<<<<<<<<
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  */
         __pyx_v_rc = ssh_scp_push_file64(__pyx_v_self->_scp, __pyx_v__filename, __pyx_v_size, __pyx_v_perms);
@@ -2949,7 +2949,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_20push_file64(struct __pyx_obj_3ssh_3sc
  *         cdef const char *_filename = b_filename
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_push_file64(self._scp, _filename, size, perms)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -2966,12 +2966,12 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_20push_file64(struct __pyx_obj_3ssh_3sc
   /* "ssh/scp.pyx":125
  *         with nogil:
  *             rc = c_ssh.ssh_scp_push_file64(self._scp, _filename, size, perms)
- *         return handle_ok_error_codes(rc)             # <<<<<<<<<<<<<<
+ *         return handle_ok_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
  * 
  *     def read(self, c_ssh.uint32_t size=1024*1024):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 125, __pyx_L1_error)
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
@@ -2979,7 +2979,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_20push_file64(struct __pyx_obj_3ssh_3sc
   goto __pyx_L0;
 
   /* "ssh/scp.pyx":119
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def push_file64(self, filename not None, c_ssh.uint64_t size, int perms):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -2999,7 +2999,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_20push_file64(struct __pyx_obj_3ssh_3sc
 }
 
 /* "ssh/scp.pyx":127
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def read(self, c_ssh.uint32_t size=1024*1024):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -3260,7 +3260,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_22read(struct __pyx_obj_3ssh_3scp_SCP *
  *                 buf = cbuf[:rc]
  *         finally:
  *             free(cbuf)             # <<<<<<<<<<<<<<
- *         return handle_ok_error_codes(rc), buf
+ *         return handle_ok_error_codes(rc, self.session._session), buf
  * 
  */
   /*finally:*/ {
@@ -3306,12 +3306,12 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_22read(struct __pyx_obj_3ssh_3scp_SCP *
   /* "ssh/scp.pyx":142
  *         finally:
  *             free(cbuf)
- *         return handle_ok_error_codes(rc), buf             # <<<<<<<<<<<<<<
+ *         return handle_ok_error_codes(rc, self.session._session), buf             # <<<<<<<<<<<<<<
  * 
  *     def request_get_filename(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 142, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 142, __pyx_L1_error)
   __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 142, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_12 = PyTuple_New(2); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 142, __pyx_L1_error)
@@ -3327,7 +3327,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_22read(struct __pyx_obj_3ssh_3scp_SCP *
   goto __pyx_L0;
 
   /* "ssh/scp.pyx":127
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  * 
  *     def read(self, c_ssh.uint32_t size=1024*1024):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -3348,7 +3348,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_22read(struct __pyx_obj_3ssh_3scp_SCP *
 }
 
 /* "ssh/scp.pyx":144
- *         return handle_ok_error_codes(rc), buf
+ *         return handle_ok_error_codes(rc, self.session._session), buf
  * 
  *     def request_get_filename(self):             # <<<<<<<<<<<<<<
  *         cdef const char *_filename
@@ -3488,7 +3488,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_24request_get_filename(struct __pyx_obj
   goto __pyx_L0;
 
   /* "ssh/scp.pyx":144
- *         return handle_ok_error_codes(rc), buf
+ *         return handle_ok_error_codes(rc, self.session._session), buf
  * 
  *     def request_get_filename(self):             # <<<<<<<<<<<<<<
  *         cdef const char *_filename
@@ -4057,7 +4057,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_34write(struct __pyx_obj_3ssh_3scp_SCP 
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_write(self._scp, c_data, size)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
   {
       #ifdef WITH_THREAD
@@ -4071,7 +4071,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_34write(struct __pyx_obj_3ssh_3scp_SCP 
  *         cdef int rc
  *         with nogil:
  *             rc = c_ssh.ssh_scp_write(self._scp, c_data, size)             # <<<<<<<<<<<<<<
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
         __pyx_v_rc = ssh_scp_write(__pyx_v_self->_scp, __pyx_v_c_data, __pyx_v_size);
       }
@@ -4081,7 +4081,7 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_34write(struct __pyx_obj_3ssh_3scp_SCP 
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_scp_write(self._scp, c_data, size)
- *         return handle_ok_error_codes(rc)
+ *         return handle_ok_error_codes(rc, self.session._session)
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -4098,10 +4098,10 @@ static PyObject *__pyx_pf_3ssh_3scp_3SCP_34write(struct __pyx_obj_3ssh_3scp_SCP 
   /* "ssh/scp.pyx":188
  *         with nogil:
  *             rc = c_ssh.ssh_scp_write(self._scp, c_data, size)
- *         return handle_ok_error_codes(rc)             # <<<<<<<<<<<<<<
+ *         return handle_ok_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 188, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_ok_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 188, __pyx_L1_error)
   __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 188, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
@@ -4666,7 +4666,7 @@ static int __Pyx_modinit_function_import_code(void) {
   __pyx_t_1 = __Pyx_ImportModule("ssh.utils"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
   if (__Pyx_ImportFunction(__pyx_t_1, "to_bytes", (void (**)(void))&__pyx_f_3ssh_5utils_to_bytes, "PyObject *(PyObject *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (__Pyx_ImportFunction(__pyx_t_1, "to_str", (void (**)(void))&__pyx_f_3ssh_5utils_to_str, "PyObject *(char *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "handle_ok_error_codes", (void (**)(void))&__pyx_f_3ssh_5utils_handle_ok_error_codes, "int (int)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "handle_ok_error_codes", (void (**)(void))&__pyx_f_3ssh_5utils_handle_ok_error_codes, "int (int, ssh_session)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (__Pyx_ImportFunction(__pyx_t_1, "handle_ssh_error_codes", (void (**)(void))&__pyx_f_3ssh_5utils_handle_ssh_error_codes, "int (int, ssh_session)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   Py_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
