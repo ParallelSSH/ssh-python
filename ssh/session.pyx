@@ -62,7 +62,6 @@ cdef class Session:
         self._session = c_ssh.ssh_new()
         if self._session is NULL:
             raise MemoryError
-        self.sock = None
 
     def __dealloc__(self):
         if self._session is not NULL:

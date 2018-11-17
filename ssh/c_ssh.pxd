@@ -14,13 +14,13 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from posix.select cimport fd_set
-from posix.types cimport mode_t
+from libc.time cimport time_t
+from posix.types cimport mode_t, suseconds_t
 
 
 cdef extern from "libssh/libssh.h" nogil:
-    ctypedef long time_t
-    ctypedef long suseconds_t
+    ctypedef struct fd_set:
+        pass
     cdef struct timeval:
         time_t       tv_sec
         suseconds_t  tv_usec

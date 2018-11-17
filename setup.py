@@ -33,9 +33,10 @@ SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0))
 
 ext = 'pyx' if USING_CYTHON else 'c'
 sources = glob('ssh/*.%s' % (ext,))
+_arch = platform.architecture()[0][0:2]
 _libs = ['ssh'] if not ON_WINDOWS else [
-    'Ws2_32', 'libssh', 'user32',
-    'libeay32MD', 'ssleay32MD',
+    'ssh', 'Ws2_32', 'user32',
+    'libcrypto%sMD' % _arch, 'libssl%sMD' % _arch,
     'zlibstatic',
 ]
 
@@ -50,7 +51,7 @@ cython_directives = {
 cython_args = {
     'cython_directives': cython_directives,
     'cython_compile_time_env': {
-        # Compile flags here
+        'ON_WINDOWS': ON_WINDOWS,
     }} \
     if USING_CYTHON else {}
 
@@ -60,7 +61,7 @@ if USING_CYTHON:
 
 runtime_library_dirs = ["$ORIGIN/."] if not SYSTEM_LIBSSH else None
 _lib_dir = os.path.abspath("./src/src") if not SYSTEM_LIBSSH else "/usr/local/lib"
-include_dirs = ["libssh/include"] if not SYSTEM_LIBSSH else ["/usr/local/include"]
+include_dirs = ["libssh/include"] if ON_WINDOWS or not SYSTEM_LIBSSH else ["/usr/local/include"]
 
 extensions = [
     Extension(
@@ -79,8 +80,9 @@ package_data = {'ssh': ['*.pxd', 'libssh.so*']}
 
 if ON_WINDOWS:
     package_data['ssh'].extend([
-        'libeay32.dll', 'ssleay32.dll',
+        'libcrypto*.dll', 'libssl*.dll',
     ])
+    cython_args['LIBSSH_STATIC'] = '1'
 
 cmdclass = versioneer.get_cmdclass()
 if USING_CYTHON:
