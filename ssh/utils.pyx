@@ -81,7 +81,7 @@ def wait_socket(session not None, sock not None, timeout=None):
     select(readfds, writefds, (), timeout)
 
 
-cdef int handle_ok_error_codes(int errcode, ssh_session session) except -1:
+cdef int _handle_general_error_codes(int errcode, ssh_session session) except -1:
     if errcode == SSH_OK:
         return SSH_OK
     elif errcode == SSH_ERROR:
@@ -96,7 +96,7 @@ cdef int handle_ok_error_codes(int errcode, ssh_session session) except -1:
         return errcode
 
 
-cdef int handle_ssh_error_codes(int errcode, ssh_session session) except -1:
+cdef int handle_error_codes(int errcode, ssh_session session) except -1:
     if errcode == ssh_error_types_e.SSH_NO_ERROR:
         return 0
     elif errcode == ssh_error_types_e.SSH_REQUEST_DENIED:
@@ -104,7 +104,7 @@ cdef int handle_ssh_error_codes(int errcode, ssh_session session) except -1:
     elif errcode == ssh_error_types_e.SSH_FATAL:
         raise FatalError(ssh_get_error(session))
     else:
-        return handle_ok_error_codes(errcode, session)
+        return _handle_general_error_codes(errcode, session)
 
 
 cdef int handle_auth_error_codes(int errcode, ssh_session session) except -1:
@@ -119,6 +119,4 @@ cdef int handle_auth_error_codes(int errcode, ssh_session session) except -1:
     elif errcode == ssh_auth_e.SSH_AUTH_AGAIN:
         return ssh_auth_e.SSH_AUTH_AGAIN
     else:
-        if errcode < 0:
-            raise OtherError(ssh_get_error(session))
-        return errcode
+        return handle_error_codes(errcode, session)

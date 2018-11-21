@@ -20,7 +20,7 @@ from session cimport Session
 from sftp_handles cimport SFTPFile, SFTPDir
 from sftp_attributes cimport SFTPAttributes
 from sftp_statvfs cimport SFTPStatVFS
-from utils cimport handle_ssh_error_codes, to_bytes, to_str
+from utils cimport handle_error_codes, to_bytes, to_str
 from .exceptions import SFTPError, SFTPHandleError
 
 from c_ssh cimport ssh_get_error, ssh_get_error_code, timeval
@@ -45,7 +45,7 @@ cdef class SFTP:
         cdef int rc
         with nogil:
             rc = c_sftp.sftp_init(self._sftp)
-        return handle_ssh_error_codes(rc, self.session._session)
+        return handle_error_codes(rc, self.session._session)
 
     def get_error(self):
         cdef int rc
@@ -162,7 +162,7 @@ cdef class SFTP:
         cdef int rc
         with nogil:
             rc = c_sftp.sftp_mkdir(self._sftp, c_path, mode)
-        return handle_ssh_error_codes(rc, self.session._session)
+        return handle_error_codes(rc, self.session._session)
 
     def rename(self, original not None, newname not None):
         cdef bytes b_orig = to_bytes(original)
@@ -182,7 +182,7 @@ cdef class SFTP:
         cdef int rc
         with nogil:
             rc = c_sftp.sftp_setstat(self._sftp, c_path, attr._attrs)
-        return handle_ssh_error_codes(rc, self.session._session)
+        return handle_error_codes(rc, self.session._session)
 
     def chown(self, path not None,
               c_sftp.uid_t owner, c_sftp.gid_t group):
@@ -275,4 +275,4 @@ cdef class SFTP:
         cdef int rc
         with nogil:
             rc = c_sftp.sftp_server_version(self._sftp)
-        return handle_ssh_error_codes(rc, self.session._session)
+        return handle_error_codes(rc, self.session._session)

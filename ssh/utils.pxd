@@ -19,7 +19,7 @@ from c_ssh cimport ssh_session, ssh_string
 cdef bytes to_bytes(_str)
 cdef object to_str(char *c_str)
 cdef object to_str_len(char *c_str, int length)
-cdef int handle_ok_error_codes(int errcode, ssh_session) except -1
-cdef int handle_ssh_error_codes(int errcode, ssh_session) except -1
+cdef int _handle_general_error_codes(int errcode, ssh_session) except -1
+cdef int handle_error_codes(int errcode, ssh_session) except -1
 cdef int handle_auth_error_codes(int errcode, ssh_session) except -1
 cdef bytes ssh_string_to_bytes(ssh_string _str)

@@ -490,7 +490,7 @@ cdef extern from "libssh/libssh.h" nogil:
                           ssh_counter rcounter)
     void ssh_set_fd_except(ssh_session session)
     void ssh_set_fd_toread(ssh_session session)
-    void _set_fd_towrite(ssh_session session)
+    void ssh_set_fd_towrite(ssh_session session)
     void ssh_silent_disconnect(ssh_session session)
     int ssh_set_pcap_file(ssh_session session, ssh_pcap_file pcapfile)
 
