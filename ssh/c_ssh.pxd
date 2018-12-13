@@ -233,7 +233,8 @@ cdef extern from "libssh/libssh.h" nogil:
         SSH_OPTIONS_KBDINT_AUTH,
         SSH_OPTIONS_GSSAPI_AUTH,
         SSH_OPTIONS_GLOBAL_KNOWNHOSTS,
-        SSH_OPTIONS_NODELAY
+        SSH_OPTIONS_NODELAY,
+        SSH_OPTIONS_PUBLICKEY_ACCEPTED_TYPES
     enum:
         SSH_SCP_WRITE
         SSH_SCP_READ
@@ -344,7 +345,8 @@ cdef extern from "libssh/libssh.h" nogil:
 
     enum ssh_publickey_hash_type:
         SSH_PUBLICKEY_HASH_SHA1
-        SSH_PUBLICKEY_HASH_MD5
+        SSH_PUBLICKEY_HASH_MD5,
+        SSH_PUBLICKEY_HASH_SHA256
     int ssh_get_publickey_hash(const ssh_key key,
                                ssh_publickey_hash_type type,
                                unsigned char **hash,
@@ -421,6 +423,9 @@ cdef extern from "libssh/libssh.h" nogil:
     int ssh_pki_import_privkey_base64(
         const char *b64_key, const char *passphrase,
         ssh_auth_callback auth_fn, void *auth_data, ssh_key *pkey)
+    int ssh_pki_export_privkey_base64(
+        const ssh_key privkey, const char *passphrase,
+        ssh_auth_callback auth_fn, void *auth_data, char **b64_key)
     int ssh_pki_import_privkey_file(
         const char *filename, const char *passphrase,
         ssh_auth_callback auth_fn, void *auth_data, ssh_key *pkey)
@@ -452,6 +457,12 @@ cdef extern from "libssh/libssh.h" nogil:
 
     const char *ssh_pki_key_ecdsa_name(const ssh_key key)
 
+    char *ssh_get_fingerprint_hash(ssh_publickey_hash_type type,
+                                   unsigned char *hash,
+                                   size_t len)
+    void ssh_print_hash(ssh_publickey_hash_type type, 
+                        unsigned char *hash, 
+                        size_t len)
     void ssh_print_hexa(
         const char *descr, const unsigned char *what, size_t len)
     int ssh_send_ignore(ssh_session session, const char *data)

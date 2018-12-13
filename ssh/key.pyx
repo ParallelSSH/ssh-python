@@ -121,6 +121,14 @@ cdef class SSHKey:
         c_ssh.ssh_string_free_char(_key)
         return b_key
 
+    def copy_cert_to_privkey(self, SSHKey priv_key):
+        cdef int rc
+        with nogil:
+            rc = c_ssh.ssh_pki_copy_cert_to_privkey(self._key, priv_key._key)
+            if rc != c_ssh.SSH_OK:
+                with gil:
+                    raise KeyExportError
+        return priv_key
 
 def generate(KeyType key_type, int bits):
     cdef SSHKey key
