@@ -39,6 +39,8 @@ SSH_READ_PENDING = c_ssh.SSH_READ_PENDING
 SSH_CLOSED_ERROR = c_ssh.SSH_CLOSED_ERROR
 SSH_WRITE_PENDING = c_ssh.SSH_WRITE_PENDING
 
+def libssh_init():
+    c_ssh.ssh_init()
 
 cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
     if not c_ssh.ssh_is_connected(session):
