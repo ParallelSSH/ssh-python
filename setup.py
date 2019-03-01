@@ -18,6 +18,9 @@ except ImportError:
 else:
     USING_CYTHON = True
 
+_PYTHON_MAJOR_VERSION = platform.python_version_tuple()[0]
+ON_WINDOWS = platform.system() == 'Windows'
+SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0))
 
 # Only build libssh if running a build
 if (len(sys.argv) >= 2 and not (
@@ -26,10 +29,8 @@ if (len(sys.argv) >= 2 and not (
             '--help-commands', 'egg_info', '--version', 'clean',
             'sdist', '--long-description')) and
         __name__ == '__main__'):
-    build_ssh()
-
-ON_WINDOWS = platform.system() == 'Windows'
-SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0))
+    if not (ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3):
+        build_ssh()
 
 ext = 'pyx' if USING_CYTHON else 'c'
 sources = glob('ssh/*.%s' % (ext,))
@@ -87,6 +88,12 @@ if ON_WINDOWS:
 cmdclass = versioneer.get_cmdclass()
 if USING_CYTHON:
     cmdclass['build_ext'] = build_ext
+
+
+if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
+    # Python 2 on Windows builds are unsupported.
+    extensions = []
+    package_data = {}
 
 setup(
     name='ssh-python',
