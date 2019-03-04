@@ -89,10 +89,20 @@ cmdclass = versioneer.get_cmdclass()
 if USING_CYTHON:
     cmdclass['build_ext'] = build_ext
 
-
 if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
     # Python 2 on Windows builds are unsupported.
-    extensions = []
+    extensions = [
+        Extension(
+            'ssh.__init__',
+            sources=[os.sep.join(['ssh', '__init__.%s' % (ext,)])],
+            include_dirs=include_dirs,
+            libraries=_libs,
+            library_dirs=[_lib_dir],
+            runtime_library_dirs=runtime_library_dirs,
+            extra_compile_args=_comp_args,
+            **cython_args
+        )
+    ]
     package_data = {}
 
 setup(
