@@ -18,7 +18,7 @@ except ImportError:
 else:
     USING_CYTHON = True
 
-_PYTHON_MAJOR_VERSION = platform.python_version_tuple()[0]
+_PYTHON_MAJOR_VERSION = int(platform.python_version_tuple()[0])
 ON_WINDOWS = platform.system() == 'Windows'
 SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0))
 
@@ -29,7 +29,7 @@ if (len(sys.argv) >= 2 and not (
             '--help-commands', 'egg_info', '--version', 'clean',
             'sdist', '--long-description')) and
         __name__ == '__main__'):
-    if not (ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3):
+    if not (ON_WINDOWS and _PYTHON_MAJOR_VERSION != '2'):
         build_ssh()
 
 ext = 'pyx' if USING_CYTHON else 'c'
@@ -89,21 +89,20 @@ cmdclass = versioneer.get_cmdclass()
 if USING_CYTHON:
     cmdclass['build_ext'] = build_ext
 
-if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
+
+sys.stdout.write("Windows platform: %s, Python major version: %s.%s" % (ON_WINDOWS, _PYTHON_MAJOR_VERSION, os.sep))
+if ON_WINDOWS and _PYTHON_MAJOR_VERSION == 2:
     # Python 2 on Windows builds are unsupported.
     extensions = [
         Extension(
-            'ssh.__init__',
+            'ssh',
             sources=[os.sep.join(['ssh', '__init__.%s' % (ext,)])],
-            include_dirs=include_dirs,
-            libraries=_libs,
-            library_dirs=[_lib_dir],
-            runtime_library_dirs=runtime_library_dirs,
             extra_compile_args=_comp_args,
             **cython_args
         )
     ]
     package_data = {}
+    sys.stdout.write("Windows Python 2 build - extensions: %s%s" % (extensions, os.sep))
 
 setup(
     name='ssh-python',

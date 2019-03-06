@@ -1,3 +1,5 @@
+IF "%PYTHON_VERSION%" == "2.7" (exit 0)
+
 mkdir zlib_build && cd zlib_build
 
 IF "%MSVC%" == "Visual Studio 9" (

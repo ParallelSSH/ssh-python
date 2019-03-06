@@ -1,3 +1,5 @@
+IF "%PYTHON_VERSION%" == "2.7" (exit 0)
+
 cp ci\appveyor\include\stdint.h libssh/include
 
 mkdir src
