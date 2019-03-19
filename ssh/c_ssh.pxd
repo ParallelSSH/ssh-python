@@ -366,7 +366,6 @@ cdef extern from "libssh/libssh.h" nogil:
     int ssh_init()
     int ssh_is_blocking(ssh_session session)
     int ssh_is_connected(ssh_session session)
-    int ssh_is_server_known(ssh_session session)
 
     int ssh_set_log_level(int level)
     int ssh_get_log_level()
@@ -528,8 +527,6 @@ cdef extern from "libssh/libssh.h" nogil:
         ssh_session session, unsigned int i, const char *answer)
     int ssh_userauth_gssapi(ssh_session session)
     const char *ssh_version(int req_version)
-    int ssh_write_knownhost(ssh_session session)
-    char *ssh_dump_knownhost(ssh_session session)
 
     void ssh_string_burn(ssh_string str)
     ssh_string ssh_string_copy(ssh_string str)
