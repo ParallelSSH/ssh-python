@@ -242,12 +242,6 @@ cdef class Session:
             rc = c_ssh.ssh_is_connected(self._session)
         return bool(rc)
 
-    def is_server_known(self):
-        cdef bint rc
-        with nogil:
-            rc = c_ssh.ssh_is_server_known(self._session)
-        return bool(rc)
-
     def copy_options(self, Session destination):
         cdef int rc
         with nogil:
@@ -516,22 +510,6 @@ cdef class Session:
             _check_connected(self._session)
             rc = c_ssh.ssh_userauth_gssapi(self._session)
         return handle_ssh_error_codes(rc, self._session)
-
-    def write_knownhost(self):
-        cdef int rc
-        with nogil:
-            rc = c_ssh.ssh_write_knownhost(self._session)
-        return handle_ssh_error_codes(rc, self._session)
-
-    def dump_knownhost(self):
-        cdef const_char *_known_host
-        cdef bytes b_known_host
-        with nogil:
-            _known_host = c_ssh.ssh_dump_knownhost(self._session)
-        if _known_host is NULL:
-            return
-        b_known_host = _known_host
-        return b_known_host
 
     def get_clientbanner(self):
         cdef const_char *_banner

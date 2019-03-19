@@ -42,7 +42,6 @@ class SessionTest(SSHTestCase):
         self.assertRaises(InvalidAPIUse, session.get_disconnect_message)
         self.assertRaises(InvalidAPIUse, session.get_issue_banner)
         self.assertRaises(InvalidAPIUse, session.get_openssh_version)
-        self.assertIsNone(session.dump_knownhost())
         self.assertIsNone(session.get_clientbanner())
         self.assertIsNone(session.get_serverbanner())
         self.assertIsNone(session.get_kex_algo())
