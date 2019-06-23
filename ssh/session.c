@@ -6522,8 +6522,8 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_70set_agent_channel(struct __py
  *         def set_agent_channel(self, Channel channel):
  *             cdef int rc
  *             with nogil:             # <<<<<<<<<<<<<<
- *                 rc = c_ssh.ssh_set_agent_channel(self._session, channel._channel)
- *             return handle_error_codes(rc, self._session)
+ *                 rc = c_ssh.ssh_set_agent_channel(
+ *                     self._session, channel._channel)
  */
   {
       #ifdef WITH_THREAD
@@ -6536,9 +6536,9 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_70set_agent_channel(struct __py
         /* "ssh/session.pyx":358
  *             cdef int rc
  *             with nogil:
- *                 rc = c_ssh.ssh_set_agent_channel(self._session, channel._channel)             # <<<<<<<<<<<<<<
+ *                 rc = c_ssh.ssh_set_agent_channel(             # <<<<<<<<<<<<<<
+ *                     self._session, channel._channel)
  *             return handle_error_codes(rc, self._session)
- * 
  */
         __pyx_v_rc = ssh_set_agent_channel(__pyx_v_self->_session, __pyx_v_channel->_channel);
       }
@@ -6547,8 +6547,8 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_70set_agent_channel(struct __py
  *         def set_agent_channel(self, Channel channel):
  *             cdef int rc
  *             with nogil:             # <<<<<<<<<<<<<<
- *                 rc = c_ssh.ssh_set_agent_channel(self._session, channel._channel)
- *             return handle_error_codes(rc, self._session)
+ *                 rc = c_ssh.ssh_set_agent_channel(
+ *                     self._session, channel._channel)
  */
       /*finally:*/ {
         /*normal exit:*/{
@@ -6562,16 +6562,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_70set_agent_channel(struct __py
       }
   }
 
-  /* "ssh/session.pyx":359
- *             with nogil:
- *                 rc = c_ssh.ssh_set_agent_channel(self._session, channel._channel)
+  /* "ssh/session.pyx":360
+ *                 rc = c_ssh.ssh_set_agent_channel(
+ *                     self._session, channel._channel)
  *             return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
  * 
  *         def set_agent_socket(self, socket not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 359, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 359, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 360, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 360, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
@@ -6596,7 +6596,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_70set_agent_channel(struct __py
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":361
+/* "ssh/session.pyx":362
  *             return handle_error_codes(rc, self._session)
  * 
  *         def set_agent_socket(self, socket not None):             # <<<<<<<<<<<<<<
@@ -6612,7 +6612,7 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_73set_agent_socket(PyObject *__
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_agent_socket (wrapper)", 0);
   if (unlikely(((PyObject *)__pyx_v_socket) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "socket"); __PYX_ERR(0, 361, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "socket"); __PYX_ERR(0, 362, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_7session_7Session_72set_agent_socket(((struct __pyx_obj_3ssh_7session_Session *)__pyx_v_self), ((PyObject *)__pyx_v_socket));
 
@@ -6634,17 +6634,17 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_72set_agent_socket(struct __pyx
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("set_agent_socket", 0);
 
-  /* "ssh/session.pyx":363
+  /* "ssh/session.pyx":364
  *         def set_agent_socket(self, socket not None):
  *             cdef int rc
  *             cdef c_ssh.socket_t _sock = PyObject_AsFileDescriptor(socket)             # <<<<<<<<<<<<<<
  *             with nogil:
  *                 rc = c_ssh.ssh_set_agent_socket(self._session, _sock)
  */
-  __pyx_t_1 = PyObject_AsFileDescriptor(__pyx_v_socket); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 363, __pyx_L1_error)
+  __pyx_t_1 = PyObject_AsFileDescriptor(__pyx_v_socket); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 364, __pyx_L1_error)
   __pyx_v__sock = __pyx_t_1;
 
-  /* "ssh/session.pyx":364
+  /* "ssh/session.pyx":365
  *             cdef int rc
  *             cdef c_ssh.socket_t _sock = PyObject_AsFileDescriptor(socket)
  *             with nogil:             # <<<<<<<<<<<<<<
@@ -6659,7 +6659,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_72set_agent_socket(struct __pyx
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":365
+        /* "ssh/session.pyx":366
  *             cdef c_ssh.socket_t _sock = PyObject_AsFileDescriptor(socket)
  *             with nogil:
  *                 rc = c_ssh.ssh_set_agent_socket(self._session, _sock)             # <<<<<<<<<<<<<<
@@ -6669,7 +6669,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_72set_agent_socket(struct __pyx
         __pyx_v_rc = ssh_set_agent_socket(__pyx_v_self->_session, __pyx_v__sock);
       }
 
-      /* "ssh/session.pyx":364
+      /* "ssh/session.pyx":365
  *             cdef int rc
  *             cdef c_ssh.socket_t _sock = PyObject_AsFileDescriptor(socket)
  *             with nogil:             # <<<<<<<<<<<<<<
@@ -6688,7 +6688,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_72set_agent_socket(struct __pyx
       }
   }
 
-  /* "ssh/session.pyx":366
+  /* "ssh/session.pyx":367
  *             with nogil:
  *                 rc = c_ssh.ssh_set_agent_socket(self._session, _sock)
  *             return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -6696,14 +6696,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_72set_agent_socket(struct __pyx
  *     def set_blocking(self, int blocking):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 366, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 366, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 367, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 367, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":361
+  /* "ssh/session.pyx":362
  *             return handle_error_codes(rc, self._session)
  * 
  *         def set_agent_socket(self, socket not None):             # <<<<<<<<<<<<<<
@@ -6722,7 +6722,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_72set_agent_socket(struct __pyx
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":368
+/* "ssh/session.pyx":369
  *             return handle_error_codes(rc, self._session)
  * 
  *     def set_blocking(self, int blocking):             # <<<<<<<<<<<<<<
@@ -6739,7 +6739,7 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_75set_blocking(PyObject *__pyx_
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_blocking (wrapper)", 0);
   assert(__pyx_arg_blocking); {
-    __pyx_v_blocking = __Pyx_PyInt_As_int(__pyx_arg_blocking); if (unlikely((__pyx_v_blocking == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 368, __pyx_L3_error)
+    __pyx_v_blocking = __Pyx_PyInt_As_int(__pyx_arg_blocking); if (unlikely((__pyx_v_blocking == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 369, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6759,7 +6759,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_74set_blocking(struct __pyx_obj
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_blocking", 0);
 
-  /* "ssh/session.pyx":369
+  /* "ssh/session.pyx":370
  * 
  *     def set_blocking(self, int blocking):
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -6774,7 +6774,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_74set_blocking(struct __pyx_obj
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":370
+        /* "ssh/session.pyx":371
  *     def set_blocking(self, int blocking):
  *         with nogil:
  *             c_ssh.ssh_set_blocking(self._session, blocking)             # <<<<<<<<<<<<<<
@@ -6784,7 +6784,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_74set_blocking(struct __pyx_obj
         ssh_set_blocking(__pyx_v_self->_session, __pyx_v_blocking);
       }
 
-      /* "ssh/session.pyx":369
+      /* "ssh/session.pyx":370
  * 
  *     def set_blocking(self, int blocking):
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -6803,7 +6803,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_74set_blocking(struct __pyx_obj
       }
   }
 
-  /* "ssh/session.pyx":368
+  /* "ssh/session.pyx":369
  *             return handle_error_codes(rc, self._session)
  * 
  *     def set_blocking(self, int blocking):             # <<<<<<<<<<<<<<
@@ -6818,7 +6818,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_74set_blocking(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":372
+/* "ssh/session.pyx":373
  *             c_ssh.ssh_set_blocking(self._session, blocking)
  * 
  *     def set_counters(self, scounter, rcounter):             # <<<<<<<<<<<<<<
@@ -6858,11 +6858,11 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_77set_counters(PyObject *__pyx_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_rcounter)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("set_counters", 1, 2, 2, 1); __PYX_ERR(0, 372, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("set_counters", 1, 2, 2, 1); __PYX_ERR(0, 373, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_counters") < 0)) __PYX_ERR(0, 372, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "set_counters") < 0)) __PYX_ERR(0, 373, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -6875,7 +6875,7 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_77set_counters(PyObject *__pyx_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("set_counters", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 372, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("set_counters", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 373, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("ssh.session.Session.set_counters", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -6893,7 +6893,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_76set_counters(CYTHON_UNUSED st
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_counters", 0);
 
-  /* "ssh/session.pyx":373
+  /* "ssh/session.pyx":374
  * 
  *     def set_counters(self, scounter, rcounter):
  *         raise NotImplementedError             # <<<<<<<<<<<<<<
@@ -6901,9 +6901,9 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_76set_counters(CYTHON_UNUSED st
  *     def set_fd_except(self):
  */
   __Pyx_Raise(__pyx_builtin_NotImplementedError, 0, 0, 0);
-  __PYX_ERR(0, 373, __pyx_L1_error)
+  __PYX_ERR(0, 374, __pyx_L1_error)
 
-  /* "ssh/session.pyx":372
+  /* "ssh/session.pyx":373
  *             c_ssh.ssh_set_blocking(self._session, blocking)
  * 
  *     def set_counters(self, scounter, rcounter):             # <<<<<<<<<<<<<<
@@ -6920,7 +6920,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_76set_counters(CYTHON_UNUSED st
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":375
+/* "ssh/session.pyx":376
  *         raise NotImplementedError
  * 
  *     def set_fd_except(self):             # <<<<<<<<<<<<<<
@@ -6947,7 +6947,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_78set_fd_except(struct __pyx_ob
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_fd_except", 0);
 
-  /* "ssh/session.pyx":376
+  /* "ssh/session.pyx":377
  * 
  *     def set_fd_except(self):
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -6962,7 +6962,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_78set_fd_except(struct __pyx_ob
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":377
+        /* "ssh/session.pyx":378
  *     def set_fd_except(self):
  *         with nogil:
  *             c_ssh.ssh_set_fd_except(self._session)             # <<<<<<<<<<<<<<
@@ -6972,7 +6972,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_78set_fd_except(struct __pyx_ob
         ssh_set_fd_except(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":376
+      /* "ssh/session.pyx":377
  * 
  *     def set_fd_except(self):
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -6991,7 +6991,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_78set_fd_except(struct __pyx_ob
       }
   }
 
-  /* "ssh/session.pyx":375
+  /* "ssh/session.pyx":376
  *         raise NotImplementedError
  * 
  *     def set_fd_except(self):             # <<<<<<<<<<<<<<
@@ -7006,7 +7006,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_78set_fd_except(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":379
+/* "ssh/session.pyx":380
  *             c_ssh.ssh_set_fd_except(self._session)
  * 
  *     def set_fd_toread(self):             # <<<<<<<<<<<<<<
@@ -7033,7 +7033,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_80set_fd_toread(struct __pyx_ob
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_fd_toread", 0);
 
-  /* "ssh/session.pyx":380
+  /* "ssh/session.pyx":381
  * 
  *     def set_fd_toread(self):
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7048,7 +7048,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_80set_fd_toread(struct __pyx_ob
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":381
+        /* "ssh/session.pyx":382
  *     def set_fd_toread(self):
  *         with nogil:
  *             c_ssh.ssh_set_fd_toread(self._session)             # <<<<<<<<<<<<<<
@@ -7058,7 +7058,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_80set_fd_toread(struct __pyx_ob
         ssh_set_fd_toread(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":380
+      /* "ssh/session.pyx":381
  * 
  *     def set_fd_toread(self):
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7077,7 +7077,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_80set_fd_toread(struct __pyx_ob
       }
   }
 
-  /* "ssh/session.pyx":379
+  /* "ssh/session.pyx":380
  *             c_ssh.ssh_set_fd_except(self._session)
  * 
  *     def set_fd_toread(self):             # <<<<<<<<<<<<<<
@@ -7092,7 +7092,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_80set_fd_toread(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":383
+/* "ssh/session.pyx":384
  *             c_ssh.ssh_set_fd_toread(self._session)
  * 
  *     def set_fd_towrite(self):             # <<<<<<<<<<<<<<
@@ -7119,7 +7119,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_82set_fd_towrite(struct __pyx_o
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_fd_towrite", 0);
 
-  /* "ssh/session.pyx":384
+  /* "ssh/session.pyx":385
  * 
  *     def set_fd_towrite(self):
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7134,7 +7134,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_82set_fd_towrite(struct __pyx_o
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":385
+        /* "ssh/session.pyx":386
  *     def set_fd_towrite(self):
  *         with nogil:
  *             c_ssh.ssh_set_fd_towrite(self._session)             # <<<<<<<<<<<<<<
@@ -7144,7 +7144,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_82set_fd_towrite(struct __pyx_o
         ssh_set_fd_towrite(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":384
+      /* "ssh/session.pyx":385
  * 
  *     def set_fd_towrite(self):
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7163,7 +7163,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_82set_fd_towrite(struct __pyx_o
       }
   }
 
-  /* "ssh/session.pyx":383
+  /* "ssh/session.pyx":384
  *             c_ssh.ssh_set_fd_toread(self._session)
  * 
  *     def set_fd_towrite(self):             # <<<<<<<<<<<<<<
@@ -7178,7 +7178,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_82set_fd_towrite(struct __pyx_o
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":387
+/* "ssh/session.pyx":388
  *             c_ssh.ssh_set_fd_towrite(self._session)
  * 
  *     def silent_disconnect(self):             # <<<<<<<<<<<<<<
@@ -7205,7 +7205,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_84silent_disconnect(struct __py
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("silent_disconnect", 0);
 
-  /* "ssh/session.pyx":388
+  /* "ssh/session.pyx":389
  * 
  *     def silent_disconnect(self):
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7220,7 +7220,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_84silent_disconnect(struct __py
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":389
+        /* "ssh/session.pyx":390
  *     def silent_disconnect(self):
  *         with nogil:
  *             c_ssh.ssh_silent_disconnect(self._session)             # <<<<<<<<<<<<<<
@@ -7230,7 +7230,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_84silent_disconnect(struct __py
         ssh_silent_disconnect(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":388
+      /* "ssh/session.pyx":389
  * 
  *     def silent_disconnect(self):
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7249,7 +7249,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_84silent_disconnect(struct __py
       }
   }
 
-  /* "ssh/session.pyx":387
+  /* "ssh/session.pyx":388
  *             c_ssh.ssh_set_fd_towrite(self._session)
  * 
  *     def silent_disconnect(self):             # <<<<<<<<<<<<<<
@@ -7264,7 +7264,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_84silent_disconnect(struct __py
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":391
+/* "ssh/session.pyx":392
  *             c_ssh.ssh_silent_disconnect(self._session)
  * 
  *     def userauth_none(self):             # <<<<<<<<<<<<<<
@@ -7295,7 +7295,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_86userauth_none(struct __pyx_ob
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("userauth_none", 0);
 
-  /* "ssh/session.pyx":393
+  /* "ssh/session.pyx":394
  *     def userauth_none(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7310,16 +7310,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_86userauth_none(struct __pyx_ob
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":394
+        /* "ssh/session.pyx":395
  *         cdef int rc
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_none(self._session, NULL)
  *         return handle_error_codes(rc, self._session)
  */
-        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 394, __pyx_L4_error)
+        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 395, __pyx_L4_error)
 
-        /* "ssh/session.pyx":395
+        /* "ssh/session.pyx":396
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_none(self._session, NULL)             # <<<<<<<<<<<<<<
@@ -7329,7 +7329,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_86userauth_none(struct __pyx_ob
         __pyx_v_rc = ssh_userauth_none(__pyx_v_self->_session, NULL);
       }
 
-      /* "ssh/session.pyx":393
+      /* "ssh/session.pyx":394
  *     def userauth_none(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7355,7 +7355,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_86userauth_none(struct __pyx_ob
       }
   }
 
-  /* "ssh/session.pyx":396
+  /* "ssh/session.pyx":397
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_none(self._session, NULL)
  *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -7363,14 +7363,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_86userauth_none(struct __pyx_ob
  *     def userauth_list(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 396, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 396, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 397, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 397, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":391
+  /* "ssh/session.pyx":392
  *             c_ssh.ssh_silent_disconnect(self._session)
  * 
  *     def userauth_none(self):             # <<<<<<<<<<<<<<
@@ -7389,7 +7389,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_86userauth_none(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":398
+/* "ssh/session.pyx":399
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_list(self):             # <<<<<<<<<<<<<<
@@ -7420,7 +7420,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_88userauth_list(struct __pyx_ob
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("userauth_list", 0);
 
-  /* "ssh/session.pyx":400
+  /* "ssh/session.pyx":401
  *     def userauth_list(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7435,16 +7435,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_88userauth_list(struct __pyx_ob
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":401
+        /* "ssh/session.pyx":402
  *         cdef int rc
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_list(self._session, NULL)
  *         return handle_error_codes(rc, self._session)
  */
-        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 401, __pyx_L4_error)
+        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 402, __pyx_L4_error)
 
-        /* "ssh/session.pyx":402
+        /* "ssh/session.pyx":403
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_list(self._session, NULL)             # <<<<<<<<<<<<<<
@@ -7454,7 +7454,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_88userauth_list(struct __pyx_ob
         __pyx_v_rc = ssh_userauth_list(__pyx_v_self->_session, NULL);
       }
 
-      /* "ssh/session.pyx":400
+      /* "ssh/session.pyx":401
  *     def userauth_list(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7480,7 +7480,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_88userauth_list(struct __pyx_ob
       }
   }
 
-  /* "ssh/session.pyx":403
+  /* "ssh/session.pyx":404
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_list(self._session, NULL)
  *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -7488,14 +7488,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_88userauth_list(struct __pyx_ob
  *     def userauth_try_publickey(self, SSHKey pubkey not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 403, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 403, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 404, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 404, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":398
+  /* "ssh/session.pyx":399
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_list(self):             # <<<<<<<<<<<<<<
@@ -7514,7 +7514,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_88userauth_list(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":405
+/* "ssh/session.pyx":406
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_try_publickey(self, SSHKey pubkey not None):             # <<<<<<<<<<<<<<
@@ -7529,7 +7529,7 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_91userauth_try_publickey(PyObje
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("userauth_try_publickey (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_pubkey), __pyx_ptype_3ssh_3key_SSHKey, 0, "pubkey", 0))) __PYX_ERR(0, 405, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_pubkey), __pyx_ptype_3ssh_3key_SSHKey, 0, "pubkey", 0))) __PYX_ERR(0, 406, __pyx_L1_error)
   __pyx_r = __pyx_pf_3ssh_7session_7Session_90userauth_try_publickey(((struct __pyx_obj_3ssh_7session_Session *)__pyx_v_self), ((struct __pyx_obj_3ssh_3key_SSHKey *)__pyx_v_pubkey));
 
   /* function exit code */
@@ -7550,7 +7550,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_90userauth_try_publickey(struct
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("userauth_try_publickey", 0);
 
-  /* "ssh/session.pyx":407
+  /* "ssh/session.pyx":408
  *     def userauth_try_publickey(self, SSHKey pubkey not None):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7565,16 +7565,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_90userauth_try_publickey(struct
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":408
+        /* "ssh/session.pyx":409
  *         cdef int rc
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_try_publickey(
  *                 self._session, NULL, pubkey._key)
  */
-        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 408, __pyx_L4_error)
+        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 409, __pyx_L4_error)
 
-        /* "ssh/session.pyx":409
+        /* "ssh/session.pyx":410
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_try_publickey(             # <<<<<<<<<<<<<<
@@ -7584,7 +7584,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_90userauth_try_publickey(struct
         __pyx_v_rc = ssh_userauth_try_publickey(__pyx_v_self->_session, NULL, __pyx_v_pubkey->_key);
       }
 
-      /* "ssh/session.pyx":407
+      /* "ssh/session.pyx":408
  *     def userauth_try_publickey(self, SSHKey pubkey not None):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7610,7 +7610,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_90userauth_try_publickey(struct
       }
   }
 
-  /* "ssh/session.pyx":411
+  /* "ssh/session.pyx":412
  *             rc = c_ssh.ssh_userauth_try_publickey(
  *                 self._session, NULL, pubkey._key)
  *         return handle_auth_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -7618,14 +7618,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_90userauth_try_publickey(struct
  *     def userauth_publickey(self, SSHKey privkey not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_auth_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 411, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 411, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_auth_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 412, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 412, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":405
+  /* "ssh/session.pyx":406
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_try_publickey(self, SSHKey pubkey not None):             # <<<<<<<<<<<<<<
@@ -7644,7 +7644,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_90userauth_try_publickey(struct
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":413
+/* "ssh/session.pyx":414
  *         return handle_auth_error_codes(rc, self._session)
  * 
  *     def userauth_publickey(self, SSHKey privkey not None):             # <<<<<<<<<<<<<<
@@ -7659,7 +7659,7 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_93userauth_publickey(PyObject *
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("userauth_publickey (wrapper)", 0);
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_privkey), __pyx_ptype_3ssh_3key_SSHKey, 0, "privkey", 0))) __PYX_ERR(0, 413, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_privkey), __pyx_ptype_3ssh_3key_SSHKey, 0, "privkey", 0))) __PYX_ERR(0, 414, __pyx_L1_error)
   __pyx_r = __pyx_pf_3ssh_7session_7Session_92userauth_publickey(((struct __pyx_obj_3ssh_7session_Session *)__pyx_v_self), ((struct __pyx_obj_3ssh_3key_SSHKey *)__pyx_v_privkey));
 
   /* function exit code */
@@ -7680,7 +7680,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_92userauth_publickey(struct __p
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("userauth_publickey", 0);
 
-  /* "ssh/session.pyx":415
+  /* "ssh/session.pyx":416
  *     def userauth_publickey(self, SSHKey privkey not None):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7695,16 +7695,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_92userauth_publickey(struct __p
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":416
+        /* "ssh/session.pyx":417
  *         cdef int rc
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_publickey(
  *                 self._session, NULL, privkey._key)
  */
-        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 416, __pyx_L4_error)
+        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 417, __pyx_L4_error)
 
-        /* "ssh/session.pyx":417
+        /* "ssh/session.pyx":418
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_publickey(             # <<<<<<<<<<<<<<
@@ -7714,7 +7714,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_92userauth_publickey(struct __p
         __pyx_v_rc = ssh_userauth_publickey(__pyx_v_self->_session, NULL, __pyx_v_privkey->_key);
       }
 
-      /* "ssh/session.pyx":415
+      /* "ssh/session.pyx":416
  *     def userauth_publickey(self, SSHKey privkey not None):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7740,7 +7740,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_92userauth_publickey(struct __p
       }
   }
 
-  /* "ssh/session.pyx":419
+  /* "ssh/session.pyx":420
  *             rc = c_ssh.ssh_userauth_publickey(
  *                 self._session, NULL, privkey._key)
  *         return handle_auth_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -7748,14 +7748,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_92userauth_publickey(struct __p
  *     # ssh_userauth_agent is excluded from libssh.h on Windows.
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_auth_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 419, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 419, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_auth_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 420, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 420, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":413
+  /* "ssh/session.pyx":414
  *         return handle_auth_error_codes(rc, self._session)
  * 
  *     def userauth_publickey(self, SSHKey privkey not None):             # <<<<<<<<<<<<<<
@@ -7774,7 +7774,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_92userauth_publickey(struct __p
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":423
+/* "ssh/session.pyx":424
  *     # ssh_userauth_agent is excluded from libssh.h on Windows.
  *     IF not ON_WINDOWS:
  *         def userauth_agent(self, username not None):             # <<<<<<<<<<<<<<
@@ -7790,7 +7790,7 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_95userauth_agent(PyObject *__py
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("userauth_agent (wrapper)", 0);
   if (unlikely(((PyObject *)__pyx_v_username) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "username"); __PYX_ERR(0, 423, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "username"); __PYX_ERR(0, 424, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_7session_7Session_94userauth_agent(((struct __pyx_obj_3ssh_7session_Session *)__pyx_v_self), ((PyObject *)__pyx_v_username));
 
@@ -7815,19 +7815,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_94userauth_agent(struct __pyx_o
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("userauth_agent", 0);
 
-  /* "ssh/session.pyx":424
+  /* "ssh/session.pyx":425
  *     IF not ON_WINDOWS:
  *         def userauth_agent(self, username not None):
  *             cdef bytes b_username = to_bytes(username)             # <<<<<<<<<<<<<<
  *             cdef char *c_username = b_username
  *             cdef int rc
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_username); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 424, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_username); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 425, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_username = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/session.pyx":425
+  /* "ssh/session.pyx":426
  *         def userauth_agent(self, username not None):
  *             cdef bytes b_username = to_bytes(username)
  *             cdef char *c_username = b_username             # <<<<<<<<<<<<<<
@@ -7836,12 +7836,12 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_94userauth_agent(struct __pyx_o
  */
   if (unlikely(__pyx_v_b_username == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 425, __pyx_L1_error)
+    __PYX_ERR(0, 426, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_username); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 425, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_username); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 426, __pyx_L1_error)
   __pyx_v_c_username = __pyx_t_2;
 
-  /* "ssh/session.pyx":427
+  /* "ssh/session.pyx":428
  *             cdef char *c_username = b_username
  *             cdef int rc
  *             with nogil:             # <<<<<<<<<<<<<<
@@ -7856,16 +7856,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_94userauth_agent(struct __pyx_o
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":428
+        /* "ssh/session.pyx":429
  *             cdef int rc
  *             with nogil:
  *                 _check_connected(self._session)             # <<<<<<<<<<<<<<
  *                 rc = c_ssh.ssh_userauth_agent(self._session, c_username)
  *             return handle_error_codes(rc, self._session)
  */
-        __pyx_t_3 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 428, __pyx_L4_error)
+        __pyx_t_3 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 429, __pyx_L4_error)
 
-        /* "ssh/session.pyx":429
+        /* "ssh/session.pyx":430
  *             with nogil:
  *                 _check_connected(self._session)
  *                 rc = c_ssh.ssh_userauth_agent(self._session, c_username)             # <<<<<<<<<<<<<<
@@ -7875,7 +7875,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_94userauth_agent(struct __pyx_o
         __pyx_v_rc = ssh_userauth_agent(__pyx_v_self->_session, __pyx_v_c_username);
       }
 
-      /* "ssh/session.pyx":427
+      /* "ssh/session.pyx":428
  *             cdef char *c_username = b_username
  *             cdef int rc
  *             with nogil:             # <<<<<<<<<<<<<<
@@ -7901,7 +7901,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_94userauth_agent(struct __pyx_o
       }
   }
 
-  /* "ssh/session.pyx":430
+  /* "ssh/session.pyx":431
  *                 _check_connected(self._session)
  *                 rc = c_ssh.ssh_userauth_agent(self._session, c_username)
  *             return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -7909,14 +7909,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_94userauth_agent(struct __pyx_o
  *     def userauth_publickey_auto(self, passphrase not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 430, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 430, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 431, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 431, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":423
+  /* "ssh/session.pyx":424
  *     # ssh_userauth_agent is excluded from libssh.h on Windows.
  *     IF not ON_WINDOWS:
  *         def userauth_agent(self, username not None):             # <<<<<<<<<<<<<<
@@ -7936,7 +7936,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_94userauth_agent(struct __pyx_o
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":432
+/* "ssh/session.pyx":433
  *             return handle_error_codes(rc, self._session)
  * 
  *     def userauth_publickey_auto(self, passphrase not None):             # <<<<<<<<<<<<<<
@@ -7952,7 +7952,7 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_97userauth_publickey_auto(PyObj
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("userauth_publickey_auto (wrapper)", 0);
   if (unlikely(((PyObject *)__pyx_v_passphrase) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "passphrase"); __PYX_ERR(0, 432, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "passphrase"); __PYX_ERR(0, 433, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_7session_7Session_96userauth_publickey_auto(((struct __pyx_obj_3ssh_7session_Session *)__pyx_v_self), ((PyObject *)__pyx_v_passphrase));
 
@@ -7977,19 +7977,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_96userauth_publickey_auto(struc
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("userauth_publickey_auto", 0);
 
-  /* "ssh/session.pyx":433
+  /* "ssh/session.pyx":434
  * 
  *     def userauth_publickey_auto(self, passphrase not None):
  *         cdef bytes b_passphrase = to_bytes(passphrase)             # <<<<<<<<<<<<<<
  *         cdef char *c_passphrase = b_passphrase
  *         cdef int rc
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_passphrase); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 433, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_passphrase); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 434, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_passphrase = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/session.pyx":434
+  /* "ssh/session.pyx":435
  *     def userauth_publickey_auto(self, passphrase not None):
  *         cdef bytes b_passphrase = to_bytes(passphrase)
  *         cdef char *c_passphrase = b_passphrase             # <<<<<<<<<<<<<<
@@ -7998,12 +7998,12 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_96userauth_publickey_auto(struc
  */
   if (unlikely(__pyx_v_b_passphrase == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 434, __pyx_L1_error)
+    __PYX_ERR(0, 435, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_passphrase); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 434, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_passphrase); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 435, __pyx_L1_error)
   __pyx_v_c_passphrase = __pyx_t_2;
 
-  /* "ssh/session.pyx":436
+  /* "ssh/session.pyx":437
  *         cdef char *c_passphrase = b_passphrase
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8018,16 +8018,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_96userauth_publickey_auto(struc
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":437
+        /* "ssh/session.pyx":438
  *         cdef int rc
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_publickey_auto(
  *                 self._session, NULL, c_passphrase)
  */
-        __pyx_t_3 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 437, __pyx_L4_error)
+        __pyx_t_3 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 438, __pyx_L4_error)
 
-        /* "ssh/session.pyx":438
+        /* "ssh/session.pyx":439
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_publickey_auto(             # <<<<<<<<<<<<<<
@@ -8037,7 +8037,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_96userauth_publickey_auto(struc
         __pyx_v_rc = ssh_userauth_publickey_auto(__pyx_v_self->_session, NULL, __pyx_v_c_passphrase);
       }
 
-      /* "ssh/session.pyx":436
+      /* "ssh/session.pyx":437
  *         cdef char *c_passphrase = b_passphrase
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8063,7 +8063,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_96userauth_publickey_auto(struc
       }
   }
 
-  /* "ssh/session.pyx":440
+  /* "ssh/session.pyx":441
  *             rc = c_ssh.ssh_userauth_publickey_auto(
  *                 self._session, NULL, c_passphrase)
  *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -8071,14 +8071,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_96userauth_publickey_auto(struc
  *     def userauth_password(self, username not None, password not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 440, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 440, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 441, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 441, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":432
+  /* "ssh/session.pyx":433
  *             return handle_error_codes(rc, self._session)
  * 
  *     def userauth_publickey_auto(self, passphrase not None):             # <<<<<<<<<<<<<<
@@ -8098,7 +8098,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_96userauth_publickey_auto(struc
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":442
+/* "ssh/session.pyx":443
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_password(self, username not None, password not None):             # <<<<<<<<<<<<<<
@@ -8138,11 +8138,11 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_99userauth_password(PyObject *_
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_password)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("userauth_password", 1, 2, 2, 1); __PYX_ERR(0, 442, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("userauth_password", 1, 2, 2, 1); __PYX_ERR(0, 443, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "userauth_password") < 0)) __PYX_ERR(0, 442, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "userauth_password") < 0)) __PYX_ERR(0, 443, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -8155,17 +8155,17 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_99userauth_password(PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("userauth_password", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 442, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("userauth_password", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 443, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("ssh.session.Session.userauth_password", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_username) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "username"); __PYX_ERR(0, 442, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "username"); __PYX_ERR(0, 443, __pyx_L1_error)
   }
   if (unlikely(((PyObject *)__pyx_v_password) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "password"); __PYX_ERR(0, 442, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "password"); __PYX_ERR(0, 443, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_7session_7Session_98userauth_password(((struct __pyx_obj_3ssh_7session_Session *)__pyx_v_self), __pyx_v_username, __pyx_v_password);
 
@@ -8192,31 +8192,31 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("userauth_password", 0);
 
-  /* "ssh/session.pyx":443
+  /* "ssh/session.pyx":444
  * 
  *     def userauth_password(self, username not None, password not None):
  *         cdef bytes b_username = to_bytes(username)             # <<<<<<<<<<<<<<
  *         cdef bytes b_password = to_bytes(password)
  *         cdef char *c_username = b_username
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_username); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 443, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_username); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 444, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_username = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/session.pyx":444
+  /* "ssh/session.pyx":445
  *     def userauth_password(self, username not None, password not None):
  *         cdef bytes b_username = to_bytes(username)
  *         cdef bytes b_password = to_bytes(password)             # <<<<<<<<<<<<<<
  *         cdef char *c_username = b_username
  *         cdef char *c_password = b_password
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_password); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 444, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_password); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 445, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_password = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/session.pyx":445
+  /* "ssh/session.pyx":446
  *         cdef bytes b_username = to_bytes(username)
  *         cdef bytes b_password = to_bytes(password)
  *         cdef char *c_username = b_username             # <<<<<<<<<<<<<<
@@ -8225,12 +8225,12 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
  */
   if (unlikely(__pyx_v_b_username == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 445, __pyx_L1_error)
+    __PYX_ERR(0, 446, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_username); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 445, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_username); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 446, __pyx_L1_error)
   __pyx_v_c_username = __pyx_t_2;
 
-  /* "ssh/session.pyx":446
+  /* "ssh/session.pyx":447
  *         cdef bytes b_password = to_bytes(password)
  *         cdef char *c_username = b_username
  *         cdef char *c_password = b_password             # <<<<<<<<<<<<<<
@@ -8239,12 +8239,12 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
  */
   if (unlikely(__pyx_v_b_password == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 446, __pyx_L1_error)
+    __PYX_ERR(0, 447, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_password); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 446, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_password); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 447, __pyx_L1_error)
   __pyx_v_c_password = __pyx_t_2;
 
-  /* "ssh/session.pyx":448
+  /* "ssh/session.pyx":449
  *         cdef char *c_password = b_password
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8259,16 +8259,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":449
+        /* "ssh/session.pyx":450
  *         cdef int rc
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_password(
  *                 self._session, c_username, c_password)
  */
-        __pyx_t_3 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 449, __pyx_L4_error)
+        __pyx_t_3 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 450, __pyx_L4_error)
 
-        /* "ssh/session.pyx":450
+        /* "ssh/session.pyx":451
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_password(             # <<<<<<<<<<<<<<
@@ -8278,7 +8278,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
         __pyx_v_rc = ssh_userauth_password(__pyx_v_self->_session, __pyx_v_c_username, __pyx_v_c_password);
       }
 
-      /* "ssh/session.pyx":448
+      /* "ssh/session.pyx":449
  *         cdef char *c_password = b_password
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8304,7 +8304,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
       }
   }
 
-  /* "ssh/session.pyx":452
+  /* "ssh/session.pyx":453
  *             rc = c_ssh.ssh_userauth_password(
  *                 self._session, c_username, c_password)
  *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -8312,14 +8312,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
  *     def userauth_kbdint(self, username not None, submethods not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 452, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 452, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 453, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 453, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":442
+  /* "ssh/session.pyx":443
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_password(self, username not None, password not None):             # <<<<<<<<<<<<<<
@@ -8340,7 +8340,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":454
+/* "ssh/session.pyx":455
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_kbdint(self, username not None, submethods not None):             # <<<<<<<<<<<<<<
@@ -8380,11 +8380,11 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_101userauth_kbdint(PyObject *__
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_submethods)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("userauth_kbdint", 1, 2, 2, 1); __PYX_ERR(0, 454, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("userauth_kbdint", 1, 2, 2, 1); __PYX_ERR(0, 455, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "userauth_kbdint") < 0)) __PYX_ERR(0, 454, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "userauth_kbdint") < 0)) __PYX_ERR(0, 455, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -8397,17 +8397,17 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_101userauth_kbdint(PyObject *__
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("userauth_kbdint", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 454, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("userauth_kbdint", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 455, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("ssh.session.Session.userauth_kbdint", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_username) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "username"); __PYX_ERR(0, 454, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "username"); __PYX_ERR(0, 455, __pyx_L1_error)
   }
   if (unlikely(((PyObject *)__pyx_v_submethods) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "submethods"); __PYX_ERR(0, 454, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "submethods"); __PYX_ERR(0, 455, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_7session_7Session_100userauth_kbdint(((struct __pyx_obj_3ssh_7session_Session *)__pyx_v_self), __pyx_v_username, __pyx_v_submethods);
 
@@ -8434,31 +8434,31 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("userauth_kbdint", 0);
 
-  /* "ssh/session.pyx":455
+  /* "ssh/session.pyx":456
  * 
  *     def userauth_kbdint(self, username not None, submethods not None):
  *         cdef bytes b_username = to_bytes(username)             # <<<<<<<<<<<<<<
  *         cdef bytes b_submethods = to_bytes(submethods)
  *         cdef char *c_username = b_username
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_username); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 455, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_username); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 456, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_username = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/session.pyx":456
+  /* "ssh/session.pyx":457
  *     def userauth_kbdint(self, username not None, submethods not None):
  *         cdef bytes b_username = to_bytes(username)
  *         cdef bytes b_submethods = to_bytes(submethods)             # <<<<<<<<<<<<<<
  *         cdef char *c_username = b_username
  *         cdef char *c_submethods = b_submethods
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_submethods); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 456, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_submethods); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 457, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_submethods = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/session.pyx":457
+  /* "ssh/session.pyx":458
  *         cdef bytes b_username = to_bytes(username)
  *         cdef bytes b_submethods = to_bytes(submethods)
  *         cdef char *c_username = b_username             # <<<<<<<<<<<<<<
@@ -8467,12 +8467,12 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
  */
   if (unlikely(__pyx_v_b_username == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 457, __pyx_L1_error)
+    __PYX_ERR(0, 458, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_username); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 457, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_username); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 458, __pyx_L1_error)
   __pyx_v_c_username = __pyx_t_2;
 
-  /* "ssh/session.pyx":458
+  /* "ssh/session.pyx":459
  *         cdef bytes b_submethods = to_bytes(submethods)
  *         cdef char *c_username = b_username
  *         cdef char *c_submethods = b_submethods             # <<<<<<<<<<<<<<
@@ -8481,12 +8481,12 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
  */
   if (unlikely(__pyx_v_b_submethods == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 458, __pyx_L1_error)
+    __PYX_ERR(0, 459, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_submethods); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 458, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_submethods); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 459, __pyx_L1_error)
   __pyx_v_c_submethods = __pyx_t_2;
 
-  /* "ssh/session.pyx":460
+  /* "ssh/session.pyx":461
  *         cdef char *c_submethods = b_submethods
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8501,16 +8501,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":461
+        /* "ssh/session.pyx":462
  *         cdef int rc
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_kbdint(
  *                 self._session, c_username, c_submethods)
  */
-        __pyx_t_3 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 461, __pyx_L4_error)
+        __pyx_t_3 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 462, __pyx_L4_error)
 
-        /* "ssh/session.pyx":462
+        /* "ssh/session.pyx":463
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_kbdint(             # <<<<<<<<<<<<<<
@@ -8520,7 +8520,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
         __pyx_v_rc = ssh_userauth_kbdint(__pyx_v_self->_session, __pyx_v_c_username, __pyx_v_c_submethods);
       }
 
-      /* "ssh/session.pyx":460
+      /* "ssh/session.pyx":461
  *         cdef char *c_submethods = b_submethods
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8546,7 +8546,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
       }
   }
 
-  /* "ssh/session.pyx":464
+  /* "ssh/session.pyx":465
  *             rc = c_ssh.ssh_userauth_kbdint(
  *                 self._session, c_username, c_submethods)
  *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -8554,14 +8554,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
  *     def userauth_kbdint_getinstruction(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 464, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 464, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 465, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 465, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":454
+  /* "ssh/session.pyx":455
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_kbdint(self, username not None, submethods not None):             # <<<<<<<<<<<<<<
@@ -8582,7 +8582,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":466
+/* "ssh/session.pyx":467
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_kbdint_getinstruction(self):             # <<<<<<<<<<<<<<
@@ -8613,7 +8613,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_102userauth_kbdint_getinstructi
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("userauth_kbdint_getinstruction", 0);
 
-  /* "ssh/session.pyx":469
+  /* "ssh/session.pyx":470
  *         cdef bytes b_instruction
  *         cdef const_char *_instruction
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8628,16 +8628,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_102userauth_kbdint_getinstructi
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":470
+        /* "ssh/session.pyx":471
  *         cdef const_char *_instruction
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             _instruction = c_ssh.ssh_userauth_kbdint_getinstruction(
  *                 self._session)
  */
-        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 470, __pyx_L4_error)
+        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 471, __pyx_L4_error)
 
-        /* "ssh/session.pyx":471
+        /* "ssh/session.pyx":472
  *         with nogil:
  *             _check_connected(self._session)
  *             _instruction = c_ssh.ssh_userauth_kbdint_getinstruction(             # <<<<<<<<<<<<<<
@@ -8647,7 +8647,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_102userauth_kbdint_getinstructi
         __pyx_v__instruction = ssh_userauth_kbdint_getinstruction(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":469
+      /* "ssh/session.pyx":470
  *         cdef bytes b_instruction
  *         cdef const_char *_instruction
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8673,20 +8673,20 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_102userauth_kbdint_getinstructi
       }
   }
 
-  /* "ssh/session.pyx":473
+  /* "ssh/session.pyx":474
  *             _instruction = c_ssh.ssh_userauth_kbdint_getinstruction(
  *                 self._session)
  *         b_instruction = to_str(<char *>_instruction)             # <<<<<<<<<<<<<<
  *         return b_instruction
  * 
  */
-  __pyx_t_2 = __pyx_f_3ssh_5utils_to_str(((char *)__pyx_v__instruction)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 473, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_3ssh_5utils_to_str(((char *)__pyx_v__instruction)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 474, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(PyBytes_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 473, __pyx_L1_error)
+  if (!(likely(PyBytes_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 474, __pyx_L1_error)
   __pyx_v_b_instruction = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":474
+  /* "ssh/session.pyx":475
  *                 self._session)
  *         b_instruction = to_str(<char *>_instruction)
  *         return b_instruction             # <<<<<<<<<<<<<<
@@ -8698,7 +8698,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_102userauth_kbdint_getinstructi
   __pyx_r = __pyx_v_b_instruction;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":466
+  /* "ssh/session.pyx":467
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_kbdint_getinstruction(self):             # <<<<<<<<<<<<<<
@@ -8718,7 +8718,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_102userauth_kbdint_getinstructi
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":476
+/* "ssh/session.pyx":477
  *         return b_instruction
  * 
  *     def userauth_kbdint_getname(self):             # <<<<<<<<<<<<<<
@@ -8749,7 +8749,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_104userauth_kbdint_getname(stru
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("userauth_kbdint_getname", 0);
 
-  /* "ssh/session.pyx":479
+  /* "ssh/session.pyx":480
  *         cdef bytes b_name
  *         cdef const_char *_name
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8764,16 +8764,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_104userauth_kbdint_getname(stru
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":480
+        /* "ssh/session.pyx":481
  *         cdef const_char *_name
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             _name = c_ssh.ssh_userauth_kbdint_getname(self._session)
  *         b_name = to_str(<char *>_name)
  */
-        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 480, __pyx_L4_error)
+        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 481, __pyx_L4_error)
 
-        /* "ssh/session.pyx":481
+        /* "ssh/session.pyx":482
  *         with nogil:
  *             _check_connected(self._session)
  *             _name = c_ssh.ssh_userauth_kbdint_getname(self._session)             # <<<<<<<<<<<<<<
@@ -8783,7 +8783,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_104userauth_kbdint_getname(stru
         __pyx_v__name = ssh_userauth_kbdint_getname(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":479
+      /* "ssh/session.pyx":480
  *         cdef bytes b_name
  *         cdef const_char *_name
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8809,20 +8809,20 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_104userauth_kbdint_getname(stru
       }
   }
 
-  /* "ssh/session.pyx":482
+  /* "ssh/session.pyx":483
  *             _check_connected(self._session)
  *             _name = c_ssh.ssh_userauth_kbdint_getname(self._session)
  *         b_name = to_str(<char *>_name)             # <<<<<<<<<<<<<<
  *         return b_name
  * 
  */
-  __pyx_t_2 = __pyx_f_3ssh_5utils_to_str(((char *)__pyx_v__name)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 482, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_3ssh_5utils_to_str(((char *)__pyx_v__name)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 483, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  if (!(likely(PyBytes_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 482, __pyx_L1_error)
+  if (!(likely(PyBytes_CheckExact(__pyx_t_2))||((__pyx_t_2) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_2)->tp_name), 0))) __PYX_ERR(0, 483, __pyx_L1_error)
   __pyx_v_b_name = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":483
+  /* "ssh/session.pyx":484
  *             _name = c_ssh.ssh_userauth_kbdint_getname(self._session)
  *         b_name = to_str(<char *>_name)
  *         return b_name             # <<<<<<<<<<<<<<
@@ -8834,7 +8834,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_104userauth_kbdint_getname(stru
   __pyx_r = __pyx_v_b_name;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":476
+  /* "ssh/session.pyx":477
  *         return b_instruction
  * 
  *     def userauth_kbdint_getname(self):             # <<<<<<<<<<<<<<
@@ -8854,7 +8854,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_104userauth_kbdint_getname(stru
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":485
+/* "ssh/session.pyx":486
  *         return b_name
  * 
  *     def userauth_kbdint_getnprompts(self):             # <<<<<<<<<<<<<<
@@ -8884,7 +8884,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_106userauth_kbdint_getnprompts(
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("userauth_kbdint_getnprompts", 0);
 
-  /* "ssh/session.pyx":487
+  /* "ssh/session.pyx":488
  *     def userauth_kbdint_getnprompts(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8899,16 +8899,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_106userauth_kbdint_getnprompts(
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":488
+        /* "ssh/session.pyx":489
  *         cdef int rc
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_kbdint_getnprompts(self._session)
  *         return rc
  */
-        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 488, __pyx_L4_error)
+        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 489, __pyx_L4_error)
 
-        /* "ssh/session.pyx":489
+        /* "ssh/session.pyx":490
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_kbdint_getnprompts(self._session)             # <<<<<<<<<<<<<<
@@ -8918,7 +8918,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_106userauth_kbdint_getnprompts(
         __pyx_v_rc = ssh_userauth_kbdint_getnprompts(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":487
+      /* "ssh/session.pyx":488
  *     def userauth_kbdint_getnprompts(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8944,7 +8944,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_106userauth_kbdint_getnprompts(
       }
   }
 
-  /* "ssh/session.pyx":490
+  /* "ssh/session.pyx":491
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_kbdint_getnprompts(self._session)
  *         return rc             # <<<<<<<<<<<<<<
@@ -8952,13 +8952,13 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_106userauth_kbdint_getnprompts(
  *     def userauth_kbdint_getprompt(self, unsigned int i, bytes echo not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 490, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 491, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":485
+  /* "ssh/session.pyx":486
  *         return b_name
  * 
  *     def userauth_kbdint_getnprompts(self):             # <<<<<<<<<<<<<<
@@ -8977,7 +8977,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_106userauth_kbdint_getnprompts(
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":492
+/* "ssh/session.pyx":493
  *         return rc
  * 
  *     def userauth_kbdint_getprompt(self, unsigned int i, bytes echo not None):             # <<<<<<<<<<<<<<
@@ -9017,11 +9017,11 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_109userauth_kbdint_getprompt(Py
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_echo)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("userauth_kbdint_getprompt", 1, 2, 2, 1); __PYX_ERR(0, 492, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("userauth_kbdint_getprompt", 1, 2, 2, 1); __PYX_ERR(0, 493, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "userauth_kbdint_getprompt") < 0)) __PYX_ERR(0, 492, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "userauth_kbdint_getprompt") < 0)) __PYX_ERR(0, 493, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -9029,18 +9029,18 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_109userauth_kbdint_getprompt(Py
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_i = __Pyx_PyInt_As_unsigned_int(values[0]); if (unlikely((__pyx_v_i == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 492, __pyx_L3_error)
+    __pyx_v_i = __Pyx_PyInt_As_unsigned_int(values[0]); if (unlikely((__pyx_v_i == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 493, __pyx_L3_error)
     __pyx_v_echo = ((PyObject*)values[1]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("userauth_kbdint_getprompt", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 492, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("userauth_kbdint_getprompt", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 493, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("ssh.session.Session.userauth_kbdint_getprompt", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_echo), (&PyBytes_Type), 0, "echo", 1))) __PYX_ERR(0, 492, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_echo), (&PyBytes_Type), 0, "echo", 1))) __PYX_ERR(0, 493, __pyx_L1_error)
   __pyx_r = __pyx_pf_3ssh_7session_7Session_108userauth_kbdint_getprompt(((struct __pyx_obj_3ssh_7session_Session *)__pyx_v_self), __pyx_v_i, __pyx_v_echo);
 
   /* function exit code */
@@ -9063,17 +9063,17 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_108userauth_kbdint_getprompt(st
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("userauth_kbdint_getprompt", 0);
 
-  /* "ssh/session.pyx":495
+  /* "ssh/session.pyx":496
  *         cdef const_char *_prompt
  *         cdef bytes b_prompt
  *         cdef char *c_echo = echo             # <<<<<<<<<<<<<<
  *         with nogil:
  *             _check_connected(self._session)
  */
-  __pyx_t_1 = __Pyx_PyBytes_AsWritableString(__pyx_v_echo); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 495, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBytes_AsWritableString(__pyx_v_echo); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 496, __pyx_L1_error)
   __pyx_v_c_echo = __pyx_t_1;
 
-  /* "ssh/session.pyx":496
+  /* "ssh/session.pyx":497
  *         cdef bytes b_prompt
  *         cdef char *c_echo = echo
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9088,16 +9088,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_108userauth_kbdint_getprompt(st
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":497
+        /* "ssh/session.pyx":498
  *         cdef char *c_echo = echo
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             _prompt = c_ssh.ssh_userauth_kbdint_getprompt(
  *                 self._session, i, c_echo)
  */
-        __pyx_t_2 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 497, __pyx_L4_error)
+        __pyx_t_2 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 498, __pyx_L4_error)
 
-        /* "ssh/session.pyx":498
+        /* "ssh/session.pyx":499
  *         with nogil:
  *             _check_connected(self._session)
  *             _prompt = c_ssh.ssh_userauth_kbdint_getprompt(             # <<<<<<<<<<<<<<
@@ -9107,7 +9107,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_108userauth_kbdint_getprompt(st
         __pyx_v__prompt = ssh_userauth_kbdint_getprompt(__pyx_v_self->_session, __pyx_v_i, __pyx_v_c_echo);
       }
 
-      /* "ssh/session.pyx":496
+      /* "ssh/session.pyx":497
  *         cdef bytes b_prompt
  *         cdef char *c_echo = echo
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9133,19 +9133,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_108userauth_kbdint_getprompt(st
       }
   }
 
-  /* "ssh/session.pyx":500
+  /* "ssh/session.pyx":501
  *             _prompt = c_ssh.ssh_userauth_kbdint_getprompt(
  *                 self._session, i, c_echo)
  *         b_prompt = _prompt             # <<<<<<<<<<<<<<
  *         return b_prompt
  * 
  */
-  __pyx_t_3 = __Pyx_PyBytes_FromString(__pyx_v__prompt); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 500, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyBytes_FromString(__pyx_v__prompt); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 501, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_b_prompt = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "ssh/session.pyx":501
+  /* "ssh/session.pyx":502
  *                 self._session, i, c_echo)
  *         b_prompt = _prompt
  *         return b_prompt             # <<<<<<<<<<<<<<
@@ -9157,7 +9157,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_108userauth_kbdint_getprompt(st
   __pyx_r = __pyx_v_b_prompt;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":492
+  /* "ssh/session.pyx":493
  *         return rc
  * 
  *     def userauth_kbdint_getprompt(self, unsigned int i, bytes echo not None):             # <<<<<<<<<<<<<<
@@ -9177,7 +9177,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_108userauth_kbdint_getprompt(st
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":503
+/* "ssh/session.pyx":504
  *         return b_prompt
  * 
  *     def userauth_kbdint_getnanswers(self):             # <<<<<<<<<<<<<<
@@ -9207,7 +9207,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_110userauth_kbdint_getnanswers(
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("userauth_kbdint_getnanswers", 0);
 
-  /* "ssh/session.pyx":505
+  /* "ssh/session.pyx":506
  *     def userauth_kbdint_getnanswers(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9222,16 +9222,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_110userauth_kbdint_getnanswers(
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":506
+        /* "ssh/session.pyx":507
  *         cdef int rc
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_kbdint_getnanswers(self._session)
  *         return rc
  */
-        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 506, __pyx_L4_error)
+        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 507, __pyx_L4_error)
 
-        /* "ssh/session.pyx":507
+        /* "ssh/session.pyx":508
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_kbdint_getnanswers(self._session)             # <<<<<<<<<<<<<<
@@ -9241,7 +9241,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_110userauth_kbdint_getnanswers(
         __pyx_v_rc = ssh_userauth_kbdint_getnanswers(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":505
+      /* "ssh/session.pyx":506
  *     def userauth_kbdint_getnanswers(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9267,7 +9267,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_110userauth_kbdint_getnanswers(
       }
   }
 
-  /* "ssh/session.pyx":508
+  /* "ssh/session.pyx":509
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_kbdint_getnanswers(self._session)
  *         return rc             # <<<<<<<<<<<<<<
@@ -9275,13 +9275,13 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_110userauth_kbdint_getnanswers(
  *     def userauth_kbdint_getanswer(self, unsigned int i):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 508, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 509, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":503
+  /* "ssh/session.pyx":504
  *         return b_prompt
  * 
  *     def userauth_kbdint_getnanswers(self):             # <<<<<<<<<<<<<<
@@ -9300,7 +9300,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_110userauth_kbdint_getnanswers(
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":510
+/* "ssh/session.pyx":511
  *         return rc
  * 
  *     def userauth_kbdint_getanswer(self, unsigned int i):             # <<<<<<<<<<<<<<
@@ -9317,7 +9317,7 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_113userauth_kbdint_getanswer(Py
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("userauth_kbdint_getanswer (wrapper)", 0);
   assert(__pyx_arg_i); {
-    __pyx_v_i = __Pyx_PyInt_As_unsigned_int(__pyx_arg_i); if (unlikely((__pyx_v_i == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 510, __pyx_L3_error)
+    __pyx_v_i = __Pyx_PyInt_As_unsigned_int(__pyx_arg_i); if (unlikely((__pyx_v_i == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 511, __pyx_L3_error)
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9341,7 +9341,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_112userauth_kbdint_getanswer(st
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("userauth_kbdint_getanswer", 0);
 
-  /* "ssh/session.pyx":513
+  /* "ssh/session.pyx":514
  *         cdef const_char *_answer
  *         cdef bytes b_answer
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9356,16 +9356,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_112userauth_kbdint_getanswer(st
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":514
+        /* "ssh/session.pyx":515
  *         cdef bytes b_answer
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             _answer = c_ssh.ssh_userauth_kbdint_getanswer(
  *                 self._session, i)
  */
-        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 514, __pyx_L4_error)
+        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 515, __pyx_L4_error)
 
-        /* "ssh/session.pyx":515
+        /* "ssh/session.pyx":516
  *         with nogil:
  *             _check_connected(self._session)
  *             _answer = c_ssh.ssh_userauth_kbdint_getanswer(             # <<<<<<<<<<<<<<
@@ -9375,7 +9375,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_112userauth_kbdint_getanswer(st
         __pyx_v__answer = ssh_userauth_kbdint_getanswer(__pyx_v_self->_session, __pyx_v_i);
       }
 
-      /* "ssh/session.pyx":513
+      /* "ssh/session.pyx":514
  *         cdef const_char *_answer
  *         cdef bytes b_answer
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9401,19 +9401,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_112userauth_kbdint_getanswer(st
       }
   }
 
-  /* "ssh/session.pyx":517
+  /* "ssh/session.pyx":518
  *             _answer = c_ssh.ssh_userauth_kbdint_getanswer(
  *                 self._session, i)
  *         b_answer = _answer             # <<<<<<<<<<<<<<
  *         return b_answer
  * 
  */
-  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__answer); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 517, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__answer); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 518, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_b_answer = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":518
+  /* "ssh/session.pyx":519
  *                 self._session, i)
  *         b_answer = _answer
  *         return b_answer             # <<<<<<<<<<<<<<
@@ -9425,7 +9425,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_112userauth_kbdint_getanswer(st
   __pyx_r = __pyx_v_b_answer;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":510
+  /* "ssh/session.pyx":511
  *         return rc
  * 
  *     def userauth_kbdint_getanswer(self, unsigned int i):             # <<<<<<<<<<<<<<
@@ -9445,7 +9445,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_112userauth_kbdint_getanswer(st
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":520
+/* "ssh/session.pyx":521
  *         return b_answer
  * 
  *     def userauth_kbdint_setanswer(self, unsigned int i, bytes answer not None):             # <<<<<<<<<<<<<<
@@ -9485,11 +9485,11 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_115userauth_kbdint_setanswer(Py
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_answer)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("userauth_kbdint_setanswer", 1, 2, 2, 1); __PYX_ERR(0, 520, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("userauth_kbdint_setanswer", 1, 2, 2, 1); __PYX_ERR(0, 521, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "userauth_kbdint_setanswer") < 0)) __PYX_ERR(0, 520, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "userauth_kbdint_setanswer") < 0)) __PYX_ERR(0, 521, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -9497,18 +9497,18 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_115userauth_kbdint_setanswer(Py
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_i = __Pyx_PyInt_As_unsigned_int(values[0]); if (unlikely((__pyx_v_i == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 520, __pyx_L3_error)
+    __pyx_v_i = __Pyx_PyInt_As_unsigned_int(values[0]); if (unlikely((__pyx_v_i == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 521, __pyx_L3_error)
     __pyx_v_answer = ((PyObject*)values[1]);
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("userauth_kbdint_setanswer", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 520, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("userauth_kbdint_setanswer", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 521, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("ssh.session.Session.userauth_kbdint_setanswer", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_answer), (&PyBytes_Type), 0, "answer", 1))) __PYX_ERR(0, 520, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_answer), (&PyBytes_Type), 0, "answer", 1))) __PYX_ERR(0, 521, __pyx_L1_error)
   __pyx_r = __pyx_pf_3ssh_7session_7Session_114userauth_kbdint_setanswer(((struct __pyx_obj_3ssh_7session_Session *)__pyx_v_self), __pyx_v_i, __pyx_v_answer);
 
   /* function exit code */
@@ -9531,17 +9531,17 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_114userauth_kbdint_setanswer(st
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("userauth_kbdint_setanswer", 0);
 
-  /* "ssh/session.pyx":521
+  /* "ssh/session.pyx":522
  * 
  *     def userauth_kbdint_setanswer(self, unsigned int i, bytes answer not None):
  *         cdef char *c_answer = answer             # <<<<<<<<<<<<<<
  *         cdef int rc
  *         with nogil:
  */
-  __pyx_t_1 = __Pyx_PyBytes_AsWritableString(__pyx_v_answer); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 521, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBytes_AsWritableString(__pyx_v_answer); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 522, __pyx_L1_error)
   __pyx_v_c_answer = __pyx_t_1;
 
-  /* "ssh/session.pyx":523
+  /* "ssh/session.pyx":524
  *         cdef char *c_answer = answer
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9556,16 +9556,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_114userauth_kbdint_setanswer(st
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":524
+        /* "ssh/session.pyx":525
  *         cdef int rc
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_kbdint_setanswer(
  *                 self._session, i, <const_char *>(c_answer))
  */
-        __pyx_t_2 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 524, __pyx_L4_error)
+        __pyx_t_2 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 525, __pyx_L4_error)
 
-        /* "ssh/session.pyx":525
+        /* "ssh/session.pyx":526
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_kbdint_setanswer(             # <<<<<<<<<<<<<<
@@ -9575,7 +9575,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_114userauth_kbdint_setanswer(st
         __pyx_v_rc = ssh_userauth_kbdint_setanswer(__pyx_v_self->_session, __pyx_v_i, ((const char *)__pyx_v_c_answer));
       }
 
-      /* "ssh/session.pyx":523
+      /* "ssh/session.pyx":524
  *         cdef char *c_answer = answer
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9601,7 +9601,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_114userauth_kbdint_setanswer(st
       }
   }
 
-  /* "ssh/session.pyx":527
+  /* "ssh/session.pyx":528
  *             rc = c_ssh.ssh_userauth_kbdint_setanswer(
  *                 self._session, i, <const_char *>(c_answer))
  *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -9609,14 +9609,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_114userauth_kbdint_setanswer(st
  *     def userauth_gssapi(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 527, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 527, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 528, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 528, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_r = __pyx_t_4;
   __pyx_t_4 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":520
+  /* "ssh/session.pyx":521
  *         return b_answer
  * 
  *     def userauth_kbdint_setanswer(self, unsigned int i, bytes answer not None):             # <<<<<<<<<<<<<<
@@ -9635,7 +9635,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_114userauth_kbdint_setanswer(st
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":529
+/* "ssh/session.pyx":530
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_gssapi(self):             # <<<<<<<<<<<<<<
@@ -9666,7 +9666,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_116userauth_gssapi(struct __pyx
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("userauth_gssapi", 0);
 
-  /* "ssh/session.pyx":531
+  /* "ssh/session.pyx":532
  *     def userauth_gssapi(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9681,16 +9681,16 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_116userauth_gssapi(struct __pyx
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":532
+        /* "ssh/session.pyx":533
  *         cdef int rc
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_gssapi(self._session)
  *         return handle_error_codes(rc, self._session)
  */
-        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 532, __pyx_L4_error)
+        __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 533, __pyx_L4_error)
 
-        /* "ssh/session.pyx":533
+        /* "ssh/session.pyx":534
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_gssapi(self._session)             # <<<<<<<<<<<<<<
@@ -9700,7 +9700,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_116userauth_gssapi(struct __pyx
         __pyx_v_rc = ssh_userauth_gssapi(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":531
+      /* "ssh/session.pyx":532
  *     def userauth_gssapi(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9726,7 +9726,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_116userauth_gssapi(struct __pyx
       }
   }
 
-  /* "ssh/session.pyx":534
+  /* "ssh/session.pyx":535
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_gssapi(self._session)
  *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -9734,14 +9734,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_116userauth_gssapi(struct __pyx
  *     def write_knownhost(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 534, __pyx_L1_error)
-  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 534, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 535, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 535, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":529
+  /* "ssh/session.pyx":530
  *         return handle_error_codes(rc, self._session)
  * 
  *     def userauth_gssapi(self):             # <<<<<<<<<<<<<<
@@ -9760,7 +9760,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_116userauth_gssapi(struct __pyx
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":536
+/* "ssh/session.pyx":537
  *         return handle_error_codes(rc, self._session)
  * 
  *     def write_knownhost(self):             # <<<<<<<<<<<<<<
@@ -9790,7 +9790,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_118write_knownhost(struct __pyx
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("write_knownhost", 0);
 
-  /* "ssh/session.pyx":538
+  /* "ssh/session.pyx":539
  *     def write_knownhost(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9805,7 +9805,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_118write_knownhost(struct __pyx
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":539
+        /* "ssh/session.pyx":540
  *         cdef int rc
  *         with nogil:
  *             rc = c_ssh.ssh_write_knownhost(self._session)             # <<<<<<<<<<<<<<
@@ -9815,7 +9815,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_118write_knownhost(struct __pyx
         __pyx_v_rc = ssh_write_knownhost(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":538
+      /* "ssh/session.pyx":539
  *     def write_knownhost(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9834,7 +9834,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_118write_knownhost(struct __pyx
       }
   }
 
-  /* "ssh/session.pyx":540
+  /* "ssh/session.pyx":541
  *         with nogil:
  *             rc = c_ssh.ssh_write_knownhost(self._session)
  *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
@@ -9842,14 +9842,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_118write_knownhost(struct __pyx
  *     def dump_knownhost(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 540, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 540, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 541, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 541, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":536
+  /* "ssh/session.pyx":537
  *         return handle_error_codes(rc, self._session)
  * 
  *     def write_knownhost(self):             # <<<<<<<<<<<<<<
@@ -9868,7 +9868,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_118write_knownhost(struct __pyx
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":542
+/* "ssh/session.pyx":543
  *         return handle_error_codes(rc, self._session)
  * 
  *     def dump_knownhost(self):             # <<<<<<<<<<<<<<
@@ -9899,7 +9899,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_120dump_knownhost(struct __pyx_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("dump_knownhost", 0);
 
-  /* "ssh/session.pyx":545
+  /* "ssh/session.pyx":546
  *         cdef const_char *_known_host
  *         cdef bytes b_known_host
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9914,7 +9914,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_120dump_knownhost(struct __pyx_
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":546
+        /* "ssh/session.pyx":547
  *         cdef bytes b_known_host
  *         with nogil:
  *             _known_host = c_ssh.ssh_dump_knownhost(self._session)             # <<<<<<<<<<<<<<
@@ -9924,7 +9924,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_120dump_knownhost(struct __pyx_
         __pyx_v__known_host = ssh_dump_knownhost(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":545
+      /* "ssh/session.pyx":546
  *         cdef const_char *_known_host
  *         cdef bytes b_known_host
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9943,7 +9943,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_120dump_knownhost(struct __pyx_
       }
   }
 
-  /* "ssh/session.pyx":547
+  /* "ssh/session.pyx":548
  *         with nogil:
  *             _known_host = c_ssh.ssh_dump_knownhost(self._session)
  *         if _known_host is NULL:             # <<<<<<<<<<<<<<
@@ -9953,7 +9953,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_120dump_knownhost(struct __pyx_
   __pyx_t_1 = ((__pyx_v__known_host == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "ssh/session.pyx":548
+    /* "ssh/session.pyx":549
  *             _known_host = c_ssh.ssh_dump_knownhost(self._session)
  *         if _known_host is NULL:
  *             return             # <<<<<<<<<<<<<<
@@ -9964,7 +9964,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_120dump_knownhost(struct __pyx_
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "ssh/session.pyx":547
+    /* "ssh/session.pyx":548
  *         with nogil:
  *             _known_host = c_ssh.ssh_dump_knownhost(self._session)
  *         if _known_host is NULL:             # <<<<<<<<<<<<<<
@@ -9973,19 +9973,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_120dump_knownhost(struct __pyx_
  */
   }
 
-  /* "ssh/session.pyx":549
+  /* "ssh/session.pyx":550
  *         if _known_host is NULL:
  *             return
  *         b_known_host = _known_host             # <<<<<<<<<<<<<<
  *         return b_known_host
  * 
  */
-  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__known_host); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 549, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__known_host); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 550, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_b_known_host = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":550
+  /* "ssh/session.pyx":551
  *             return
  *         b_known_host = _known_host
  *         return b_known_host             # <<<<<<<<<<<<<<
@@ -9997,7 +9997,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_120dump_knownhost(struct __pyx_
   __pyx_r = __pyx_v_b_known_host;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":542
+  /* "ssh/session.pyx":543
  *         return handle_error_codes(rc, self._session)
  * 
  *     def dump_knownhost(self):             # <<<<<<<<<<<<<<
@@ -10017,7 +10017,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_120dump_knownhost(struct __pyx_
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":552
+/* "ssh/session.pyx":553
  *         return b_known_host
  * 
  *     def get_clientbanner(self):             # <<<<<<<<<<<<<<
@@ -10048,7 +10048,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_122get_clientbanner(struct __py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("get_clientbanner", 0);
 
-  /* "ssh/session.pyx":555
+  /* "ssh/session.pyx":556
  *         cdef const_char *_banner
  *         cdef bytes banner
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10063,7 +10063,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_122get_clientbanner(struct __py
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":556
+        /* "ssh/session.pyx":557
  *         cdef bytes banner
  *         with nogil:
  *             _banner = c_ssh.ssh_get_clientbanner(self._session)             # <<<<<<<<<<<<<<
@@ -10073,7 +10073,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_122get_clientbanner(struct __py
         __pyx_v__banner = ssh_get_clientbanner(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":555
+      /* "ssh/session.pyx":556
  *         cdef const_char *_banner
  *         cdef bytes banner
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10092,7 +10092,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_122get_clientbanner(struct __py
       }
   }
 
-  /* "ssh/session.pyx":557
+  /* "ssh/session.pyx":558
  *         with nogil:
  *             _banner = c_ssh.ssh_get_clientbanner(self._session)
  *         if _banner is NULL:             # <<<<<<<<<<<<<<
@@ -10102,7 +10102,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_122get_clientbanner(struct __py
   __pyx_t_1 = ((__pyx_v__banner == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "ssh/session.pyx":558
+    /* "ssh/session.pyx":559
  *             _banner = c_ssh.ssh_get_clientbanner(self._session)
  *         if _banner is NULL:
  *             return             # <<<<<<<<<<<<<<
@@ -10113,7 +10113,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_122get_clientbanner(struct __py
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "ssh/session.pyx":557
+    /* "ssh/session.pyx":558
  *         with nogil:
  *             _banner = c_ssh.ssh_get_clientbanner(self._session)
  *         if _banner is NULL:             # <<<<<<<<<<<<<<
@@ -10122,19 +10122,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_122get_clientbanner(struct __py
  */
   }
 
-  /* "ssh/session.pyx":559
+  /* "ssh/session.pyx":560
  *         if _banner is NULL:
  *             return
  *         banner = _banner             # <<<<<<<<<<<<<<
  *         return banner
  * 
  */
-  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__banner); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 559, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__banner); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 560, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_banner = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":560
+  /* "ssh/session.pyx":561
  *             return
  *         banner = _banner
  *         return banner             # <<<<<<<<<<<<<<
@@ -10146,7 +10146,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_122get_clientbanner(struct __py
   __pyx_r = __pyx_v_banner;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":552
+  /* "ssh/session.pyx":553
  *         return b_known_host
  * 
  *     def get_clientbanner(self):             # <<<<<<<<<<<<<<
@@ -10166,7 +10166,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_122get_clientbanner(struct __py
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":562
+/* "ssh/session.pyx":563
  *         return banner
  * 
  *     def get_serverbanner(self):             # <<<<<<<<<<<<<<
@@ -10197,7 +10197,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_124get_serverbanner(struct __py
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("get_serverbanner", 0);
 
-  /* "ssh/session.pyx":565
+  /* "ssh/session.pyx":566
  *         cdef const_char *_banner
  *         cdef bytes banner
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10212,7 +10212,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_124get_serverbanner(struct __py
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":566
+        /* "ssh/session.pyx":567
  *         cdef bytes banner
  *         with nogil:
  *             _banner = c_ssh.ssh_get_serverbanner(self._session)             # <<<<<<<<<<<<<<
@@ -10222,7 +10222,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_124get_serverbanner(struct __py
         __pyx_v__banner = ssh_get_serverbanner(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":565
+      /* "ssh/session.pyx":566
  *         cdef const_char *_banner
  *         cdef bytes banner
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10241,7 +10241,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_124get_serverbanner(struct __py
       }
   }
 
-  /* "ssh/session.pyx":567
+  /* "ssh/session.pyx":568
  *         with nogil:
  *             _banner = c_ssh.ssh_get_serverbanner(self._session)
  *         if _banner is NULL:             # <<<<<<<<<<<<<<
@@ -10251,7 +10251,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_124get_serverbanner(struct __py
   __pyx_t_1 = ((__pyx_v__banner == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "ssh/session.pyx":568
+    /* "ssh/session.pyx":569
  *             _banner = c_ssh.ssh_get_serverbanner(self._session)
  *         if _banner is NULL:
  *             return             # <<<<<<<<<<<<<<
@@ -10262,7 +10262,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_124get_serverbanner(struct __py
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "ssh/session.pyx":567
+    /* "ssh/session.pyx":568
  *         with nogil:
  *             _banner = c_ssh.ssh_get_serverbanner(self._session)
  *         if _banner is NULL:             # <<<<<<<<<<<<<<
@@ -10271,19 +10271,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_124get_serverbanner(struct __py
  */
   }
 
-  /* "ssh/session.pyx":569
+  /* "ssh/session.pyx":570
  *         if _banner is NULL:
  *             return
  *         banner = _banner             # <<<<<<<<<<<<<<
  *         return banner
  * 
  */
-  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__banner); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 569, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__banner); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 570, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_banner = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":570
+  /* "ssh/session.pyx":571
  *             return
  *         banner = _banner
  *         return banner             # <<<<<<<<<<<<<<
@@ -10295,7 +10295,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_124get_serverbanner(struct __py
   __pyx_r = __pyx_v_banner;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":562
+  /* "ssh/session.pyx":563
  *         return banner
  * 
  *     def get_serverbanner(self):             # <<<<<<<<<<<<<<
@@ -10315,7 +10315,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_124get_serverbanner(struct __py
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":572
+/* "ssh/session.pyx":573
  *         return banner
  * 
  *     def get_kex_algo(self):             # <<<<<<<<<<<<<<
@@ -10346,7 +10346,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_126get_kex_algo(struct __pyx_ob
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("get_kex_algo", 0);
 
-  /* "ssh/session.pyx":575
+  /* "ssh/session.pyx":576
  *         cdef const_char *_algo
  *         cdef bytes algo
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10361,7 +10361,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_126get_kex_algo(struct __pyx_ob
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":576
+        /* "ssh/session.pyx":577
  *         cdef bytes algo
  *         with nogil:
  *             _algo = c_ssh.ssh_get_kex_algo(self._session)             # <<<<<<<<<<<<<<
@@ -10371,7 +10371,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_126get_kex_algo(struct __pyx_ob
         __pyx_v__algo = ssh_get_kex_algo(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":575
+      /* "ssh/session.pyx":576
  *         cdef const_char *_algo
  *         cdef bytes algo
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10390,7 +10390,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_126get_kex_algo(struct __pyx_ob
       }
   }
 
-  /* "ssh/session.pyx":577
+  /* "ssh/session.pyx":578
  *         with nogil:
  *             _algo = c_ssh.ssh_get_kex_algo(self._session)
  *         if _algo is NULL:             # <<<<<<<<<<<<<<
@@ -10400,7 +10400,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_126get_kex_algo(struct __pyx_ob
   __pyx_t_1 = ((__pyx_v__algo == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "ssh/session.pyx":578
+    /* "ssh/session.pyx":579
  *             _algo = c_ssh.ssh_get_kex_algo(self._session)
  *         if _algo is NULL:
  *             return             # <<<<<<<<<<<<<<
@@ -10411,7 +10411,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_126get_kex_algo(struct __pyx_ob
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "ssh/session.pyx":577
+    /* "ssh/session.pyx":578
  *         with nogil:
  *             _algo = c_ssh.ssh_get_kex_algo(self._session)
  *         if _algo is NULL:             # <<<<<<<<<<<<<<
@@ -10420,19 +10420,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_126get_kex_algo(struct __pyx_ob
  */
   }
 
-  /* "ssh/session.pyx":579
+  /* "ssh/session.pyx":580
  *         if _algo is NULL:
  *             return
  *         algo = _algo             # <<<<<<<<<<<<<<
  *         return algo
  * 
  */
-  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__algo); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 579, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__algo); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 580, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_algo = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":580
+  /* "ssh/session.pyx":581
  *             return
  *         algo = _algo
  *         return algo             # <<<<<<<<<<<<<<
@@ -10444,7 +10444,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_126get_kex_algo(struct __pyx_ob
   __pyx_r = __pyx_v_algo;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":572
+  /* "ssh/session.pyx":573
  *         return banner
  * 
  *     def get_kex_algo(self):             # <<<<<<<<<<<<<<
@@ -10464,7 +10464,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_126get_kex_algo(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":582
+/* "ssh/session.pyx":583
  *         return algo
  * 
  *     def get_cipher_in(self):             # <<<<<<<<<<<<<<
@@ -10495,7 +10495,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_128get_cipher_in(struct __pyx_o
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("get_cipher_in", 0);
 
-  /* "ssh/session.pyx":585
+  /* "ssh/session.pyx":586
  *         cdef const_char *_cipher
  *         cdef bytes cipher
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10510,7 +10510,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_128get_cipher_in(struct __pyx_o
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":586
+        /* "ssh/session.pyx":587
  *         cdef bytes cipher
  *         with nogil:
  *             _cipher = c_ssh.ssh_get_cipher_in(self._session)             # <<<<<<<<<<<<<<
@@ -10520,7 +10520,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_128get_cipher_in(struct __pyx_o
         __pyx_v__cipher = ssh_get_cipher_in(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":585
+      /* "ssh/session.pyx":586
  *         cdef const_char *_cipher
  *         cdef bytes cipher
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10539,7 +10539,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_128get_cipher_in(struct __pyx_o
       }
   }
 
-  /* "ssh/session.pyx":587
+  /* "ssh/session.pyx":588
  *         with nogil:
  *             _cipher = c_ssh.ssh_get_cipher_in(self._session)
  *         if _cipher is NULL:             # <<<<<<<<<<<<<<
@@ -10549,7 +10549,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_128get_cipher_in(struct __pyx_o
   __pyx_t_1 = ((__pyx_v__cipher == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "ssh/session.pyx":588
+    /* "ssh/session.pyx":589
  *             _cipher = c_ssh.ssh_get_cipher_in(self._session)
  *         if _cipher is NULL:
  *             return             # <<<<<<<<<<<<<<
@@ -10560,7 +10560,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_128get_cipher_in(struct __pyx_o
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "ssh/session.pyx":587
+    /* "ssh/session.pyx":588
  *         with nogil:
  *             _cipher = c_ssh.ssh_get_cipher_in(self._session)
  *         if _cipher is NULL:             # <<<<<<<<<<<<<<
@@ -10569,19 +10569,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_128get_cipher_in(struct __pyx_o
  */
   }
 
-  /* "ssh/session.pyx":589
+  /* "ssh/session.pyx":590
  *         if _cipher is NULL:
  *             return
  *         cipher = _cipher             # <<<<<<<<<<<<<<
  *         return cipher
  * 
  */
-  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__cipher); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 589, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__cipher); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 590, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_cipher = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":590
+  /* "ssh/session.pyx":591
  *             return
  *         cipher = _cipher
  *         return cipher             # <<<<<<<<<<<<<<
@@ -10593,7 +10593,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_128get_cipher_in(struct __pyx_o
   __pyx_r = __pyx_v_cipher;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":582
+  /* "ssh/session.pyx":583
  *         return algo
  * 
  *     def get_cipher_in(self):             # <<<<<<<<<<<<<<
@@ -10613,7 +10613,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_128get_cipher_in(struct __pyx_o
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":592
+/* "ssh/session.pyx":593
  *         return cipher
  * 
  *     def get_cipher_out(self):             # <<<<<<<<<<<<<<
@@ -10644,7 +10644,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_130get_cipher_out(struct __pyx_
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("get_cipher_out", 0);
 
-  /* "ssh/session.pyx":595
+  /* "ssh/session.pyx":596
  *         cdef const_char *_cipher
  *         cdef bytes cipher
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10659,7 +10659,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_130get_cipher_out(struct __pyx_
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":596
+        /* "ssh/session.pyx":597
  *         cdef bytes cipher
  *         with nogil:
  *             _cipher = c_ssh.ssh_get_cipher_out(self._session)             # <<<<<<<<<<<<<<
@@ -10669,7 +10669,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_130get_cipher_out(struct __pyx_
         __pyx_v__cipher = ssh_get_cipher_out(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":595
+      /* "ssh/session.pyx":596
  *         cdef const_char *_cipher
  *         cdef bytes cipher
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10688,7 +10688,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_130get_cipher_out(struct __pyx_
       }
   }
 
-  /* "ssh/session.pyx":597
+  /* "ssh/session.pyx":598
  *         with nogil:
  *             _cipher = c_ssh.ssh_get_cipher_out(self._session)
  *         if _cipher is NULL:             # <<<<<<<<<<<<<<
@@ -10698,7 +10698,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_130get_cipher_out(struct __pyx_
   __pyx_t_1 = ((__pyx_v__cipher == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "ssh/session.pyx":598
+    /* "ssh/session.pyx":599
  *             _cipher = c_ssh.ssh_get_cipher_out(self._session)
  *         if _cipher is NULL:
  *             return             # <<<<<<<<<<<<<<
@@ -10709,7 +10709,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_130get_cipher_out(struct __pyx_
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "ssh/session.pyx":597
+    /* "ssh/session.pyx":598
  *         with nogil:
  *             _cipher = c_ssh.ssh_get_cipher_out(self._session)
  *         if _cipher is NULL:             # <<<<<<<<<<<<<<
@@ -10718,19 +10718,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_130get_cipher_out(struct __pyx_
  */
   }
 
-  /* "ssh/session.pyx":599
+  /* "ssh/session.pyx":600
  *         if _cipher is NULL:
  *             return
  *         cipher = _cipher             # <<<<<<<<<<<<<<
  *         return cipher
  * 
  */
-  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__cipher); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 599, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__cipher); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 600, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_cipher = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":600
+  /* "ssh/session.pyx":601
  *             return
  *         cipher = _cipher
  *         return cipher             # <<<<<<<<<<<<<<
@@ -10742,7 +10742,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_130get_cipher_out(struct __pyx_
   __pyx_r = __pyx_v_cipher;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":592
+  /* "ssh/session.pyx":593
  *         return cipher
  * 
  *     def get_cipher_out(self):             # <<<<<<<<<<<<<<
@@ -10762,7 +10762,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_130get_cipher_out(struct __pyx_
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":602
+/* "ssh/session.pyx":603
  *         return cipher
  * 
  *     def get_hmac_in(self):             # <<<<<<<<<<<<<<
@@ -10793,7 +10793,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_132get_hmac_in(struct __pyx_obj
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("get_hmac_in", 0);
 
-  /* "ssh/session.pyx":605
+  /* "ssh/session.pyx":606
  *         cdef const_char *_hmac
  *         cdef bytes hmac
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10808,7 +10808,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_132get_hmac_in(struct __pyx_obj
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":606
+        /* "ssh/session.pyx":607
  *         cdef bytes hmac
  *         with nogil:
  *             _hmac = c_ssh.ssh_get_hmac_in(self._session)             # <<<<<<<<<<<<<<
@@ -10818,7 +10818,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_132get_hmac_in(struct __pyx_obj
         __pyx_v__hmac = ssh_get_hmac_in(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":605
+      /* "ssh/session.pyx":606
  *         cdef const_char *_hmac
  *         cdef bytes hmac
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10837,7 +10837,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_132get_hmac_in(struct __pyx_obj
       }
   }
 
-  /* "ssh/session.pyx":607
+  /* "ssh/session.pyx":608
  *         with nogil:
  *             _hmac = c_ssh.ssh_get_hmac_in(self._session)
  *         if _hmac is NULL:             # <<<<<<<<<<<<<<
@@ -10847,7 +10847,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_132get_hmac_in(struct __pyx_obj
   __pyx_t_1 = ((__pyx_v__hmac == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "ssh/session.pyx":608
+    /* "ssh/session.pyx":609
  *             _hmac = c_ssh.ssh_get_hmac_in(self._session)
  *         if _hmac is NULL:
  *             return             # <<<<<<<<<<<<<<
@@ -10858,7 +10858,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_132get_hmac_in(struct __pyx_obj
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "ssh/session.pyx":607
+    /* "ssh/session.pyx":608
  *         with nogil:
  *             _hmac = c_ssh.ssh_get_hmac_in(self._session)
  *         if _hmac is NULL:             # <<<<<<<<<<<<<<
@@ -10867,19 +10867,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_132get_hmac_in(struct __pyx_obj
  */
   }
 
-  /* "ssh/session.pyx":609
+  /* "ssh/session.pyx":610
  *         if _hmac is NULL:
  *             return
  *         hmac = _hmac             # <<<<<<<<<<<<<<
  *         return hmac
  * 
  */
-  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__hmac); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 609, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__hmac); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 610, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_hmac = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":610
+  /* "ssh/session.pyx":611
  *             return
  *         hmac = _hmac
  *         return hmac             # <<<<<<<<<<<<<<
@@ -10891,7 +10891,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_132get_hmac_in(struct __pyx_obj
   __pyx_r = __pyx_v_hmac;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":602
+  /* "ssh/session.pyx":603
  *         return cipher
  * 
  *     def get_hmac_in(self):             # <<<<<<<<<<<<<<
@@ -10911,7 +10911,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_132get_hmac_in(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":612
+/* "ssh/session.pyx":613
  *         return hmac
  * 
  *     def get_hmac_out(self):             # <<<<<<<<<<<<<<
@@ -10942,7 +10942,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_134get_hmac_out(struct __pyx_ob
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("get_hmac_out", 0);
 
-  /* "ssh/session.pyx":615
+  /* "ssh/session.pyx":616
  *         cdef const_char *_hmac
  *         cdef bytes hmac
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10957,7 +10957,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_134get_hmac_out(struct __pyx_ob
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":616
+        /* "ssh/session.pyx":617
  *         cdef bytes hmac
  *         with nogil:
  *             _hmac = c_ssh.ssh_get_hmac_out(self._session)             # <<<<<<<<<<<<<<
@@ -10967,7 +10967,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_134get_hmac_out(struct __pyx_ob
         __pyx_v__hmac = ssh_get_hmac_out(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":615
+      /* "ssh/session.pyx":616
  *         cdef const_char *_hmac
  *         cdef bytes hmac
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -10986,7 +10986,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_134get_hmac_out(struct __pyx_ob
       }
   }
 
-  /* "ssh/session.pyx":617
+  /* "ssh/session.pyx":618
  *         with nogil:
  *             _hmac = c_ssh.ssh_get_hmac_out(self._session)
  *         if _hmac is NULL:             # <<<<<<<<<<<<<<
@@ -10996,7 +10996,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_134get_hmac_out(struct __pyx_ob
   __pyx_t_1 = ((__pyx_v__hmac == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "ssh/session.pyx":618
+    /* "ssh/session.pyx":619
  *             _hmac = c_ssh.ssh_get_hmac_out(self._session)
  *         if _hmac is NULL:
  *             return             # <<<<<<<<<<<<<<
@@ -11007,7 +11007,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_134get_hmac_out(struct __pyx_ob
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "ssh/session.pyx":617
+    /* "ssh/session.pyx":618
  *         with nogil:
  *             _hmac = c_ssh.ssh_get_hmac_out(self._session)
  *         if _hmac is NULL:             # <<<<<<<<<<<<<<
@@ -11016,19 +11016,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_134get_hmac_out(struct __pyx_ob
  */
   }
 
-  /* "ssh/session.pyx":619
+  /* "ssh/session.pyx":620
  *         if _hmac is NULL:
  *             return
  *         hmac = _hmac             # <<<<<<<<<<<<<<
  *         return hmac
  * 
  */
-  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__hmac); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 619, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__hmac); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 620, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_hmac = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":620
+  /* "ssh/session.pyx":621
  *             return
  *         hmac = _hmac
  *         return hmac             # <<<<<<<<<<<<<<
@@ -11040,7 +11040,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_134get_hmac_out(struct __pyx_ob
   __pyx_r = __pyx_v_hmac;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":612
+  /* "ssh/session.pyx":613
  *         return hmac
  * 
  *     def get_hmac_out(self):             # <<<<<<<<<<<<<<
@@ -11060,7 +11060,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_134get_hmac_out(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":622
+/* "ssh/session.pyx":623
  *         return hmac
  * 
  *     def get_error(self):             # <<<<<<<<<<<<<<
@@ -11092,7 +11092,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_136get_error(struct __pyx_obj_3
   char *__pyx_t_3;
   __Pyx_RefNannySetupContext("get_error", 0);
 
-  /* "ssh/session.pyx":625
+  /* "ssh/session.pyx":626
  *         cdef const_char *error
  *         cdef bytes b_error
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -11107,7 +11107,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_136get_error(struct __pyx_obj_3
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":626
+        /* "ssh/session.pyx":627
  *         cdef bytes b_error
  *         with nogil:
  *             error = c_ssh.ssh_get_error(self._session)             # <<<<<<<<<<<<<<
@@ -11117,7 +11117,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_136get_error(struct __pyx_obj_3
         __pyx_v_error = ssh_get_error(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":625
+      /* "ssh/session.pyx":626
  *         cdef const_char *error
  *         cdef bytes b_error
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -11136,7 +11136,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_136get_error(struct __pyx_obj_3
       }
   }
 
-  /* "ssh/session.pyx":627
+  /* "ssh/session.pyx":628
  *         with nogil:
  *             error = c_ssh.ssh_get_error(self._session)
  *         if error is NULL:             # <<<<<<<<<<<<<<
@@ -11146,7 +11146,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_136get_error(struct __pyx_obj_3
   __pyx_t_1 = ((__pyx_v_error == NULL) != 0);
   if (__pyx_t_1) {
 
-    /* "ssh/session.pyx":628
+    /* "ssh/session.pyx":629
  *             error = c_ssh.ssh_get_error(self._session)
  *         if error is NULL:
  *             return             # <<<<<<<<<<<<<<
@@ -11157,7 +11157,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_136get_error(struct __pyx_obj_3
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "ssh/session.pyx":627
+    /* "ssh/session.pyx":628
  *         with nogil:
  *             error = c_ssh.ssh_get_error(self._session)
  *         if error is NULL:             # <<<<<<<<<<<<<<
@@ -11166,19 +11166,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_136get_error(struct __pyx_obj_3
  */
   }
 
-  /* "ssh/session.pyx":629
+  /* "ssh/session.pyx":630
  *         if error is NULL:
  *             return
  *         b_error = error             # <<<<<<<<<<<<<<
  *         return to_str(b_error)
  * 
  */
-  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v_error); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 629, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v_error); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 630, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_b_error = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "ssh/session.pyx":630
+  /* "ssh/session.pyx":631
  *             return
  *         b_error = error
  *         return to_str(b_error)             # <<<<<<<<<<<<<<
@@ -11186,14 +11186,14 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_136get_error(struct __pyx_obj_3
  *     def get_error_code(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_error); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 630, __pyx_L1_error)
-  __pyx_t_2 = __pyx_f_3ssh_5utils_to_str(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 630, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_error); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 631, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_3ssh_5utils_to_str(__pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 631, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":622
+  /* "ssh/session.pyx":623
  *         return hmac
  * 
  *     def get_error(self):             # <<<<<<<<<<<<<<
@@ -11213,7 +11213,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_136get_error(struct __pyx_obj_3
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":632
+/* "ssh/session.pyx":633
  *         return to_str(b_error)
  * 
  *     def get_error_code(self):             # <<<<<<<<<<<<<<
@@ -11242,7 +11242,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_138get_error_code(struct __pyx_
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("get_error_code", 0);
 
-  /* "ssh/session.pyx":634
+  /* "ssh/session.pyx":635
  *     def get_error_code(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -11257,7 +11257,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_138get_error_code(struct __pyx_
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":635
+        /* "ssh/session.pyx":636
  *         cdef int rc
  *         with nogil:
  *             rc = c_ssh.ssh_get_error_code(self._session)             # <<<<<<<<<<<<<<
@@ -11267,7 +11267,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_138get_error_code(struct __pyx_
         __pyx_v_rc = ssh_get_error_code(__pyx_v_self->_session);
       }
 
-      /* "ssh/session.pyx":634
+      /* "ssh/session.pyx":635
  *     def get_error_code(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -11286,7 +11286,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_138get_error_code(struct __pyx_
       }
   }
 
-  /* "ssh/session.pyx":636
+  /* "ssh/session.pyx":637
  *         with nogil:
  *             rc = c_ssh.ssh_get_error_code(self._session)
  *         return rc             # <<<<<<<<<<<<<<
@@ -11294,13 +11294,13 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_138get_error_code(struct __pyx_
  *     def scp_new(self, int mode, location not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 636, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 637, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":632
+  /* "ssh/session.pyx":633
  *         return to_str(b_error)
  * 
  *     def get_error_code(self):             # <<<<<<<<<<<<<<
@@ -11319,7 +11319,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_138get_error_code(struct __pyx_
   return __pyx_r;
 }
 
-/* "ssh/session.pyx":638
+/* "ssh/session.pyx":639
  *         return rc
  * 
  *     def scp_new(self, int mode, location not None):             # <<<<<<<<<<<<<<
@@ -11359,11 +11359,11 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_141scp_new(PyObject *__pyx_v_se
         case  1:
         if (likely((values[1] = __Pyx_PyDict_GetItemStr(__pyx_kwds, __pyx_n_s_location)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("scp_new", 1, 2, 2, 1); __PYX_ERR(0, 638, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("scp_new", 1, 2, 2, 1); __PYX_ERR(0, 639, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "scp_new") < 0)) __PYX_ERR(0, 638, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "scp_new") < 0)) __PYX_ERR(0, 639, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 2) {
       goto __pyx_L5_argtuple_error;
@@ -11371,19 +11371,19 @@ static PyObject *__pyx_pw_3ssh_7session_7Session_141scp_new(PyObject *__pyx_v_se
       values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
       values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
     }
-    __pyx_v_mode = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_mode == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 638, __pyx_L3_error)
+    __pyx_v_mode = __Pyx_PyInt_As_int(values[0]); if (unlikely((__pyx_v_mode == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 639, __pyx_L3_error)
     __pyx_v_location = values[1];
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("scp_new", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 638, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("scp_new", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 639, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("ssh.session.Session.scp_new", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_location) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "location"); __PYX_ERR(0, 638, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "location"); __PYX_ERR(0, 639, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_7session_7Session_140scp_new(((struct __pyx_obj_3ssh_7session_Session *)__pyx_v_self), __pyx_v_mode, __pyx_v_location);
 
@@ -11408,19 +11408,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("scp_new", 0);
 
-  /* "ssh/session.pyx":641
+  /* "ssh/session.pyx":642
  *         """Create and initialise SCP channel"""
  *         cdef c_ssh.ssh_scp _scp
  *         cdef bytes b_location = to_bytes(location)             # <<<<<<<<<<<<<<
  *         cdef char *c_location = b_location
  *         with nogil:
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_location); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 641, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_location); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 642, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_location = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/session.pyx":642
+  /* "ssh/session.pyx":643
  *         cdef c_ssh.ssh_scp _scp
  *         cdef bytes b_location = to_bytes(location)
  *         cdef char *c_location = b_location             # <<<<<<<<<<<<<<
@@ -11429,12 +11429,12 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
  */
   if (unlikely(__pyx_v_b_location == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 642, __pyx_L1_error)
+    __PYX_ERR(0, 643, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_location); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 642, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_location); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 643, __pyx_L1_error)
   __pyx_v_c_location = __pyx_t_2;
 
-  /* "ssh/session.pyx":643
+  /* "ssh/session.pyx":644
  *         cdef bytes b_location = to_bytes(location)
  *         cdef char *c_location = b_location
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -11449,7 +11449,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
       #endif
       /*try:*/ {
 
-        /* "ssh/session.pyx":644
+        /* "ssh/session.pyx":645
  *         cdef char *c_location = b_location
  *         with nogil:
  *             _scp = c_ssh.ssh_scp_new(self._session, mode, c_location)             # <<<<<<<<<<<<<<
@@ -11458,7 +11458,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
  */
         __pyx_v__scp = ssh_scp_new(__pyx_v_self->_session, __pyx_v_mode, __pyx_v_c_location);
 
-        /* "ssh/session.pyx":645
+        /* "ssh/session.pyx":646
  *         with nogil:
  *             _scp = c_ssh.ssh_scp_new(self._session, mode, c_location)
  *             if _scp is NULL:             # <<<<<<<<<<<<<<
@@ -11468,7 +11468,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
         __pyx_t_3 = ((__pyx_v__scp == NULL) != 0);
         if (__pyx_t_3) {
 
-          /* "ssh/session.pyx":646
+          /* "ssh/session.pyx":647
  *             _scp = c_ssh.ssh_scp_new(self._session, mode, c_location)
  *             if _scp is NULL:
  *                 with gil:             # <<<<<<<<<<<<<<
@@ -11481,7 +11481,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
               #endif
               /*try:*/ {
 
-                /* "ssh/session.pyx":647
+                /* "ssh/session.pyx":648
  *             if _scp is NULL:
  *                 with gil:
  *                     return handle_error_codes(             # <<<<<<<<<<<<<<
@@ -11490,30 +11490,30 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
  */
                 __Pyx_XDECREF(__pyx_r);
 
-                /* "ssh/session.pyx":648
+                /* "ssh/session.pyx":649
  *                 with gil:
  *                     return handle_error_codes(
  *                         c_ssh.ssh_get_error_code(self._session), self._session)             # <<<<<<<<<<<<<<
  *             if c_ssh.ssh_scp_init(_scp) != c_ssh.SSH_OK:
  *                 c_ssh.ssh_scp_free(_scp)
  */
-                __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(ssh_get_error_code(__pyx_v_self->_session), __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 647, __pyx_L8_error)
+                __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(ssh_get_error_code(__pyx_v_self->_session), __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 648, __pyx_L8_error)
 
-                /* "ssh/session.pyx":647
+                /* "ssh/session.pyx":648
  *             if _scp is NULL:
  *                 with gil:
  *                     return handle_error_codes(             # <<<<<<<<<<<<<<
  *                         c_ssh.ssh_get_error_code(self._session), self._session)
  *             if c_ssh.ssh_scp_init(_scp) != c_ssh.SSH_OK:
  */
-                __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 647, __pyx_L8_error)
+                __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 648, __pyx_L8_error)
                 __Pyx_GOTREF(__pyx_t_1);
                 __pyx_r = __pyx_t_1;
                 __pyx_t_1 = 0;
                 goto __pyx_L7_return;
               }
 
-              /* "ssh/session.pyx":646
+              /* "ssh/session.pyx":647
  *             _scp = c_ssh.ssh_scp_new(self._session, mode, c_location)
  *             if _scp is NULL:
  *                 with gil:             # <<<<<<<<<<<<<<
@@ -11536,7 +11536,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
               }
           }
 
-          /* "ssh/session.pyx":645
+          /* "ssh/session.pyx":646
  *         with nogil:
  *             _scp = c_ssh.ssh_scp_new(self._session, mode, c_location)
  *             if _scp is NULL:             # <<<<<<<<<<<<<<
@@ -11545,7 +11545,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
  */
         }
 
-        /* "ssh/session.pyx":649
+        /* "ssh/session.pyx":650
  *                     return handle_error_codes(
  *                         c_ssh.ssh_get_error_code(self._session), self._session)
  *             if c_ssh.ssh_scp_init(_scp) != c_ssh.SSH_OK:             # <<<<<<<<<<<<<<
@@ -11555,7 +11555,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
         __pyx_t_3 = ((ssh_scp_init(__pyx_v__scp) != SSH_OK) != 0);
         if (__pyx_t_3) {
 
-          /* "ssh/session.pyx":650
+          /* "ssh/session.pyx":651
  *                         c_ssh.ssh_get_error_code(self._session), self._session)
  *             if c_ssh.ssh_scp_init(_scp) != c_ssh.SSH_OK:
  *                 c_ssh.ssh_scp_free(_scp)             # <<<<<<<<<<<<<<
@@ -11564,7 +11564,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
  */
           ssh_scp_free(__pyx_v__scp);
 
-          /* "ssh/session.pyx":651
+          /* "ssh/session.pyx":652
  *             if c_ssh.ssh_scp_init(_scp) != c_ssh.SSH_OK:
  *                 c_ssh.ssh_scp_free(_scp)
  *                 with gil:             # <<<<<<<<<<<<<<
@@ -11577,7 +11577,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
               #endif
               /*try:*/ {
 
-                /* "ssh/session.pyx":652
+                /* "ssh/session.pyx":653
  *                 c_ssh.ssh_scp_free(_scp)
  *                 with gil:
  *                     return handle_error_codes(             # <<<<<<<<<<<<<<
@@ -11586,29 +11586,29 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
  */
                 __Pyx_XDECREF(__pyx_r);
 
-                /* "ssh/session.pyx":653
+                /* "ssh/session.pyx":654
  *                 with gil:
  *                     return handle_error_codes(
  *                         c_ssh.ssh_get_error_code(self._session), self._session)             # <<<<<<<<<<<<<<
  *         return SCP.from_ptr(_scp, self)
  */
-                __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(ssh_get_error_code(__pyx_v_self->_session), __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 652, __pyx_L12_error)
+                __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(ssh_get_error_code(__pyx_v_self->_session), __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 653, __pyx_L12_error)
 
-                /* "ssh/session.pyx":652
+                /* "ssh/session.pyx":653
  *                 c_ssh.ssh_scp_free(_scp)
  *                 with gil:
  *                     return handle_error_codes(             # <<<<<<<<<<<<<<
  *                         c_ssh.ssh_get_error_code(self._session), self._session)
  *         return SCP.from_ptr(_scp, self)
  */
-                __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 652, __pyx_L12_error)
+                __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 653, __pyx_L12_error)
                 __Pyx_GOTREF(__pyx_t_1);
                 __pyx_r = __pyx_t_1;
                 __pyx_t_1 = 0;
                 goto __pyx_L11_return;
               }
 
-              /* "ssh/session.pyx":651
+              /* "ssh/session.pyx":652
  *             if c_ssh.ssh_scp_init(_scp) != c_ssh.SSH_OK:
  *                 c_ssh.ssh_scp_free(_scp)
  *                 with gil:             # <<<<<<<<<<<<<<
@@ -11631,7 +11631,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
               }
           }
 
-          /* "ssh/session.pyx":649
+          /* "ssh/session.pyx":650
  *                     return handle_error_codes(
  *                         c_ssh.ssh_get_error_code(self._session), self._session)
  *             if c_ssh.ssh_scp_init(_scp) != c_ssh.SSH_OK:             # <<<<<<<<<<<<<<
@@ -11641,7 +11641,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
         }
       }
 
-      /* "ssh/session.pyx":643
+      /* "ssh/session.pyx":644
  *         cdef bytes b_location = to_bytes(location)
  *         cdef char *c_location = b_location
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -11674,19 +11674,19 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_140scp_new(struct __pyx_obj_3ss
       }
   }
 
-  /* "ssh/session.pyx":654
+  /* "ssh/session.pyx":655
  *                     return handle_error_codes(
  *                         c_ssh.ssh_get_error_code(self._session), self._session)
  *         return SCP.from_ptr(_scp, self)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_3scp_SCP->from_ptr(__pyx_v__scp, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 654, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_3scp_SCP->from_ptr(__pyx_v__scp, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 655, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/session.pyx":638
+  /* "ssh/session.pyx":639
  *         return rc
  * 
  *     def scp_new(self, int mode, location not None):             # <<<<<<<<<<<<<<

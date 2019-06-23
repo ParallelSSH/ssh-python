@@ -81,7 +81,8 @@ def wait_socket(session not None, sock not None, timeout=None):
     select(readfds, writefds, (), timeout)
 
 
-cdef int _handle_general_error_codes(int errcode, ssh_session session) except -1:
+cdef int _handle_general_error_codes(
+        int errcode, ssh_session session) except -1:
     if errcode == SSH_OK:
         return SSH_OK
     elif errcode == SSH_ERROR:

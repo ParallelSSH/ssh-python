@@ -355,7 +355,8 @@ cdef class Session:
         def set_agent_channel(self, Channel channel):
             cdef int rc
             with nogil:
-                rc = c_ssh.ssh_set_agent_channel(self._session, channel._channel)
+                rc = c_ssh.ssh_set_agent_channel(
+                    self._session, channel._channel)
             return handle_error_codes(rc, self._session)
 
         def set_agent_socket(self, socket not None):

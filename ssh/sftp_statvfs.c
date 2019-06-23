@@ -1145,6 +1145,8 @@ static PyTypeObject *__pyx_ptype_3ssh_7session_Session = 0;
 /* Module declarations from 'ssh.sftp' */
 static PyTypeObject *__pyx_ptype_3ssh_4sftp_SFTP = 0;
 
+/* Module declarations from 'ssh' */
+
 /* Module declarations from 'ssh.sftp_statvfs' */
 static PyTypeObject *__pyx_ptype_3ssh_12sftp_statvfs_SFTPStatVFS = 0;
 #define __Pyx_MODULE_NAME "ssh.sftp_statvfs"

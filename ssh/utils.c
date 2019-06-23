@@ -2213,9 +2213,9 @@ static PyObject *__pyx_pf_3ssh_5utils_wait_socket(CYTHON_UNUSED PyObject *__pyx_
 /* "ssh/utils.pyx":84
  * 
  * 
- * cdef int _handle_general_error_codes(int errcode, ssh_session session) except -1:             # <<<<<<<<<<<<<<
+ * cdef int _handle_general_error_codes(             # <<<<<<<<<<<<<<
+ *         int errcode, ssh_session session) except -1:
  *     if errcode == SSH_OK:
- *         return SSH_OK
  */
 
 static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, ssh_session __pyx_v_session) {
@@ -2228,9 +2228,9 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("_handle_general_error_codes", 0);
 
-  /* "ssh/utils.pyx":85
- * 
- * cdef int _handle_general_error_codes(int errcode, ssh_session session) except -1:
+  /* "ssh/utils.pyx":86
+ * cdef int _handle_general_error_codes(
+ *         int errcode, ssh_session session) except -1:
  *     if errcode == SSH_OK:             # <<<<<<<<<<<<<<
  *         return SSH_OK
  *     elif errcode == SSH_ERROR:
@@ -2238,8 +2238,8 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
   switch (__pyx_v_errcode) {
     case SSH_OK:
 
-    /* "ssh/utils.pyx":86
- * cdef int _handle_general_error_codes(int errcode, ssh_session session) except -1:
+    /* "ssh/utils.pyx":87
+ *         int errcode, ssh_session session) except -1:
  *     if errcode == SSH_OK:
  *         return SSH_OK             # <<<<<<<<<<<<<<
  *     elif errcode == SSH_ERROR:
@@ -2248,9 +2248,9 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
     __pyx_r = SSH_OK;
     goto __pyx_L0;
 
-    /* "ssh/utils.pyx":85
- * 
- * cdef int _handle_general_error_codes(int errcode, ssh_session session) except -1:
+    /* "ssh/utils.pyx":86
+ * cdef int _handle_general_error_codes(
+ *         int errcode, ssh_session session) except -1:
  *     if errcode == SSH_OK:             # <<<<<<<<<<<<<<
  *         return SSH_OK
  *     elif errcode == SSH_ERROR:
@@ -2258,16 +2258,16 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
     break;
     case SSH_ERROR:
 
-    /* "ssh/utils.pyx":88
+    /* "ssh/utils.pyx":89
  *         return SSH_OK
  *     elif errcode == SSH_ERROR:
  *         raise SSHError(ssh_get_error(session))             # <<<<<<<<<<<<<<
  *     elif errcode == SSH_EOF:
  *         raise EOF(ssh_get_error(session))
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_SSHError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_SSHError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 88, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 89, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -2282,14 +2282,14 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 88, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 88, __pyx_L1_error)
+    __PYX_ERR(0, 89, __pyx_L1_error)
 
-    /* "ssh/utils.pyx":87
+    /* "ssh/utils.pyx":88
  *     if errcode == SSH_OK:
  *         return SSH_OK
  *     elif errcode == SSH_ERROR:             # <<<<<<<<<<<<<<
@@ -2299,16 +2299,16 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
     break;
     case SSH_EOF:
 
-    /* "ssh/utils.pyx":90
+    /* "ssh/utils.pyx":91
  *         raise SSHError(ssh_get_error(session))
  *     elif errcode == SSH_EOF:
  *         raise EOF(ssh_get_error(session))             # <<<<<<<<<<<<<<
  *     elif errcode == SSH_AGAIN:
  *         return SSH_AGAIN
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EOF); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_EOF); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 90, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -2323,14 +2323,14 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 90, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 90, __pyx_L1_error)
+    __PYX_ERR(0, 91, __pyx_L1_error)
 
-    /* "ssh/utils.pyx":89
+    /* "ssh/utils.pyx":90
  *     elif errcode == SSH_ERROR:
  *         raise SSHError(ssh_get_error(session))
  *     elif errcode == SSH_EOF:             # <<<<<<<<<<<<<<
@@ -2340,7 +2340,7 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
     break;
     case SSH_AGAIN:
 
-    /* "ssh/utils.pyx":92
+    /* "ssh/utils.pyx":93
  *         raise EOF(ssh_get_error(session))
  *     elif errcode == SSH_AGAIN:
  *         return SSH_AGAIN             # <<<<<<<<<<<<<<
@@ -2350,7 +2350,7 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
     __pyx_r = SSH_AGAIN;
     goto __pyx_L0;
 
-    /* "ssh/utils.pyx":91
+    /* "ssh/utils.pyx":92
  *     elif errcode == SSH_EOF:
  *         raise EOF(ssh_get_error(session))
  *     elif errcode == SSH_AGAIN:             # <<<<<<<<<<<<<<
@@ -2360,7 +2360,7 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
     break;
     default:
 
-    /* "ssh/utils.pyx":94
+    /* "ssh/utils.pyx":95
  *         return SSH_AGAIN
  *     else:
  *         if errcode < 0:             # <<<<<<<<<<<<<<
@@ -2370,16 +2370,16 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
     __pyx_t_5 = ((__pyx_v_errcode < 0) != 0);
     if (unlikely(__pyx_t_5)) {
 
-      /* "ssh/utils.pyx":95
+      /* "ssh/utils.pyx":96
  *     else:
  *         if errcode < 0:
  *             raise OtherError(ssh_get_error(session))             # <<<<<<<<<<<<<<
  *         return errcode
  * 
  */
-      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_OtherError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
+      __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_OtherError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 95, __pyx_L1_error)
+      __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = NULL;
       if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -2394,14 +2394,14 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
       __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 95, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_Raise(__pyx_t_1, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-      __PYX_ERR(0, 95, __pyx_L1_error)
+      __PYX_ERR(0, 96, __pyx_L1_error)
 
-      /* "ssh/utils.pyx":94
+      /* "ssh/utils.pyx":95
  *         return SSH_AGAIN
  *     else:
  *         if errcode < 0:             # <<<<<<<<<<<<<<
@@ -2410,7 +2410,7 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
  */
     }
 
-    /* "ssh/utils.pyx":96
+    /* "ssh/utils.pyx":97
  *         if errcode < 0:
  *             raise OtherError(ssh_get_error(session))
  *         return errcode             # <<<<<<<<<<<<<<
@@ -2425,9 +2425,9 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
   /* "ssh/utils.pyx":84
  * 
  * 
- * cdef int _handle_general_error_codes(int errcode, ssh_session session) except -1:             # <<<<<<<<<<<<<<
+ * cdef int _handle_general_error_codes(             # <<<<<<<<<<<<<<
+ *         int errcode, ssh_session session) except -1:
  *     if errcode == SSH_OK:
- *         return SSH_OK
  */
 
   /* function exit code */
@@ -2443,7 +2443,7 @@ static int __pyx_f_3ssh_5utils__handle_general_error_codes(int __pyx_v_errcode, 
   return __pyx_r;
 }
 
-/* "ssh/utils.pyx":99
+/* "ssh/utils.pyx":100
  * 
  * 
  * cdef int handle_error_codes(int errcode, ssh_session session) except -1:             # <<<<<<<<<<<<<<
@@ -2461,7 +2461,7 @@ static int __pyx_f_3ssh_5utils_handle_error_codes(int __pyx_v_errcode, ssh_sessi
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("handle_error_codes", 0);
 
-  /* "ssh/utils.pyx":100
+  /* "ssh/utils.pyx":101
  * 
  * cdef int handle_error_codes(int errcode, ssh_session session) except -1:
  *     if errcode == ssh_error_types_e.SSH_NO_ERROR:             # <<<<<<<<<<<<<<
@@ -2471,7 +2471,7 @@ static int __pyx_f_3ssh_5utils_handle_error_codes(int __pyx_v_errcode, ssh_sessi
   switch (__pyx_v_errcode) {
     case SSH_NO_ERROR:
 
-    /* "ssh/utils.pyx":101
+    /* "ssh/utils.pyx":102
  * cdef int handle_error_codes(int errcode, ssh_session session) except -1:
  *     if errcode == ssh_error_types_e.SSH_NO_ERROR:
  *         return 0             # <<<<<<<<<<<<<<
@@ -2481,7 +2481,7 @@ static int __pyx_f_3ssh_5utils_handle_error_codes(int __pyx_v_errcode, ssh_sessi
     __pyx_r = 0;
     goto __pyx_L0;
 
-    /* "ssh/utils.pyx":100
+    /* "ssh/utils.pyx":101
  * 
  * cdef int handle_error_codes(int errcode, ssh_session session) except -1:
  *     if errcode == ssh_error_types_e.SSH_NO_ERROR:             # <<<<<<<<<<<<<<
@@ -2491,16 +2491,16 @@ static int __pyx_f_3ssh_5utils_handle_error_codes(int __pyx_v_errcode, ssh_sessi
     break;
     case SSH_REQUEST_DENIED:
 
-    /* "ssh/utils.pyx":103
+    /* "ssh/utils.pyx":104
  *         return 0
  *     elif errcode == ssh_error_types_e.SSH_REQUEST_DENIED:
  *         raise RequestDenied(ssh_get_error(session))             # <<<<<<<<<<<<<<
  *     elif errcode == ssh_error_types_e.SSH_FATAL:
  *         raise FatalError(ssh_get_error(session))
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_RequestDenied); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_RequestDenied); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 104, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 104, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -2515,14 +2515,14 @@ static int __pyx_f_3ssh_5utils_handle_error_codes(int __pyx_v_errcode, ssh_sessi
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 103, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 104, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 103, __pyx_L1_error)
+    __PYX_ERR(0, 104, __pyx_L1_error)
 
-    /* "ssh/utils.pyx":102
+    /* "ssh/utils.pyx":103
  *     if errcode == ssh_error_types_e.SSH_NO_ERROR:
  *         return 0
  *     elif errcode == ssh_error_types_e.SSH_REQUEST_DENIED:             # <<<<<<<<<<<<<<
@@ -2532,16 +2532,16 @@ static int __pyx_f_3ssh_5utils_handle_error_codes(int __pyx_v_errcode, ssh_sessi
     break;
     case SSH_FATAL:
 
-    /* "ssh/utils.pyx":105
+    /* "ssh/utils.pyx":106
  *         raise RequestDenied(ssh_get_error(session))
  *     elif errcode == ssh_error_types_e.SSH_FATAL:
  *         raise FatalError(ssh_get_error(session))             # <<<<<<<<<<<<<<
  *     else:
  *         return _handle_general_error_codes(errcode, session)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_FatalError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_FatalError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -2556,14 +2556,14 @@ static int __pyx_f_3ssh_5utils_handle_error_codes(int __pyx_v_errcode, ssh_sessi
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 105, __pyx_L1_error)
+    __PYX_ERR(0, 106, __pyx_L1_error)
 
-    /* "ssh/utils.pyx":104
+    /* "ssh/utils.pyx":105
  *     elif errcode == ssh_error_types_e.SSH_REQUEST_DENIED:
  *         raise RequestDenied(ssh_get_error(session))
  *     elif errcode == ssh_error_types_e.SSH_FATAL:             # <<<<<<<<<<<<<<
@@ -2573,20 +2573,20 @@ static int __pyx_f_3ssh_5utils_handle_error_codes(int __pyx_v_errcode, ssh_sessi
     break;
     default:
 
-    /* "ssh/utils.pyx":107
+    /* "ssh/utils.pyx":108
  *         raise FatalError(ssh_get_error(session))
  *     else:
  *         return _handle_general_error_codes(errcode, session)             # <<<<<<<<<<<<<<
  * 
  * 
  */
-    __pyx_t_5 = __pyx_f_3ssh_5utils__handle_general_error_codes(__pyx_v_errcode, __pyx_v_session); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 107, __pyx_L1_error)
+    __pyx_t_5 = __pyx_f_3ssh_5utils__handle_general_error_codes(__pyx_v_errcode, __pyx_v_session); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 108, __pyx_L1_error)
     __pyx_r = __pyx_t_5;
     goto __pyx_L0;
     break;
   }
 
-  /* "ssh/utils.pyx":99
+  /* "ssh/utils.pyx":100
  * 
  * 
  * cdef int handle_error_codes(int errcode, ssh_session session) except -1:             # <<<<<<<<<<<<<<
@@ -2607,7 +2607,7 @@ static int __pyx_f_3ssh_5utils_handle_error_codes(int __pyx_v_errcode, ssh_sessi
   return __pyx_r;
 }
 
-/* "ssh/utils.pyx":110
+/* "ssh/utils.pyx":111
  * 
  * 
  * cdef int handle_auth_error_codes(int errcode, ssh_session session) except -1:             # <<<<<<<<<<<<<<
@@ -2625,7 +2625,7 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("handle_auth_error_codes", 0);
 
-  /* "ssh/utils.pyx":111
+  /* "ssh/utils.pyx":112
  * 
  * cdef int handle_auth_error_codes(int errcode, ssh_session session) except -1:
  *     if errcode == ssh_auth_e.SSH_AUTH_SUCCESS:             # <<<<<<<<<<<<<<
@@ -2635,7 +2635,7 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
   switch (__pyx_v_errcode) {
     case SSH_AUTH_SUCCESS:
 
-    /* "ssh/utils.pyx":112
+    /* "ssh/utils.pyx":113
  * cdef int handle_auth_error_codes(int errcode, ssh_session session) except -1:
  *     if errcode == ssh_auth_e.SSH_AUTH_SUCCESS:
  *         return ssh_auth_e.SSH_AUTH_SUCCESS             # <<<<<<<<<<<<<<
@@ -2645,7 +2645,7 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
     __pyx_r = SSH_AUTH_SUCCESS;
     goto __pyx_L0;
 
-    /* "ssh/utils.pyx":111
+    /* "ssh/utils.pyx":112
  * 
  * cdef int handle_auth_error_codes(int errcode, ssh_session session) except -1:
  *     if errcode == ssh_auth_e.SSH_AUTH_SUCCESS:             # <<<<<<<<<<<<<<
@@ -2655,16 +2655,16 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
     break;
     case SSH_AUTH_DENIED:
 
-    /* "ssh/utils.pyx":114
+    /* "ssh/utils.pyx":115
  *         return ssh_auth_e.SSH_AUTH_SUCCESS
  *     elif errcode == ssh_auth_e.SSH_AUTH_DENIED:
  *         raise AuthenticationDenied(ssh_get_error(session))             # <<<<<<<<<<<<<<
  *     elif errcode == ssh_auth_e.SSH_AUTH_ERROR:
  *         raise AuthenticationError(ssh_get_error(session))
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_AuthenticationDenied); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 114, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_AuthenticationDenied); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 115, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 114, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 115, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -2679,14 +2679,14 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 115, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 114, __pyx_L1_error)
+    __PYX_ERR(0, 115, __pyx_L1_error)
 
-    /* "ssh/utils.pyx":113
+    /* "ssh/utils.pyx":114
  *     if errcode == ssh_auth_e.SSH_AUTH_SUCCESS:
  *         return ssh_auth_e.SSH_AUTH_SUCCESS
  *     elif errcode == ssh_auth_e.SSH_AUTH_DENIED:             # <<<<<<<<<<<<<<
@@ -2696,16 +2696,16 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
     break;
     case SSH_AUTH_ERROR:
 
-    /* "ssh/utils.pyx":116
+    /* "ssh/utils.pyx":117
  *         raise AuthenticationDenied(ssh_get_error(session))
  *     elif errcode == ssh_auth_e.SSH_AUTH_ERROR:
  *         raise AuthenticationError(ssh_get_error(session))             # <<<<<<<<<<<<<<
  *     elif errcode == ssh_auth_e.SSH_AUTH_PARTIAL:
  *         raise AuthenticationPartial(ssh_get_error(session))
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_AuthenticationError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_AuthenticationError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 117, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 116, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 117, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -2720,14 +2720,14 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 116, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 117, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 116, __pyx_L1_error)
+    __PYX_ERR(0, 117, __pyx_L1_error)
 
-    /* "ssh/utils.pyx":115
+    /* "ssh/utils.pyx":116
  *     elif errcode == ssh_auth_e.SSH_AUTH_DENIED:
  *         raise AuthenticationDenied(ssh_get_error(session))
  *     elif errcode == ssh_auth_e.SSH_AUTH_ERROR:             # <<<<<<<<<<<<<<
@@ -2737,16 +2737,16 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
     break;
     case SSH_AUTH_PARTIAL:
 
-    /* "ssh/utils.pyx":118
+    /* "ssh/utils.pyx":119
  *         raise AuthenticationError(ssh_get_error(session))
  *     elif errcode == ssh_auth_e.SSH_AUTH_PARTIAL:
  *         raise AuthenticationPartial(ssh_get_error(session))             # <<<<<<<<<<<<<<
  *     elif errcode == ssh_auth_e.SSH_AUTH_AGAIN:
  *         return ssh_auth_e.SSH_AUTH_AGAIN
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_AuthenticationPartial); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_AuthenticationPartial); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 119, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 118, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_session)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 119, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = NULL;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
@@ -2761,14 +2761,14 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
     __pyx_t_1 = (__pyx_t_4) ? __Pyx_PyObject_Call2Args(__pyx_t_2, __pyx_t_4, __pyx_t_3) : __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3);
     __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
+    if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 118, __pyx_L1_error)
+    __PYX_ERR(0, 119, __pyx_L1_error)
 
-    /* "ssh/utils.pyx":117
+    /* "ssh/utils.pyx":118
  *     elif errcode == ssh_auth_e.SSH_AUTH_ERROR:
  *         raise AuthenticationError(ssh_get_error(session))
  *     elif errcode == ssh_auth_e.SSH_AUTH_PARTIAL:             # <<<<<<<<<<<<<<
@@ -2778,7 +2778,7 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
     break;
     case SSH_AUTH_AGAIN:
 
-    /* "ssh/utils.pyx":120
+    /* "ssh/utils.pyx":121
  *         raise AuthenticationPartial(ssh_get_error(session))
  *     elif errcode == ssh_auth_e.SSH_AUTH_AGAIN:
  *         return ssh_auth_e.SSH_AUTH_AGAIN             # <<<<<<<<<<<<<<
@@ -2788,7 +2788,7 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
     __pyx_r = SSH_AUTH_AGAIN;
     goto __pyx_L0;
 
-    /* "ssh/utils.pyx":119
+    /* "ssh/utils.pyx":120
  *     elif errcode == ssh_auth_e.SSH_AUTH_PARTIAL:
  *         raise AuthenticationPartial(ssh_get_error(session))
  *     elif errcode == ssh_auth_e.SSH_AUTH_AGAIN:             # <<<<<<<<<<<<<<
@@ -2798,18 +2798,18 @@ static int __pyx_f_3ssh_5utils_handle_auth_error_codes(int __pyx_v_errcode, ssh_
     break;
     default:
 
-    /* "ssh/utils.pyx":122
+    /* "ssh/utils.pyx":123
  *         return ssh_auth_e.SSH_AUTH_AGAIN
  *     else:
  *         return handle_error_codes(errcode, session)             # <<<<<<<<<<<<<<
  */
-    __pyx_t_5 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_errcode, __pyx_v_session); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 122, __pyx_L1_error)
+    __pyx_t_5 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_errcode, __pyx_v_session); if (unlikely(__pyx_t_5 == ((int)-1))) __PYX_ERR(0, 123, __pyx_L1_error)
     __pyx_r = __pyx_t_5;
     goto __pyx_L0;
     break;
   }
 
-  /* "ssh/utils.pyx":110
+  /* "ssh/utils.pyx":111
  * 
  * 
  * cdef int handle_auth_error_codes(int errcode, ssh_session session) except -1:             # <<<<<<<<<<<<<<

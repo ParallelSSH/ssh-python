@@ -29,7 +29,7 @@ if (len(sys.argv) >= 2 and not (
             '--help-commands', 'egg_info', '--version', 'clean',
             'sdist', '--long-description')) and
         __name__ == '__main__'):
-    if not (ON_WINDOWS and _PYTHON_MAJOR_VERSION != '2'):
+    if not (ON_WINDOWS and _PYTHON_MAJOR_VERSION != 2):
         build_ssh()
 
 ext = 'pyx' if USING_CYTHON else 'c'
@@ -102,7 +102,7 @@ if ON_WINDOWS and _PYTHON_MAJOR_VERSION == 2:
         )
     ]
     package_data = {}
-    sys.stdout.write("Windows Python 2 build - extensions: %s%s" % (extensions, os.sep))
+    sys.stdout.write("Windows Python 2 build - %s extensions: %s" % (len(extensions), os.sep))
 
 setup(
     name='ssh-python',
