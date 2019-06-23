@@ -100,11 +100,13 @@ install:
   # do not cause a version change.
   - python ci/appveyor/fix_version.py .
   - mv -f .git .git.bak
-  - 7z x ci\appveyor\zlib1211.zip
-  - appveyor DownloadFile https://indy.fulgan.com/SSL/Archive/Experimental/openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
-  - 7z x openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
-  - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1.dll ssh\
-  - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1.dll ssh\
+  - IF "%PYTHON_VERSION%" == "2.7" (
+      7z x ci\appveyor\zlib1211.zip
+      appveyor DownloadFile https://indy.fulgan.com/SSL/Archive/Experimental/openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
+      7z x openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
+      cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1.dll ssh\
+      cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1.dll ssh\
+    )
   - ps: ls ssh
 
 build_script:
