@@ -120,7 +120,7 @@ build_script:
 
 test_script:
   - cd dist
-  - python ..\\ci\\appveyor\\test_import.py
+  - python ..\\ci\\appveyor\\import_test.py
   - cd ..
 
 after_test:
