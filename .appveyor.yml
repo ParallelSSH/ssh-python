@@ -13,12 +13,6 @@ environment:
       secure: x+dF0A8BZUf2IrPNRN1O0w==
   matrix:
 
-    - PYTHON: "C:\\Python27"
-      PYTHON_VERSION: "2.7"
-      PYTHON_ARCH: "32"
-      MSVC: "Visual Studio 9"
-      ARCH: i386
-
     - PYTHON: "C:\\Python27-x64"
       PYTHON_VERSION: "2.7"
       PYTHON_ARCH: "64"
