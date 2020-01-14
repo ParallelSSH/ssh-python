@@ -115,7 +115,7 @@ setup(
     license='LGPLv2',
     author='Panos Kittenis',
     author_email='22e889d8@opayq.com',
-    description=('Wrapper for libssh C library.'),
+    description=('libssh C library bindings for Python.'),
     long_description=open('README.rst').read(),
     packages=find_packages(
         '.', exclude=('embedded_server', 'embedded_server.*',

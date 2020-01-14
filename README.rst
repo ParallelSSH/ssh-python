@@ -31,7 +31,8 @@ Prerequisites
 * OpenSSL *or* gcrypt library and development headers
 * Optionally Zlib library and development headers for compression
 
-``Libssh`` source code is embedded in this project and will be built when installation is triggered per above instructions. Versions of ``libssh`` other than the one embedded in this project are not supported.
+``Libssh`` source code is embedded in this project and will be built when installation is triggered per above instructions.
+Versions of ``libssh`` other than the one embedded in this project are not supported.
 
 
 Quick Start
@@ -48,6 +49,7 @@ _____________
    from ssh.session import Session
    from ssh import options
 
+   # Linux only
    USERNAME = pwd.getpwuid(os.geteuid()).pw_name
    HOST = 'localhost'
 
@@ -79,11 +81,14 @@ _________
 
 The library uses `Cython`_ based native code extensions as wrappers to ``libssh``.
 
-* Thread safe - GIL is released as much as possible
+* Thread safe - GIL released as much as possible
 * Very low overhead thin wrapper
-* Object oriented - memory freed automatically and safely as objects are garbage collected by Python
-* Use Python semantics where applicable, such as context manager and iterator support for opening and reading from channels and SFTP file handles
-* Raise errors as Python exceptions
+* Object oriented
+  * Memory freed automatically and safely as objects are garbage collected by Python
+* Uses Python semantics where applicable
+  * channel/file handle context manager support
+  * channel/file handle iterator support
+* Raises low level C errors as Python exceptions
 
 
 .. _libssh: https://www.libssh.org
