@@ -3,64 +3,50 @@
 @section threads_with_libssh How to use libssh with threads
 
 libssh may be used in multithreaded applications, but under several conditions :
- - Threading must be initialized during the initialization of libssh. This 
-   initialization must be done outside of any threading context.
- - If pthreads is being used by your application (or your framework's backend),
-   you must link with libssh_threads dynamic library and initialize 
-   threading with the ssh_threads_pthreads threading object.
- - If an other threading library is being used by your application, you must 
-   implement all the methods of the ssh_threads_callbacks_struct structure
-   and initialize libssh with it.
+ - Your system must support libpthread or, in Windows environment,
+   CriticalSection based mutex control.
+ - Since version 0.8.0, threads initialization is called automatically in the
+   library constructor if libssh is dynamically linked. This means it is no
+   longer necessary to call ssh_init()/ssh_finalize().
+ - If libssh is statically linked, threading must be initialized by calling
+   ssh_init() before using any of libssh provided functions. This initialization
+   must be done outside of any threading context. Don't forget to call
+   ssh_finalize() to avoid memory leak
  - At all times, you may use different sessions inside threads, make parallel
    connections, read/write on different sessions and so on. You *cannot* use a
-   single session (or channels for a single session) in several threads at the same 
+   single session (or channels for a single session) in several threads at the same
    time. This will most likely lead to internal state corruption. This limitation is
    being worked out and will maybe disappear later.
-   
+
 @subsection threads_init Initialization of threads
 
-To initialize threading, you must first select the threading model you want to
-use, using ssh_threads_set_callbacks(), then call ssh_init().
+Since version 0.8.0, it is no longer necessary to call ssh_init()/ssh_finalize()
+if libssh is dynamically linked.
 
-@code 
-#include <libssh/callbacks.h>
-...
-ssh_threads_set_callbacks(ssh_threads_get_noop());
-ssh_init();
-@endcode
-
-ssh_threads_noop is the threading structure that does nothing. It's the
-threading callbacks being used by default when you're not using threading.
+If libssh is statically linked, call ssh_init() before using any of libssh
+provided functions.
 
 @subsection threads_pthread Using libpthread with libssh
 
-If your application is using libpthread, you may simply use the libpthread
-threading backend:
+Since version 0.8.0, libpthread is the default threads library used by libssh.
 
-@code
-#include <libssh/callbacks.h>
-...
-ssh_threads_set_callbacks(ssh_threads_get_pthread());
-ssh_init();
-@endcode
+To use libpthread, simply link it to you application.
 
-However, you must be sure to link with the library ssh_threads. If 
-you're using gcc, you must use the commandline
-@code
-gcc -o output input.c -lssh -lssh_threads
-@endcode 
-
+If you are using libssh statically linked, don't forget to call ssh_init()
+before using any of libssh provided functions (and ssh_finalize() in  the end).
 
 @subsection threads_other Using another threading library
 
-You must find your way in the ssh_threads_callbacks_struct structure. You must
-implement the following methods :
-- mutex_lock
-- mutex_unlock
-- mutex_init
-- mutex_destroy
-- thread_id
+Since version 0.8.0, libssh does not support custom threading libraries.
+The change makes sense since the newer versions for libcrypto (OpenSSL) and
+libgcrypt don't support custom threading libraries.
 
-libgcrypt 1.6 and bigger backend does not support custom callback. Using anything else than pthreads (ssh_threads_get_pthread()) here will fail.
+The default used threading library is libpthread.
+Alternatively, in Windows environment, CriticalSection based mutex control can
+be used.
+
+If your system does not support libpthread nor CriticalSection based mutex
+control, unfortunately, you cannot use libssh in multithreaded scenarios.
+
 Good luck !
 */

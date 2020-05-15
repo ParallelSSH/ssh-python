@@ -39,6 +39,7 @@
 #ifdef WITH_SERVER
 #include "libssh/server.h"
 #include "libssh/bind.h"
+#include "libssh/bind_config.h"
 #endif
 
 /**
@@ -61,8 +62,11 @@
  *
  * @see ssh_session_connect()
  */
-int ssh_options_copy(ssh_session src, ssh_session *dest) {
+int ssh_options_copy(ssh_session src, ssh_session *dest)
+{
     ssh_session new;
+    struct ssh_iterator *it = NULL;
+    char *id = NULL;
     int i;
 
     if (src == NULL || dest == NULL) {
@@ -74,7 +78,7 @@ int ssh_options_copy(ssh_session src, ssh_session *dest) {
         return -1;
     }
 
-    if (src->opts.username) {
+    if (src->opts.username != NULL) {
         new->opts.username = strdup(src->opts.username);
         if (new->opts.username == NULL) {
             ssh_free(new);
@@ -82,7 +86,7 @@ int ssh_options_copy(ssh_session src, ssh_session *dest) {
         }
     }
 
-    if (src->opts.host) {
+    if (src->opts.host != NULL) {
         new->opts.host = strdup(src->opts.host);
         if (new->opts.host == NULL) {
             ssh_free(new);
@@ -90,12 +94,24 @@ int ssh_options_copy(ssh_session src, ssh_session *dest) {
         }
     }
 
-    if (src->opts.identity) {
-        struct ssh_iterator *it;
+    if (src->opts.bindaddr != NULL) {
+        new->opts.bindaddr = strdup(src->opts.bindaddr);
+        if (new->opts.bindaddr == NULL) {
+            ssh_free(new);
+            return -1;
+        }
+    }
 
+    /* Remove the default identities */
+    for (id = ssh_list_pop_head(char *, new->opts.identity);
+         id != NULL;
+         id = ssh_list_pop_head(char *, new->opts.identity)) {
+        SAFE_FREE(id);
+    }
+    /* Copy the new identities from the source list */
+    if (src->opts.identity != NULL) {
         it = ssh_list_get_iterator(src->opts.identity);
         while (it) {
-            char *id;
             int rc;
 
             id = strdup((char *) it->data);
@@ -114,7 +130,7 @@ int ssh_options_copy(ssh_session src, ssh_session *dest) {
         }
     }
 
-    if (src->opts.sshdir) {
+    if (src->opts.sshdir != NULL) {
         new->opts.sshdir = strdup(src->opts.sshdir);
         if (new->opts.sshdir == NULL) {
             ssh_free(new);
@@ -122,7 +138,7 @@ int ssh_options_copy(ssh_session src, ssh_session *dest) {
         }
     }
 
-    if (src->opts.knownhosts) {
+    if (src->opts.knownhosts != NULL) {
         new->opts.knownhosts = strdup(src->opts.knownhosts);
         if (new->opts.knownhosts == NULL) {
             ssh_free(new);
@@ -130,8 +146,16 @@ int ssh_options_copy(ssh_session src, ssh_session *dest) {
         }
     }
 
-    for (i = 0; i < 10; i++) {
-        if (src->opts.wanted_methods[i]) {
+    if (src->opts.global_knownhosts != NULL) {
+        new->opts.global_knownhosts = strdup(src->opts.global_knownhosts);
+        if (new->opts.global_knownhosts == NULL) {
+            ssh_free(new);
+            return -1;
+        }
+    }
+
+    for (i = 0; i < SSH_KEX_METHODS; i++) {
+        if (src->opts.wanted_methods[i] != NULL) {
             new->opts.wanted_methods[i] = strdup(src->opts.wanted_methods[i]);
             if (new->opts.wanted_methods[i] == NULL) {
                 ssh_free(new);
@@ -140,22 +164,53 @@ int ssh_options_copy(ssh_session src, ssh_session *dest) {
         }
     }
 
-    if (src->opts.ProxyCommand) {
+    if (src->opts.ProxyCommand != NULL) {
         new->opts.ProxyCommand = strdup(src->opts.ProxyCommand);
         if (new->opts.ProxyCommand == NULL) {
             ssh_free(new);
             return -1;
         }
     }
-    new->opts.fd                   = src->opts.fd;
-    new->opts.port                 = src->opts.port;
-    new->opts.timeout              = src->opts.timeout;
-    new->opts.timeout_usec         = src->opts.timeout_usec;
-    new->opts.ssh2                 = src->opts.ssh2;
-    new->opts.ssh1                 = src->opts.ssh1;
-    new->opts.compressionlevel     = src->opts.compressionlevel;
-    new->common.log_verbosity      = src->common.log_verbosity;
-    new->common.callbacks          = src->common.callbacks;
+
+    if (src->opts.pubkey_accepted_types != NULL) {
+        new->opts.pubkey_accepted_types = strdup(src->opts.pubkey_accepted_types);
+        if (new->opts.pubkey_accepted_types == NULL) {
+            ssh_free(new);
+            return -1;
+        }
+    }
+
+    if (src->opts.gss_server_identity != NULL) {
+        new->opts.gss_server_identity = strdup(src->opts.gss_server_identity);
+        if (new->opts.gss_server_identity == NULL) {
+            ssh_free(new);
+            return -1;
+        }
+    }
+
+    if (src->opts.gss_client_identity != NULL) {
+        new->opts.gss_client_identity = strdup(src->opts.gss_client_identity);
+        if (new->opts.gss_client_identity == NULL) {
+            ssh_free(new);
+            return -1;
+        }
+    }
+
+    memcpy(new->opts.options_seen, src->opts.options_seen,
+           sizeof(new->opts.options_seen));
+
+    new->opts.fd                    = src->opts.fd;
+    new->opts.port                  = src->opts.port;
+    new->opts.timeout               = src->opts.timeout;
+    new->opts.timeout_usec          = src->opts.timeout_usec;
+    new->opts.compressionlevel      = src->opts.compressionlevel;
+    new->opts.StrictHostKeyChecking = src->opts.StrictHostKeyChecking;
+    new->opts.gss_delegate_creds    = src->opts.gss_delegate_creds;
+    new->opts.flags                 = src->opts.flags;
+    new->opts.nodelay               = src->opts.nodelay;
+    new->opts.config_processed      = src->opts.config_processed;
+    new->common.log_verbosity       = src->common.log_verbosity;
+    new->common.callbacks           = src->common.callbacks;
 
     *dest = new;
 
@@ -168,10 +223,15 @@ int ssh_options_set_algo(ssh_session session,
 {
     char *p = NULL;
 
-    p = ssh_keep_known_algos(algo, list);
+    if (ssh_fips_mode()) {
+        p = ssh_keep_fips_algos(algo, list);
+    } else {
+        p = ssh_keep_known_algos(algo, list);
+    }
+
     if (p == NULL) {
         ssh_set_error(session, SSH_REQUEST_DENIED,
-                "Setting method: no algorithm for method \"%s\" (%s)",
+                "Setting method: no allowed algorithm for method \"%s\" (%s)",
                 ssh_kex_get_description(algo), list);
         return -1;
     }
@@ -194,7 +254,7 @@ int ssh_options_set_algo(ssh_session session,
  *                The hostname or ip address to connect to (const char *).
  *
  *              - SSH_OPTIONS_PORT:
- *                The port to connect to (unsigned int).
+ *                The port to connect to (unsigned int *).
  *
  *              - SSH_OPTIONS_PORT_STR:
  *                The port to connect to (const char *).
@@ -267,12 +327,10 @@ int ssh_options_set_algo(ssh_session session,
  *                        (long).
  *
  *              - SSH_OPTIONS_SSH1:
- *                Allow or deny the connection to SSH1 servers
- *                (int, 0 is false).
+ *                Deprecated
  *
  *              - SSH_OPTIONS_SSH2:
- *                Allow or deny the connection to SSH2 servers
- *                (int, 0 is false).
+ *                Unused
  *
  *              - SSH_OPTIONS_LOG_VERBOSITY:
  *                Set the session logging verbosity (int).\n
@@ -280,54 +338,18 @@ int ssh_options_set_algo(ssh_session session,
  *                The verbosity of the messages. Every log smaller or
  *                equal to verbosity will be shown.
  *                - SSH_LOG_NOLOG: No logging
- *                - SSH_LOG_RARE: Rare conditions or warnings
- *                - SSH_LOG_ENTRY: API-accessible entrypoints
- *                - SSH_LOG_PACKET: Packet id and size
- *                - SSH_LOG_FUNCTIONS: Function entering and leaving
+ *                - SSH_LOG_WARNING: Only warnings
+ *                - SSH_LOG_PROTOCOL: High level protocol information
+ *                - SSH_LOG_PACKET: Lower level protocol infomations, packet level
+ *                - SSH_LOG_FUNCTIONS: Every function path
  *
  *              - SSH_OPTIONS_LOG_VERBOSITY_STR:
- *                Set the session logging verbosity (const char *).\n
- *                \n
- *                The verbosity of the messages. Every log smaller or
- *                equal to verbosity will be shown.
- *                - SSH_LOG_NOLOG: No logging
- *                - SSH_LOG_RARE: Rare conditions or warnings
- *                - SSH_LOG_ENTRY: API-accessible entrypoints
- *                - SSH_LOG_PACKET: Packet id and size
- *                - SSH_LOG_FUNCTIONS: Function entering and leaving
- *                \n
- *                See the corresponding numbers in libssh.h.
- *
- *              - SSH_OPTIONS_AUTH_CALLBACK:
- *                Set a callback to use your own authentication function
- *                (function pointer).
- *
- *              - SSH_OPTIONS_AUTH_USERDATA:
- *                Set the user data passed to the authentication
- *                function (generic pointer).
- *
- *              - SSH_OPTIONS_LOG_CALLBACK:
- *                Set a callback to use your own logging function
- *                (function pointer).
- *
- *              - SSH_OPTIONS_LOG_USERDATA:
- *                Set the user data passed to the logging function
- *                (generic pointer).
- *
- *              - SSH_OPTIONS_STATUS_CALLBACK:
- *                Set a callback to show connection status in realtime
- *                (function pointer).\n
- *                \n
- *                @code
- *                fn(void *arg, float status)
- *                @endcode
- *                \n
- *                During ssh_connect(), libssh will call the callback
- *                with status from 0.0 to 1.0.
- *
- *              - SSH_OPTIONS_STATUS_ARG:
- *                Set the status argument which should be passed to the
- *                status callback (generic pointer).
+ *                Set the session logging verbosity via a
+ *                string that will be converted to a numerical
+ *                value (e.g. "3") and interpreted according
+ *                to the values of
+ *                SSH_OPTIONS_LOG_VERBOSITY above (const
+ *                char *).
  *
  *              - SSH_OPTIONS_CIPHERS_C_S:
  *                Set the symmetric cipher client to server (const char *,
@@ -342,10 +364,23 @@ int ssh_options_set_algo(ssh_session session,
  *                comma-separated list). ex:
  *                "ecdh-sha2-nistp256,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1"
  *
+ *              - SSH_OPTIONS_HMAC_C_S:
+ *                Set the Message Authentication Code algorithm client to server
+ *                (const char *, comma-separated list).
+ *
+ *              - SSH_OPTIONS_HMAC_S_C:
+ *                Set the Message Authentication Code algorithm server to client
+ *                (const char *, comma-separated list).
+ *
  *              - SSH_OPTIONS_HOSTKEYS:
  *                Set the preferred server host key types (const char *,
  *                comma-separated list). ex:
  *                "ssh-rsa,ssh-dss,ecdh-sha2-nistp256"
+ *
+ *              - SSH_OPTIONS_PUBLICKEY_ACCEPTED_TYPES:
+ *                Set the preferred public key algorithms to be used for
+ *                authentication (const char *, comma-separated list). ex:
+ *                "ssh-rsa,rsa-sha2-256,ssh-dss,ecdh-sha2-nistp256"
  *
  *              - SSH_OPTIONS_COMPRESSION_C_S:
  *                Set the compression to use for client to server
@@ -411,6 +446,24 @@ int ssh_options_set_algo(ssh_session session,
  *              - SSH_OPTIONS_NODELAY
  *                Set it to disable Nagle's Algorithm (TCP_NODELAY) on the
  *                session socket. (int, 0=false)
+ *
+ *              - SSH_OPTIONS_PROCESS_CONFIG
+ *                Set it to false to disable automatic processing of per-user
+ *                and system-wide OpenSSH configuration files. LibSSH
+ *                automatically uses these configuration files unless
+ *                you provide it with this option or with different file (bool).
+ *
+ *              - SSH_OPTIONS_REKEY_DATA
+ *                Set the data limit that can be transferred with a single
+ *                key in bytes. RFC 4253 Section 9 recommends 1GB of data, while
+ *                RFC 4344 provides more specific restrictions, that are applied
+ *                automatically. When specified, the lower value will be used.
+ *                (uint64_t, 0=default)
+ *
+ *              - SSH_OPTIONS_REKEY_TIME
+ *                Set the time limit for a session before intializing a rekey
+ *                in seconds. RFC 4253 Section 9 recommends one hour.
+ *                (uint32_t, 0=off)
  *
  * @param  value The value to set. This is a generic pointer and the
  *               datatype which is used should be set according to the
@@ -478,7 +531,7 @@ int ssh_options_set(ssh_session session, enum ssh_options_e type,
                     return -1;
                 }
 
-                session->opts.port = *x & 0xffff;
+                session->opts.port = *x & 0xffffU;
             }
             break;
         case SSH_OPTIONS_PORT_STR:
@@ -502,7 +555,7 @@ int ssh_options_set(ssh_session session, enum ssh_options_e type,
                     return -1;
                 }
 
-                session->opts.port = i & 0xffff;
+                session->opts.port = i & 0xffffU;
             }
             break;
         case SSH_OPTIONS_FD:
@@ -596,12 +649,7 @@ int ssh_options_set(ssh_session session, enum ssh_options_e type,
             v = value;
             SAFE_FREE(session->opts.knownhosts);
             if (v == NULL) {
-                session->opts.knownhosts = ssh_path_expand_escape(session,
-                                                             "%d/known_hosts");
-                if (session->opts.knownhosts == NULL) {
-                    ssh_set_error_oom(session);
-                    return -1;
-                }
+                /* The default value will be set by the ssh_options_apply() */
             } else if (v[0] == '\0') {
                 ssh_set_error_invalid(session);
                 return -1;
@@ -645,7 +693,7 @@ int ssh_options_set(ssh_session session, enum ssh_options_e type,
                     return -1;
                 }
 
-                session->opts.timeout = *x & 0xffffffff;
+                session->opts.timeout = *x & 0xffffffffU;
             }
             break;
         case SSH_OPTIONS_TIMEOUT_USEC:
@@ -659,36 +707,12 @@ int ssh_options_set(ssh_session session, enum ssh_options_e type,
                     return -1;
                 }
 
-                session->opts.timeout_usec = *x & 0xffffffff;
+                session->opts.timeout_usec = *x & 0xffffffffU;
             }
             break;
         case SSH_OPTIONS_SSH1:
-            if (value == NULL) {
-                ssh_set_error_invalid(session);
-                return -1;
-            } else {
-                int *x = (int *) value;
-                if (*x < 0) {
-                    ssh_set_error_invalid(session);
-                    return -1;
-                }
-
-                session->opts.ssh1 = *x;
-            }
             break;
         case SSH_OPTIONS_SSH2:
-            if (value == NULL) {
-                ssh_set_error_invalid(session);
-                return -1;
-            } else {
-                int *x = (int *) value;
-                if (*x < 0) {
-                    ssh_set_error_invalid(session);
-                    return -1;
-                }
-
-                session->opts.ssh2 = *x & 0xffff;
-            }
             break;
         case SSH_OPTIONS_LOG_VERBOSITY:
             if (value == NULL) {
@@ -701,8 +725,8 @@ int ssh_options_set(ssh_session session, enum ssh_options_e type,
                     return -1;
                 }
 
-                session->common.log_verbosity = *x & 0xffff;
-                ssh_set_log_level(*x & 0xffff);
+                session->common.log_verbosity = *x & 0xffffU;
+                ssh_set_log_level(*x & 0xffffU);
             }
             break;
         case SSH_OPTIONS_LOG_VERBOSITY_STR:
@@ -727,8 +751,8 @@ int ssh_options_set(ssh_session session, enum ssh_options_e type,
                     return -1;
                 }
 
-                session->common.log_verbosity = i & 0xffff;
-                ssh_set_log_level(i & 0xffff);
+                session->common.log_verbosity = i & 0xffffU;
+                ssh_set_log_level(i & 0xffffU);
             }
             break;
         case SSH_OPTIONS_CIPHERS_C_S:
@@ -769,6 +793,28 @@ int ssh_options_set(ssh_session session, enum ssh_options_e type,
             } else {
                 if (ssh_options_set_algo(session, SSH_HOSTKEYS, v) < 0)
                     return -1;
+            }
+            break;
+        case SSH_OPTIONS_PUBLICKEY_ACCEPTED_TYPES:
+            v = value;
+            if (v == NULL || v[0] == '\0') {
+                ssh_set_error_invalid(session);
+                return -1;
+            } else {
+                if (ssh_fips_mode()) {
+                    p = ssh_keep_fips_algos(SSH_HOSTKEYS, v);
+                } else {
+                    p = ssh_keep_known_algos(SSH_HOSTKEYS, v);
+                }
+                if (p == NULL) {
+                    ssh_set_error(session, SSH_REQUEST_DENIED,
+                        "Setting method: no known public key algorithm (%s)",
+                         v);
+                    return -1;
+                }
+
+                SAFE_FREE(session->opts.pubkey_accepted_types);
+                session->opts.pubkey_accepted_types = p;
             }
             break;
         case SSH_OPTIONS_HMAC_C_S:
@@ -922,7 +968,6 @@ int ssh_options_set(ssh_session session, enum ssh_options_e type,
         case SSH_OPTIONS_PUBKEY_AUTH:
         case SSH_OPTIONS_KBDINT_AUTH:
         case SSH_OPTIONS_GSSAPI_AUTH:
-            u = 0;
             if (value == NULL) {
                 ssh_set_error_invalid(session);
                 return -1;
@@ -949,6 +994,39 @@ int ssh_options_set(ssh_session session, enum ssh_options_e type,
             } else {
                 int *x = (int *) value;
                 session->opts.nodelay = (*x & 0xff) > 0 ? 1 : 0;
+            }
+            break;
+        case SSH_OPTIONS_PROCESS_CONFIG:
+            if (value == NULL) {
+                ssh_set_error_invalid(session);
+                return -1;
+            } else {
+                bool *x = (bool *)value;
+                session->opts.config_processed = !(*x);
+            }
+            break;
+        case SSH_OPTIONS_REKEY_DATA:
+            if (value == NULL) {
+                ssh_set_error_invalid(session);
+                return -1;
+            } else {
+                uint64_t *x = (uint64_t *)value;
+                session->opts.rekey_data = *x;
+            }
+            break;
+        case SSH_OPTIONS_REKEY_TIME:
+            if (value == NULL) {
+                ssh_set_error_invalid(session);
+                return -1;
+            } else {
+                uint32_t *x = (uint32_t *)value;
+                if ((*x * 1000) < *x) {
+                    ssh_set_error(session, SSH_REQUEST_DENIED,
+                                  "The provided value (%" PRIu32 ") for rekey"
+                                  " time is too large", *x);
+                    return -1;
+                }
+                session->opts.rekey_time = (*x) * 1000;
             }
             break;
         default:
@@ -1019,6 +1097,12 @@ int ssh_options_get_port(ssh_session session, unsigned int* port_target) {
  *                remote host. When not explicitly set, it will be read
  *                from the ~/.ssh/config file.
  *
+ *              - SSH_OPTIONS_GLOBAL_KNOWNHOSTS:
+ *                Get the path to the global known_hosts file being used.
+ *
+ *              - SSH_OPTIONS_KNOWNHOSTS:
+ *                Get the path to the known_hosts file being used.
+ *
  * @param  value The value to get into. As a char**, space will be
  *               allocated by the function for the value, it is
  *               your responsibility to free the memory using
@@ -1061,6 +1145,14 @@ int ssh_options_get(ssh_session session, enum ssh_options_e type, char** value)
             src = session->opts.ProxyCommand;
             break;
         }
+        case SSH_OPTIONS_KNOWNHOSTS: {
+            src = session->opts.knownhosts;
+            break;
+        }
+        case SSH_OPTIONS_GLOBAL_KNOWNHOSTS: {
+            src = session->opts.global_knownhosts;
+            break;
+        }
         default:
             ssh_set_error(session, SSH_REQUEST_DENIED, "Unknown ssh option %d", type);
             return SSH_ERROR;
@@ -1098,177 +1190,169 @@ int ssh_options_get(ssh_session session, enum ssh_options_e type, char** value)
  *
  * @see ssh_session_new()
  */
-int ssh_options_getopt(ssh_session session, int *argcptr, char **argv) {
-  char *user = NULL;
-  char *cipher = NULL;
-  char *identity = NULL;
-  char *port = NULL;
-  char **save = NULL;
-  char **tmp = NULL;
-  int i = 0;
-  int argc = *argcptr;
-  int debuglevel = 0;
-  int usersa = 0;
-  int usedss = 0;
-  int compress = 0;
-  int cont = 1;
-  int current = 0;
-#ifdef WITH_SSH1
-  int ssh1 = 1;
-#else
-  int ssh1 = 0;
-#endif
-  int ssh2 = 1;
+int ssh_options_getopt(ssh_session session, int *argcptr, char **argv)
+{
 #ifdef _MSC_VER
+    (void)session;
+    (void)argcptr;
+    (void)argv;
     /* Not supported with a Microsoft compiler */
     return -1;
 #else
-  int saveoptind = optind; /* need to save 'em */
-  int saveopterr = opterr;
+    char *user = NULL;
+    char *cipher = NULL;
+    char *identity = NULL;
+    char *port = NULL;
+    char **save = NULL;
+    char **tmp = NULL;
+    size_t i = 0;
+    int argc = *argcptr;
+    int debuglevel = 0;
+    int usersa = 0;
+    int usedss = 0;
+    int compress = 0;
+    int cont = 1;
+    size_t current = 0;
+    int saveoptind = optind; /* need to save 'em */
+    int saveopterr = opterr;
+    int opt;
 
-  opterr = 0; /* shut up getopt */
-  while(cont && ((i = getopt(argc, argv, "c:i:Cl:p:vb:rd12")) != -1)) {
-    switch(i) {
-      case 'l':
-        user = optarg;
-        break;
-      case 'p':
-        port = optarg;
-        break;
-      case 'v':
-        debuglevel++;
-        break;
-      case 'r':
-        usersa++;
-        break;
-      case 'd':
-        usedss++;
-        break;
-      case 'c':
-        cipher = optarg;
-        break;
-      case 'i':
-        identity = optarg;
-        break;
-      case 'C':
-        compress++;
-        break;
-      case '2':
-        ssh2 = 1;
-        ssh1 = 0;
-        break;
-      case '1':
-        ssh2 = 0;
-        ssh1 = 1;
-        break;
-      default:
-        {
-          char opt[3]="- ";
-          opt[1] = optopt;
-          tmp = realloc(save, (current + 1) * sizeof(char*));
-          if (tmp == NULL) {
+    opterr = 0; /* shut up getopt */
+    while((opt = getopt(argc, argv, "c:i:Cl:p:vb:rd12")) != -1) {
+        switch(opt) {
+        case 'l':
+            user = optarg;
+            break;
+        case 'p':
+            port = optarg;
+            break;
+        case 'v':
+            debuglevel++;
+            break;
+        case 'r':
+            usersa++;
+            break;
+        case 'd':
+            usedss++;
+            break;
+        case 'c':
+            cipher = optarg;
+            break;
+        case 'i':
+            identity = optarg;
+            break;
+        case 'C':
+            compress++;
+            break;
+        case '2':
+            break;
+        case '1':
+            break;
+        default:
+            {
+                char optv[3] = "- ";
+                optv[1] = optopt;
+                tmp = realloc(save, (current + 1) * sizeof(char*));
+                if (tmp == NULL) {
+                    SAFE_FREE(save);
+                    ssh_set_error_oom(session);
+                    return -1;
+                }
+                save = tmp;
+                save[current] = strdup(optv);
+                if (save[current] == NULL) {
+                    SAFE_FREE(save);
+                    ssh_set_error_oom(session);
+                    return -1;
+                }
+                current++;
+                if (optarg) {
+                    save[current++] = argv[optind + 1];
+                }
+            }
+        } /* switch */
+    } /* while */
+    opterr = saveopterr;
+    tmp = realloc(save, (current + (argc - optind)) * sizeof(char*));
+    if (tmp == NULL) {
+        SAFE_FREE(save);
+        ssh_set_error_oom(session);
+        return -1;
+    }
+    save = tmp;
+    while (optind < argc) {
+        tmp = realloc(save, (current + 1) * sizeof(char*));
+        if (tmp == NULL) {
             SAFE_FREE(save);
             ssh_set_error_oom(session);
             return -1;
-          }
-          save = tmp;
-          save[current] = strdup(opt);
-          if (save[current] == NULL) {
-            SAFE_FREE(save);
-            ssh_set_error_oom(session);
-            return -1;
-          }
-          current++;
-          if (optarg) {
-            save[current++] = argv[optind + 1];
-          }
         }
-    } /* switch */
-  } /* while */
-  opterr = saveopterr;
-  tmp = realloc(save, (current + (argc - optind)) * sizeof(char*));
-  if (tmp == NULL) {
+        save = tmp;
+        save[current] = argv[optind];
+        current++;
+        optind++;
+    }
+
+    if (usersa && usedss) {
+        ssh_set_error(session, SSH_FATAL, "Either RSA or DSS must be chosen");
+        cont = 0;
+    }
+
+    ssh_set_log_level(debuglevel);
+
+    optind = saveoptind;
+
+    if(!cont) {
+        SAFE_FREE(save);
+        return -1;
+    }
+
+    /* first recopy the save vector into the original's */
+    for (i = 0; i < current; i++) {
+        /* don't erase argv[0] */
+        argv[ i + 1] = save[i];
+    }
+    argv[current + 1] = NULL;
+    *argcptr = current + 1;
     SAFE_FREE(save);
-    ssh_set_error_oom(session);
-    return -1;
-  }
-  save = tmp;
-  while (optind < argc) {
-      tmp = realloc(save, (current + 1) * sizeof(char*));
-      if (tmp == NULL) {
-          SAFE_FREE(save);
-          ssh_set_error_oom(session);
-          return -1;
-      }
-      save = tmp;
-      save[current] = argv[optind];
-      current++;
-      optind++;
-  }
 
-  if (usersa && usedss) {
-    ssh_set_error(session, SSH_FATAL, "Either RSA or DSS must be chosen");
-    cont = 0;
-  }
-
-  ssh_set_log_level(debuglevel);
-
-  optind = saveoptind;
-
-  if(!cont) {
-    SAFE_FREE(save);
-    return -1;
-  }
-
-  /* first recopy the save vector into the original's */
-  for (i = 0; i < current; i++) {
-    /* don't erase argv[0] */
-    argv[ i + 1] = save[i];
-  }
-  argv[current + 1] = NULL;
-  *argcptr = current + 1;
-  SAFE_FREE(save);
-
-  /* set a new option struct */
-  if (compress) {
-    if (ssh_options_set(session, SSH_OPTIONS_COMPRESSION, "yes") < 0) {
-      cont = 0;
+    /* set a new option struct */
+    if (compress) {
+        if (ssh_options_set(session, SSH_OPTIONS_COMPRESSION, "yes") < 0) {
+            cont = 0;
+        }
     }
-  }
 
-  if (cont && cipher) {
-    if (ssh_options_set(session, SSH_OPTIONS_CIPHERS_C_S, cipher) < 0) {
-      cont = 0;
+    if (cont && cipher) {
+        if (ssh_options_set(session, SSH_OPTIONS_CIPHERS_C_S, cipher) < 0) {
+            cont = 0;
+        }
+        if (cont && ssh_options_set(session, SSH_OPTIONS_CIPHERS_S_C, cipher) < 0) {
+            cont = 0;
+        }
     }
-    if (cont && ssh_options_set(session, SSH_OPTIONS_CIPHERS_S_C, cipher) < 0) {
-      cont = 0;
+
+    if (cont && user) {
+        if (ssh_options_set(session, SSH_OPTIONS_USER, user) < 0) {
+            cont = 0;
+        }
     }
-  }
 
-  if (cont && user) {
-    if (ssh_options_set(session, SSH_OPTIONS_USER, user) < 0) {
-      cont = 0;
+    if (cont && identity) {
+        if (ssh_options_set(session, SSH_OPTIONS_IDENTITY, identity) < 0) {
+            cont = 0;
+        }
     }
-  }
 
-  if (cont && identity) {
-    if (ssh_options_set(session, SSH_OPTIONS_IDENTITY, identity) < 0) {
-      cont = 0;
+    if (port != NULL) {
+        ssh_options_set(session, SSH_OPTIONS_PORT_STR, port);
     }
-  }
 
-  if (port != NULL) {
-    ssh_options_set(session, SSH_OPTIONS_PORT_STR, port);
-  }
+    if (!cont) {
+        return SSH_ERROR;
+    }
 
-  ssh_options_set(session, SSH_OPTIONS_SSH1, &ssh1);
-  ssh_options_set(session, SSH_OPTIONS_SSH2, &ssh2);
-
-  if (!cont) {
-    return SSH_ERROR;
-  }
-
-  return SSH_OK;
+    return SSH_OK;
 #endif
 }
 
@@ -1323,9 +1407,11 @@ int ssh_options_parse_config(ssh_session session, const char *filename) {
       goto out;
   }
   if (filename == NULL) {
-      r = ssh_config_parse_file(session, "/etc/ssh/ssh_config");
+      r = ssh_config_parse_file(session, GLOBAL_CLIENT_CONFIG);
   }
 
+  /* Do not process the default configuration as part of connection again */
+  session->opts.config_processed = true;
 out:
   free(expanded_filename);
   return r;
@@ -1361,6 +1447,17 @@ int ssh_options_apply(ssh_session session) {
     free(session->opts.knownhosts);
     session->opts.knownhosts = tmp;
 
+    if (session->opts.global_knownhosts == NULL) {
+        tmp = strdup("/etc/ssh/ssh_known_hosts");
+    } else {
+        tmp = ssh_path_expand_escape(session, session->opts.global_knownhosts);
+    }
+    if (tmp == NULL) {
+        return -1;
+    }
+    free(session->opts.global_knownhosts);
+    session->opts.global_knownhosts = tmp;
+
     if (session->opts.ProxyCommand != NULL) {
         tmp = ssh_path_expand_escape(session, session->opts.ProxyCommand);
         if (tmp == NULL) {
@@ -1374,6 +1471,13 @@ int ssh_options_apply(ssh_session session) {
          it != NULL;
          it = it->next) {
         char *id = (char *) it->data;
+        if (strncmp(id, "pkcs11:", 6) == 0) {
+            /* PKCS#11 URIs are using percent-encoding so we can not mix
+             * it with ssh expansion of ssh escape characters.
+             * Skip these identities now, before we will have PKCS#11 support
+             */
+             continue;
+        }
         tmp = ssh_path_expand_escape(session, id);
         if (tmp == NULL) {
             return -1;
@@ -1405,6 +1509,30 @@ static int ssh_bind_set_key(ssh_bind sshbind, char **key_loc,
             return -1;
         }
     }
+    return 0;
+}
+
+static int ssh_bind_set_algo(ssh_bind sshbind,
+                             enum ssh_kex_types_e algo,
+                             const char *list)
+{
+    char *p = NULL;
+
+    if (ssh_fips_mode()) {
+        p = ssh_keep_fips_algos(algo, list);
+    } else {
+        p = ssh_keep_known_algos(algo, list);
+    }
+    if (p == NULL) {
+        ssh_set_error(sshbind, SSH_REQUEST_DENIED,
+                      "Setting method: no algorithm for method \"%s\" (%s)",
+                      ssh_kex_get_description(algo), list);
+        return -1;
+    }
+
+    SAFE_FREE(sshbind->wanted_methods[algo]);
+    sshbind->wanted_methods[algo] = p;
+
     return 0;
 }
 
@@ -1472,6 +1600,53 @@ static int ssh_bind_set_key(ssh_bind sshbind, char **key_loc,
  *                      - SSH_BIND_OPTIONS_IMPORT_KEY:
  *                        Set the Private Key for the server directly (ssh_key)
  *
+ *                      - SSH_BIND_OPTIONS_CIPHERS_C_S:
+ *                        Set the symmetric cipher client to server (const char *,
+ *                        comma-separated list).
+ *
+ *                      - SSH_BIND_OPTIONS_CIPHERS_S_C:
+ *                        Set the symmetric cipher server to client (const char *,
+ *                        comma-separated list).
+ *
+ *                      - SSH_BIND_OPTIONS_KEY_EXCHANGE:
+ *                        Set the key exchange method to be used (const char *,
+ *                        comma-separated list). ex:
+ *                        "ecdh-sha2-nistp256,diffie-hellman-group14-sha1"
+ *
+ *                      - SSH_BIND_OPTIONS_HMAC_C_S:
+ *                        Set the Message Authentication Code algorithm client
+ *                        to server (const char *, comma-separated list).
+ *
+ *                      - SSH_BIND_OPTIONS_HMAC_S_C:
+ *                        Set the Message Authentication Code algorithm server
+ *                        to client (const char *, comma-separated list).
+ *
+ *                      - SSH_BIND_OPTIONS_CONFIG_DIR:
+ *                        Set the directory (const char *, format string)
+ *                        to be used when the "%d" scape is used when providing
+ *                        paths of configuration files to
+ *                        ssh_bind_options_parse_config().
+ *
+ *                      - SSH_BIND_OPTIONS_PROCESS_CONFIG
+ *                        Set it to false to disable automatic processing of
+ *                        system-wide configuration files. LibSSH automatically
+ *                        uses these configuration files otherwise. This
+ *                        option will only have effect if set before any call
+ *                        to ssh_bind_options_parse_config() (bool).
+ *
+ *                      - SSH_BIND_OPTIONS_PUBKEY_ACCEPTED_KEY_TYPES:
+ *                        Set the public key algorithm accepted by the server
+ *                        (const char *, comma-separated list).
+ *
+ *                      - SSH_BIND_OPTIONS_HOSTKEY_ALGORITHMS:
+ *                        Set the list of allowed hostkey signatures algorithms
+ *                        to offer to the client, ordered by preference. This
+ *                        list is used as a filter when creating the list of
+ *                        algorithms to offer to the client: first the list of
+ *                        possible algorithms is created from the list of keys
+ *                        set and then filtered against this list.
+ *                        (const char *, comma-separated list).
+ *
  * @param  value        The value to set. This is a generic pointer and the
  *                      datatype which should be used is described at the
  *                      corresponding value of type above.
@@ -1479,8 +1654,10 @@ static int ssh_bind_set_key(ssh_bind sshbind, char **key_loc,
  * @return              0 on success, < 0 on error, invalid option, or parameter.
  */
 int ssh_bind_options_set(ssh_bind sshbind, enum ssh_bind_options_e type,
-    const void *value) {
+    const void *value)
+{
   char *p, *q;
+  const char *v;
   int i, rc;
 
   if (sshbind == NULL) {
@@ -1515,7 +1692,9 @@ int ssh_bind_options_set(ssh_bind sshbind, enum ssh_bind_options_e type,
                       "without DSA support");
 #endif
               break;
-          case SSH_KEYTYPE_ECDSA:
+          case SSH_KEYTYPE_ECDSA_P256:
+          case SSH_KEYTYPE_ECDSA_P384:
+          case SSH_KEYTYPE_ECDSA_P521:
 #ifdef HAVE_ECC
               bind_key_loc = &sshbind->ecdsa;
               bind_key_path_loc = &sshbind->ecdsakey;
@@ -1527,7 +1706,6 @@ int ssh_bind_options_set(ssh_bind sshbind, enum ssh_bind_options_e type,
 #endif
               break;
           case SSH_KEYTYPE_RSA:
-          case SSH_KEYTYPE_RSA1:
               bind_key_loc = &sshbind->rsa;
               bind_key_path_loc = &sshbind->rsakey;
               break;
@@ -1578,7 +1756,9 @@ int ssh_bind_options_set(ssh_bind sshbind, enum ssh_bind_options_e type,
                                   "without DSA support");
 #endif
                     break;
-                case SSH_KEYTYPE_ECDSA:
+                case SSH_KEYTYPE_ECDSA_P256:
+                case SSH_KEYTYPE_ECDSA_P384:
+                case SSH_KEYTYPE_ECDSA_P521:
 #ifdef HAVE_ECC
                     bind_key_loc = &sshbind->ecdsa;
 #else
@@ -1589,7 +1769,6 @@ int ssh_bind_options_set(ssh_bind sshbind, enum ssh_bind_options_e type,
 #endif
                     break;
                 case SSH_KEYTYPE_RSA:
-                case SSH_KEYTYPE_RSA1:
                     bind_key_loc = &sshbind->rsa;
                     break;
                 case SSH_KEYTYPE_ED25519:
@@ -1625,12 +1804,12 @@ int ssh_bind_options_set(ssh_bind sshbind, enum ssh_bind_options_e type,
         return -1;
       } else {
         int *x = (int *) value;
-        sshbind->bindport = *x & 0xffff;
+        sshbind->bindport = *x & 0xffffU;
       }
       break;
     case SSH_BIND_OPTIONS_BINDPORT_STR:
       if (value == NULL) {
-        sshbind->bindport = 22 & 0xffff;
+        sshbind->bindport = 22 & 0xffffU;
       } else {
         q = strdup(value);
         if (q == NULL) {
@@ -1643,7 +1822,7 @@ int ssh_bind_options_set(ssh_bind sshbind, enum ssh_bind_options_e type,
         }
         SAFE_FREE(q);
 
-        sshbind->bindport = i & 0xffff;
+        sshbind->bindport = i & 0xffffU;
       }
       break;
     case SSH_BIND_OPTIONS_LOG_VERBOSITY:
@@ -1652,7 +1831,7 @@ int ssh_bind_options_set(ssh_bind sshbind, enum ssh_bind_options_e type,
         return -1;
       } else {
         int *x = (int *) value;
-        ssh_set_log_level(*x & 0xffff);
+        ssh_set_log_level(*x & 0xffffU);
       }
       break;
     case SSH_BIND_OPTIONS_LOG_VERBOSITY_STR:
@@ -1670,7 +1849,7 @@ int ssh_bind_options_set(ssh_bind sshbind, enum ssh_bind_options_e type,
         }
         SAFE_FREE(q);
 
-        ssh_set_log_level(i & 0xffff);
+        ssh_set_log_level(i & 0xffffU);
       }
       break;
     case SSH_BIND_OPTIONS_DSAKEY:
@@ -1704,6 +1883,117 @@ int ssh_bind_options_set(ssh_bind sshbind, enum ssh_bind_options_e type,
         }
       }
       break;
+    case SSH_BIND_OPTIONS_CIPHERS_C_S:
+        v = value;
+        if (v == NULL || v[0] == '\0') {
+            ssh_set_error_invalid(sshbind);
+            return -1;
+        } else {
+            if (ssh_bind_set_algo(sshbind, SSH_CRYPT_C_S, v) < 0)
+                return -1;
+        }
+        break;
+    case SSH_BIND_OPTIONS_CIPHERS_S_C:
+        v = value;
+        if (v == NULL || v[0] == '\0') {
+            ssh_set_error_invalid(sshbind);
+            return -1;
+        } else {
+            if (ssh_bind_set_algo(sshbind, SSH_CRYPT_S_C, v) < 0)
+                return -1;
+        }
+        break;
+    case SSH_BIND_OPTIONS_KEY_EXCHANGE:
+        v = value;
+        if (v == NULL || v[0] == '\0') {
+            ssh_set_error_invalid(sshbind);
+            return -1;
+        } else {
+            rc = ssh_bind_set_algo(sshbind, SSH_KEX, v);
+            if (rc < 0) {
+                return -1;
+            }
+        }
+        break;
+    case SSH_BIND_OPTIONS_HMAC_C_S:
+        v = value;
+        if (v == NULL || v[0] == '\0') {
+            ssh_set_error_invalid(sshbind);
+            return -1;
+        } else {
+            if (ssh_bind_set_algo(sshbind, SSH_MAC_C_S, v) < 0)
+                return -1;
+        }
+        break;
+     case SSH_BIND_OPTIONS_HMAC_S_C:
+        v = value;
+        if (v == NULL || v[0] == '\0') {
+            ssh_set_error_invalid(sshbind);
+            return -1;
+        } else {
+            if (ssh_bind_set_algo(sshbind, SSH_MAC_S_C, v) < 0)
+                return -1;
+        }
+        break;
+    case SSH_BIND_OPTIONS_CONFIG_DIR:
+        v = value;
+        SAFE_FREE(sshbind->config_dir);
+        if (v == NULL) {
+            break;
+        } else if (v[0] == '\0') {
+            ssh_set_error_invalid(sshbind);
+            return -1;
+        } else {
+            sshbind->config_dir = ssh_path_expand_tilde(v);
+            if (sshbind->config_dir == NULL) {
+                ssh_set_error_oom(sshbind);
+                return -1;
+            }
+        }
+        break;
+    case SSH_BIND_OPTIONS_PUBKEY_ACCEPTED_KEY_TYPES:
+        v = value;
+        if (v == NULL || v[0] == '\0') {
+            ssh_set_error_invalid(sshbind);
+            return -1;
+        } else {
+            if (ssh_fips_mode()) {
+                p = ssh_keep_fips_algos(SSH_HOSTKEYS, v);
+            } else {
+                p = ssh_keep_known_algos(SSH_HOSTKEYS, v);
+            }
+            if (p == NULL) {
+                ssh_set_error(sshbind, SSH_REQUEST_DENIED,
+                    "Setting method: no known public key algorithm (%s)",
+                     v);
+                return -1;
+            }
+
+            SAFE_FREE(sshbind->pubkey_accepted_key_types);
+            sshbind->pubkey_accepted_key_types = p;
+        }
+        break;
+    case SSH_BIND_OPTIONS_HOSTKEY_ALGORITHMS:
+        v = value;
+        if (v == NULL || v[0] == '\0') {
+            ssh_set_error_invalid(sshbind);
+            return -1;
+        } else {
+            rc = ssh_bind_set_algo(sshbind, SSH_HOSTKEYS, v);
+            if (rc < 0) {
+                return -1;
+            }
+        }
+        break;
+    case SSH_BIND_OPTIONS_PROCESS_CONFIG:
+        if (value == NULL) {
+            ssh_set_error_invalid(sshbind);
+            return -1;
+        } else {
+            bool *x = (bool *)value;
+            sshbind->config_processed = !(*x);
+        }
+        break;
     default:
       ssh_set_error(sshbind, SSH_REQUEST_DENIED, "Unknown ssh option %d", type);
       return -1;
@@ -1712,8 +2002,129 @@ int ssh_bind_options_set(ssh_bind sshbind, enum ssh_bind_options_e type,
 
   return 0;
 }
+
+static char *ssh_bind_options_expand_escape(ssh_bind sshbind, const char *s)
+{
+    char buf[MAX_BUF_SIZE];
+    char *r, *x = NULL;
+    const char *p;
+    size_t i, l;
+
+    r = ssh_path_expand_tilde(s);
+    if (r == NULL) {
+        ssh_set_error_oom(sshbind);
+        return NULL;
+    }
+
+    if (strlen(r) > MAX_BUF_SIZE) {
+        ssh_set_error(sshbind, SSH_FATAL, "string to expand too long");
+        free(r);
+        return NULL;
+    }
+
+    p = r;
+    buf[0] = '\0';
+
+    for (i = 0; *p != '\0'; p++) {
+        if (*p != '%') {
+            buf[i] = *p;
+            i++;
+            if (i >= MAX_BUF_SIZE) {
+                free(r);
+                return NULL;
+            }
+            buf[i] = '\0';
+            continue;
+        }
+
+        p++;
+        if (*p == '\0') {
+            break;
+        }
+
+        switch (*p) {
+            case 'd':
+                x = strdup(sshbind->config_dir);
+                break;
+            default:
+                ssh_set_error(sshbind, SSH_FATAL,
+                        "Wrong escape sequence detected");
+                free(r);
+                return NULL;
+        }
+
+        if (x == NULL) {
+            ssh_set_error_oom(sshbind);
+            free(r);
+            return NULL;
+        }
+
+        i += strlen(x);
+        if (i >= MAX_BUF_SIZE) {
+            ssh_set_error(sshbind, SSH_FATAL,
+                    "String too long");
+            free(x);
+            free(r);
+            return NULL;
+        }
+        l = strlen(buf);
+        strncpy(buf + l, x, sizeof(buf) - l - 1);
+        buf[i] = '\0';
+        SAFE_FREE(x);
+    }
+
+    free(r);
+    return strdup(buf);
+}
+
+/**
+ * @brief Parse a ssh bind options configuration file.
+ *
+ * This parses the options file and set them to the ssh_bind handle provided. If
+ * an option was previously set, it is overridden. If the global configuration
+ * hasn't been processed yet, it is processed prior to the provided file.
+ *
+ * @param  sshbind      SSH bind handle
+ *
+ * @param  filename     The options file to use; if NULL only the global
+ *                      configuration is parsed and applied (if it haven't been
+ *                      processed before).
+ *
+ * @return 0 on success, < 0 on error.
+ */
+int ssh_bind_options_parse_config(ssh_bind sshbind, const char *filename)
+{
+    int rc = 0;
+    char *expanded_filename;
+
+    if (sshbind == NULL) {
+        return -1;
+    }
+
+    /* If the global default configuration hasn't been processed yet, process it
+     * before the provided configuration. */
+    if (!(sshbind->config_processed)) {
+        rc = ssh_bind_config_parse_file(sshbind, GLOBAL_BIND_CONFIG);
+        if (rc != 0) {
+            return rc;
+        }
+        sshbind->config_processed = true;
+    }
+
+    if (filename != NULL) {
+        expanded_filename = ssh_bind_options_expand_escape(sshbind, filename);
+        if (expanded_filename == NULL) {
+            return -1;
+        }
+
+        /* Apply the user provided configuration */
+        rc = ssh_bind_config_parse_file(sshbind, expanded_filename);
+        free(expanded_filename);
+    }
+
+    return rc;
+}
+
 #endif
 
 /** @} */
-
-/* vim: set ts=4 sw=4 et cindent: */

@@ -30,13 +30,14 @@
 
 #include <sys/types.h>
 #include <pwd.h>
+#include <errno.h>
 
 #define BUFLEN 4096
 static char buffer[BUFLEN];
 
 static int sshd_setup(void **state)
 {
-    torture_setup_sshd_server(state);
+    torture_setup_sshd_server(state, false);
 
     return 0;
 }
@@ -51,12 +52,16 @@ static int session_setup(void **state)
 {
     struct torture_state *s = *state;
     struct passwd *pwd;
+    int rc;
 
     pwd = getpwnam("bob");
     assert_non_null(pwd);
-    setuid(pwd->pw_uid);
 
-    s->ssh.session = torture_ssh_session(TORTURE_SSH_SERVER,
+    rc = setuid(pwd->pw_uid);
+    assert_return_code(rc, errno);
+
+    s->ssh.session = torture_ssh_session(s,
+                                         TORTURE_SSH_SERVER,
                                          NULL,
                                          TORTURE_SSH_USER_ALICE,
                                          NULL);
@@ -80,19 +85,22 @@ static void torture_channel_read_error(void **state) {
     ssh_session session = s->ssh.session;
     ssh_channel channel;
     int rc;
+    int fd;
     int i;
 
     channel = ssh_channel_new(session);
     assert_non_null(channel);
 
     rc = ssh_channel_open_session(channel);
-    assert_int_equal(rc, SSH_OK);
+    assert_ssh_return_code(session, rc);
 
     rc = ssh_channel_request_exec(channel, "hexdump -C /dev/urandom");
-    assert_int_equal(rc, SSH_OK);
+    assert_ssh_return_code(session, rc);
 
     /* send crap and for server to send us a disconnect */
-    rc = write(ssh_get_fd(session),"AAAA", 4);
+    fd = ssh_get_fd(session);
+    assert_true(fd > 2);
+    rc = write(fd, "AAAA", 4);
     assert_int_equal(rc, 4);
 
     for (i=0;i<20;++i){
@@ -102,9 +110,9 @@ static void torture_channel_read_error(void **state) {
     }
 #if OPENSSH_VERSION_MAJOR == 6 && OPENSSH_VERSION_MINOR >= 7
     /* With openssh 6.7 this doesn't produce and error anymore */
-    assert_int_equal(rc, SSH_OK);
+    assert_ssh_return_code(session, rc);
 #else
-    assert_int_equal(rc, SSH_ERROR);
+    assert_ssh_return_code_equal(session, rc, SSH_ERROR);
 #endif
 
     ssh_channel_free(channel);

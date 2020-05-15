@@ -101,12 +101,16 @@ int ssh_client_ecdh_init(ssh_session session){
   rc = ssh_buffer_add_ssh_string(session->out_buffer,client_pubkey);
   if (rc < 0) {
       EC_KEY_free(key);
-      ssh_string_free(client_pubkey);
+      SSH_STRING_FREE(client_pubkey);
       return SSH_ERROR;
   }
 
   session->next_crypto->ecdh_privkey = key;
   session->next_crypto->ecdh_client_pubkey = client_pubkey;
+
+  /* register the packet callbacks */
+  ssh_packet_set_callbacks(session, &ssh_ecdh_client_callbacks);
+  session->dh_handshake_state = DH_STATE_INIT_SENT;
 
   rc = ssh_packet_send(session);
 
@@ -121,12 +125,6 @@ int ecdh_build_k(ssh_session session) {
   int len = (EC_GROUP_get_degree(group) + 7) / 8;
   bignum_CTX ctx = bignum_ctx_new();
   if (ctx == NULL) {
-    return -1;
-  }
-
-  session->next_crypto->k = bignum_new();
-  if (session->next_crypto->k == NULL) {
-    bignum_ctx_free(ctx);
     return -1;
   }
 
@@ -172,18 +170,22 @@ int ecdh_build_k(ssh_session session) {
       return -1;
   }
 
-  bignum_bin2bn(buffer, len, session->next_crypto->k);
+  bignum_bin2bn(buffer, len, &session->next_crypto->shared_secret);
   free(buffer);
-
+  if (session->next_crypto->shared_secret == NULL) {
+      EC_KEY_free(session->next_crypto->ecdh_privkey);
+      session->next_crypto->ecdh_privkey = NULL;
+      return -1;
+  }
   EC_KEY_free(session->next_crypto->ecdh_privkey);
   session->next_crypto->ecdh_privkey = NULL;
 
 #ifdef DEBUG_CRYPTO
-    ssh_print_hexa("Session server cookie",
+    ssh_log_hexdump("Session server cookie",
                    session->next_crypto->server_kex.cookie, 16);
-    ssh_print_hexa("Session client cookie",
+    ssh_log_hexdump("Session client cookie",
                    session->next_crypto->client_kex.cookie, 16);
-    ssh_print_bignum("Shared secret key", session->next_crypto->k);
+    ssh_print_bignum("Shared secret key", session->next_crypto->shared_secret);
 #endif
 
   return 0;
@@ -191,11 +193,10 @@ int ecdh_build_k(ssh_session session) {
 
 #ifdef WITH_SERVER
 
-/** @brief Parse a SSH_MSG_KEXDH_INIT packet (server) and send a
+/** @brief Handle a SSH_MSG_KEXDH_INIT packet (server) and send a
  * SSH_MSG_KEXDH_REPLY
  */
-
-int ssh_server_ecdh_init(ssh_session session, ssh_buffer packet){
+SSH_PACKET_CALLBACK(ssh_packet_server_ecdh_init){
     /* ECDH keys */
     ssh_string q_c_string;
     ssh_string q_s_string;
@@ -205,16 +206,21 @@ int ssh_server_ecdh_init(ssh_session session, ssh_buffer packet){
     bignum_CTX ctx;
     /* SSH host keys (rsa,dsa,ecdsa) */
     ssh_key privkey;
+    enum ssh_digest_e digest = SSH_DIGEST_AUTO;
     ssh_string sig_blob = NULL;
+    ssh_string pubkey_blob = NULL;
     int curve;
     int len;
     int rc;
+    (void)type;
+    (void)user;
 
+    ssh_packet_remove_callbacks(session, &ssh_ecdh_server_callbacks);
     /* Extract the client pubkey from the init packet */
     q_c_string = ssh_buffer_get_ssh_string(packet);
     if (q_c_string == NULL) {
         ssh_set_error(session,SSH_FATAL, "No Q_C ECC point in packet");
-        return SSH_ERROR;
+        goto error;
     }
     session->next_crypto->ecdh_client_pubkey = q_c_string;
 
@@ -232,7 +238,7 @@ int ssh_server_ecdh_init(ssh_session session, ssh_buffer packet){
     if (ecdh_key == NULL) {
         ssh_set_error_oom(session);
         BN_CTX_free(ctx);
-        return SSH_ERROR;
+        goto error;
     }
 
     group = EC_KEY_get0_group(ecdh_key);
@@ -250,7 +256,7 @@ int ssh_server_ecdh_init(ssh_session session, ssh_buffer packet){
     if (q_s_string == NULL) {
         EC_KEY_free(ecdh_key);
         BN_CTX_free(ctx);
-        return SSH_ERROR;
+        goto error;
     }
 
     EC_POINT_point2oct(group,
@@ -268,58 +274,73 @@ int ssh_server_ecdh_init(ssh_session session, ssh_buffer packet){
     rc = ecdh_build_k(session);
     if (rc < 0) {
         ssh_set_error(session, SSH_FATAL, "Cannot build k number");
-        return SSH_ERROR;
+        goto error;
     }
 
     /* privkey is not allocated */
-    rc = ssh_get_key_params(session, &privkey);
+    rc = ssh_get_key_params(session, &privkey, &digest);
     if (rc == SSH_ERROR) {
-        return SSH_ERROR;
+        goto error;
     }
 
     rc = ssh_make_sessionid(session);
     if (rc != SSH_OK) {
         ssh_set_error(session, SSH_FATAL, "Could not create a session id");
-        return SSH_ERROR;
+        goto error;
     }
 
-    sig_blob = ssh_srv_pki_do_sign_sessionid(session, privkey);
+    sig_blob = ssh_srv_pki_do_sign_sessionid(session, privkey, digest);
     if (sig_blob == NULL) {
         ssh_set_error(session, SSH_FATAL, "Could not sign the session id");
+        goto error;
+    }
+
+    rc = ssh_dh_get_next_server_publickey_blob(session, &pubkey_blob);
+    if (rc != SSH_OK) {
+        ssh_set_error(session, SSH_FATAL, "Could not export server public key");
+        SSH_STRING_FREE(sig_blob);
         return SSH_ERROR;
     }
 
     rc = ssh_buffer_pack(session->out_buffer,
                          "bSSS",
                          SSH2_MSG_KEXDH_REPLY,
-                         session->next_crypto->server_pubkey, /* host's pubkey */
+                         pubkey_blob, /* host's pubkey */
                          q_s_string, /* ecdh public key */
                          sig_blob); /* signature blob */
 
-    ssh_string_free(sig_blob);
+    SSH_STRING_FREE(sig_blob);
+    SSH_STRING_FREE(pubkey_blob);
 
     if (rc != SSH_OK) {
         ssh_set_error_oom(session);
-        return SSH_ERROR;
+        goto error;
     }
 
     SSH_LOG(SSH_LOG_PROTOCOL, "SSH_MSG_KEXDH_REPLY sent");
     rc = ssh_packet_send(session);
     if (rc == SSH_ERROR) {
-        return SSH_ERROR;
+        goto error;
     }
 
     /* Send the MSG_NEWKEYS */
     rc = ssh_buffer_add_u8(session->out_buffer, SSH2_MSG_NEWKEYS);
     if (rc < 0) {
-        return SSH_ERROR;;
+        goto error;
     }
 
     session->dh_handshake_state = DH_STATE_NEWKEYS_SENT;
     rc = ssh_packet_send(session);
+    if (rc == SSH_ERROR){
+        goto error;
+    }
     SSH_LOG(SSH_LOG_PROTOCOL, "SSH_MSG_NEWKEYS sent");
 
-    return rc;
+    return SSH_PACKET_USED;
+error:
+    ssh_buffer_reinit(session->out_buffer);
+    session->session_state = SSH_SESSION_STATE_ERROR;
+    return SSH_PACKET_USED;
 }
 
 #endif /* WITH_SERVER */

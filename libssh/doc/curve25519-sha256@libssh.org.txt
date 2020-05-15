@@ -112,8 +112,8 @@ This number is calculated using the following procedure:
      This conversion follows the network byte order. This step differs from 
      RFC5656.
 
-[RFC5656]    http://tools.ietf.org/html/rfc5656
+[RFC5656]    https://tools.ietf.org/html/rfc5656
 [SCHNEIER]   https://www.schneier.com/blog/archives/2013/09/the_nsa_is_brea.html#c1675929
-[DJB]        http://cr.yp.to/talks/2013.05.31/slides-dan+tanja-20130531-4x3.pdf
+[DJB]        https://cr.yp.to/talks/2013.05.31/slides-dan+tanja-20130531-4x3.pdf
 [Curve25519] "Curve25519: new Diffie-Hellman speed records."
-             http://cr.yp.to/ecdh/curve25519-20060209.pdf
+             https://cr.yp.to/ecdh/curve25519-20060209.pdf

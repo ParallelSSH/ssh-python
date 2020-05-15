@@ -1,16 +1,19 @@
-project(libssh C)
+cmake_minimum_required(VERSION 3.3.0)
+cmake_policy(SET CMP0048 NEW)
 
-# Required cmake version
-cmake_minimum_required(VERSION 2.8.5)
+# Specify search path for CMake modules to be loaded by include() 
+# and find_package()
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 
-# global needed variables
+# Add defaults for cmake
+# Those need to be set before the project() call.
+include(DefineCMakeDefaults)
+include(DefineCompilerFlags)
+
+project(libssh VERSION 0.9.4 LANGUAGES C)
+
+# global needed variable
 set(APPLICATION_NAME ${PROJECT_NAME})
-
-set(APPLICATION_VERSION_MAJOR "0")
-set(APPLICATION_VERSION_MINOR "7")
-set(APPLICATION_VERSION_PATCH "90")
-
-set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}")
 
 # SOVERSION scheme: CURRENT.AGE.REVISION
 #   If there was an incompatible interface change:
@@ -19,25 +22,25 @@ set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINO
 #     Increment AGE. Set REVISION to 0
 #   If the source code was changed, but there were no interface changes:
 #     Increment REVISION.
-set(LIBRARY_VERSION "4.5.0")
+set(LIBRARY_VERSION "4.8.5")
 set(LIBRARY_SOVERSION "4")
 
 # where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
-set(CMAKE_MODULE_PATH
-  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules
-)
 
 # add definitions
-include(DefineCMakeDefaults)
 include(DefinePlatformDefaults)
-include(DefineCompilerFlags)
-include(DefineInstallationPaths)
 include(DefineOptions.cmake)
 include(CPackConfig.cmake)
+include(GNUInstallDirs)
+
+include(CompilerChecks.cmake)
 
 # disallow in-source build
 include(MacroEnsureOutOfSourceBuild)
 macro_ensure_out_of_source_build("${PROJECT_NAME} requires an out of source build. Please create a separate build directory and run 'cmake /path/to/${PROJECT_NAME} [options]' there.")
+
+# Copy library files to a lib sub-directory
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
 
 # search for libraries
 if (WITH_ZLIB)
@@ -67,8 +70,13 @@ else (WITH_GCRYPT)
   endif (NOT OPENSSL_FOUND)
 endif(WITH_GCRYPT)
 
+if (UNIT_TESTING)
+    find_package(CMocka REQUIRED)
+endif ()
+
 # Find out if we have threading available
 set(CMAKE_THREAD_PREFER_PTHREADS ON)
+set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads)
 
 if (WITH_GSSAPI)
@@ -86,6 +94,13 @@ if (BSD OR SOLARIS OR OSX)
     find_package(Argp)
 endif (BSD OR SOLARIS OR OSX)
 
+# Disable symbol versioning in non UNIX platforms
+if (UNIX)
+    find_package(ABIMap 0.3.1)
+else (UNIX)
+    set(WITH_SYMBOL_VERSIONING OFF)
+endif (UNIX)
+
 # config.h checks
 include(ConfigureChecks.cmake)
 configure_file(config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h)
@@ -101,57 +116,99 @@ configure_file(libssh.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libssh.pc)
 install(
   FILES
     ${CMAKE_CURRENT_BINARY_DIR}/libssh.pc
-    ${CMAKE_CURRENT_BINARY_DIR}/libssh_threads.pc
   DESTINATION
-    ${LIB_INSTALL_DIR}/pkgconfig
+    ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   COMPONENT
     pkgconfig
 )
-
-    if (LIBSSH_THREADS)
-        configure_file(libssh_threads.pc.cmake ${CMAKE_CURRENT_BINARY_DIR}/libssh_threads.pc)
-        install(
-          FILES
-            ${CMAKE_CURRENT_BINARY_DIR}/libssh.pc
-            ${CMAKE_CURRENT_BINARY_DIR}/libssh_threads.pc
-          DESTINATION
-            ${LIB_INSTALL_DIR}/pkgconfig
-          COMPONENT
-            pkgconfig
-        )
-    endif (LIBSSH_THREADS)
 endif (UNIX)
 
-# cmake config files
-set(LIBSSH_LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}ssh${CMAKE_SHARED_LIBRARY_SUFFIX})
-set(LIBSSH_THREADS_LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}ssh${CMAKE_SHARED_LIBRARY_SUFFIX})
+# CMake config files
+include(CMakePackageConfigHelpers)
 
-configure_file(${PROJECT_NAME}-config.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake @ONLY)
-configure_file(${PROJECT_NAME}-config-version.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake @ONLY)
+set(LIBSSH_LIBRARY_NAME ${CMAKE_SHARED_LIBRARY_PREFIX}ssh${CMAKE_SHARED_LIBRARY_SUFFIX})
+
+# libssh-config-version.cmake
+write_basic_package_version_file(libssh-config-version.cmake
+                                 VERSION ${PROJECT_VERSION}
+                                 COMPATIBILITY SameMajorVersion)
+
 install(
     FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake
     DESTINATION
-        ${CMAKE_INSTALL_DIR}/${PROJECT_NAME}
+        ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
     COMPONENT
-        devel
-)
-
-
-# in tree build settings
-configure_file(libssh-build-tree-settings.cmake.in ${CMAKE_CURRENT_BINARY_DIR}/libssh-build-tree-settings.cmake @ONLY)
+        devel)
 
 if (WITH_EXAMPLES)
     add_subdirectory(examples)
 endif (WITH_EXAMPLES)
 
-if (WITH_TESTING)
-  find_package(CMocka REQUIRED)
-  include(AddCMockaTest)
-  add_subdirectory(tests)
-endif (WITH_TESTING)
+if (UNIT_TESTING)
+    include(AddCMockaTest)
+    add_subdirectory(tests)
+endif (UNIT_TESTING)
 
+### SOURCE PACKAGE
+if (WITH_SYMBOL_VERSIONING AND ABIMAP_FOUND)
+    # Get the current ABI version from source
+    get_filename_component(current_abi_path
+                           "${CMAKE_SOURCE_DIR}/src/ABI/current"
+                           ABSOLUTE)
+
+    # Check if the ABI version should be updated
+    file(READ ${current_abi_path} CURRENT_ABI_CONTENT)
+    string(STRIP "${CURRENT_ABI_CONTENT}" CURRENT_ABI_VERSION)
+
+    if (LIBRARY_VERSION VERSION_GREATER CURRENT_ABI_VERSION)
+        set(UPDATE_ABI TRUE)
+    endif ()
+
+    if (UPDATE_ABI)
+        message(STATUS "Library version bumped to ${LIBRARY_VERSION}: Updating ABI")
+
+        # Get the list of header files
+        get_file_list(${PROJECT_NAME}_header_list
+                      DIRECTORIES "${CMAKE_SOURCE_DIR}/include/libssh"
+                      FILES_PATTERNS "*.h")
+
+        # Extract the symbols marked as "LIBSSH_API" from the header files
+        extract_symbols(${PROJECT_NAME}.symbols
+                        HEADERS_LIST ${PROJECT_NAME}_header_list
+                        FILTER_PATTERN "LIBSSH_API"
+                        COPY_TO "${CMAKE_SOURCE_DIR}/src/ABI/${PROJECT_NAME}-${LIBRARY_VERSION}.symbols")
+
+        if (WITH_ABI_BREAK)
+            set(ALLOW_ABI_BREAK "BREAK_ABI")
+        endif()
+
+        # Target we can depend on in 'make dist'
+        set(_SYMBOL_TARGET "${PROJECT_NAME}.map")
+
+        # Set the path to the current map file
+        set(MAP_PATH "${CMAKE_SOURCE_DIR}/src/${_SYMBOL_TARGET}")
+
+        # Generate the symbol version map file
+        generate_map_file(${_SYMBOL_TARGET}
+                          SYMBOLS ${PROJECT_NAME}.symbols
+                          RELEASE_NAME_VERSION ${PROJECT_NAME}_${LIBRARY_VERSION}
+                          CURRENT_MAP ${MAP_PATH}
+                          COPY_TO ${MAP_PATH}
+                          FINAL
+                          ${ALLOW_ABI_BREAK})
+
+        # Write the current version to the source
+        file(WRITE ${current_abi_path} ${LIBRARY_VERSION})
+    endif(UPDATE_ABI)
+endif (WITH_SYMBOL_VERSIONING AND ABIMAP_FOUND)
+
+add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source DEPENDS ${_SYMBOL_TARGET})
+
+# Link compile database for clangd
+execute_process(COMMAND cmake -E create_symlink
+                "${CMAKE_BINARY_DIR}/compile_commands.json"
+                "${CMAKE_SOURCE_DIR}/compile_commands.json")
 
 message(STATUS "********************************************")
 message(STATUS "********** ${PROJECT_NAME} build options : **********")
@@ -160,19 +217,32 @@ message(STATUS "zlib support: ${WITH_ZLIB}")
 message(STATUS "libgcrypt support: ${WITH_GCRYPT}")
 message(STATUS "libmbedTLS support: ${WITH_MBEDTLS}")
 message(STATUS "libnacl support: ${WITH_NACL}")
-message(STATUS "SSH-1 support: ${WITH_SSH1}")
 message(STATUS "SFTP support: ${WITH_SFTP}")
 message(STATUS "Server support : ${WITH_SERVER}")
 message(STATUS "GSSAPI support : ${WITH_GSSAPI}")
+message(STATUS "GEX support : ${WITH_GEX}")
 message(STATUS "Pcap debugging support : ${WITH_PCAP}")
-message(STATUS "With static library: ${WITH_STATIC_LIB}")
-message(STATUS "Unit testing: ${WITH_TESTING}")
-message(STATUS "Client code Unit testing: ${WITH_CLIENT_TESTING}")
+message(STATUS "Build shared library: ${BUILD_SHARED_LIBS}")
+message(STATUS "Unit testing: ${UNIT_TESTING}")
+message(STATUS "Client code testing: ${CLIENT_TESTING}")
+message(STATUS "Blowfish cipher support: ${WITH_BLOWFISH_CIPHER}")
+set(_SERVER_TESTING OFF)
+if (WITH_SERVER)
+    set(_SERVER_TESTING ${SERVER_TESTING})
+endif()
+message(STATUS "Server code testing: ${_SERVER_TESTING}")
 if (WITH_INTERNAL_DOC)
     message(STATUS "Internal documentation generation")
 else (WITH_INTERNAL_DOC)
     message(STATUS "Public API documentation generation")
 endif (WITH_INTERNAL_DOC)
 message(STATUS "Benchmarks: ${WITH_BENCHMARKS}")
+message(STATUS "Symbol versioning: ${WITH_SYMBOL_VERSIONING}")
+message(STATUS "Allow ABI break: ${WITH_ABI_BREAK}")
+message(STATUS "Release is final: ${WITH_FINAL}")
+message(STATUS "Global client config: ${GLOBAL_CLIENT_CONFIG}")
+if (WITH_SERVER)
+message(STATUS "Global bind config: ${GLOBAL_BIND_CONFIG}")
+endif()
 message(STATUS "********************************************")
 

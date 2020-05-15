@@ -120,10 +120,10 @@ void fe25519_pack(unsigned char r[32], const fe25519 *x)
     }
 }
 
-int fe25519_iszero(const fe25519 *x)
+uint32_t fe25519_iszero(const fe25519 *x)
 {
     int i;
-    int r;
+    uint32_t r;
 
     fe25519 t = *x;
     fe25519_freeze(&t);

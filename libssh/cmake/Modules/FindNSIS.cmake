@@ -21,17 +21,16 @@
 #
 
 if (WIN32)
-    set(_NSIS_ROOT_HINTS
-        "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\NSIS;Default]")
+    set(_x86 "(x86)")
 
     set(_NSIS_ROOT_PATHS
-        $ENV{PROGRAMFILES}/NSIS)
+        "$ENV{ProgramFiles}/NSIS"
+        "$ENV{ProgramFiles${_x86}}/NSIS"
+        "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\NSIS;Default]")
 
     find_path(NSIS_ROOT_PATH
         NAMES
             Include/Library.nsh
-        HINTS
-            ${_NSIS_ROOT_HINTS}
         PATHS
             ${_NSIS_ROOT_PATHS}
         )

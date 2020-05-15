@@ -48,11 +48,16 @@ enum ssh_channel_state_e {
 };
 
 /* The channel has been closed by the remote side */
-#define SSH_CHANNEL_FLAG_CLOSED_REMOTE 0x1
+#define SSH_CHANNEL_FLAG_CLOSED_REMOTE 0x0001
+
+/* The channel has been closed locally */
+#define SSH_CHANNEL_FLAG_CLOSED_LOCAL 0x0002
+
 /* The channel has been freed by the calling program */
-#define SSH_CHANNEL_FLAG_FREED_LOCAL 0x2
+#define SSH_CHANNEL_FLAG_FREED_LOCAL 0x0004
+
 /* the channel has not yet been bound to a remote one */
-#define SSH_CHANNEL_FLAG_NOT_BOUND 0x4
+#define SSH_CHANNEL_FLAG_NOT_BOUND 0x0008
 
 struct ssh_channel_struct {
     ssh_session session; /* SSH_SESSION pointer */
@@ -71,7 +76,6 @@ struct ssh_channel_struct {
     ssh_buffer stdout_buffer;
     ssh_buffer stderr_buffer;
     void *userarg;
-    int version;
     int exit_status;
     enum ssh_channel_request_state_e request_state;
     struct ssh_list *callbacks; /* list of ssh_channel_callbacks */
@@ -93,27 +97,16 @@ SSH_PACKET_CALLBACK(channel_rcv_close);
 SSH_PACKET_CALLBACK(channel_rcv_request);
 SSH_PACKET_CALLBACK(channel_rcv_data);
 
-ssh_channel ssh_channel_new(ssh_session session);
-int channel_default_bufferize(ssh_channel channel, void *data, int len,
-        int is_stderr);
+int channel_default_bufferize(ssh_channel channel,
+                              void *data, size_t len,
+                              bool is_stderr);
 int ssh_channel_flush(ssh_channel channel);
 uint32_t ssh_channel_new_id(ssh_session session);
 ssh_channel ssh_channel_from_local(ssh_session session, uint32_t id);
 void ssh_channel_do_free(ssh_channel channel);
-#ifdef WITH_SSH1
-SSH_PACKET_CALLBACK(ssh_packet_data1);
-SSH_PACKET_CALLBACK(ssh_packet_close1);
-SSH_PACKET_CALLBACK(ssh_packet_exist_status1);
-
-/* channels1.c */
-int ssh_channel_open_session1(ssh_channel channel);
-int ssh_channel_request_pty_size1(ssh_channel channel, const char *terminal,
-    int cols, int rows);
-int ssh_channel_change_pty_size1(ssh_channel channel, int cols, int rows);
-int ssh_channel_request_shell1(ssh_channel channel);
-int ssh_channel_request_exec1(ssh_channel channel, const char *cmd);
-int ssh_channel_write1(ssh_channel channel, const void *data, int len);
-ssh_channel ssh_get_channel1(ssh_session session);
-#endif
+int ssh_global_request(ssh_session session,
+                       const char *request,
+                       ssh_buffer buffer,
+                       int reply);
 
 #endif /* CHANNELS_H_ */

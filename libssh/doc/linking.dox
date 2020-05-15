@@ -27,4 +27,7 @@ the dllimport attribute.
 #include <libssh/libssh.h>
 @endcode
 
+If you're are statically linking with OpenSSL, read the "Linking your
+application" section in the NOTES.[OS] in the OpenSSL source tree!
+
 */

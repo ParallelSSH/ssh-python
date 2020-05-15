@@ -38,6 +38,7 @@
 #include "libssh/buffer.h"
 #include "libssh/socket.h"
 #include "libssh/session.h"
+#include "libssh/token.h"
 
 /**
  * @addtogroup libssh_server
@@ -130,18 +131,17 @@ static socket_t bind_socket(ssh_bind sshbind, const char *hostname,
 }
 
 ssh_bind ssh_bind_new(void) {
-  ssh_bind ptr;
+    ssh_bind ptr;
 
-  ptr = malloc(sizeof(struct ssh_bind_struct));
-  if (ptr == NULL) {
-    return NULL;
-  }
-  ZERO_STRUCTP(ptr);
-  ptr->bindfd = SSH_INVALID_SOCKET;
-  ptr->bindport= 22;
-  ptr->common.log_verbosity = 0;
+    ptr = calloc(1, sizeof(struct ssh_bind_struct));
+    if (ptr == NULL) {
+        return NULL;
+    }
+    ptr->bindfd = SSH_INVALID_SOCKET;
+    ptr->bindport = 22;
+    ptr->common.log_verbosity = 0;
 
-  return ptr;
+    return ptr;
 }
 
 static int ssh_bind_import_keys(ssh_bind sshbind) {
@@ -149,9 +149,10 @@ static int ssh_bind_import_keys(ssh_bind sshbind) {
 
   if (sshbind->ecdsakey == NULL &&
       sshbind->dsakey == NULL &&
-      sshbind->rsakey == NULL) {
+      sshbind->rsakey == NULL &&
+      sshbind->ed25519key == NULL) {
       ssh_set_error(sshbind, SSH_FATAL,
-                    "ECDSA, DSA, or RSA host key file must be set");
+                    "ECDSA, ED25519, DSA, or RSA host key file must be set");
       return SSH_ERROR;
   }
 
@@ -168,7 +169,7 @@ static int ssh_bind_import_keys(ssh_bind sshbind) {
           return SSH_ERROR;
       }
 
-      if (ssh_key_type(sshbind->ecdsa) != SSH_KEYTYPE_ECDSA) {
+      if (!is_ecdsa_key_type(ssh_key_type(sshbind->ecdsa))) {
           ssh_set_error(sshbind, SSH_FATAL,
                   "The ECDSA host key has the wrong type");
           ssh_key_free(sshbind->ecdsa);
@@ -214,12 +215,32 @@ static int ssh_bind_import_keys(ssh_bind sshbind) {
           return SSH_ERROR;
       }
 
-      if (ssh_key_type(sshbind->rsa) != SSH_KEYTYPE_RSA &&
-          ssh_key_type(sshbind->rsa) != SSH_KEYTYPE_RSA1) {
+      if (ssh_key_type(sshbind->rsa) != SSH_KEYTYPE_RSA) {
           ssh_set_error(sshbind, SSH_FATAL,
                   "The RSA host key has the wrong type");
           ssh_key_free(sshbind->rsa);
           sshbind->rsa = NULL;
+          return SSH_ERROR;
+      }
+  }
+
+  if (sshbind->ed25519 == NULL && sshbind->ed25519key != NULL) {
+      rc = ssh_pki_import_privkey_file(sshbind->ed25519key,
+                                       NULL,
+                                       NULL,
+                                       NULL,
+                                       &sshbind->ed25519);
+      if (rc == SSH_ERROR || rc == SSH_EOF) {
+          ssh_set_error(sshbind, SSH_FATAL,
+                  "Failed to import private ED25519 host key");
+          return SSH_ERROR;
+      }
+
+      if (ssh_key_type(sshbind->ed25519) != SSH_KEYTYPE_ED25519) {
+          ssh_set_error(sshbind, SSH_FATAL,
+                  "The ED25519 host key has the wrong type");
+          ssh_key_free(sshbind->ed25519);
+          sshbind->ed25519 = NULL;
           return SSH_ERROR;
       }
   }
@@ -232,12 +253,10 @@ int ssh_bind_listen(ssh_bind sshbind) {
   socket_t fd;
   int rc;
 
-  if (ssh_init() < 0) {
-    ssh_set_error(sshbind, SSH_FATAL, "ssh_init() failed");
-    return -1;
-  }
-
-  if (sshbind->rsa == NULL && sshbind->dsa == NULL && sshbind->ecdsa == NULL) {
+  if (sshbind->rsa == NULL &&
+      sshbind->dsa == NULL &&
+      sshbind->ecdsa == NULL &&
+      sshbind->ed25519 == NULL) {
       rc = ssh_bind_import_keys(sshbind);
       if (rc != SSH_OK) {
           return SSH_ERROR;
@@ -256,6 +275,7 @@ int ssh_bind_listen(ssh_bind sshbind) {
           sshbind->dsa = NULL;
           ssh_key_free(sshbind->rsa);
           sshbind->rsa = NULL;
+          /* XXX should this clear also other structures that were allocated */
           return -1;
       }
 
@@ -268,6 +288,7 @@ int ssh_bind_listen(ssh_bind sshbind) {
           sshbind->dsa = NULL;
           ssh_key_free(sshbind->rsa);
           sshbind->rsa = NULL;
+          /* XXX should this clear also other structures that were allocated */
           return -1;
       }
 
@@ -322,12 +343,24 @@ static int ssh_bind_poll_callback(ssh_poll_handle sshpoll,
  * @param sshbind the ssh_bind object
  * @returns a ssh_poll handle suitable for operation
  */
-ssh_poll_handle ssh_bind_get_poll(ssh_bind sshbind){
-  if(sshbind->poll)
+ssh_poll_handle ssh_bind_get_poll(ssh_bind sshbind)
+{
+    short events = POLLIN;
+
+    if (sshbind->poll) {
+        return sshbind->poll;
+    }
+
+#ifdef POLLRDHUP
+    events |= POLLRDHUP;
+#endif /* POLLRDHUP */
+
+    sshbind->poll = ssh_poll_new(sshbind->bindfd,
+                                 events,
+                                 ssh_bind_poll_callback,
+                                 sshbind);
+
     return sshbind->poll;
-  sshbind->poll=ssh_poll_new(sshbind->bindfd,POLLIN,
-      ssh_bind_poll_callback,sshbind);
-  return sshbind->poll;
 }
 
 void ssh_bind_set_blocking(ssh_bind sshbind, int blocking) {
@@ -361,6 +394,8 @@ void ssh_bind_free(ssh_bind sshbind){
   /* options */
   SAFE_FREE(sshbind->banner);
   SAFE_FREE(sshbind->bindaddr);
+  SAFE_FREE(sshbind->config_dir);
+  SAFE_FREE(sshbind->pubkey_accepted_key_types);
 
   SAFE_FREE(sshbind->dsakey);
   SAFE_FREE(sshbind->rsakey);
@@ -376,7 +411,7 @@ void ssh_bind_free(ssh_bind sshbind){
   ssh_key_free(sshbind->ed25519);
   sshbind->ed25519 = NULL;
 
-  for (i = 0; i < 10; i++) {
+  for (i = 0; i < SSH_KEX_METHODS; i++) {
     if (sshbind->wanted_methods[i]) {
       SAFE_FREE(sshbind->wanted_methods[i]);
     }
@@ -388,16 +423,26 @@ void ssh_bind_free(ssh_bind sshbind){
 int ssh_bind_accept_fd(ssh_bind sshbind, ssh_session session, socket_t fd){
     int i, rc;
 
+    if (sshbind == NULL) {
+        return SSH_ERROR;
+    }
+
     if (session == NULL){
         ssh_set_error(sshbind, SSH_FATAL,"session is null");
         return SSH_ERROR;
     }
 
-    session->server = 1;
-    session->version = 2;
+    /* Apply global bind configurations, if it hasn't been applied before */
+    rc = ssh_bind_options_parse_config(sshbind, NULL);
+    if (rc != 0) {
+        ssh_set_error(sshbind, SSH_FATAL,"Could not parse global config");
+        return SSH_ERROR;
+    }
 
-    /* copy options */
-    for (i = 0; i < 10; i++) {
+    session->server = 1;
+
+    /* Copy options from bind to session */
+    for (i = 0; i < SSH_KEX_METHODS; i++) {
       if (sshbind->wanted_methods[i]) {
         session->opts.wanted_methods[i] = strdup(sshbind->wanted_methods[i]);
         if (session->opts.wanted_methods[i] == NULL) {
@@ -416,6 +461,29 @@ int ssh_bind_accept_fd(ssh_bind sshbind, ssh_session session, socket_t fd){
       }
     }
 
+    if (sshbind->pubkey_accepted_key_types != NULL) {
+        if (session->opts.pubkey_accepted_types == NULL) {
+            session->opts.pubkey_accepted_types = strdup(sshbind->pubkey_accepted_key_types);
+            if (session->opts.pubkey_accepted_types == NULL) {
+                ssh_set_error_oom(sshbind);
+                return SSH_ERROR;
+            }
+        } else {
+            char *p;
+            /* If something was set to the session prior to calling this
+             * function, keep only what is allowed by the options set in
+             * sshbind */
+            p = ssh_find_all_matching(sshbind->pubkey_accepted_key_types,
+                                      session->opts.pubkey_accepted_types);
+            if (p == NULL) {
+                return SSH_ERROR;
+            }
+
+            SAFE_FREE(session->opts.pubkey_accepted_types);
+            session->opts.pubkey_accepted_types = p;
+        }
+    }
+
     session->common.log_verbosity = sshbind->common.log_verbosity;
     if(sshbind->banner != NULL)
     	session->opts.custombanner = strdup(sshbind->banner);
@@ -427,7 +495,7 @@ int ssh_bind_accept_fd(ssh_bind sshbind, ssh_session session, socket_t fd){
       return SSH_ERROR;
     }
     ssh_socket_set_fd(session->socket, fd);
-    ssh_socket_get_poll_handle_out(session->socket);
+    ssh_socket_get_poll_handle(session->socket);
 
     /* We must try to import any keys that could be imported in case
      * we are not using ssh_bind_listen (which is the other place
@@ -436,7 +504,8 @@ int ssh_bind_accept_fd(ssh_bind sshbind, ssh_session session, socket_t fd){
      */
     if (sshbind->rsa == NULL &&
         sshbind->dsa == NULL &&
-        sshbind->ecdsa == NULL) {
+        sshbind->ecdsa == NULL &&
+        sshbind->ed25519 == NULL) {
         rc = ssh_bind_import_keys(sshbind);
         if (rc != SSH_OK) {
             return SSH_ERROR;

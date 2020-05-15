@@ -106,12 +106,16 @@ int ssh_client_ecdh_init(ssh_session session)
     session->next_crypto->ecdh_client_pubkey = client_pubkey;
     client_pubkey = NULL;
 
+    /* register the packet callbacks */
+    ssh_packet_set_callbacks(session, &ssh_ecdh_client_callbacks);
+    session->dh_handshake_state = DH_STATE_INIT_SENT;
+
     rc = ssh_packet_send(session);
 
  out:
     gcry_sexp_release(param);
     gcry_sexp_release(key);
-    ssh_string_free(client_pubkey);
+    SSH_STRING_FREE(client_pubkey);
     return rc;
 }
 
@@ -194,8 +198,9 @@ int ecdh_build_k(ssh_session session)
         goto out;
     }
 
-    session->next_crypto->k = gcry_mpi_new(0);
-    gcry_mpi_point_snatch_get(session->next_crypto->k, NULL, NULL, point);
+    session->next_crypto->shared_secret = gcry_mpi_new(0);
+    gcry_mpi_point_snatch_get(session->next_crypto->shared_secret,
+                              NULL, NULL, point);
 #else
     s = ssh_sexp_extract_mpi(result, "s", GCRYMPI_FMT_USG, GCRYMPI_FMT_USG);
     if (s == NULL) {
@@ -210,23 +215,23 @@ int ecdh_build_k(ssh_session session)
         k_len = 133;
     } else {
         ssh_string_burn(s);
-        ssh_string_free(s);
+        SSH_STRING_FREE(s);
         goto out;
     }
 
     if (ssh_string_len(s) != k_len) {
         ssh_string_burn(s);
-        ssh_string_free(s);
+        SSH_STRING_FREE(s);
         goto out;
     }
 
-    err = gcry_mpi_scan(&session->next_crypto->k,
+    err = gcry_mpi_scan(&session->next_crypto->shared_secret,
                         GCRYMPI_FMT_USG,
                         (const char *)ssh_string_data(s) + 1,
                         k_len / 2,
                         NULL);
     ssh_string_burn(s);
-    ssh_string_free(s);
+    SSH_STRING_FREE(s);
     if (err) {
         goto out;
     }
@@ -237,11 +242,11 @@ int ecdh_build_k(ssh_session session)
     session->next_crypto->ecdh_privkey = NULL;
 
 #ifdef DEBUG_CRYPTO
-    ssh_print_hexa("Session server cookie",
+    ssh_log_hexdump("Session server cookie",
                    session->next_crypto->server_kex.cookie, 16);
-    ssh_print_hexa("Session client cookie",
+    ssh_log_hexdump("Session client cookie",
                    session->next_crypto->client_kex.cookie, 16);
-    ssh_print_bignum("Shared secret key", session->next_crypto->k);
+    ssh_print_bignum("Shared secret key", session->next_crypto->shared_secret);
 #endif
 
  out:
@@ -249,16 +254,17 @@ int ecdh_build_k(ssh_session session)
     gcry_sexp_release(data);
     gcry_sexp_release(result);
     ssh_string_burn(privkey);
-    ssh_string_free(privkey);
+    SSH_STRING_FREE(privkey);
     return rc;
 }
 
 #ifdef WITH_SERVER
 
-/** @brief Parse a SSH_MSG_KEXDH_INIT packet (server) and send a
+
+/** @brief Handle a SSH_MSG_KEXDH_INIT packet (server) and send a
  * SSH_MSG_KEXDH_REPLY
  */
-int ssh_server_ecdh_init(ssh_session session, ssh_buffer packet) {
+SSH_PACKET_CALLBACK(ssh_packet_server_ecdh_init){
     gpg_error_t err;
     /* ECDH keys */
     ssh_string q_c_string;
@@ -267,10 +273,15 @@ int ssh_server_ecdh_init(ssh_session session, ssh_buffer packet) {
     gcry_sexp_t key = NULL;
     /* SSH host keys (rsa,dsa,ecdsa) */
     ssh_key privkey;
+    enum ssh_digest_e digest = SSH_DIGEST_AUTO;
     ssh_string sig_blob = NULL;
+    ssh_string pubkey_blob = NULL;
     int rc = SSH_ERROR;
     const char *curve = NULL;
+    (void)type;
+    (void)user;
 
+    ssh_packet_remove_callbacks(session, &ssh_ecdh_server_callbacks);
     curve = ecdh_kex_type_to_curve(session->next_crypto->kex_type);
     if (curve == NULL) {
         goto out;
@@ -285,7 +296,7 @@ int ssh_server_ecdh_init(ssh_session session, ssh_buffer packet) {
     session->next_crypto->ecdh_client_pubkey = q_c_string;
 
     /* Build server's keypair */
-    err = gcry_sexp_build(&param, NULL, "(genkey(ecdh(curve %s)))",
+    err = gcry_sexp_build(&param, NULL, "(genkey(ecdh(curve %s) (flags transient-key)))",
                           curve);
     if (err) {
         goto out;
@@ -315,7 +326,7 @@ int ssh_server_ecdh_init(ssh_session session, ssh_buffer packet) {
     }
 
     /* privkey is not allocated */
-    rc = ssh_get_key_params(session, &privkey);
+    rc = ssh_get_key_params(session, &privkey, &digest);
     if (rc != SSH_OK) {
         goto out;
     }
@@ -326,21 +337,29 @@ int ssh_server_ecdh_init(ssh_session session, ssh_buffer packet) {
         goto out;
     }
 
-    sig_blob = ssh_srv_pki_do_sign_sessionid(session, privkey);
+    sig_blob = ssh_srv_pki_do_sign_sessionid(session, privkey, digest);
     if (sig_blob == NULL) {
         ssh_set_error(session, SSH_FATAL, "Could not sign the session id");
         rc = SSH_ERROR;
         goto out;
     }
 
+    rc = ssh_dh_get_next_server_publickey_blob(session, &pubkey_blob);
+    if (rc != SSH_OK) {
+        ssh_set_error(session, SSH_FATAL, "Could not export server public key");
+        SSH_STRING_FREE(sig_blob);
+        goto out;
+    }
+
     rc = ssh_buffer_pack(session->out_buffer,
                          "bSSS",
                          SSH2_MSG_KEXDH_REPLY,
-                         session->next_crypto->server_pubkey, /* host's pubkey */
+                         pubkey_blob, /* host's pubkey */
                          q_s_string, /* ecdh public key */
                          sig_blob); /* signature blob */
 
-    ssh_string_free(sig_blob);
+    SSH_STRING_FREE(sig_blob);
+    SSH_STRING_FREE(pubkey_blob);
 
     if (rc != SSH_OK) {
         ssh_set_error_oom(session);
@@ -367,7 +386,11 @@ int ssh_server_ecdh_init(ssh_session session, ssh_buffer packet) {
  out:
     gcry_sexp_release(param);
     gcry_sexp_release(key);
-    return rc;
+    if (rc == SSH_ERROR) {
+        ssh_buffer_reinit(session->out_buffer);
+        session->session_state = SSH_SESSION_STATE_ERROR;
+    }
+    return SSH_PACKET_USED;
 }
 
 #endif /* WITH_SERVER */

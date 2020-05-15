@@ -11,10 +11,10 @@ static void torture_sftp_ext_new(void **state) {
     (void) state;
 
     x = sftp_ext_new();
-    assert_false(x == NULL);
+    assert_non_null(x);
     assert_int_equal(x->count, 0);
-    assert_true(x->name == NULL);
-    assert_true(x->data == NULL);
+    assert_null(x->name);
+    assert_null(x->data);
 
     sftp_ext_free(x);
 }

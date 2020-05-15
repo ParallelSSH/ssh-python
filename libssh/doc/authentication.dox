@@ -63,7 +63,7 @@ int authenticate_pubkey(ssh_session session)
 {
   int rc;
 
-  rc = ssh_userauth_publickey_auto(session, NULL);
+  rc = ssh_userauth_publickey_auto(session, NULL, NULL);
 
   if (rc == SSH_AUTH_ERROR)
   {
@@ -127,7 +127,7 @@ The keyboard-interactive method is, as its name tells, interactive. The
 server will issue one or more challenges that the user has to answer,
 until the server takes an authentication decision.
 
-ssh_userauth_kbdint() is the the main keyboard-interactive function. 
+ssh_userauth_kbdint() is the the main keyboard-interactive function.
 It will return SSH_AUTH_SUCCESS,SSH_AUTH_DENIED, SSH_AUTH_PARTIAL,
 SSH_AUTH_ERROR, or SSH_AUTH_INFO, depending on the result of the request.
 
@@ -154,9 +154,9 @@ Here are a few remarks:
  - Even the first call can return SSH_AUTH_DENIED or SSH_AUTH_SUCCESS.
  - The server can send an empty question set (this is the default behavior
    on my system) after you have sent the answers to the first questions.
-   You must still parse the answer, it might contain some 
+   You must still parse the answer, it might contain some
    message from the server saying hello or such things. Just call
-   ssh_userauth_kbdint() until needed. 
+   ssh_userauth_kbdint() until needed.
  - The meaning of "name", "prompt", "instruction" may be a little
    confusing. An explanation is given in the RFC section that follows.
 
@@ -187,7 +187,7 @@ keyboard-interactive authentication, coming from the RFC itself (rfc4256):
   the name and prompts. If the server presents names or prompts longer than 30
   characters, the client MAY truncate these fields to the length it can
   display. If the client does truncate any fields, there MUST be an obvious
-  indication that such truncation has occured.
+  indication that such truncation has occurred.
 
   The instruction field SHOULD NOT be truncated. Clients SHOULD use control
   character filtering as discussed in [SSH-ARCH] to avoid attacks by
@@ -281,7 +281,7 @@ pass, ssh_userauth_none() might answer SSH_AUTH_SUCCESS.
 The following example shows how to perform "none" authentication:
 
 @code
-int authenticate_kbdint(ssh_session session)
+int authenticate_none(ssh_session session)
 {
   int rc;
 

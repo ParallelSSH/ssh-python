@@ -49,7 +49,15 @@ find_library(GCRYPT_LIBRARY
     PATH_SUFFIXES
         lib
 )
-set(GCRYPT_LIBRARIES ${GCRYPT_LIBRARY})
+find_library(GCRYPT_ERROR_LIBRARY
+    NAMES
+        gpg-error
+        libgpg-error-0
+        libgpg-error6-0
+    HINTS
+        ${_GCRYPT_ROOT_HINTS_AND_PATHS}
+)
+set(GCRYPT_LIBRARIES ${GCRYPT_LIBRARY}  ${GCRYPT_ERROR_LIBRARY})
 
 if (GCRYPT_INCLUDE_DIR)
     file(STRINGS "${GCRYPT_INCLUDE_DIR}/gcrypt.h" _gcrypt_version_str REGEX "^#define GCRYPT_VERSION \"[0-9]+\\.[0-9]+\\.[0-9]")

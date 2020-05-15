@@ -38,9 +38,9 @@
 #include "libssh/misc.h"
 #include "libssh/session.h"
 
-LIBSSH_THREAD int ssh_log_level;
-LIBSSH_THREAD ssh_logging_callback ssh_log_cb;
-LIBSSH_THREAD void *ssh_log_userdata;
+static LIBSSH_THREAD int ssh_log_level;
+static LIBSSH_THREAD ssh_logging_callback ssh_log_cb;
+static LIBSSH_THREAD void *ssh_log_userdata;
 
 /**
  * @defgroup libssh_log The SSH logging functions.
@@ -81,7 +81,7 @@ static void ssh_log_stderr(int verbosity,
                            const char *function,
                            const char *buffer)
 {
-    char date[64] = {0};
+    char date[128] = {0};
     int rc;
 
     rc = current_timestring(1, date, sizeof(date));
@@ -240,5 +240,3 @@ int ssh_set_log_userdata(void *data)
 }
 
 /** @} */
-
-/* vim: set ts=4 sw=4 et cindent: */

@@ -3,7 +3,7 @@
 #include <libssh/libssh.h>
 #include "examples_common.h"
 
-#define LIMIT 0x100000000
+#define LIMIT 0x100000000UL
 
 int main(void) {
   ssh_session session;

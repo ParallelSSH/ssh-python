@@ -6,28 +6,16 @@ endif (BSD OR SOLARIS OR OSX)
 
 set(TORTURE_LIBRARY torture)
 
-include_directories(
-  ${LIBSSH_PUBLIC_INCLUDE_DIRS}
-  ${CMOCKA_INCLUDE_DIR}
-  ${OPENSSL_INCLUDE_DIR}
-  ${GCRYPT_INCLUDE_DIR}
-  ${ZLIB_INCLUDE_DIR}
-  ${CMAKE_BINARY_DIR}
-  ${CMAKE_SOURCE_DIR}/src
-  ${CMAKE_CURRENT_SOURCE_DIR}
-)
+include_directories(${OPENSSL_INCLUDE_DIR}
+                    ${CMOCKA_INCLUDE_DIR}
+                    ${ZLIB_INCLUDE_DIR}
+                    ${libssh_BINARY_DIR}
+                    ${libssh_SOURCE_DIR}/src
+                    ${CMAKE_CURRENT_SOURCE_DIR})
 
 set(TORTURE_LINK_LIBRARIES
     ${CMOCKA_LIBRARY}
-    ${LIBSSH_STATIC_LIBRARY}
-    ${LIBSSH_LINK_LIBRARIES})
-
-if (LIBSSH_THREADS)
-    set(TORTURE_LINK_LIBRARIES
-        ${TORTURE_LINK_LIBRARIES}
-        ${LIBSSH_THREADS_STATIC_LIBRARY}
-        ${LIBSSH_THREADS_LINK_LIBRARIES})
-endif (LIBSSH_THREADS)
+    ssh::static)
 
 # create test library
 add_library(${TORTURE_LIBRARY}
@@ -35,8 +23,12 @@ add_library(${TORTURE_LIBRARY}
                 cmdline.c
                 torture.c
                 torture_key.c
-                torture_pki.c)
+                torture_pki.c
+                torture_cmocka.c)
 target_link_libraries(${TORTURE_LIBRARY} ${TORTURE_LINK_LIBRARIES})
+target_compile_options(${TORTURE_LIBRARY} PRIVATE
+                       -DSSH_PING_EXECUTABLE="${CMAKE_CURRENT_BINARY_DIR}/ssh_ping"
+)
 
 if (ARGP_LIBRARY)
     target_link_libraries(${TORTURE_LIBRARY}
@@ -51,7 +43,7 @@ set(TEST_TARGET_LIBRARIES
 
 add_subdirectory(unittests)
 
-if (WITH_CLIENT_TESTING)
+if (CLIENT_TESTING OR SERVER_TESTING)
     find_package(socket_wrapper 1.1.5 REQUIRED)
     find_package(nss_wrapper 1.1.2 REQUIRED)
     find_package(uid_wrapper 1.2.0 REQUIRED)
@@ -71,8 +63,8 @@ if (WITH_CLIENT_TESTING)
     find_program(SSH_EXECUTABLE NAMES ssh)
     if (SSH_EXECUTABLE)
         execute_process(COMMAND ${SSH_EXECUTABLE} -V ERROR_VARIABLE OPENSSH_VERSION_STR)
-        string(REGEX REPLACE "^OpenSSH_([0-9]).[0-9].*$" "\\1" OPENSSH_VERSION_MAJOR "${OPENSSH_VERSION_STR}")
-        string(REGEX REPLACE "^OpenSSH_[0-9].([0-9]).*$" "\\1" OPENSSH_VERSION_MINOR "${OPENSSH_VERSION_STR}")
+        string(REGEX REPLACE "^.*OpenSSH_([0-9]).[0-9].*$" "\\1" OPENSSH_VERSION_MAJOR "${OPENSSH_VERSION_STR}")
+        string(REGEX REPLACE "^.*OpenSSH_[0-9].([0-9]).*$" "\\1" OPENSSH_VERSION_MINOR "${OPENSSH_VERSION_STR}")
         add_definitions(-DOPENSSH_VERSION_MAJOR=${OPENSSH_VERSION_MAJOR} -DOPENSSH_VERSION_MINOR=${OPENSSH_VERSION_MINOR})
     endif()
 
@@ -87,11 +79,16 @@ if (WITH_CLIENT_TESTING)
 
     # chroot_wrapper
     add_library(chroot_wrapper SHARED chroot_wrapper.c)
-    set(CHROOT_WRAPPER_LIBRARY ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_SHARED_LIBRARY_PREFIX}chroot_wrapper${CMAKE_SHARED_LIBRARY_SUFFIX})
+    set(CHROOT_WRAPPER_LIBRARY ${libssh_BINARY_DIR}/lib/${CMAKE_SHARED_LIBRARY_PREFIX}chroot_wrapper${CMAKE_SHARED_LIBRARY_SUFFIX})
     set(TEST_TARGET_LIBRARIES
         ${TEST_TARGET_LIBRARIES}
         chroot_wrapper
     )
+
+    # ssh_ping
+    add_executable(ssh_ping ssh_ping.c)
+    target_compile_options(ssh_ping PRIVATE ${DEFAULT_C_COMPILE_FLAGS})
+    target_link_libraries(ssh_ping ssh::ssh)
 
     # homedir will be used in passwd
     set(HOMEDIR ${CMAKE_CURRENT_BINARY_DIR}/home)
@@ -117,9 +114,20 @@ if (WITH_CLIENT_TESTING)
     # Give bob some keys
     file(COPY keys/id_rsa DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/home/bob/.ssh/ FILE_PERMISSIONS OWNER_READ OWNER_WRITE)
     file(COPY keys/id_rsa.pub DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/home/bob/.ssh/ FILE_PERMISSIONS OWNER_READ OWNER_WRITE)
+    file(COPY keys/id_ecdsa DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/home/bob/.ssh/ FILE_PERMISSIONS OWNER_READ OWNER_WRITE)
+    file(COPY keys/id_ecdsa.pub DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/home/bob/.ssh/ FILE_PERMISSIONS OWNER_READ OWNER_WRITE)
+    file(COPY keys/id_ed25519 DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/home/bob/.ssh/ FILE_PERMISSIONS OWNER_READ OWNER_WRITE)
+    file(COPY keys/id_ed25519.pub DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/home/bob/.ssh/ FILE_PERMISSIONS OWNER_READ OWNER_WRITE)
 
-    # Allow to auth with bob his public keys on alice account
+    # Allow to auth with bob's public keys on alice account
     configure_file(keys/id_rsa.pub ${CMAKE_CURRENT_BINARY_DIR}/home/alice/.ssh/authorized_keys @ONLY)
+    # append ECDSA public key
+    file(READ keys/id_ecdsa.pub CONTENTS)
+    file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/home/alice/.ssh/authorized_keys "${CONTENTS}")
+
+    # append ed25519 public key
+    file(READ keys/id_ed25519.pub CONTENTS)
+    file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/home/alice/.ssh/authorized_keys "${CONTENTS}")
 
     # Copy the signed key to an alternative directory in bob's homedir.
     file(COPY keys/certauth/id_rsa DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/home/bob/.ssh_cert/ FILE_PERMISSIONS OWNER_READ OWNER_WRITE)
@@ -127,17 +135,20 @@ if (WITH_CLIENT_TESTING)
     file(COPY keys/certauth/id_rsa-cert.pub DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/home/bob/.ssh_cert/ FILE_PERMISSIONS OWNER_READ OWNER_WRITE)
 
     message(STATUS "TORTURE_ENVIRONMENT=${TORTURE_ENVIRONMENT}")
-
-    add_subdirectory(client)
-endif (WITH_CLIENT_TESTING)
+endif ()
 
 if (WITH_BENCHMARKS)
     add_subdirectory(benchmarks)
-endif (WITH_BENCHMARKS)
+endif ()
 
-if (WITH_SERVER)
+if (CLIENT_TESTING)
+    add_subdirectory(client)
+endif ()
+
+if (WITH_SERVER AND SERVER_TESTING)
     add_subdirectory(pkd)
-endif (WITH_SERVER)
+    add_subdirectory(server)
+endif ()
 
 if (FUZZ_TESTING)
     add_subdirectory(fuzz)

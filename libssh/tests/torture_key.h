@@ -24,13 +24,19 @@
 #ifndef _TORTURE_KEY_H
 #define _TORTURE_KEY_H
 
+#include <stdbool.h>
+
 #define TORTURE_TESTKEY_PASSWORD "libssh-rocks"
 
+/* Return the encrypted private key in a new OpenSSH format */
+const char *torture_get_openssh_testkey(enum ssh_keytypes_e type,
+                                        bool with_passphrase);
+
+/* Return the private key in the legacy PEM format */
 const char *torture_get_testkey(enum ssh_keytypes_e type,
-                                int ecdsa_bits,
-                                int with_passphrase);
+                                bool with_passphrase);
 const char *torture_get_testkey_passphrase(void);
 
-const char *torture_get_testkey_pub(enum ssh_keytypes_e type, int ecdsa_bits);
+const char *torture_get_testkey_pub(enum ssh_keytypes_e type);
 
 #endif /* _TORTURE_KEY_H */

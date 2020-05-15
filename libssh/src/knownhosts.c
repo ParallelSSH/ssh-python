@@ -41,6 +41,14 @@
 #include "libssh/misc.h"
 #include "libssh/pki.h"
 #include "libssh/dh.h"
+#include "libssh/knownhosts.h"
+#include "libssh/token.h"
+
+/**
+ * @addtogroup libssh_session
+ *
+ * @{
+ */
 
 static int hash_hostname(const char *name,
                          unsigned char *salt,
@@ -121,8 +129,8 @@ static int match_hashed_hostname(const char *host, const char *hashed_host)
 
 error:
     free(hashed);
-    ssh_buffer_free(salt);
-    ssh_buffer_free(hash);
+    SSH_BUFFER_FREE(salt);
+    SSH_BUFFER_FREE(hash);
 
     return match;
 }
@@ -175,11 +183,39 @@ static int known_hosts_read_line(FILE *fp,
     return -1;
 }
 
+static int
+ssh_known_hosts_entries_compare(struct ssh_knownhosts_entry *k1,
+                                struct ssh_knownhosts_entry *k2)
+{
+    int cmp;
+
+    if (k1 == NULL || k2 == NULL) {
+        return 1;
+    }
+
+    cmp = strcmp(k1->hostname, k2->hostname);
+    if (cmp != 0) {
+        return cmp;
+    }
+
+    cmp = ssh_key_cmp(k1->publickey, k2->publickey, SSH_KEY_CMP_PUBLIC);
+    if (cmp != 0) {
+        return cmp;
+    }
+
+    return 0;
+}
+
+/* This method reads the known_hosts file referenced by the path
+ * in  filename  argument, and entries matching the  match  argument
+ * will be added to the list in  entries  argument.
+ * If the  entries  list is NULL, it will allocate a new list. Caller
+ * is responsible to free it even if an error occurs.
+ */
 static int ssh_known_hosts_read_entries(const char *match,
                                         const char *filename,
                                         struct ssh_list **entries)
 {
-    struct ssh_list *entry_list;
     char line[8192];
     size_t lineno = 0;
     size_t len = 0;
@@ -188,20 +224,26 @@ static int ssh_known_hosts_read_entries(const char *match,
 
     fp = fopen(filename, "r");
     if (fp == NULL) {
-        return SSH_ERROR;
+        SSH_LOG(SSH_LOG_WARN, "Failed to open the known_hosts file '%s': %s",
+                filename, strerror(errno));
+        /* The missing file is not an error here */
+        return SSH_OK;
     }
 
-    entry_list = ssh_list_new();
-    if (entry_list == NULL) {
-        fclose(fp);
-        return SSH_ERROR;
+    if (*entries == NULL) {
+        *entries = ssh_list_new();
+        if (*entries == NULL) {
+            fclose(fp);
+            return SSH_ERROR;
+        }
     }
 
     for (rc = known_hosts_read_line(fp, line, sizeof(line), &len, &lineno);
          rc == 0;
          rc = known_hosts_read_line(fp, line, sizeof(line), &len, &lineno)) {
         struct ssh_knownhosts_entry *entry = NULL;
-        char *p;
+        struct ssh_iterator *it = NULL;
+        char *p = NULL;
 
         if (line[len] != '\n') {
             len = strcspn(line, "\n");
@@ -216,6 +258,12 @@ static int ssh_known_hosts_read_entries(const char *match,
             continue;
         }
 
+        /* Skip lines starting with markers (@cert-authority, @revoked):
+         * we do not completely support them anyway */
+        if (p[0] == '@') {
+            continue;
+        }
+
         rc = ssh_known_hosts_parse_line(match,
                                         line,
                                         &entry);
@@ -224,15 +272,29 @@ static int ssh_known_hosts_read_entries(const char *match,
         } else if (rc != SSH_OK) {
             goto error;
         }
-        ssh_list_append(entry_list, entry);
-    }
 
-    *entries = entry_list;
+        /* Check for duplicates */
+        for (it = ssh_list_get_iterator(*entries);
+             it != NULL;
+             it = it->next) {
+            struct ssh_knownhosts_entry *entry2;
+            int cmp;
+            entry2 = ssh_iterator_value(struct ssh_knownhosts_entry *, it);
+            cmp = ssh_known_hosts_entries_compare(entry, entry2);
+            if (cmp == 0) {
+                ssh_knownhosts_entry_free(entry);
+                entry = NULL;
+                break;
+            }
+        }
+        if (entry != NULL) {
+            ssh_list_append(*entries, entry);
+        }
+    }
 
     fclose(fp);
     return SSH_OK;
 error:
-    ssh_list_free(entry_list);
     fclose(fp);
     return SSH_ERROR;
 }
@@ -245,7 +307,7 @@ static char *ssh_session_get_host_port(ssh_session session)
     if (session->opts.host == NULL) {
         ssh_set_error(session,
                       SSH_FATAL,
-                      "Can't verify server inn known hosts if the host we "
+                      "Can't verify server in known hosts if the host we "
                       "should connect to has not been set");
 
         return NULL;
@@ -269,6 +331,265 @@ static char *ssh_session_get_host_port(ssh_session session)
     }
 
     return host_port;
+}
+
+/**
+ * @internal
+ * @brief Check which host keys should be preferred for the session.
+ *
+ * This checks the known_hosts file to find out which algorithms should be
+ * preferred for the connection we are going to establish.
+ *
+ * @param[in]  session  The ssh session to use.
+ *
+ * @return A list of supported key types, NULL on error.
+ */
+struct ssh_list *ssh_known_hosts_get_algorithms(ssh_session session)
+{
+    struct ssh_list *entry_list = NULL;
+    struct ssh_iterator *it = NULL;
+    char *host_port = NULL;
+    size_t count;
+    struct ssh_list *list = NULL;
+    int list_error = 0;
+    int rc;
+
+    if (session->opts.knownhosts == NULL ||
+        session->opts.global_knownhosts == NULL) {
+        if (ssh_options_apply(session) < 0) {
+            ssh_set_error(session,
+                          SSH_REQUEST_DENIED,
+                          "Can't find a known_hosts file");
+
+            return NULL;
+        }
+    }
+
+    host_port = ssh_session_get_host_port(session);
+    if (host_port == NULL) {
+        return NULL;
+    }
+
+    list = ssh_list_new();
+    if (list == NULL) {
+        SAFE_FREE(host_port);
+        return NULL;
+    }
+
+    rc = ssh_known_hosts_read_entries(host_port,
+                                      session->opts.knownhosts,
+                                      &entry_list);
+    if (rc != 0) {
+        ssh_list_free(entry_list);
+        ssh_list_free(list);
+        return NULL;
+    }
+
+    rc = ssh_known_hosts_read_entries(host_port,
+                                      session->opts.global_knownhosts,
+                                      &entry_list);
+    SAFE_FREE(host_port);
+    if (rc != 0) {
+        ssh_list_free(entry_list);
+        ssh_list_free(list);
+        return NULL;
+    }
+
+    if (entry_list == NULL) {
+        ssh_list_free(list);
+        return NULL;
+    }
+
+    count = ssh_list_count(entry_list);
+    if (count == 0) {
+        ssh_list_free(list);
+        ssh_list_free(entry_list);
+        return NULL;
+    }
+
+    for (it = ssh_list_get_iterator(entry_list);
+         it != NULL;
+         it = ssh_list_get_iterator(entry_list)) {
+        struct ssh_iterator *it2 = NULL;
+        struct ssh_knownhosts_entry *entry = NULL;
+        const char *algo = NULL;
+        bool present = false;
+
+        entry = ssh_iterator_value(struct ssh_knownhosts_entry *, it);
+        algo = entry->publickey->type_c;
+
+        /* Check for duplicates */
+        for (it2 = ssh_list_get_iterator(list);
+             it2 != NULL;
+             it2 = it2->next) {
+            char *alg2 = ssh_iterator_value(char *, it2);
+            int cmp = strcmp(alg2, algo);
+            if (cmp == 0) {
+                present = true;
+                break;
+            }
+        }
+
+        /* Add to the new list only if it is unique */
+        if (!present) {
+            rc = ssh_list_append(list, algo);
+            if (rc != SSH_OK) {
+               list_error = 1;
+            }
+        }
+
+        ssh_knownhosts_entry_free(entry);
+        ssh_list_remove(entry_list, it);
+    }
+    ssh_list_free(entry_list);
+    if (list_error) {
+        goto error;
+    }
+
+    return list;
+error:
+    ssh_list_free(list);
+    return NULL;
+}
+
+/**
+ * @internal
+ *
+ * @brief   Returns a static string containing a list of the signature types the
+ * given key type can generate.
+ *
+ * @returns A static cstring containing the signature types the key is able to
+ * generate separated by commas; NULL in case of error
+ */
+static const char *ssh_known_host_sigs_from_hostkey_type(enum ssh_keytypes_e type)
+{
+    switch (type) {
+    case SSH_KEYTYPE_RSA:
+        return "rsa-sha2-512,rsa-sha2-256,ssh-rsa";
+    case SSH_KEYTYPE_ED25519:
+        return "ssh-ed25519";
+#ifdef HAVE_DSA
+    case SSH_KEYTYPE_DSS:
+        return "ssh-dss";
+#endif
+#ifdef HAVE_ECDH
+    case SSH_KEYTYPE_ECDSA_P256:
+        return "ecdsa-sha2-nistp256";
+    case SSH_KEYTYPE_ECDSA_P384:
+        return "ecdsa-sha2-nistp384";
+    case SSH_KEYTYPE_ECDSA_P521:
+        return "ecdsa-sha2-nistp521";
+#endif
+    case SSH_KEYTYPE_UNKNOWN:
+    default:
+        SSH_LOG(SSH_LOG_WARN, "The given type %d is not a base private key type "
+                "or is unsupported", type);
+        return NULL;
+    }
+}
+
+/**
+ * @internal
+ * @brief Get the host keys algorithms identifiers from the known_hosts files
+ *
+ * This expands the signatures types that can be generated from the keys types
+ * present in the known_hosts files
+ *
+ * @param[in]  session  The ssh session to use.
+ *
+ * @return A newly allocated cstring containing a list of signature algorithms
+ * that can be generated by the host using the keys listed in the known_hosts
+ * files, NULL on error.
+ */
+char *ssh_known_hosts_get_algorithms_names(ssh_session session)
+{
+    char methods_buffer[256 + 1] = {0};
+    struct ssh_list *entry_list = NULL;
+    struct ssh_iterator *it = NULL;
+    char *host_port = NULL;
+    size_t count;
+    bool needcomma = false;
+    char *names;
+
+    int rc;
+
+    if (session->opts.knownhosts == NULL ||
+        session->opts.global_knownhosts == NULL) {
+        if (ssh_options_apply(session) < 0) {
+            ssh_set_error(session,
+                          SSH_REQUEST_DENIED,
+                          "Can't find a known_hosts file");
+
+            return NULL;
+        }
+    }
+
+    host_port = ssh_session_get_host_port(session);
+    if (host_port == NULL) {
+        return NULL;
+    }
+
+    rc = ssh_known_hosts_read_entries(host_port,
+                                      session->opts.knownhosts,
+                                      &entry_list);
+    if (rc != 0) {
+        SAFE_FREE(host_port);
+        ssh_list_free(entry_list);
+        return NULL;
+    }
+
+    rc = ssh_known_hosts_read_entries(host_port,
+                                      session->opts.global_knownhosts,
+                                      &entry_list);
+    SAFE_FREE(host_port);
+    if (rc != 0) {
+        ssh_list_free(entry_list);
+        return NULL;
+    }
+
+    if (entry_list == NULL) {
+        return NULL;
+    }
+
+    count = ssh_list_count(entry_list);
+    if (count == 0) {
+        ssh_list_free(entry_list);
+        return NULL;
+    }
+
+    for (it = ssh_list_get_iterator(entry_list);
+         it != NULL;
+         it = ssh_list_get_iterator(entry_list))
+    {
+        struct ssh_knownhosts_entry *entry = NULL;
+        const char *algo = NULL;
+
+        entry = ssh_iterator_value(struct ssh_knownhosts_entry *, it);
+        algo = ssh_known_host_sigs_from_hostkey_type(entry->publickey->type);
+        if (algo == NULL) {
+            continue;
+        }
+
+        if (needcomma) {
+            strncat(methods_buffer,
+                    ",",
+                    sizeof(methods_buffer) - strlen(methods_buffer) - 1);
+        }
+
+        strncat(methods_buffer,
+                algo,
+                sizeof(methods_buffer) - strlen(methods_buffer) - 1);
+        needcomma = true;
+
+        ssh_knownhosts_entry_free(entry);
+        ssh_list_remove(entry_list, it);
+    }
+
+    ssh_list_free(entry_list);
+
+    names = ssh_remove_duplicates(methods_buffer);
+
+    return names;
 }
 
 /**
@@ -318,8 +639,8 @@ int ssh_known_hosts_parse_line(const char *hostname,
     }
 
     if (hostname != NULL) {
-        char *match_pattern = NULL;
-        char *q;
+        char *host_port = NULL;
+        char *q = NULL;
 
         /* Hashed */
         if (p[0] == '|') {
@@ -331,13 +652,30 @@ int ssh_known_hosts_parse_line(const char *hostname,
              q = strtok(NULL, ",")) {
             int cmp;
 
-            cmp = match_hostname(hostname, q, strlen(q));
+            if (q[0] == '[' && hostname[0] != '[') {
+                /* Corner case: We have standard port so we do not have
+                 * hostname in square braces. But the patern is enclosed
+                 * in braces with, possibly standard or wildcard, port.
+                 * We need to test against [host]:port pair here.
+                 */
+                if (host_port == NULL) {
+                    host_port = ssh_hostport(hostname, 22);
+                    if (host_port == NULL) {
+                        rc = SSH_ERROR;
+                        goto out;
+                    }
+                }
+
+                cmp = match_hostname(host_port, q, strlen(q));
+            } else {
+                cmp = match_hostname(hostname, q, strlen(q));
+            }
             if (cmp == 1) {
                 match = 1;
                 break;
             }
         }
-        SAFE_FREE(match_pattern);
+        free(host_port);
 
         if (match == 0) {
             rc = SSH_AGAIN;
@@ -434,40 +772,93 @@ out:
  *
  * @param[in]  session  The session with with the values set to check.
  *
- * @return A @ssh_known_hosts_e return value.
+ * @return A ssh_known_hosts_e return value.
  */
 enum ssh_known_hosts_e ssh_session_has_known_hosts_entry(ssh_session session)
 {
     struct ssh_list *entry_list = NULL;
     struct ssh_iterator *it = NULL;
     char *host_port = NULL;
+    bool global_known_hosts_found = false;
+    bool known_hosts_found = false;
     int rc;
 
     if (session->opts.knownhosts == NULL) {
         if (ssh_options_apply(session) < 0) {
             ssh_set_error(session,
                           SSH_REQUEST_DENIED,
-                          "Can't find a known_hosts file");
+                          "Cannot find a known_hosts file");
 
             return SSH_KNOWN_HOSTS_NOT_FOUND;
         }
     }
 
-    host_port = ssh_session_get_host_port(session);
-    if (host_port == NULL) {
+    if (session->opts.knownhosts == NULL &&
+        session->opts.global_knownhosts == NULL) {
+            ssh_set_error(session,
+                          SSH_REQUEST_DENIED,
+                          "No path set for a known_hosts file");
+
+            return SSH_KNOWN_HOSTS_NOT_FOUND;
+    }
+
+    if (session->opts.knownhosts != NULL) {
+        known_hosts_found = ssh_file_readaccess_ok(session->opts.knownhosts);
+        if (!known_hosts_found) {
+            SSH_LOG(SSH_LOG_WARN, "Cannot access file %s",
+                    session->opts.knownhosts);
+        }
+    }
+
+    if (session->opts.global_knownhosts != NULL) {
+        global_known_hosts_found =
+                ssh_file_readaccess_ok(session->opts.global_knownhosts);
+        if (!global_known_hosts_found) {
+            SSH_LOG(SSH_LOG_WARN, "Cannot access file %s",
+                    session->opts.global_knownhosts);
+        }
+    }
+
+    if ((!known_hosts_found) && (!global_known_hosts_found)) {
+        ssh_set_error(session,
+                      SSH_REQUEST_DENIED,
+                      "Cannot find a known_hosts file");
+
         return SSH_KNOWN_HOSTS_NOT_FOUND;
     }
 
-    rc = ssh_known_hosts_read_entries(host_port,
-                                      session->opts.knownhosts,
-                                      &entry_list);
-    if (rc != 0) {
-        return SSH_KNOWN_HOSTS_NOT_FOUND;
+    host_port = ssh_session_get_host_port(session);
+    if (host_port == NULL) {
+        return SSH_KNOWN_HOSTS_ERROR;
     }
+
+    if (known_hosts_found) {
+        rc = ssh_known_hosts_read_entries(host_port,
+                                          session->opts.knownhosts,
+                                          &entry_list);
+        if (rc != 0) {
+            SAFE_FREE(host_port);
+            ssh_list_free(entry_list);
+            return SSH_KNOWN_HOSTS_ERROR;
+        }
+    }
+
+    if (global_known_hosts_found) {
+        rc = ssh_known_hosts_read_entries(host_port,
+                                          session->opts.global_knownhosts,
+                                          &entry_list);
+        if (rc != 0) {
+            SAFE_FREE(host_port);
+            ssh_list_free(entry_list);
+            return SSH_KNOWN_HOSTS_ERROR;
+        }
+    }
+
+    SAFE_FREE(host_port);
 
     if (ssh_list_count(entry_list) == 0) {
         ssh_list_free(entry_list);
-        return SSH_KNOWN_HOSTS_NOT_FOUND;
+        return SSH_KNOWN_HOSTS_UNKNOWN;
     }
 
     for (it = ssh_list_get_iterator(entry_list);
@@ -504,6 +895,7 @@ int ssh_session_export_known_hosts_entry(ssh_session session,
     ssh_key server_pubkey = NULL;
     char *host = NULL;
     char entry_buf[4096] = {0};
+    char *b64_key = NULL;
     int rc;
 
     if (pentry_string == NULL) {
@@ -524,7 +916,7 @@ int ssh_session_export_known_hosts_entry(ssh_session session,
 
     if (session->current_crypto == NULL) {
         ssh_set_error(session, SSH_FATAL,
-                      "No current crypto context, please connnect first");
+                      "No current crypto context, please connect first");
         SAFE_FREE(host);
         return SSH_ERROR;
     }
@@ -536,33 +928,20 @@ int ssh_session_export_known_hosts_entry(ssh_session session,
         return SSH_ERROR;
     }
 
-    if (ssh_key_type(server_pubkey) == SSH_KEYTYPE_RSA1) {
-        rc = ssh_pki_export_pubkey_rsa1(server_pubkey,
-                                        host,
-                                        entry_buf,
-                                        sizeof(entry_buf));
+    rc = ssh_pki_export_pubkey_base64(server_pubkey, &b64_key);
+    if (rc < 0) {
         SAFE_FREE(host);
-        if (rc < 0) {
-            return SSH_ERROR;
-        }
-    } else {
-        char *b64_key = NULL;
-
-        rc = ssh_pki_export_pubkey_base64(server_pubkey, &b64_key);
-        if (rc < 0) {
-            SAFE_FREE(host);
-            return SSH_ERROR;
-        }
-
-        snprintf(entry_buf, sizeof(entry_buf),
-                    "%s %s %s\n",
-                    host,
-                    server_pubkey->type_c,
-                    b64_key);
-
-        SAFE_FREE(host);
-        SAFE_FREE(b64_key);
+        return SSH_ERROR;
     }
+
+    snprintf(entry_buf, sizeof(entry_buf),
+                "%s %s %s\n",
+                host,
+                server_pubkey->type_c,
+                b64_key);
+
+    SAFE_FREE(host);
+    SAFE_FREE(b64_key);
 
     *pentry_string = strdup(entry_buf);
     if (*pentry_string == NULL) {
@@ -573,10 +952,11 @@ int ssh_session_export_known_hosts_entry(ssh_session session,
 }
 
 /**
- * @brief Add the current connected server to the known_hosts file.
+ * @brief Add the current connected server to the user known_hosts file.
  *
  * This adds the currently connected server to the known_hosts file by
- * appending a new line at the end.
+ * appending a new line at the end. The global known_hosts file is considered
+ * read-only so it is not touched by this function.
  *
  * @param[in]  session  The session to use to write the entry.
  *
@@ -599,32 +979,41 @@ int ssh_session_update_known_hosts(ssh_session session)
         }
     }
 
-    /* Check if directory exists and create it if not */
-    dir = ssh_dirname(session->opts.knownhosts);
-    if (dir == NULL) {
-        ssh_set_error(session, SSH_FATAL, "%s", strerror(errno));
-        return SSH_ERROR;
-    }
-
-    rc = ssh_file_readaccess_ok(dir);
-    if (rc == 0) {
-        rc = ssh_mkdir(dir, 0700);
-    } else {
-        rc = 0;
-    }
-    SAFE_FREE(dir);
-    if (rc != 0) {
-        ssh_set_error(session, SSH_FATAL,
-                      "Cannot create %s directory.", dir);
-        return SSH_ERROR;
-    }
-
+    errno = 0;
     fp = fopen(session->opts.knownhosts, "a");
     if (fp == NULL) {
-        ssh_set_error(session, SSH_FATAL,
-                "Couldn't open known_hosts file %s for appending: %s",
-                session->opts.knownhosts, strerror(errno));
-        return SSH_ERROR;
+        if (errno == ENOENT) {
+            dir = ssh_dirname(session->opts.knownhosts);
+            if (dir == NULL) {
+                ssh_set_error(session, SSH_FATAL, "%s", strerror(errno));
+                return SSH_ERROR;
+            }
+
+            rc = ssh_mkdirs(dir, 0700);
+            if (rc < 0) {
+                ssh_set_error(session, SSH_FATAL,
+                              "Cannot create %s directory: %s",
+                              dir, strerror(errno));
+                SAFE_FREE(dir);
+                return SSH_ERROR;
+            }
+            SAFE_FREE(dir);
+
+            errno = 0;
+            fp = fopen(session->opts.knownhosts, "a");
+            if (fp == NULL) {
+                ssh_set_error(session, SSH_FATAL,
+                              "Couldn't open known_hosts file %s"
+                              " for appending: %s",
+                              session->opts.knownhosts, strerror(errno));
+                return SSH_ERROR;
+            }
+        } else {
+            ssh_set_error(session, SSH_FATAL,
+                          "Couldn't open known_hosts file %s for appending: %s",
+                          session->opts.knownhosts, strerror(errno));
+            return SSH_ERROR;
+        }
     }
 
     rc = ssh_session_export_known_hosts_entry(session, &entry);
@@ -663,7 +1052,8 @@ ssh_known_hosts_check_server_key(const char *hosts_entry,
                                       filename,
                                       &entry_list);
     if (rc != 0) {
-        return SSH_KNOWN_HOSTS_NOT_FOUND;
+        ssh_list_free(entry_list);
+        return SSH_KNOWN_HOSTS_UNKNOWN;
     }
 
     it = ssh_list_get_iterator(entry_list);
@@ -690,7 +1080,10 @@ ssh_known_hosts_check_server_key(const char *hosts_entry,
 
         if (ssh_key_type(server_key) == ssh_key_type(entry->publickey)) {
             found = SSH_KNOWN_HOSTS_CHANGED;
-        } else {
+            continue;
+        }
+
+        if (found != SSH_KNOWN_HOSTS_CHANGED) {
             found = SSH_KNOWN_HOSTS_OTHER;
         }
     }
@@ -737,9 +1130,7 @@ enum ssh_known_hosts_e
 ssh_session_get_known_hosts_entry(ssh_session session,
                                   struct ssh_knownhosts_entry **pentry)
 {
-    ssh_key server_pubkey = NULL;
-    char *host_port = NULL;
-    enum ssh_known_hosts_e found = SSH_KNOWN_HOSTS_UNKNOWN;
+    enum ssh_known_hosts_e old_rv, rv = SSH_KNOWN_HOSTS_UNKNOWN;
 
     if (session->opts.knownhosts == NULL) {
         if (ssh_options_apply(session) < 0) {
@@ -750,6 +1141,68 @@ ssh_session_get_known_hosts_entry(ssh_session session,
             return SSH_KNOWN_HOSTS_NOT_FOUND;
         }
     }
+
+    rv = ssh_session_get_known_hosts_entry_file(session,
+                                                session->opts.knownhosts,
+                                                pentry);
+    if (rv == SSH_KNOWN_HOSTS_OK) {
+        /* We already found a match in the first file: return */
+        return rv;
+    }
+
+    old_rv = rv;
+    rv = ssh_session_get_known_hosts_entry_file(session,
+                                                session->opts.global_knownhosts,
+                                                pentry);
+
+    /* If we did not find any match at all:  we report the previous result */
+    if (rv == SSH_KNOWN_HOSTS_UNKNOWN) {
+        if (session->opts.StrictHostKeyChecking == 0) {
+            return SSH_KNOWN_HOSTS_OK;
+        }
+        return old_rv;
+    }
+
+    /* We found some match: return it */
+    return rv;
+
+}
+
+/**
+ * @brief Get the known_hosts entry for the current connected session
+ *        from the given known_hosts file.
+ *
+ * @param[in]  session  The session to validate.
+ *
+ * @param[in]  filename The filename to parse.
+ *
+ * @param[in]  pentry   A pointer to store the allocated known hosts entry.
+ *
+ * @returns SSH_KNOWN_HOSTS_OK:        The server is known and has not changed.\n
+ *          SSH_KNOWN_HOSTS_CHANGED:   The server key has changed. Either you
+ *                                     are under attack or the administrator
+ *                                     changed the key. You HAVE to warn the
+ *                                     user about a possible attack.\n
+ *          SSH_KNOWN_HOSTS_OTHER:     The server gave use a key of a type while
+ *                                     we had an other type recorded. It is a
+ *                                     possible attack.\n
+ *          SSH_KNOWN_HOSTS_UNKNOWN:   The server is unknown. User should
+ *                                     confirm the public key hash is correct.\n
+ *          SSH_KNOWN_HOSTS_NOT_FOUND: The known host file does not exist. The
+ *                                     host is thus unknown. File will be
+ *                                     created if host key is accepted.\n
+ *          SSH_KNOWN_HOSTS_ERROR:     There had been an eror checking the host.
+ *
+ * @see ssh_knownhosts_entry_free()
+ */
+enum ssh_known_hosts_e
+ssh_session_get_known_hosts_entry_file(ssh_session session,
+                                       const char *filename,
+                                       struct ssh_knownhosts_entry **pentry)
+{
+    ssh_key server_pubkey = NULL;
+    char *host_port = NULL;
+    enum ssh_known_hosts_e found = SSH_KNOWN_HOSTS_UNKNOWN;
 
     server_pubkey = ssh_dh_get_current_server_publickey(session);
     if (server_pubkey == NULL) {
@@ -767,9 +1220,10 @@ ssh_session_get_known_hosts_entry(ssh_session session,
     }
 
     found = ssh_known_hosts_check_server_key(host_port,
-                                             session->opts.knownhosts,
+                                             filename,
                                              server_pubkey,
                                              pentry);
+    SAFE_FREE(host_port);
 
     return found;
 }
@@ -796,9 +1250,11 @@ ssh_session_get_known_hosts_entry(ssh_session session,
  *          SSH_KNOWN_HOSTS_NOT_FOUND: The known host file does not exist. The
  *                                     host is thus unknown. File will be
  *                                     created if host key is accepted.\n
- *          SSH_KNOWN_HOSTS_ERROR:     There had been an eror checking the host.
+ *          SSH_KNOWN_HOSTS_ERROR:     There had been an error checking the host.
  */
 enum ssh_known_hosts_e ssh_session_is_known_server(ssh_session session)
 {
     return ssh_session_get_known_hosts_entry(session, NULL);
 }
+
+/** @} */

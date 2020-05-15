@@ -24,20 +24,6 @@
 #include <stdarg.h>
 
 #include "libssh/libssh.h"
-/*
- * Describes a buffer state
- * [XXXXXXXXXXXXDATA PAYLOAD       XXXXXXXXXXXXXXXXXXXXXXXX]
- * ^            ^                  ^                       ^]
- * \_data points\_pos points here  \_used points here |    /
- *   here                                          Allocated
- */
-struct ssh_buffer_struct {
-    char *data;
-    uint32_t used;
-    uint32_t allocated;
-    uint32_t pos;
-    int secure;
-};
 
 #define SSH_BUFFER_PACK_END ((uint32_t) 0x4f65feb3)
 
@@ -51,23 +37,24 @@ int ssh_buffer_add_u64(ssh_buffer buffer, uint64_t data);
 int ssh_buffer_validate_length(struct ssh_buffer_struct *buffer, size_t len);
 
 void *ssh_buffer_allocate(struct ssh_buffer_struct *buffer, uint32_t len);
+int ssh_buffer_allocate_size(struct ssh_buffer_struct *buffer, uint32_t len);
 int ssh_buffer_pack_va(struct ssh_buffer_struct *buffer,
                        const char *format,
-                       int argc,
+                       size_t argc,
                        va_list ap);
 int _ssh_buffer_pack(struct ssh_buffer_struct *buffer,
                      const char *format,
-                     int argc,
+                     size_t argc,
                      ...);
 #define ssh_buffer_pack(buffer, format, ...) \
     _ssh_buffer_pack((buffer), (format), __VA_NARG__(__VA_ARGS__), __VA_ARGS__, SSH_BUFFER_PACK_END)
 
 int ssh_buffer_unpack_va(struct ssh_buffer_struct *buffer,
-                         const char *format, int argc,
+                         const char *format, size_t argc,
                          va_list ap);
 int _ssh_buffer_unpack(struct ssh_buffer_struct *buffer,
                        const char *format,
-                       int argc,
+                       size_t argc,
                        ...);
 #define ssh_buffer_unpack(buffer, format, ...) \
     _ssh_buffer_unpack((buffer), (format), __VA_NARG__(__VA_ARGS__), __VA_ARGS__, SSH_BUFFER_PACK_END)
@@ -82,8 +69,7 @@ int ssh_buffer_get_u64(ssh_buffer buffer, uint64_t *data);
 
 /* ssh_buffer_get_ssh_string() is an exception. if the String read is too large or invalid, it will answer NULL. */
 ssh_string ssh_buffer_get_ssh_string(ssh_buffer buffer);
-/* ssh_gets a string out of a SSH-1 mpint */
-ssh_string ssh_buffer_get_mpint(ssh_buffer buffer);
+
 /* ssh_buffer_pass_bytes acts as if len bytes have been read (used for padding) */
 uint32_t ssh_buffer_pass_bytes_end(ssh_buffer buffer, uint32_t len);
 uint32_t ssh_buffer_pass_bytes(ssh_buffer buffer, uint32_t len);

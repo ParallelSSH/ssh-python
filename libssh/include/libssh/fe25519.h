@@ -39,7 +39,7 @@ void fe25519_unpack(fe25519 *r, const unsigned char x[32]);
 
 void fe25519_pack(unsigned char r[32], const fe25519 *x);
 
-int fe25519_iszero(const fe25519 *x);
+uint32_t fe25519_iszero(const fe25519 *x);
 
 int fe25519_iseq_vartime(const fe25519 *x, const fe25519 *y);
 

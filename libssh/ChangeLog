@@ -1,7 +1,174 @@
 ChangeLog
 ==========
 
-version 0.7.0 (released 2015-05-xx)
+version 0.9.4 (released 2020-04-09)
+  * Fixed CVE-2020-1730 - Possible DoS in client and server when handling
+    AES-CTR keys with OpenSSL
+  * Added diffie-hellman-group14-sha256
+  * Fixed serveral possible memory leaks
+
+version 0.9.3 (released 2019-12-10)
+  * Fixed CVE-2019-14889 - SCP: Unsanitized location leads to command execution
+  * SSH-01-003 Client: Missing NULL check leads to crash in erroneous state
+  * SSH-01-006 General: Various unchecked Null-derefs cause DOS
+  * SSH-01-007 PKI Gcrypt: Potential UAF/double free with RSA pubkeys
+  * SSH-01-010 SSH: Deprecated hash function in fingerprinting
+  * SSH-01-013 Conf-Parsing: Recursive wildcards in hostnames lead to DOS
+  * SSH-01-014 Conf-Parsing: Integer underflow leads to OOB array access
+  * SSH-01-001 State Machine: Initial machine states should be set explicitly
+  * SSH-01-002 Kex: Differently bound macros used to iterate same array
+  * SSH-01-005 Code-Quality: Integer sign confusion during assignments
+  * SSH-01-008 SCP: Protocol Injection via unescaped File Names
+  * SSH-01-009 SSH: Update documentation which RFCs are implemented
+  * SSH-01-012 PKI: Information leak via uninitialized stack buffer
+
+version 0.9.2 (released 2019-11-07)
+  * Fixed libssh-config.cmake
+  * Fixed issues with rsa algorithm negotiation (T191)
+  * Fixed detection of OpenSSL ed25519 support (T197)
+
+version 0.9.1 (released 2019-10-25)
+  * Added support for Ed25519 via OpenSSL
+  * Added support for X25519 via OpenSSL
+  * Added support for localuser in Match keyword
+  * Fixed Match keyword to be case sensitive
+  * Fixed compilation with LibreSSL
+  * Fixed error report of channel open (T75)
+  * Fixed sftp documentation (T137)
+  * Fixed known_hosts parsing (T156)
+  * Fixed build issue with MinGW (T157)
+  * Fixed build with gcc 9 (T164)
+  * Fixed deprecation issues (T165)
+  * Fixed known_hosts directory creation (T166)
+
+version 0.9.0 (released 2019-06-28)
+  * Added support for AES-GCM
+  * Added improved rekeying support
+  * Added performance improvements
+  * Disabled blowfish support by default
+  * Fixed several ssh config parsing issues
+  * Added support for DH Group Exchange KEX
+  * Added support for Encrypt-then-MAC mode
+  * Added support for parsing server side configuration file
+  * Added support for ECDSA/Ed25519 certificates
+  * Added FIPS 140-2 compatibility
+  * Improved known_hosts parsing
+  * Improved documentation
+  * Improved OpenSSL API usage for KEX, DH, and signatures
+
+version 0.8.7 (released 2019-02-25)
+  * Fixed handling extension flags in the server implementation
+  * Fixed exporting ed25519 private keys
+  * Fixed corner cases for rsa-sha2 signatures
+  * Fixed some issues with connector
+
+version 0.8.6 (released 2018-12-24)
+  * Fixed compilation issues with different OpenSSL versions
+  * Fixed StrictHostKeyChecking in new knownhosts API
+  * Fixed ssh_send_keepalive() with packet filter
+  * Fixed possible crash with knownhosts options
+  * Fixed issus with rekeying
+  * Fixed strong ECDSA keys
+  * Fixed some issues with rsa-sha2 extentions
+  * Fixed access violation in ssh_init() (static linking)
+  * Fixed ssh_channel_close() handling
+
+version 0.8.5 (released 2018-10-29)
+  * Added support to get known_hosts locations with ssh_options_get()
+  * Fixed preferred algorithm for known hosts negotiations
+  * Fixed KEX with some server implementations (e.g. Cisco)
+  * Fixed issues with MSVC
+  * Fixed keyboard-interactive auth in server mode
+    (regression from CVE-2018-10933)
+  * Fixed gssapi auth in server mode (regression from CVE-2018-10933)
+  * Fixed socket fd handling with proxy command
+  * Fixed a memory leak with OpenSSL
+
+version 0.8.4 (released 2018-10-16)
+  * Fixed CVE-2018-10933
+  * Fixed building without globbing support
+  * Fixed possible memory leaks
+  * Avoid SIGPIPE on sockets
+
+version 0.8.3 (released 2018-09-21)
+  * Added support for rsa-sha2
+  * Added support to parse private keys in openssh container format
+    (other than ed25519)
+  * Added support for diffie-hellman-group18-sha512 and
+    diffie-hellman-group16-sha512
+  * Added ssh_get_fingerprint_hash()
+  * Added ssh_pki_export_privkey_base64()
+  * Added support for Match keyword in config file
+  * Improved performance and reduced memory footprint for sftp
+  * Fixed ecdsa publickey auth
+  * Fixed reading a closed channel
+  * Added support to announce posix-rename@openssh.com and
+    hardlink@openssh.com in the sftp server
+
+version 0.8.2 (released 2018-08-30)
+  * Added sha256 fingerprints for pubkeys
+  * Improved compiler flag detection
+  * Fixed race condition in reading sftp messages
+  * Fixed doxygen generation and added modern style
+  * Fixed library initialization on Windows
+  * Fixed __bounded__ attribute detection
+  * Fixed a bug in the options parser
+  * Fixed documentation for new knwon_hosts API
+
+version 0.8.1 (released 2018-08-13)
+  * Fixed version number in the header
+  * Fixed version number in pkg-config and cmake config
+  * Fixed library initialization
+  * Fixed attribute detection
+
+version 0.8.0 (released 2018-08-10)
+  * Removed support for deprecated SSHv1 protocol
+  * Added new connector API for clients
+  * Added new known_hosts parsing API
+  * Added support for OpenSSL 1.1
+  * Added support for chacha20-poly1305 cipher
+  * Added crypto backend for mbedtls crypto library
+  * Added ECDSA support with gcrypt backend
+  * Added advanced client and server testing using cwrap.org
+  * Added support for curve25519-sha256 alias
+  * Added support for global known_hosts file
+  * Added support for symbol versioning
+  * Improved ssh_config parsing
+  * Improved threading support
+
+version 0.7.5 (released 2017-04-13)
+  * Fixed a memory allocation issue with buffers
+  * Fixed PKI on Windows
+  * Fixed some SSHv1 functions
+  * Fixed config hostname expansion
+
+version 0.7.4 (released 2017-02-03)
+  * Added id_ed25519 to the default identity list
+  * Fixed sftp EOF packet handling
+  * Fixed ssh_send_banner() to confirm with RFC 4253
+  * Fixed some memory leaks
+
+version 0.7.3 (released 2016-01-23)
+  * Fixed CVE-2016-0739
+  * Fixed ssh-agent on big endian
+  * Fixed some documentation issues
+
+version 0.7.2 (released 2015-09-15)
+  * Fixed OpenSSL detection on Windows
+  * Fixed return status for ssh_userauth_agent()
+  * Fixed KEX to prefer hmac-sha2-256
+  * Fixed sftp packet handling
+  * Fixed return values of ssh_key_is_(public|private)
+  * Fixed bug in global success reply
+
+version 0.7.1 (released 2015-06-30)
+  * Fixed SSH_AUTH_PARTIAL auth with auto public key
+  * Fixed memory leak in session options
+  * Fixed allocation of ed25519 public keys
+  * Fixed channel exit-status and exit-signal
+  * Reintroduce ssh_forward_listen()
+
+version 0.7.0 (released 2015-05-11)
   * Added support for ed25519 keys
   * Added SHA2 algorithms for HMAC
   * Added improved and more secure buffer handling code

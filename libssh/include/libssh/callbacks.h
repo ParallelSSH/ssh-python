@@ -854,7 +854,7 @@ typedef struct ssh_channel_callbacks_struct *ssh_channel_callbacks;
  * @code
  * struct ssh_channel_callbacks_struct cb = {
  *   .userdata = data,
- *   .channel_data = my_channel_data_function
+ *   .channel_data_function = my_channel_data_function
  * };
  * ssh_callbacks_init(&cb);
  * ssh_set_channel_callbacks(channel, &cb);
@@ -944,9 +944,20 @@ LIBSSH_API int ssh_threads_set_callbacks(struct ssh_threads_callbacks_struct
     *cb);
 
 /**
- * @brief returns a pointer on the pthread threads callbacks, to be used with
+ * @brief Returns a pointer to the appropriate callbacks structure for the
+ * environment, to be used with ssh_threads_set_callbacks.
+ *
+ * @returns A pointer to a ssh_threads_callbacks_struct to be used with
  * ssh_threads_set_callbacks.
- * @warning you have to link with the library ssh_threads.
+ *
+ * @see ssh_threads_set_callbacks
+ */
+LIBSSH_API struct ssh_threads_callbacks_struct *ssh_threads_get_default(void);
+
+/**
+ * @brief Returns a pointer on the pthread threads callbacks, to be used with
+ * ssh_threads_set_callbacks.
+ *
  * @see ssh_threads_set_callbacks
  */
 LIBSSH_API struct ssh_threads_callbacks_struct *ssh_threads_get_pthread(void);

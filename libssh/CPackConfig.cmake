@@ -1,27 +1,19 @@
-# For help take a look at:
-# http://www.cmake.org/Wiki/CMake:CPackConfiguration
-
-### general settings
-set(CPACK_PACKAGE_NAME ${APPLICATION_NAME})
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The SSH library")
+### GENERAL SETTINGS
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "The SSH Library")
 set(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README")
 set(CPACK_PACKAGE_VENDOR "The SSH Library Development Team")
 set(CPACK_PACKAGE_INSTALL_DIRECTORY ${CPACK_PACKAGE_NAME})
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYING")
 
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
 
-### versions
-set(CPACK_PACKAGE_VERSION_MAJOR ${APPLICATION_VERSION_MAJOR})
-set(CPACK_PACKAGE_VERSION_MINOR ${APPLICATION_VERSION_MINOR})
-set(CPACK_PACKAGE_VERSION_PATCH ${APPLICATION_VERSION_PATCH})
-set(CPACK_PACKAGE_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH}")
-
-
-### source generator
+# SOURCE GENERATOR
 set(CPACK_SOURCE_GENERATOR "TXZ")
-set(CPACK_SOURCE_IGNORE_FILES "~$;[.]swp$;/[.]svn/;/[.]git/;.gitignore;/build/;/obj*/;tags;cscope.*")
+set(CPACK_SOURCE_IGNORE_FILES "~$;[.]swp$;/[.]git/;/[.]clangd/;.gitignore;/build*;/obj*;tags;cscope.*;compile_commands.json;.*\.patch")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}")
 
+### NSIS INSTALLER
 if (WIN32)
     set(CPACK_GENERATOR "ZIP")
 
@@ -31,7 +23,7 @@ if (WIN32)
         set(CPACK_GENERATOR "${CPACK_GENERATOR};NSIS")
         set(CPACK_NSIS_DISPLAY_NAME "The SSH Library")
         set(CPACK_NSIS_COMPRESSOR "/SOLID zlib")
-        set(CPACK_NSIS_MENU_LINKS "http://www.libssh.org/" "libssh homepage")
+        set(CPACK_NSIS_MENU_LINKS "https://www.libssh.org/" "libssh homepage")
     endif (NSIS_MAKE)
 endif (WIN32)
 
@@ -46,7 +38,6 @@ set(CPACK_COMPONENT_LIBRARIES_DESCRIPTION
 set(CPACK_COMPONENT_HEADERS_DESCRIPTION
   "C/C++ header files for use with libssh")
 set(CPACK_COMPONENT_HEADERS_DEPENDS libraries)
-#set(CPACK_COMPONENT_APPLICATIONS_GROUP "Runtime")
 set(CPACK_COMPONENT_LIBRARIES_GROUP "Development")
 set(CPACK_COMPONENT_HEADERS_GROUP "Development")
 

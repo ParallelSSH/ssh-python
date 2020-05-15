@@ -43,7 +43,8 @@ const char *port="22";
 char *pcap_file=NULL;
 #endif
 
-static void usage(){
+static void usage(void)
+{
   fprintf(stderr,"Usage : sshnetcat [user@]host forwarded_host forwarded_port\n");
   exit(1);
 }
@@ -89,6 +90,7 @@ static void select_loop(ssh_session session,ssh_channel channel){
 		do{
             int fd;
 
+            ZERO_STRUCT(fds);
 			FD_ZERO(&fds);
 			if(!eof)
 				FD_SET(0,&fds);

@@ -19,9 +19,14 @@
  */
 
 
-#ifndef KNOWNHOSTS_H_
-#define KNOWNHOSTS_H_
+#ifndef SSH_KNOWNHOSTS_H_
+#define SSH_KNOWNHOSTS_H_
 
-char **ssh_knownhosts_algorithms(ssh_session session);
+struct ssh_list *ssh_known_hosts_get_algorithms(ssh_session session);
+char *ssh_known_hosts_get_algorithms_names(ssh_session session);
+enum ssh_known_hosts_e
+ssh_session_get_known_hosts_entry_file(ssh_session session,
+                                       const char *filename,
+                                       struct ssh_knownhosts_entry **pentry);
 
-#endif /* KNOWNHOSTS_H_ */
+#endif /* SSH_KNOWNHOSTS_H_ */
