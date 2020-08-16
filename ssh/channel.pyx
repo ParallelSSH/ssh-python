@@ -29,8 +29,7 @@ cdef class Channel:
 
     def __dealloc__(self):
         if self._channel is not NULL:
-            if not self.closed:
-                c_ssh.ssh_channel_close(self._channel)
+            print("Channel dealloc")
             c_ssh.ssh_channel_free(self._channel)
             self._channel = NULL
 

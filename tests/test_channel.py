@@ -24,7 +24,7 @@ from ssh import options
 from ssh.exceptions import RequestDenied, KeyImportError
 from ssh.utils import wait_socket
 from ssh.error_codes import SSH_AGAIN
-from ssh.exceptions import EOF
+from ssh.exceptions import EOF, SSHError
 
 
 class ChannelTest(SSHTestCase):
@@ -99,7 +99,7 @@ class ChannelTest(SSHTestCase):
         lines = [s.decode('utf-8') for s in all_data.splitlines()]
         self.assertEqual(lines[0], self.resp)
         wait_socket(self.session, self.sock)
-        size, data = chan.read()
+        self.assertRaises(SSHError, chan.read)
         self.assertTrue(chan.is_eof())
         rc = chan.close()
         while rc == SSH_AGAIN:

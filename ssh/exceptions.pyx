@@ -161,3 +161,7 @@ class SFTPError(BaseSSHError):
 
 class SFTPHandleError(SFTPError):
     """Raised on SFTP handle errors"""
+
+
+class ChannelClosed(BaseSSHError):
+    """Raised on operations on closed channels"""
