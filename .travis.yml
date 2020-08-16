@@ -1,5 +1,10 @@
 language: python
-cache: pip
+cache:
+  - pip
+  - directories:
+      - "$HOME/.pyenv"
+      - "$HOME/Library/Caches/Homebrew"
+      - "$HOME/.git/lfs"
 notifications:
   email: false
 sudo: required

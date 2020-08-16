@@ -12,24 +12,11 @@ environment:
     PYPI_PASS:
       secure: x+dF0A8BZUf2IrPNRN1O0w==
   matrix:
-
-    - PYTHON: "C:\\Python36"
-      PYTHON_VERSION: "3.6"
-      PYTHON_ARCH: "32"
-      MSVC: "Visual Studio 14"
-      ARCH: i386
-
     - PYTHON: "C:\\Python36-x64"
       PYTHON_VERSION: "3.6"
       PYTHON_ARCH: "64"
       MSVC: "Visual Studio 14 Win64"
       ARCH: x64_86
-
-    - PYTHON: "C:\\Python37"
-      PYTHON_VERSION: "3.7"
-      PYTHON_ARCH: "32"
-      MSVC: "Visual Studio 14"
-      ARCH: i386
 
     - PYTHON: "C:\\Python37-x64"
       PYTHON_VERSION: "3.7"
@@ -37,18 +24,11 @@ environment:
       MSVC: "Visual Studio 14 Win64"
       ARCH: x64_86
 
-    - PYTHON: "C:\\Python38"
-      PYTHON_VERSION: "3.8"
-      PYTHON_ARCH: "32"
-      MSVC: "Visual Studio 14"
-      ARCH: i386
-
     - PYTHON: "C:\\Python38-x64"
       PYTHON_VERSION: "3.8"
       PYTHON_ARCH: "64"
       MSVC: "Visual Studio 14 Win64"
       ARCH: x64_86
-      
 
 install:
   # If there is a newer build queued for the same PR, cancel this one.
@@ -91,6 +71,7 @@ install:
   - mv -f .git .git.bak
   - IF NOT "%PYTHON_VERSION%" == "2.7" (
       7z x ci\appveyor\zlib1211.zip
+      7z x ci\appveyor\kfw-4.1-src.zip
       appveyor DownloadFile https://indy.fulgan.com/SSL/Archive/Experimental/openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
       7z x openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
       cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1.dll ssh\
@@ -100,6 +81,7 @@ install:
   - ps: ls
 
 build_script:
+  - "%CMD_IN_ENV% ci\\appveyor\\build_krb.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_zlib.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_ssh.bat"
   - rm -f ssh/*.c

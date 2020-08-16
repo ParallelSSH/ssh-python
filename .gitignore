@@ -4,3 +4,5 @@ dist
 build
 *~
 *.so*
+src
+libssh/compile_commands.json
