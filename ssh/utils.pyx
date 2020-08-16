@@ -86,7 +86,7 @@ cdef int _handle_general_error_codes(
     if errcode == SSH_OK:
         return SSH_OK
     elif errcode == SSH_ERROR:
-        raise SSHError(ssh_get_error(session))
+        raise SSHError(errcode, ssh_get_error(session))
     elif errcode == SSH_EOF:
         raise EOF(ssh_get_error(session))
     elif errcode == SSH_AGAIN:

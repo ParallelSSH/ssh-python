@@ -1063,6 +1063,7 @@ static const char __pyx_k_GSSAPIError[] = "GSSAPIError";
 static const char __pyx_k_OptionError[] = "OptionError";
 static const char __pyx_k_BaseSSHError[] = "BaseSSHError";
 static const char __pyx_k_Disconnected[] = "Disconnected";
+static const char __pyx_k_ChannelClosed[] = "ChannelClosed";
 static const char __pyx_k_ConnectFailed[] = "ConnectFailed";
 static const char __pyx_k_InvalidAPIUse[] = "InvalidAPIUse";
 static const char __pyx_k_ProtocolError[] = "ProtocolError";
@@ -1123,6 +1124,7 @@ static const char __pyx_k_Raised_on_host_authentication_fa[] = "Raised on host a
 static const char __pyx_k_Raised_on_host_key_not_verifiabl[] = "Raised on host key not verifiable errors";
 static const char __pyx_k_Raised_on_host_not_allowed_to_co[] = "Raised on host not allowed to connect errors";
 static const char __pyx_k_Raised_on_invalid_uses_of_the_AP[] = "Raised on invalid uses of the API";
+static const char __pyx_k_Raised_on_operations_on_closed_c[] = "Raised on operations on closed channels";
 static const char __pyx_k_Raised_on_other_non_specific_fat[] = "Raised on other non-specific fatal errors";
 static const char __pyx_k_Raised_on_partial_authentication[] = "Raised on partial authentication";
 static const char __pyx_k_Raised_on_protocol_version_not_s[] = "Raised on protocol version not supported";
@@ -1135,6 +1137,7 @@ static PyObject *__pyx_n_s_AuthenticationError;
 static PyObject *__pyx_n_s_AuthenticationPartial;
 static PyObject *__pyx_n_s_BaseSSHError;
 static PyObject *__pyx_kp_s_Base_class_for_all_errors_produc;
+static PyObject *__pyx_n_s_ChannelClosed;
 static PyObject *__pyx_n_s_ChannelOpenFailure;
 static PyObject *__pyx_n_s_CompressionError;
 static PyObject *__pyx_n_s_ConnectFailed;
@@ -1182,6 +1185,7 @@ static PyObject *__pyx_kp_s_Raised_on_host_key_not_verifiabl;
 static PyObject *__pyx_kp_s_Raised_on_host_not_allowed_to_co;
 static PyObject *__pyx_kp_s_Raised_on_invalid_uses_of_the_AP;
 static PyObject *__pyx_kp_s_Raised_on_key_exchange_failures;
+static PyObject *__pyx_kp_s_Raised_on_operations_on_closed_c;
 static PyObject *__pyx_kp_s_Raised_on_other_non_specific_fat;
 static PyObject *__pyx_kp_s_Raised_on_partial_authentication;
 static PyObject *__pyx_kp_s_Raised_on_protocol_errors;
@@ -1267,6 +1271,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_AuthenticationPartial, __pyx_k_AuthenticationPartial, sizeof(__pyx_k_AuthenticationPartial), 0, 0, 1, 1},
   {&__pyx_n_s_BaseSSHError, __pyx_k_BaseSSHError, sizeof(__pyx_k_BaseSSHError), 0, 0, 1, 1},
   {&__pyx_kp_s_Base_class_for_all_errors_produc, __pyx_k_Base_class_for_all_errors_produc, sizeof(__pyx_k_Base_class_for_all_errors_produc), 0, 0, 1, 0},
+  {&__pyx_n_s_ChannelClosed, __pyx_k_ChannelClosed, sizeof(__pyx_k_ChannelClosed), 0, 0, 1, 1},
   {&__pyx_n_s_ChannelOpenFailure, __pyx_k_ChannelOpenFailure, sizeof(__pyx_k_ChannelOpenFailure), 0, 0, 1, 1},
   {&__pyx_n_s_CompressionError, __pyx_k_CompressionError, sizeof(__pyx_k_CompressionError), 0, 0, 1, 1},
   {&__pyx_n_s_ConnectFailed, __pyx_k_ConnectFailed, sizeof(__pyx_k_ConnectFailed), 0, 0, 1, 1},
@@ -1314,6 +1319,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_s_Raised_on_host_not_allowed_to_co, __pyx_k_Raised_on_host_not_allowed_to_co, sizeof(__pyx_k_Raised_on_host_not_allowed_to_co), 0, 0, 1, 0},
   {&__pyx_kp_s_Raised_on_invalid_uses_of_the_AP, __pyx_k_Raised_on_invalid_uses_of_the_AP, sizeof(__pyx_k_Raised_on_invalid_uses_of_the_AP), 0, 0, 1, 0},
   {&__pyx_kp_s_Raised_on_key_exchange_failures, __pyx_k_Raised_on_key_exchange_failures, sizeof(__pyx_k_Raised_on_key_exchange_failures), 0, 0, 1, 0},
+  {&__pyx_kp_s_Raised_on_operations_on_closed_c, __pyx_k_Raised_on_operations_on_closed_c, sizeof(__pyx_k_Raised_on_operations_on_closed_c), 0, 0, 1, 0},
   {&__pyx_kp_s_Raised_on_other_non_specific_fat, __pyx_k_Raised_on_other_non_specific_fat, sizeof(__pyx_k_Raised_on_other_non_specific_fat), 0, 0, 1, 0},
   {&__pyx_kp_s_Raised_on_partial_authentication, __pyx_k_Raised_on_partial_authentication, sizeof(__pyx_k_Raised_on_partial_authentication), 0, 0, 1, 0},
   {&__pyx_kp_s_Raised_on_protocol_errors, __pyx_k_Raised_on_protocol_errors, sizeof(__pyx_k_Raised_on_protocol_errors), 0, 0, 1, 0},
@@ -2571,6 +2577,7 @@ if (!__Pyx_RefNanny) {
  * 
  * class SFTPHandleError(SFTPError):             # <<<<<<<<<<<<<<
  *     """Raised on SFTP handle errors"""
+ * 
  */
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -2591,15 +2598,40 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
+  /* "ssh/exceptions.pyx":166
+ * 
+ * 
+ * class ChannelClosed(BaseSSHError):             # <<<<<<<<<<<<<<
+ *     """Raised on operations on closed channels"""
+ */
+  __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_BaseSSHError); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_GIVEREF(__pyx_t_2);
+  PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+  __pyx_t_2 = 0;
+  __pyx_t_2 = __Pyx_CalculateMetaclass(NULL, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = __Pyx_Py3MetaclassPrepare(__pyx_t_2, __pyx_t_1, __pyx_n_s_ChannelClosed, __pyx_n_s_ChannelClosed, (PyObject *) NULL, __pyx_n_s_ssh_exceptions, __pyx_kp_s_Raised_on_operations_on_closed_c); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = __Pyx_Py3ClassCreate(__pyx_t_2, __pyx_n_s_ChannelClosed, __pyx_t_1, __pyx_t_3, NULL, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 166, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ChannelClosed, __pyx_t_4) < 0) __PYX_ERR(0, 166, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+
   /* "ssh/exceptions.pyx":1
  * # This file is part of ssh-python.             # <<<<<<<<<<<<<<
  * # Copyright (C) 2018 Panos Kittenis
  * #
  */
-  __pyx_t_2 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_2) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  __pyx_t_1 = __Pyx_PyDict_NewPresized(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /*--- Wrapped vars code ---*/
 

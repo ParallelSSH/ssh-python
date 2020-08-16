@@ -56,7 +56,10 @@ class ChannelTest(SSHTestCase):
         size, data = chan.read()
         while size > 0:
             all_data += data
-            size, data = chan.read()
+            try:
+                size, data = chan.read()
+            except SSHError:
+                break
         lines = [s.decode('utf-8') for s in all_data.splitlines()]
         self.assertEqual(lines[0], self.resp)
         sleep(1)
@@ -118,7 +121,7 @@ class ChannelTest(SSHTestCase):
         self.assertEqual(chan.close(), 0)
         status = chan.get_exit_status()
         self.assertEqual(status, 2)
-    
+
     def test_long_running_execute(self):
         self._auth()
         chan = self.session.channel_new()
