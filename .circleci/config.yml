@@ -72,19 +72,20 @@ jobs:
       - python/load-cache:
           key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
           dependency-file: requirements_dev.txt
-      - run:
-          name: Git LFS
-          command: |
-            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-            sudo apt-get install git-lfs
-            git lfs install
-            git lfs pull
+      # - run:
+      #     name: Git LFS
+      #     command: |
+      #       curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+      #       sudo apt-get install git-lfs
+      #       git lfs install
+      #       git lfs pull
       - run:
           name: Deps
           command: |
             sudo apt-get install python-pip
-            python -m pip install -U pip setuptools
+            pip install -U pip
             pip install twine
+            which twine
       - python/save-cache:
           key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
           dependency-file: requirements_dev.txt
