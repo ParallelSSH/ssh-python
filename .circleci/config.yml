@@ -56,13 +56,15 @@ jobs:
       - checkout
       - python/load-cache:
           key: manylinuxdepsv5-{{ .Branch }}.{{ arch }}
+          dependency-file: requirements_dev.txt
       - run:
           name: Deps
           command: |
-            sudo apt-get install docker python-pip
+            sudo apt-get install docker.io python-pip
             pip install twine
       - python/save-cache:
           key: manylinuxdepsv5-{{ .Branch }}.{{ arch }}
+          dependency-file: requirements_dev.txt
       - run:
           name: Build Wheels
           command: |
