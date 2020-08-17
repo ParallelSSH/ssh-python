@@ -49,6 +49,21 @@ jobs:
     executor:
       name: python/default
       tag: 3.8
+  osx:
+    macos:
+      xcode: 11.6.0
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      PYENV: 3.6.11
+      SYSTEM_LIBSSH: 1
+    steps:
+      - checkout
+      - run:
+          name: deps
+          command: |
+            brew install cmake
+            pip install twine
+            which twine
   manylinux:
     machine:
       image: ubuntu-1604:201903-01
@@ -57,6 +72,13 @@ jobs:
       - python/load-cache:
           key: manylinuxdepsv5-{{ .Branch }}.{{ arch }}
           dependency-file: requirements_dev.txt
+      - run:
+          name: Git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install
+            git lfs pull
       - run:
           name: Deps
           command: |
