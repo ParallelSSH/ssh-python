@@ -1,26 +1,26 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@0.2.1
+  python: circleci/python@0.3.2
 
 jobs:
   py36: &python-build-test
-    docker:
-      - image: circleci/python:3.6
+    executor:
+      python/default:
+        tag: 3.6
     steps:
       - checkout
-      - restore_cache:
-          key: depsv3-{{ .Branch }}.{{ arch }}-{{ checksum "requirements_dev.txt" }}
+      - python/load-cache:
+          dependency-file: requirements_dev.txt
+          key: depsv3-{{ .Branch }}.{{ arch }}
       - run:
           name: Deps
           command: |
             sudo apt-get install cmake openssh-server
             pip install flake8 jinja2 sphinx sphinx_rtd_theme pytest
-      - save_cache:
-          key: depsv3-{{ .Branch }}.{{ arch }}-{{ checksum "requirements_dev.txt" }}
-          paths:
-            - ".venv"
-            - ".cache/pip"
+      - python/save-cache:
+          dependency-file: requirements_dev.txt
+          key: depsv3-{{ .Branch }}.{{ arch }}
       - run:
           command: |
             python setup.py build_ext --inplace
@@ -37,29 +37,28 @@ jobs:
           name: Test
   py37:
     <<: *python-build-test
-    docker:
-      - image: circleci/python:3.7
+    executor:
+      python/default:
+        tag: 3.7
   py38:
     <<: *python-build-test
-    docker:
-      - image: circleci/python:3.8
+    executor:
+      python/default:
+        tag: 3.8
   manylinux:
     machine:
       image: ubuntu-1604:201903-01
     steps:
       - checkout
-      - restore_cache:
+      - load-cache:
           key: manylinuxdepsv5-{{ .Branch }}.{{ arch }}
       - run:
           name: Deps
           command: |
             sudo apt-get install docker python-pip
             pip install twine
-      - save_cache:
+      - save-cache:
           key: manylinuxdepsv5-{{ .Branch }}.{{ arch }}
-          paths:
-            - ".venv"
-            - ".cache/pip"
       - run:
           name: Build Wheels
           command: |
