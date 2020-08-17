@@ -5,14 +5,18 @@ orbs:
 
 jobs:
   py36: &python-build-test
+    parameters:
+      python_ver:
+        type: string
+        default: 3.6
     executor:
       python/default:
-        tag: 3.6
+        tag: << parameters.python_ver >>
     steps:
       - checkout
       - python/load-cache:
           dependency-file: requirements_dev.txt
-          key: depsv3-{{ .Branch }}.{{ arch }}
+          key: depsv3-{{ .Branch }}.{{ arch }}-PY<< parameters.python_ver >>
       - run:
           name: Deps
           command: |
@@ -20,7 +24,7 @@ jobs:
             pip install flake8 jinja2 sphinx sphinx_rtd_theme pytest
       - python/save-cache:
           dependency-file: requirements_dev.txt
-          key: depsv3-{{ .Branch }}.{{ arch }}
+          key: depsv3-{{ .Branch }}.{{ arch }}-PY<< parameters.python_ver >>
       - run:
           command: |
             python setup.py build_ext --inplace
@@ -72,8 +76,10 @@ workflows:
   main:
     jobs:
       # - py36
-      # - py37
+      # - py37:
+        # python_ver: 3.7
       # - py38
+        # python_ver: 3.8
       - manylinux:
           context: Docker
       # - manylinux:
