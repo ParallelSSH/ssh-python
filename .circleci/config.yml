@@ -8,8 +8,6 @@ jobs:
     executor: python/default
     steps:
       - checkout
-      - python/load-cache
-      - python/save-cache
       - run:
           name: Deps
           command: sudo apt-get install cmake
@@ -21,6 +19,8 @@ jobs:
           name: Build
       - run:
           command: |
+            ls -lhtr ssh/
+            pwd
             pytest
             flake8 ssh
             python setup.py sdist
