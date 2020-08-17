@@ -102,6 +102,7 @@ class ChannelTest(SSHTestCase):
         lines = [s.decode('utf-8') for s in all_data.splitlines()]
         self.assertEqual(lines[0], self.resp)
         wait_socket(self.session, self.sock)
+        sleep(.5)
         self.assertRaises(SSHError, chan.read)
         self.assertTrue(chan.is_eof())
         rc = chan.close()

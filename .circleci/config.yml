@@ -53,7 +53,7 @@ jobs:
       - run:
           name: Deps
           command: |
-            sudo apt-get install docker
+            sudo apt-get install docker-cli
             pip install twine
       - save_cache:
           key: manylinuxdepsv3-{{ .Branch }}.{{ arch }}
@@ -61,6 +61,7 @@ jobs:
             - ".venv"
             - ".cache/pip"
             - "/usr/local/bin"
+      - setup_remote_docker
       - run:
           name: Build Wheels
           command: |
@@ -71,12 +72,14 @@ workflows:
   version: 2.1
   main:
     jobs:
-      - py36
-      - py37
-      - py38
+      # - py36
+      # - py37
+      # - py38
       - manylinux:
           context: Docker
-          requires:
-            - py36
-            - py37
-            - py38
+      # - manylinux:
+      #     context: Docker
+      #     requires:
+      #       - py36
+      #       - py37
+      #       - py38
