@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: Deps
-          command: sudo apt-get install cmake
+          command: sudo apt-get install cmake openssh-server
       - run:
           command: |
             pip install flake8 jinja2 sphinx sphinx_rtd_theme pytest

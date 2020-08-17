@@ -27,7 +27,7 @@ install:
   - python setup.py build_ext --inplace
   - eval "$(ssh-agent -s)"
 script:
-  - pytest
+  - pytest tests
   - flake8 ssh
   - python setup.py sdist
   - cd dist; pip install *; cd ..
