@@ -60,7 +60,7 @@ jobs:
       - run:
           name: Deps
           command: |
-            sudo apt-get install docker.io python-pip
+            sudo apt-get install python-pip
             pip install twine
       - python/save-cache:
           key: manylinuxdepsv5-{{ .Branch }}.{{ arch }}
