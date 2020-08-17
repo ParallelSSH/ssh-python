@@ -88,13 +88,13 @@ jobs:
       - python/save-cache:
           key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
           dependency-file: requirements_dev.txt
-      - run:
-          name: Build Wheels
-          command: |
-            if [[ -z "${CIRCLE_PULL_REQUEST}" ]]; then
-              echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
-            fi
-            ./ci/travis/build-manylinux.sh
+      # - run:
+      #     name: Build Wheels
+      #     command: |
+      #       if [[ -z "${CIRCLE_PULL_REQUEST}" ]]; then
+      #         echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
+      #       fi
+      #       ./ci/travis/build-manylinux.sh
       - run:
           name: Upload Wheels
           command: |
