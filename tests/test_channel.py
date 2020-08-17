@@ -98,7 +98,7 @@ class ChannelTest(SSHTestCase):
             try:
                 size, data = chan.read_nonblocking()
             except EOF:
-                pass
+                break
         lines = [s.decode('utf-8') for s in all_data.splitlines()]
         self.assertEqual(lines[0], self.resp)
         wait_socket(self.session, self.sock)

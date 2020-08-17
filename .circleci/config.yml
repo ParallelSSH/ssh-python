@@ -21,7 +21,7 @@ jobs:
           command: |
             ls -lhtr ssh/
             pwd
-            pytest
+            pytest tests
             flake8 ssh
             python setup.py sdist
             cd dist; pip install *; cd ..
