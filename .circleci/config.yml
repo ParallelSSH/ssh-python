@@ -5,7 +5,10 @@ orbs:
 
 jobs:
   build-and-test:
-    executor: python/default
+    executor:
+      - python/3.6
+      - python/3.7
+      - python/3.8
     steps:
       - checkout
       - run:
@@ -26,8 +29,24 @@ jobs:
             python setup.py sdist
             cd dist; pip install *; cd ..
           name: Test
+  manylinux:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          name: Deps
+          command: pip install twine
+      - run:
+          name: Build Wheels
+          command: |
+            echo docker login
+
 
 workflows:
+  version: 2.1
   main:
     jobs:
       - build-and-test
+      - manylinux:
+          requires:
+            - build-and-test
