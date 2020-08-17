@@ -9,8 +9,13 @@ jobs:
     steps:
       - checkout
       - python/load-cache
-      - python/install-deps
       - python/save-cache
+      - run:
+          command: |
+            pip install flake8 jinja2 sphinx sphinx_rtd_theme
+            python setup.py build_ext --inplace
+            eval "$(ssh-agent -s)"
+          name: Build
       - run:
           command: |
             pytest
