@@ -11,6 +11,9 @@ jobs:
       - python/load-cache
       - python/save-cache
       - run:
+          name: Deps
+          command: sudo apt-get install cmake gcc
+      - run:
           command: |
             pip install flake8 jinja2 sphinx sphinx_rtd_theme
             python setup.py build_ext --inplace
