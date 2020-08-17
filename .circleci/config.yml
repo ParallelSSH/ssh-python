@@ -53,8 +53,8 @@ jobs:
       - run:
           name: Build Wheels
           command: |
-            echo docker login
-
+            if [[ ! -z "$CIRCLE_PR_NUMBER" ]]; then docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"; fi
+            ./ci/travis/build-manylinux.sh
 
 workflows:
   version: 2.1
@@ -64,6 +64,7 @@ workflows:
       - py37
       - py38
       - manylinux:
+          context: Docker
           requires:
             - py36
             - py37
