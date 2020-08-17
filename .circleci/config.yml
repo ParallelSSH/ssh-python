@@ -10,14 +10,14 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: depsv1-{{ .Branch }}.{{ arch }}-{{ checksum "Pipfile.lock" }}
+          key: depsv1-{{ .Branch }}.{{ arch }}-{{ checksum "requirements_dev.txt" }}
       - run:
           name: Deps
           command: |
             sudo apt-get install cmake openssh-server
             pip install flake8 jinja2 sphinx sphinx_rtd_theme pytest
       - save_cache:
-          key: depsv1-{{ .Branch }}.{{ arch }}-{{ checksum "Pipfile.lock" }}
+          key: depsv1-{{ .Branch }}.{{ arch }}-{{ checksum "requirements_dev.txt" }}
           paths:
             - ".venv"
             - ".cache/pip"
