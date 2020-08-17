@@ -44,16 +44,27 @@ jobs:
     docker:
       - image: circleci/python:3.8
   manylinux:
-    executor: python/default
+    docker:
+      - image: circleci/python:default
     steps:
       - checkout
+      - restore_cache:
+          key: manylinuxdepsv3-{{ .Branch }}.{{ arch }}
       - run:
           name: Deps
-          command: pip install twine
+          command: |
+            sudo apt-get install docker
+            pip install twine
+      - save_cache:
+          key: manylinuxdepsv3-{{ .Branch }}.{{ arch }}
+          paths:
+            - ".venv"
+            - ".cache/pip"
+            - "/usr/local/bin"
       - run:
           name: Build Wheels
           command: |
-            if [[ ! -z "$CIRCLE_PR_NUMBER" ]]; then docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"; fi
+            if [[ -z "$CIRCLE_PR_NUMBER" ]]; then docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"; fi
             ./ci/travis/build-manylinux.sh
 
 workflows:
