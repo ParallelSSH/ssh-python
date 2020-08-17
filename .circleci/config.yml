@@ -61,7 +61,7 @@ jobs:
       - run:
           name: deps
           command: |
-            brew install cmake
+            brew install cmake git-lfs
             pip install twine
             which twine
   manylinux:
@@ -70,7 +70,7 @@ jobs:
     steps:
       - checkout
       - python/load-cache:
-          key: manylinuxdepsv5-{{ .Branch }}.{{ arch }}
+          key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
           dependency-file: requirements_dev.txt
       - run:
           name: Git LFS
@@ -85,16 +85,19 @@ jobs:
             sudo apt-get install python-pip
             pip install twine
       - python/save-cache:
-          key: manylinuxdepsv5-{{ .Branch }}.{{ arch }}
+          key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
           dependency-file: requirements_dev.txt
       - run:
           name: Build Wheels
           command: |
-            if [[ -z "${CIRCLE_PR_NUMBER}" ]]; then
+            if [[ -z "${CIRCLE_PULL_REQUEST}" ]]; then
               echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
             fi
             ./ci/travis/build-manylinux.sh
-
+      - run:
+          name: Upload Wheels
+          command: |
+            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheelhouse/*
 workflows:
   version: 2.1
   main:
@@ -106,6 +109,10 @@ workflows:
         # python_ver: "3.8"
       - manylinux:
           context: Docker
+      - osx
+        # filters:
+        #   tags:
+        #     only: /.*/
       # - manylinux:
       #     context: Docker
       #     requires:
