@@ -7,8 +7,8 @@ jobs:
   py36: &python-build-test
     parameters:
       python_ver:
-        type: double
-        default: 3.6
+        type: string
+        default: "3.6"
     executor:
       name: python/default
       tag: << parameters.python_ver >>
@@ -77,9 +77,9 @@ workflows:
     jobs:
       # - py36
       # - py37:
-        # python_ver: 3.7
+        # python_ver: "3.7"
       # - py38
-        # python_ver: 3.8
+        # python_ver: "3.8"
       - manylinux:
           context: Docker
       # - manylinux:
