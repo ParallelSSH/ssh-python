@@ -12,10 +12,10 @@ jobs:
       - python/save-cache
       - run:
           name: Deps
-          command: sudo apt-get install cmake gcc
+          command: sudo apt-get install cmake
       - run:
           command: |
-            pip install flake8 jinja2 sphinx sphinx_rtd_theme
+            pip install flake8 jinja2 sphinx sphinx_rtd_theme pytest
             python setup.py build_ext --inplace
             eval "$(ssh-agent -s)"
           name: Build
