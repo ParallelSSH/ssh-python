@@ -54,14 +54,14 @@ jobs:
       image: ubuntu-1604:201903-01
     steps:
       - checkout
-      - load-cache:
+      - python/load-cache:
           key: manylinuxdepsv5-{{ .Branch }}.{{ arch }}
       - run:
           name: Deps
           command: |
             sudo apt-get install docker python-pip
             pip install twine
-      - save-cache:
+      - python/save-cache:
           key: manylinuxdepsv5-{{ .Branch }}.{{ arch }}
       - run:
           name: Build Wheels
