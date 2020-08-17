@@ -49,18 +49,17 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          key: manylinuxdepsv3-{{ .Branch }}.{{ arch }}
+          key: manylinuxdepsv4-{{ .Branch }}.{{ arch }}
       - run:
           name: Deps
           command: |
             sudo apt-get install docker-cli
             pip install twine
       - save_cache:
-          key: manylinuxdepsv3-{{ .Branch }}.{{ arch }}
+          key: manylinuxdepsv4-{{ .Branch }}.{{ arch }}
           paths:
             - ".venv"
             - ".cache/pip"
-            - "/usr/local/bin"
       - setup_remote_docker
       - run:
           name: Build Wheels
