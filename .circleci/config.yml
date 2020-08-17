@@ -99,7 +99,9 @@ jobs:
       - run:
           name: Upload Wheels
           command: |
-            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheelhouse/*
+            # if [[ ! -z "${CIRCLE_TAG}" ]]; then
+            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheelhouse/*;
+            # fi
 workflows:
   version: 2.1
   main:
