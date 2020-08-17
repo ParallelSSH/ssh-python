@@ -64,7 +64,8 @@ jobs:
       - run:
           name: Build Wheels
           command: |
-            if [[ -z "$CIRCLE_PR_NUMBER" ]]; then docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"; fi
+            # if [[ -z "${CIRCLE_PR_NUMBER}" ]]; then ; fi
+            docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
             ./ci/travis/build-manylinux.sh
 
 workflows:
