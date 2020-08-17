@@ -25,7 +25,6 @@ jobs:
             flake8 ssh
             python setup.py sdist
             cd dist; pip install *; cd ..
-            cd doc; make html; cd ..
           name: Test
 
 workflows:
