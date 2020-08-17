@@ -83,6 +83,7 @@ jobs:
           name: Deps
           command: |
             sudo apt-get install python-pip
+            python -m pip install -U pip setuptools
             pip install twine
       - python/save-cache:
           key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
@@ -109,7 +110,7 @@ workflows:
         # python_ver: "3.8"
       - manylinux:
           context: Docker
-      - osx
+      # - osx
         # filters:
         #   tags:
         #     only: /.*/
