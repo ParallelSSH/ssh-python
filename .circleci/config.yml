@@ -4,18 +4,18 @@ orbs:
   python: circleci/python@0.2.1
 
 jobs:
-  build-and-test:
-    &python-build-test
+  py36: &python-build-test
     docker:
       - image: circleci/python:3.6
     steps:
       - checkout
       - run:
           name: Deps
-          command: sudo apt-get install cmake openssh-server
+          command: |
+            sudo apt-get install cmake openssh-server
+            pip install flake8 jinja2 sphinx sphinx_rtd_theme pytest
       - run:
           command: |
-            pip install flake8 jinja2 sphinx sphinx_rtd_theme pytest
             python setup.py build_ext --inplace
             eval "$(ssh-agent -s)"
           name: Build
@@ -28,6 +28,14 @@ jobs:
             python setup.py sdist
             cd dist; pip install *; cd ..
           name: Test
+  py37:
+    <<: *python-build-test
+    docker:
+      - image: circleci/python:3.7
+  py38:
+    <<: *python-build-test
+    docker:
+      - image: circleci/python:3.8
   manylinux:
     executor: python/default
     steps:
@@ -45,7 +53,11 @@ workflows:
   version: 2.1
   main:
     jobs:
-      - build-and-test
+      - py36
+      - py37
+      - py38
       - manylinux:
           requires:
-            - build-and-test
+            - py36
+            - py37
+            - py38
