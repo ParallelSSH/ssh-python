@@ -7,7 +7,7 @@ jobs:
   build-and-test:
     &python-build-test
     docker:
-      -image: python:3.6
+      - image: python:3.6
     steps:
       - checkout
       - run:
