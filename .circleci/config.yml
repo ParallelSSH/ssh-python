@@ -6,7 +6,8 @@ orbs:
 jobs:
   build-and-test:
     &python-build-test
-    executor: python:3.6
+    docker:
+      -image: python:3.6
     steps:
       - checkout
       - run:
