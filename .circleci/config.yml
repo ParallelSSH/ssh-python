@@ -18,6 +18,11 @@ jobs:
             pip install flake8 jinja2 sphinx sphinx_rtd_theme pytest
       - save_cache:
           key: depsv1-{{ .Branch }}.{{ arch }}-{{ checksum "Pipfile.lock" }}
+          paths:
+            - ".venv"
+            - ".cache/pip"
+            - "/usr/local/bin"
+            - "/var/cache/apt/archives"
       - run:
           command: |
             python setup.py build_ext --inplace
