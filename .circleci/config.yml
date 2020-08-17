@@ -45,7 +45,7 @@ jobs:
       - image: circleci/python:3.8
   manylinux:
     docker:
-      - image: circleci/python:default
+      - image: circleci/python
     steps:
       - checkout
       - restore_cache:
