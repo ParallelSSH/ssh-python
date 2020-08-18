@@ -108,10 +108,10 @@ workflows:
           requires:
             - python_test
           filters:
-            branches:
-              ignore: /.*/
             tags:
               only: /.*/
+            branches:
+              ignore: /.*/
       # - osx
         # filters:
         #   tags:
