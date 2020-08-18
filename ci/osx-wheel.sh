@@ -1,6 +1,6 @@
 #!/bin/bash -xe
 
-python -m pip install -U virtualenv
+pip3 install -U virtualenv
 python -m virtualenv -p "$(which python)" venv
 
 set +x
@@ -8,9 +8,9 @@ source venv/bin/activate
 set -x
 
 python -V
-python -m pip install -U setuptools pip
-pip install -U delocate wheel
-pip wheel .
+pip3 install -U setuptools pip
+pip3 install -U delocate wheel
+pip3 wheel .
 ls -lhtr /usr/local/lib/
 # cp /usr/local/lib/libssh* .
 delocate-listdeps --all *.whl
@@ -19,7 +19,7 @@ delocate-listdeps --all *.whl
 
 ls -l *.whl
 rm -f *.dylib
-pip install -v *.whl
+pip3 install -v *.whl
 pwd; mkdir -p temp; cd temp; pwd
 python -c "from ssh.session import Session; Session()" && echo "Import successfull"
 cd ..; pwd

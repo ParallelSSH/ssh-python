@@ -75,7 +75,7 @@ install:
   - 7z x kfw-4.1-src.zip
   # - 7z e openssl-%OPENSSL_VER%.tar.gz
   # - ps: ls openssl-%OPENSSL_VER%
-  - ps: SUBST T: %APPVEYOR_BUILD_FOLDER%
+  # - ps: SUBST T: %APPVEYOR_BUILD_FOLDER%
   # - 7z x openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
   # - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1.dll ssh\
   # - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1.dll ssh\
