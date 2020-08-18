@@ -27,5 +27,4 @@ set +x
 deactivate
 set -x
 
-mv -f *.whl wheels/
-ls -lh wheels
+ls -lh *.whl

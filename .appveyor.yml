@@ -82,6 +82,7 @@ install:
   - ps: ls ssh
   - ps: ls
   - cinst nasm
+  - refreshenv
 
 build_script:
   # - "%CMD_IN_ENV% ci\\appveyor\\build_openssl.bat"

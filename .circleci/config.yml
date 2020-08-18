@@ -69,7 +69,7 @@ jobs:
       - run:
           name: Upload Wheel
           command: |
-            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheels/*
+            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD *.whl
   manylinux:
     machine:
       image: ubuntu-1604:201903-01
