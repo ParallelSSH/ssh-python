@@ -94,6 +94,7 @@ build_script:
   - "%CMD_IN_ENV% ci\\appveyor\\build_zlib.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_ssh.bat"
   - rm -f ssh/*.c
+  - python -V
   - "%CMD_IN_ENV% python setup.py build_ext -I ci/appveyor/include"
   - "%CMD_IN_ENV% python setup.py build"
   - "%CMD_IN_ENV% python setup.py install"

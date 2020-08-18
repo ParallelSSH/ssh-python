@@ -18,9 +18,6 @@ except ImportError:
 else:
     USING_CYTHON = True
 
-if platform.system() == 'Windows' and platform.python_version_tuple()[0] == "2":
-    raise ImportError("ssh-python requires Python 3 or above on Windows platforms.")
-
 _PYTHON_MAJOR_VERSION = int(platform.python_version_tuple()[0])
 ON_WINDOWS = platform.system() == 'Windows'
 SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0))
