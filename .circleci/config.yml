@@ -4,7 +4,7 @@ orbs:
   python: circleci/python@0.3.2
 
 jobs:
-  py36: &python-build-test
+  python_test:
     parameters:
       python_ver:
         type: string
@@ -39,16 +39,16 @@ jobs:
             python setup.py sdist
             cd dist; pip install *; cd ..
           name: Test
-  py37:
-    <<: *python-build-test
-    executor:
-      name: python/default
-      tag: 3.7
-  py38:
-    <<: *python-build-test
-    executor:
-      name: python/default
-      tag: 3.8
+  # py37:
+  #   <<: *python-build-test
+  #   executor:
+  #     name: python/default
+  #     tag: 3.7
+  # py38:
+  #   <<: *python-build-test
+  #   executor:
+  #     name: python/default
+  #     tag: 3.8
   osx:
     macos:
       xcode: 11.6.0
@@ -72,13 +72,13 @@ jobs:
       - python/load-cache:
           key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
           dependency-file: requirements_dev.txt
-      # - run:
-      #     name: Git LFS
-      #     command: |
-      #       curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-      #       sudo apt-get install git-lfs
-      #       git lfs install
-      #       git lfs pull
+      - run:
+          name: Git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install
+            git lfs pull
       - run:
           name: Deps
           command: |
@@ -89,30 +89,34 @@ jobs:
       - python/save-cache:
           key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
           dependency-file: requirements_dev.txt
-      # - run:
-      #     name: Build Wheels
-      #     command: |
-      #       if [[ -z "${CIRCLE_PULL_REQUEST}" ]]; then
-      #         echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
-      #       fi
-      #       ./ci/travis/build-manylinux.sh
+      - run:
+          name: Build Wheels
+          command: |
+            if [[ -z "${CIRCLE_PULL_REQUEST}" ]]; then
+              echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
+            fi
+            ./ci/travis/build-manylinux.sh
       - run:
           name: Upload Wheels
-          command: |
-            # if [[ ! -z "${CIRCLE_TAG}" ]]; then
-            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheelhouse/*;
-            # fi
+          command: twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheelhouse/*
 workflows:
   version: 2.1
   main:
     jobs:
-      # - py36
-      # - py37:
-        # python_ver: "3.7"
-      # - py38
-        # python_ver: "3.8"
+      - python_test:
+          matrix:
+            parameters:
+              python_ver:
+                - "3.6"
+                - "3.7"
+                - "3.8"
       - manylinux:
           context: Docker
+          requires:
+            - python_test
+          filters:
+            tags:
+              only: /.*/
       # - osx
         # filters:
         #   tags:
