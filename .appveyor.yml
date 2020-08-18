@@ -75,7 +75,7 @@ install:
   - 7z x openssl-%OPENSSL_VER%-64bit-release-static-vs2015.7z
   - appveyor DownloadFile https://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-src.zip
   - 7z x kfw-4.1-src.zip
-  - cp openssl-%OPENSSL_VER%-64bit-release-static-VS2015\bin\*.dll ssh\
+  - cp openssl-%OPENSSL_VER%-64bit-release-static-VS2015/bin/*.dll ssh/
   # - 7z e openssl-%OPENSSL_VER%.tar.gz
   # - ps: ls openssl-%OPENSSL_VER%
   # - ps: SUBST T: %APPVEYOR_BUILD_FOLDER%

@@ -65,7 +65,6 @@ cdef class Session:
 
     def __dealloc__(self):
         if self._session is not NULL:
-            print("Session dealloc")
             c_ssh.ssh_free(self._session)
             self._session = NULL
 
