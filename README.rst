@@ -19,9 +19,8 @@ Bindings for libssh_ C library.
 Installation
 _____________
 
-Currently only installation from source is provided. Binary wheels to follow.
+Binary wheels are provided for Linux, OSX and Windows wheels to follow.
 
-To install from source, run the following:
 
 .. code-block:: shell
 
