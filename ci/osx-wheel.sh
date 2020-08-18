@@ -10,24 +10,20 @@ set -x
 python -V
 pip3 install -U setuptools pip
 pip3 install -U delocate wheel
-pip3 wheel .
+SYSTEM_LIBSSH=1 python3 setup.py bdist_wheel
 ls -lhtr /usr/local/lib/
 # cp /usr/local/lib/libssh* ssh/
-delocate-listdeps --all *.whl
-delocate-wheel -v *.whl
-delocate-listdeps --all *.whl
+delocate-listdeps dist/*.whl
+delocate-wheel -v -w wheels dist/*.whl
+delocate-listdeps wheels/*.whl
 
-ls -l *.whl
+ls -l wheels/*.whl
 # rm -f ssh/*.dylib /usr/local/lib/libssh*
 rm -f /usr/local/lib/libssh*
-pip3 install -v *.whl
+pip3 install -v wheels/*.whl
 pwd; mkdir -p temp; cd temp; pwd
 python3 -c "from ssh.session import Session; Session()" && echo "Import successfull"
 cd ..; pwd
 set +x
 deactivate
 set -x
-
-mkdir -p wheels
-mv *.whl wheels/
-ls -lh wheels
