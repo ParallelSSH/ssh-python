@@ -26,7 +26,7 @@ python -V
 python -m pip install -U setuptools pip
 pip install -U delocate wheel
 pip wheel .
-cp /usr/local/lib/libssh2* .
+cp /usr/local/lib/libssh* .
 delocate-listdeps --all *.whl
 delocate-wheel -v *.whl
 delocate-listdeps --all *.whl
@@ -35,7 +35,7 @@ ls -l *.whl
 rm -f *.dylib
 pip install -v *.whl
 pwd; mkdir -p temp; cd temp; pwd
-python -c "from ssh2.session import Session; Session()" && echo "Import successfull"
+python -c "from ssh.session import Session; Session()" && echo "Import successfull"
 cd ..; pwd
 set +x
 deactivate
