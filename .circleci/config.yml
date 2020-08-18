@@ -103,10 +103,11 @@ workflows:
                 - "3.6"
                 - "3.7"
                 - "3.8"
+          filters:
+            tags:
+              ignore: /.*/
       - manylinux:
           context: Docker
-          requires:
-            - python_test
           filters:
             tags:
               only: /.*/
