@@ -22,7 +22,7 @@ cmake ..\libssh  -G %CMAKE_PLATFORM%               ^
       -DZLIB_LIBRARY=C:/zlib/lib/zlibstatic.lib    ^
       -DZLIB_INCLUDE_DIR=C:/zlib/include           ^
       -DWITH_GSSAPI=ON                             ^
-      -DWITH_STATIC_LIB=ON                         ^
+      -DBUILD_SHARED_LIBS=OFF                      ^
       -DOPENSSL_ROOT_DIR=%OPENSSL_DIR%
 
 

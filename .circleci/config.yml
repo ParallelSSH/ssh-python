@@ -127,12 +127,12 @@ workflows:
       #       branches:
       #         ignore: /.*/
       - osx:
-          context: Docker
           matrix:
             parameters:
               xcode_ver:
                 - "11.6.0"
                 - "11.1.0"
+          context: Docker
           filters:
             tags:
               only: /.*/

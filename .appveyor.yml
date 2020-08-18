@@ -75,7 +75,7 @@ install:
   - 7z x openssl-%OPENSSL_VER%-64bit-release-static-vs2015.7z
   - appveyor DownloadFile https://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-src.zip
   - 7z x kfw-4.1-src.zip
-  - cp openssl-%OPENSSL_VER%-64bit-release-static-VS2015/bin/*.dll ssh/
+  - cp openssl-%OPENSSL_VER%-64bit-release-static-VS2015/lib/*.lib %APPVEYOR_BUILD_FOLDER%
   # - 7z e openssl-%OPENSSL_VER%.tar.gz
   # - ps: ls openssl-%OPENSSL_VER%
   # - ps: SUBST T: %APPVEYOR_BUILD_FOLDER%
@@ -84,12 +84,12 @@ install:
   # - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1.dll ssh\
   - ps: ls ssh
   - ps: ls
-  # - cinst nasm
+  - cinst nmake
 
 build_script:
   # - "%CMD_IN_ENV% ci\\appveyor\\build_openssl.bat"
-  # - refreshenv
   # - "%CMD_IN_ENV% ci\\appveyor\\rebuild_openssl_vs2015.cmd"
+  - refreshenv
   - "%CMD_IN_ENV% ci\\appveyor\\build_krb.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_zlib.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_ssh.bat"
