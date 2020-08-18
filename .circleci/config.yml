@@ -109,23 +109,23 @@ workflows:
   version: 2.1
   main:
     jobs:
-      # - python_test:
-      #     matrix:
-      #       parameters:
-      #         python_ver:
-      #           - "3.6"
-      #           - "3.7"
-      #           - "3.8"
-      #     filters:
-      #       tags:
-      #         ignore: /.*/
-      # - manylinux:
-      #     context: Docker
-      #     filters:
-      #       tags:
-      #         only: /.*/
-      #       branches:
-      #         ignore: /.*/
+      - python_test:
+          matrix:
+            parameters:
+              python_ver:
+                - "3.6"
+                - "3.7"
+                - "3.8"
+          filters:
+            tags:
+              ignore: /.*/
+      - manylinux:
+          context: Docker
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
       - osx:
           matrix:
             parameters:
@@ -136,5 +136,5 @@ workflows:
           filters:
             tags:
               only: /.*/
-            # branches:
-            #   ignore: /.*/
+            branches:
+              ignore: /.*/
