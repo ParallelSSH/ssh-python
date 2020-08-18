@@ -38,16 +38,6 @@ jobs:
             python setup.py sdist
             cd dist; pip install *; cd ..
           name: Test
-  # py37:
-  #   <<: *python-build-test
-  #   executor:
-  #     name: python/default
-  #     tag: 3.7
-  # py38:
-  #   <<: *python-build-test
-  #   executor:
-  #     name: python/default
-  #     tag: 3.8
   osx:
     macos:
       xcode: 11.6.0
@@ -114,15 +104,11 @@ workflows:
           requires:
             - python_test
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /.*/
       # - osx
         # filters:
         #   tags:
         #     only: /.*/
-      # - manylinux:
-      #     context: Docker
-      #     requires:
-      #       - py36
-      #       - py37
-      #       - py38
