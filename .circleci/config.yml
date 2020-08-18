@@ -58,6 +58,9 @@ jobs:
       image: ubuntu-1604:201903-01
     steps:
       - checkout
+      - run:
+          name: sdist
+          command: python setup.py sdist
       - python/load-cache:
           key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
           dependency-file: requirements_dev.txt
@@ -87,7 +90,8 @@ jobs:
             ./ci/travis/build-manylinux.sh
       - run:
           name: Upload Wheels
-          command: twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheelhouse/*
+          command: |
+            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD dist/* wheelhouse/*
 workflows:
   version: 2.1
   main:
