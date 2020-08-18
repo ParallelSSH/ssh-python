@@ -9,9 +9,8 @@ jobs:
       python_ver:
         type: string
         default: "3.6"
-    executor:
-      name: python/default
-      tag: << parameters.python_ver >>
+    docker:
+      - image: circleci/python:<< parameters.python_ver >>
     steps:
       - checkout
       - python/load-cache:
