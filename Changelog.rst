@@ -8,12 +8,12 @@ Changes
 --------
 
 * Updated error handling code to check for SSH status codes and correctly raise exceptions or return error code with no exception in non-blocking mode.
+* Updated embedded libssh to ``0.9.4``.
 
 Packaging
 ----------
 
-* Added Windows binary wheels.
-* Added OSX binary wheels.
+* Added manylinux 2010 binary wheels.
 
 0.3.0
 ++++++++
