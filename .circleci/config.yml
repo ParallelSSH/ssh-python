@@ -66,10 +66,12 @@ jobs:
           command: |
             ./ci/osx-wheel.sh
             # ./ci/pyenv-wheel.sh
+      - store_artifacts:
+          path: wheels
       - run:
           name: Upload Wheel
           command: |
-            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD *.whl
+            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheels/*
   manylinux:
     machine:
       image: ubuntu-1604:201903-01
