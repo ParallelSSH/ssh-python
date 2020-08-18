@@ -3,6 +3,7 @@
 docker_tag="parallelssh/ssh-manylinux"
 
 rm -rf build ssh/libssh.*
+python ci/appveyor/fix_version.py .
 
 docker pull $docker_tag || echo
 docker build --pull --cache-from $docker_tag ci/docker/manylinux -t $docker_tag
