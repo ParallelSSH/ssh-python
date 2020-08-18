@@ -72,7 +72,7 @@ install:
   - 7z x ci\appveyor\zlib1211.zip
   - appveyor DownloadFile https://www.openssl.org/source/openssl-%OPENSSL_VER%.tar.gz
   - appveyor DownloadFile https://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-src.zip
-  - 7z x ci\appveyor\kfw-4.1-src.zip
+  - 7z x kfw-4.1-src.zip
   - 7z x openssl-%OPENSSL_VER%.tar.gz
   # - 7z x openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
   # - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1.dll ssh\

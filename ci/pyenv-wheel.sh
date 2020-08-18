@@ -1,6 +1,7 @@
 #!/bin/bash -xe
 
 brew install pyenv || brew outdated pyenv || brew upgrade pyenv
+pyenv install --list
 
 export PYENV_VERSION=${PYENV:-3.6.4}
 if [[ ! -d "$HOME/.pyenv/versions/$PYENV_VERSION" ]]; then

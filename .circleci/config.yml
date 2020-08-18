@@ -42,7 +42,7 @@ jobs:
     parameters:
       pyenv_ver:
         type: string
-        default: "3.8.5"
+        default: "3.8.1"
       xcode_ver:
         type: string
         default: "11.6.0"
