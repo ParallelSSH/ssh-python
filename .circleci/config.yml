@@ -58,12 +58,14 @@ jobs:
       - run:
           name: deps
           command: |
-            brew install cmake git-lfs krb5 python
+            brew install cmake git-lfs krb5 python libssh
             pip3 install twine
             which twine
       - run:
           name: Build Wheel
-          command: ./ci/pyenv-wheel.sh
+          command: |
+            ./ci/osx-wheel.sh
+            # ./ci/pyenv-wheel.sh
       - run:
           name: Upload Wheel
           command: |
