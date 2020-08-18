@@ -40,9 +40,6 @@ jobs:
           name: Test
   osx:
     parameters:
-      pyenv_ver:
-        type: string
-        default: "3.8.3"
       xcode_ver:
         type: string
         default: "11.6.0"
@@ -50,9 +47,7 @@ jobs:
       xcode: << parameters.xcode_ver >>
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
-      # PYENV: 3.6.11
-      PYENV: << parameters.pyenv_ver >>
-      # SYSTEM_LIBSSH: 1
+      SYSTEM_LIBSSH: 1
     steps:
       - checkout
       - run:
@@ -65,7 +60,6 @@ jobs:
           name: Build Wheel
           command: |
             ./ci/osx-wheel.sh
-            # ./ci/pyenv-wheel.sh
       - store_artifacts:
           path: wheels
       - run:
@@ -137,3 +131,5 @@ workflows:
           filters:
             tags:
               only: /.*/
+            # branches:
+            #   ignore: /.*/

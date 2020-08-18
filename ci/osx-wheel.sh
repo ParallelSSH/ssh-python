@@ -12,13 +12,11 @@ pip3 install -U setuptools pip
 pip3 install -U delocate wheel
 SYSTEM_LIBSSH=1 python3 setup.py bdist_wheel
 ls -lhtr /usr/local/lib/
-# cp /usr/local/lib/libssh* ssh/
 delocate-listdeps dist/*.whl
 delocate-wheel -v -w wheels dist/*.whl
 delocate-listdeps wheels/*.whl
 
 ls -l wheels/*.whl
-# rm -f ssh/*.dylib /usr/local/lib/libssh*
 rm -f /usr/local/lib/libssh*
 pip3 install -v wheels/*.whl
 pwd; mkdir -p temp; cd temp; pwd
