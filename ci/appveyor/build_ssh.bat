@@ -1,7 +1,5 @@
 IF "%PYTHON_VERSION%" == "2.7" (exit 0)
 
-cp ci\appveyor\include\stdint.h libssh/include
-
 mkdir src
 cd src
 
@@ -35,8 +33,8 @@ cmake --build . --config Release
 
 cd ..
 ls
-ls src/src/Release
-cp src/src/static/Release/ssh.lib %PYTHON%/libs/
-# cp src/src/Release/ssh.dll ssh/
+ls src/lib/Release
+cp src/lib/static/Release/ssh.lib %PYTHON%/libs/
+# cp src/lib/Release/ssh.dll ssh/
 ls %PYTHON%/libs/
 ls ssh/
