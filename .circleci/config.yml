@@ -58,8 +58,8 @@ jobs:
       - run:
           name: deps
           command: |
-            brew install cmake git-lfs krb5 twine
-            # pip install twine
+            brew install cmake git-lfs krb5 python
+            pip3 install twine
             which twine
       - run:
           name: Build Wheel

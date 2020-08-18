@@ -5,7 +5,7 @@ environment:
     # See: http://stackoverflow.com/a/13751649/163740
     # CMD_IN_ENV: "cmd /E:ON /V:ON /C %APPVEYOR_BUILD_FOLDER%\\ci\\appveyor\\run_with_env.cmd"
     PYTHONUNBUFFERED: 1
-    OPENSSL_VER: 1.1.0h
+    OPENSSL_VER: 1.1.1g
     SYSTEM_LIBSSH: 1
     PYPI_USER:
       secure: 2m0jy6JD/R9RExIosOT6YA==
@@ -70,16 +70,18 @@ install:
   - python ci/appveyor/fix_version.py .
   - mv -f .git .git.bak
   - 7z x ci\appveyor\zlib1211.zip
-  - appveyor DownloadFile https://indy.fulgan.com/SSL/Archive/Experimental/openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
+  - appveyor DownloadFile https://www.openssl.org/source/openssl-%OPENSSL_VER%.tar.gz
   - appveyor DownloadFile https://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-src.zip
   - 7z x ci\appveyor\kfw-4.1-src.zip
-  - 7z x openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
-  - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1.dll ssh\
-  - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1.dll ssh\
+  - 7z x openssl-%OPENSSL_VER%.tar.gz
+  # - 7z x openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
+  # - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1.dll ssh\
+  # - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1.dll ssh\
   - ps: ls ssh
   - ps: ls
 
 build_script:
+  - "%CMD_IN_ENV% ci\\appveyor\\build_openssl.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_krb.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_zlib.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_ssh.bat"
