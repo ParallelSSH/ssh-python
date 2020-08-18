@@ -15,6 +15,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
 import unittest
+from pytest import mark
 from time import sleep
 
 from .base_test import SSHTestCase
@@ -68,6 +69,7 @@ class ChannelTest(SSHTestCase):
         self.assertFalse(chan.is_open())
         self.assertTrue(chan.is_closed())
 
+    @mark.flaky(reruns=5)
     def test_channel_non_blocking_exec(self):
         self._auth()
         self.session.set_blocking(0)
@@ -102,7 +104,6 @@ class ChannelTest(SSHTestCase):
         lines = [s.decode('utf-8') for s in all_data.splitlines()]
         self.assertEqual(lines[0], self.resp)
         wait_socket(self.session, self.sock)
-        sleep(.5)
         self.assertRaises(SSHError, chan.read)
         self.assertTrue(chan.is_eof())
         rc = chan.close()

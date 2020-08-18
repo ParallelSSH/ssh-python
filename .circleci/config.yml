@@ -20,7 +20,7 @@ jobs:
           name: Deps
           command: |
             sudo apt-get install cmake openssh-server
-            pip install flake8 jinja2 sphinx sphinx_rtd_theme pytest
+            pip install flake8 jinja2 sphinx sphinx_rtd_theme pytest pytest-rerunfailures
       - python/save-cache:
           dependency-file: requirements_dev.txt
           key: depsv3-{{ .Branch }}.{{ arch }}-PY<< parameters.python_ver >>
