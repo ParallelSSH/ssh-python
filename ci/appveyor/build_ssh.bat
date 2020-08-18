@@ -32,7 +32,11 @@ cp %OPENSSL_DIR%\lib\VC\libssl%PYTHON_ARCH%MD.lib %APPVEYOR_BUILD_FOLDER%
 cmake --build . --config Release
 
 cd ..
+ECHO "libssh libs"
 ls src/src/Release
 cp src/src/Release/ssh.lib %PYTHON%/libs/
+cp src/src/Release/ssh.lib ssh/
+ECHO "Python libs"
 ls %PYTHON%/libs/
+ECHO "ssh/ libs"
 ls ssh/

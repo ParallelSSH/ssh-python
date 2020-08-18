@@ -76,12 +76,6 @@ install:
   - appveyor DownloadFile https://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-src.zip
   - 7z x kfw-4.1-src.zip
   - cp openssl-%OPENSSL_VER%-64bit-release-static-VS2015/lib/*.lib %APPVEYOR_BUILD_FOLDER%
-  # - 7z e openssl-%OPENSSL_VER%.tar.gz
-  # - ps: ls openssl-%OPENSSL_VER%
-  # - ps: SUBST T: %APPVEYOR_BUILD_FOLDER%
-  # - 7z x openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
-  # - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1.dll ssh\
-  # - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1.dll ssh\
   - ps: ls ssh
   - ps: ls
   - cinst make
@@ -89,13 +83,12 @@ install:
 build_script:
   # - "%CMD_IN_ENV% ci\\appveyor\\build_openssl.bat"
   # - "%CMD_IN_ENV% ci\\appveyor\\rebuild_openssl_vs2015.cmd"
-  - refreshenv
-  - "%CMD_IN_ENV% ci\\appveyor\\build_krb.bat"
+  # - "%CMD_IN_ENV% ci\\appveyor\\build_krb.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_zlib.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_ssh.bat"
   - rm -f ssh/*.c
   - python -V
-  - "%CMD_IN_ENV% python setup.py build_ext -I ci/appveyor/include"
+  - "%CMD_IN_ENV% python setup.py build_ext -I libssh/include"
   - "%CMD_IN_ENV% python setup.py build"
   - "%CMD_IN_ENV% python setup.py install"
 
