@@ -81,6 +81,7 @@ install:
   # - cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1.dll ssh\
   - ps: ls ssh
   - ps: ls
+  - cinst nasm
 
 build_script:
   # - "%CMD_IN_ENV% ci\\appveyor\\build_openssl.bat"

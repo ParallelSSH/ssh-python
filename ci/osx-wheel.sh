@@ -1,7 +1,7 @@
 #!/bin/bash -xe
 
 pip3 install -U virtualenv
-python -m virtualenv -p "$(which python)" venv
+python3 -m virtualenv -p "$(which python3)" venv
 
 set +x
 source venv/bin/activate
