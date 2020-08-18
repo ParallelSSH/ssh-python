@@ -18,7 +18,7 @@ def build_ssh():
         os.mkdir('src')
 
     os.chdir('src')
-    check_call('cmake -DCMAKE_BUILD_TYPE=Release ../libssh',
+    check_call('cmake -DCMAKE_BUILD_TYPE=Release -DWITH_GSS_API=ON ../libssh',
                shell=True, env=os.environ)
     check_call(['make', '-j%s' % (cpu_count(),)])
     os.chdir('..')
