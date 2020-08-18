@@ -12,13 +12,14 @@ pip3 install -U setuptools pip
 pip3 install -U delocate wheel
 pip3 wheel .
 ls -lhtr /usr/local/lib/
-cp /usr/local/lib/libssh* ssh/
+# cp /usr/local/lib/libssh* ssh/
 delocate-listdeps --all *.whl
 delocate-wheel -v *.whl
 delocate-listdeps --all *.whl
 
 ls -l *.whl
-rm -f ssh/*.dylib /usr/local/lib/libssh*
+# rm -f ssh/*.dylib /usr/local/lib/libssh*
+rm -f /usr/local/lib/libssh*
 pip3 install -v *.whl
 pwd; mkdir -p temp; cd temp; pwd
 python3 -c "from ssh.session import Session; Session()" && echo "Import successfull"
