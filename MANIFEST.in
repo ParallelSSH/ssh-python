@@ -3,6 +3,7 @@ include versioneer.py
 include ssh/_version.py
 exclude .travis.yml
 include LICENSE
+include COPYING
 include ssh/*.pyx
 include ssh/*.pxd
 recursive-include libssh *
