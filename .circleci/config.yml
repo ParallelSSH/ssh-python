@@ -52,7 +52,7 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       # PYENV: 3.6.11
       PYENV: << parameters.pyenv_ver >>
-      # SYSTEM_LIBSSH: 1
+      SYSTEM_LIBSSH: 1
     steps:
       - checkout
       - run:
