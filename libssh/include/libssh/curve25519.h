@@ -48,10 +48,9 @@ typedef unsigned char ssh_curve25519_privkey[CURVE25519_PRIVKEY_SIZE];
 
 
 int ssh_client_curve25519_init(ssh_session session);
-int ssh_client_curve25519_reply(ssh_session session, ssh_buffer packet);
 
 #ifdef WITH_SERVER
-int ssh_server_curve25519_init(ssh_session session, ssh_buffer packet);
+void ssh_server_curve25519_init(ssh_session session);
 #endif /* WITH_SERVER */
 
 #endif /* CURVE25519_H_ */

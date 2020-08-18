@@ -40,8 +40,8 @@ static int setup(void **state) {
     assert_return_code(h->fd, errno);
     close(h->fd);
 
-    h->key_type = SSH_KEYTYPE_ECDSA;
-    h->hostkey = torture_get_testkey(h->key_type, 0, 0);
+    h->key_type = SSH_KEYTYPE_ECDSA_P256;
+    h->hostkey = torture_get_testkey(h->key_type, 0);
 
     torture_write_file(h->hostkey_path, h->hostkey);
 
@@ -76,7 +76,7 @@ static void *client_thread(void *arg) {
     (void)arg;
 
     usleep(200);
-    session = torture_ssh_session("localhost",
+    session = torture_ssh_session(NULL, "localhost",
                                   &test_port,
                                   "foo", "bar");
     assert_non_null(session);
@@ -186,7 +186,7 @@ static void test_ssh_channel_request_x11(void **state) {
     assert_return_code(rc, errno);
 
     server = ssh_new();
-    assert_true(server != NULL);
+    assert_non_null(server);
 
     rc = ssh_bind_accept(sshbind, server);
     assert_int_equal(rc, SSH_OK);
@@ -198,7 +198,7 @@ static void test_ssh_channel_request_x11(void **state) {
     assert_int_equal(rc, SSH_OK);
 
     event = ssh_event_new();
-    assert_true(event != NULL);
+    assert_non_null(event);
 
     ssh_event_add_session(event, server);
 

@@ -209,7 +209,7 @@ int interactive_shell_session(ssh_channel channel)
 
 Of course, this is a poor terminal emulator, since the echo from the keys
 pressed should not be done locally, but should be done by the remote side.
-Also, user's input should not be sent once "Enter" key is pressed, but 
+Also, user's input should not be sent once "Enter" key is pressed, but
 immediately after each key is pressed. This can be accomplished
 by setting the local terminal to "raw" mode with the cfmakeraw(3) function.
 cfmakeraw() is a standard function under Linux, on other systems you can
@@ -245,13 +245,13 @@ provide a more elegant way to wait for data coming from many sources.
 
 The functions ssh_select() and ssh_channel_select() remind of the standard
 UNIX select(2) function. The idea is to wait for "something" to happen:
-incoming data to be read, outcoming data to block, or an exception to
+incoming data to be read, outgoing data to block, or an exception to
 occur. Both these functions do a "passive wait", i.e. you can safely use
 them repeatedly in a loop, it will not consume exaggerate processor time
 and make your computer unresponsive. It is quite common to use these
 functions in your application's main loop.
 
-The difference between ssh_select() and ssh_channel_select() is that 
+The difference between ssh_select() and ssh_channel_select() is that
 ssh_channel_select() is simpler, but allows you only to watch SSH channels.
 ssh_select() is more complete and enables watching regular file descriptors
 as well, in the same function call.

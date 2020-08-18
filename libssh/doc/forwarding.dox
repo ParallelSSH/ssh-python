@@ -4,7 +4,7 @@
 
 Port forwarding comes in SSH protocol in two different flavours:
 direct or reverse port forwarding. Direct port forwarding is also
-named local port forwardind, and reverse port forwarding is also called
+named local port forwarding, and reverse port forwarding is also called
 remote port forwarding. SSH also allows X11 tunnels.
 
 
@@ -23,15 +23,15 @@ Mail client application   Google Mail
      5555 (arbitrary)         |
          |                143 (IMAP2)
          V                    |
-    SSH client   =====>   SSH server 
+    SSH client   =====>   SSH server
 
 Legend:
---P-->: port connexion through port P
+--P-->: port connections through port P
 =====>: SSH tunnel
 @endverbatim
 A mail client connects to port 5555 of a client. An encrypted tunnel is
 established to the server. The server connects to port 143 of Google Mail (the
-end point). Now the local mail client can retreive mail.
+end point). Now the local mail client can retrieve mail.
 
 
 @subsection forwarding_reverse Reverse port forwarding
@@ -51,7 +51,7 @@ Example of use of reverse port forwarding:
     SSH client   <=====   SSH server
 
 Legend:
---P-->: port connexion through port P
+--P-->: port connections through port P
 =====>: SSH tunnel
 @endverbatim
 In this example, the SSH client establishes the tunnel,
@@ -148,9 +148,9 @@ To do reverse port forwarding, call ssh_channel_listen_forward(),
 then ssh_channel_accept_forward().
 
 When you call ssh_channel_listen_forward(), you can let the remote server
-chose the non-priviledged port it should listen to. Otherwise, you can chose
-your own priviledged or non-priviledged port. Beware that you should have
-administrative priviledges on the remote server to open a priviledged port
+chose the non-privileged port it should listen to. Otherwise, you can chose
+your own privileged or non-privileged port. Beware that you should have
+administrative privileges on the remote server to open a privileged port
 (port number < 1024).
 
 Below is an example of a very rough web server waiting for connections on port

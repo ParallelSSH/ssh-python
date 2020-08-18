@@ -2,7 +2,7 @@
 @page libssh_tutor_scp Chapter 6: The SCP subsystem
 @section scp_subsystem The SCP subsystem
 
-The SCP subsystem has far less functionnality than the SFTP subsystem.
+The SCP subsystem has far less functionality than the SFTP subsystem.
 However, if you only need to copy files from and to the remote system,
 it does its job.
 
@@ -158,7 +158,7 @@ Let's say you want to copy the following tree of files to the remote site:
                +-- file1
        +-- B --+
        |       +-- file2
--- A --+ 
+-- A --+
        |       +-- file3
        +-- C --+
                +-- file4
@@ -210,7 +210,7 @@ int scp_receive(ssh_session session, ssh_scp scp)
   size = ssh_scp_request_get_size(scp);
   filename = strdup(ssh_scp_request_get_filename(scp));
   mode = ssh_scp_request_get_permissions(scp);
-  printf("Receiving file %s, size %d, permisssions 0%o\n",
+  printf("Receiving file %s, size %d, permissions 0%o\n",
           filename, size, mode);
   free(filename);
 

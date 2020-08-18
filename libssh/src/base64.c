@@ -29,7 +29,8 @@
 #include "libssh/priv.h"
 #include "libssh/buffer.h"
 
-static char alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+static
+const uint8_t alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                          "abcdefghijklmnopqrstuvwxyz"
                          "0123456789+/";
 
@@ -167,19 +168,19 @@ ssh_buffer base64_to_bin(const char *source) {
 
 error:
   SAFE_FREE(base64);
-  ssh_buffer_free(buffer);
+  SSH_BUFFER_FREE(buffer);
   return NULL;
 }
 
-#define BLOCK(letter, n) do {ptr = strchr(alphabet, source[n]); \
+#define BLOCK(letter, n) do {ptr = strchr((const char *)alphabet, source[n]); \
                              if(!ptr) return -1; \
-                             i = ptr - alphabet; \
+                             i = ptr - (const char *)alphabet; \
                              SET_##letter(*block, i); \
                          } while(0)
 
 /* Returns 0 if ok, -1 if not (ie invalid char into the stuff) */
 static int to_block4(unsigned long *block, const char *source, int num) {
-  char *ptr;
+  const char *ptr = NULL;
   unsigned int i;
 
   *block = 0;
@@ -234,29 +235,32 @@ static int get_equals(char *string) {
 }
 
 /* thanks sysk for debugging my mess :) */
+static void _bin_to_base64(uint8_t *dest,
+                           const uint8_t source[3],
+                           size_t len)
+{
 #define BITS(n) ((1 << (n)) - 1)
-static void _bin_to_base64(unsigned char *dest, const unsigned char source[3],
-    int len) {
-  switch (len) {
-    case 1:
-      dest[0] = alphabet[(source[0] >> 2)];
-      dest[1] = alphabet[((source[0] & BITS(2)) << 4)];
-      dest[2] = '=';
-      dest[3] = '=';
-      break;
-    case 2:
-      dest[0] = alphabet[source[0] >> 2];
-      dest[1] = alphabet[(source[1] >> 4) | ((source[0] & BITS(2)) << 4)];
-      dest[2] = alphabet[(source[1] & BITS(4)) << 2];
-      dest[3] = '=';
-      break;
-    case 3:
-      dest[0] = alphabet[(source[0] >> 2)];
-      dest[1] = alphabet[(source[1] >> 4) | ((source[0] & BITS(2)) << 4)];
-      dest[2] = alphabet[ (source[2] >> 6) | (source[1] & BITS(4)) << 2];
-      dest[3] = alphabet[source[2] & BITS(6)];
-      break;
-  }
+    switch (len) {
+        case 1:
+            dest[0] = alphabet[(source[0] >> 2)];
+            dest[1] = alphabet[((source[0] & BITS(2)) << 4)];
+            dest[2] = '=';
+            dest[3] = '=';
+            break;
+        case 2:
+            dest[0] = alphabet[source[0] >> 2];
+            dest[1] = alphabet[(source[1] >> 4) | ((source[0] & BITS(2)) << 4)];
+            dest[2] = alphabet[(source[1] & BITS(4)) << 2];
+            dest[3] = '=';
+            break;
+        case 3:
+            dest[0] = alphabet[(source[0] >> 2)];
+            dest[1] = alphabet[(source[1] >> 4) | ((source[0] & BITS(2)) << 4)];
+            dest[2] = alphabet[(source[2] >> 6) | (source[1] & BITS(4)) << 2];
+            dest[3] = alphabet[source[2] & BITS(6)];
+            break;
+    }
+#undef BITS
 }
 
 /**
@@ -266,27 +270,29 @@ static void _bin_to_base64(unsigned char *dest, const unsigned char source[3],
  *
  * @returns the converted string
  */
-unsigned char *bin_to_base64(const unsigned char *source, int len) {
-  unsigned char *base64;
-  unsigned char *ptr;
-  int flen = len + (3 - (len % 3)); /* round to upper 3 multiple */
-  flen = (4 * flen) / 3 + 1;
+uint8_t *bin_to_base64(const uint8_t *source, size_t len)
+{
+    uint8_t *base64 = NULL;
+    uint8_t *ptr = NULL;
+    size_t flen = len + (3 - (len % 3)); /* round to upper 3 multiple */
+    flen = (4 * flen) / 3 + 1;
 
-  base64 = malloc(flen);
-  if (base64 == NULL) {
-    return NULL;
-  }
-  ptr = base64;
+    base64 = malloc(flen);
+    if (base64 == NULL) {
+        return NULL;
+    }
+    ptr = base64;
 
-  while(len > 0){
-    _bin_to_base64(ptr, source, len > 3 ? 3 : len);
-    ptr += 4;
-    source += 3;
-    len -= 3;
-  }
-  ptr[0] = '\0';
+    while(len > 0){
+        _bin_to_base64(ptr, source, len > 3 ? 3 : len);
+        ptr += 4;
+        if (len < 3) {
+            break;
+        }
+        source += 3;
+        len -= 3;
+    }
+    ptr[0] = '\0';
 
-  return base64;
+    return base64;
 }
-
-/* vim: set ts=2 sw=2 et cindent: */

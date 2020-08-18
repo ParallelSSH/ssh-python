@@ -26,9 +26,8 @@
 #include "libssh/libmbedcrypto.h"
 
 bignum ssh_make_string_bn(ssh_string string);
-void ssh_make_string_bn_inplace(ssh_string string, bignum bnout);
 ssh_string ssh_make_bignum_string(bignum num);
-void ssh_print_bignum(const char *which, const bignum num);
+void ssh_print_bignum(const char *which, const_bignum num);
 
 
 #endif /* BIGNUM_H_ */

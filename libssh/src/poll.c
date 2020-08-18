@@ -21,8 +21,6 @@
  * along with the SSH Library; see the file COPYING.  If not, write to
  * the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
  * MA 02111-1307, USA.
- *
- * vim: ts=2 sw=2 et cindent
  */
 
 #include "config.h"
@@ -104,6 +102,7 @@ typedef int (*poll_fn)(ssh_pollfd_t *, nfds_t, int);
 static poll_fn ssh_poll_emu;
 
 #include <sys/types.h>
+#include <stdbool.h>
 
 #ifdef _WIN32
 #ifndef STRICT
@@ -127,6 +126,84 @@ static poll_fn ssh_poll_emu;
 #include <unistd.h>
 #endif
 
+static bool bsd_socket_not_connected(int sock_err)
+{
+    switch (sock_err) {
+#ifdef _WIN32
+    case WSAENOTCONN:
+#else
+    case ENOTCONN:
+#endif
+        return true;
+    default:
+        return false;
+    }
+
+    return false;
+}
+
+static bool bsd_socket_reset(int sock_err)
+{
+    switch (sock_err) {
+#ifdef _WIN32
+    case WSAECONNABORTED:
+    case WSAECONNRESET:
+    case WSAENETRESET:
+    case WSAESHUTDOWN:
+    case WSAECONNREFUSED:
+    case WSAETIMEDOUT:
+#else
+    case ECONNABORTED:
+    case ECONNRESET:
+    case ENETRESET:
+    case ESHUTDOWN:
+#endif
+        return true;
+    default:
+        return false;
+    }
+
+    return false;
+}
+
+static short bsd_socket_compute_revents(int fd, short events)
+{
+    int save_errno = errno;
+    int sock_errno = errno;
+    char data[64] = {0};
+    short revents = 0;
+    int flags = MSG_PEEK;
+    int ret;
+
+#ifdef MSG_NOSIGNAL
+    flags |= MSG_NOSIGNAL;
+#endif
+
+    /* support for POLLHUP */
+#ifdef _WIN32
+    WSASetLastError(0);
+#endif
+
+    ret = recv(fd, data, 64, flags);
+
+    errno = save_errno;
+
+#ifdef _WIN32
+    sock_errno = WSAGetLastError();
+    WSASetLastError(0);
+#endif
+
+    if (ret > 0 || bsd_socket_not_connected(sock_errno)) {
+        revents = (POLLIN | POLLRDNORM) & events;
+    } else if (ret == 0 || bsd_socket_reset(sock_errno)) {
+        errno = sock_errno;
+        revents = POLLHUP;
+    } else {
+        revents = POLLERR;
+    }
+
+    return revents;
+}
 
 /*
  * This is a poll(2)-emulation using select for systems not providing a native
@@ -137,118 +214,108 @@ static poll_fn ssh_poll_emu;
  * a value as high as 1024 on Linux you'll pay dearly in every single call.
  * poll() will be orders of magnitude faster.
  */
-static int bsd_poll(ssh_pollfd_t *fds, nfds_t nfds, int timeout) {
-  fd_set readfds, writefds, exceptfds;
-  struct timeval tv, *ptv;
-  socket_t max_fd;
-  int rc;
-  nfds_t i;
+static int bsd_poll(ssh_pollfd_t *fds, nfds_t nfds, int timeout)
+{
+    fd_set readfds, writefds, exceptfds;
+    struct timeval tv, *ptv = NULL;
+    socket_t max_fd;
+    int rc;
+    nfds_t i;
 
-  if (fds == NULL) {
-      errno = EFAULT;
-      return -1;
-  }
-
-  FD_ZERO (&readfds);
-  FD_ZERO (&writefds);
-  FD_ZERO (&exceptfds);
-
-  /* compute fd_sets and find largest descriptor */
-  for (rc = -1, max_fd = 0, i = 0; i < nfds; i++) {
-      if (fds[i].fd == SSH_INVALID_SOCKET) {
-          continue;
-      }
-#ifndef _WIN32
-      if (fds[i].fd >= FD_SETSIZE) {
-          rc = -1;
-          break;
-      }
-#endif
-
-      if (fds[i].events & (POLLIN | POLLRDNORM)) {
-          FD_SET (fds[i].fd, &readfds);
-      }
-      if (fds[i].events & (POLLOUT | POLLWRNORM | POLLWRBAND)) {
-          FD_SET (fds[i].fd, &writefds);
-      }
-      if (fds[i].events & (POLLPRI | POLLRDBAND)) {
-          FD_SET (fds[i].fd, &exceptfds);
-      }
-      if (fds[i].fd > max_fd &&
-          (fds[i].events & (POLLIN | POLLOUT | POLLPRI |
-                            POLLRDNORM | POLLRDBAND |
-                            POLLWRNORM | POLLWRBAND))) {
-          max_fd = fds[i].fd;
-          rc = 0;
-      }
-  }
-
-  if (max_fd == SSH_INVALID_SOCKET || rc == -1) {
-      errno = EINVAL;
-      return -1;
-  }
-
-  if (timeout < 0) {
-      ptv = NULL;
-  } else {
-      ptv = &tv;
-      if (timeout == 0) {
-          tv.tv_sec = 0;
-          tv.tv_usec = 0;
-      } else {
-          tv.tv_sec = timeout / 1000;
-          tv.tv_usec = (timeout % 1000) * 1000;
-      }
-  }
-
-  rc = select (max_fd + 1, &readfds, &writefds, &exceptfds, ptv);
-  if (rc < 0) {
-      return -1;
-  }
-
-  for (rc = 0, i = 0; i < nfds; i++)
-    if (fds[i].fd >= 0) {
-        fds[i].revents = 0;
-
-        if (FD_ISSET(fds[i].fd, &readfds)) {
-            int save_errno = errno;
-            char data[64] = {0};
-            int ret;
-
-            /* support for POLLHUP */
-            ret = recv(fds[i].fd, data, 64, MSG_PEEK);
-#ifdef _WIN32
-            if ((ret == -1) &&
-                (errno == WSAESHUTDOWN || errno == WSAECONNRESET ||
-                 errno == WSAECONNABORTED || errno == WSAENETRESET)) {
-#else
-            if ((ret == -1) &&
-                (errno == ESHUTDOWN || errno == ECONNRESET ||
-                 errno == ECONNABORTED || errno == ENETRESET)) {
-#endif
-                fds[i].revents |= POLLHUP;
-            } else {
-                fds[i].revents |= fds[i].events & (POLLIN | POLLRDNORM);
-            }
-
-            errno = save_errno;
-        }
-        if (FD_ISSET(fds[i].fd, &writefds)) {
-            fds[i].revents |= fds[i].events & (POLLOUT | POLLWRNORM | POLLWRBAND);
-        }
-
-        if (FD_ISSET(fds[i].fd, &exceptfds)) {
-            fds[i].revents |= fds[i].events & (POLLPRI | POLLRDBAND);
-        }
-
-        if (fds[i].revents & ~POLLHUP) {
-          rc++;
-        }
-    } else {
-        fds[i].revents = POLLNVAL;
+    if (fds == NULL) {
+        errno = EFAULT;
+        return -1;
     }
 
-  return rc;
+    ZERO_STRUCT(readfds);
+    FD_ZERO(&readfds);
+    ZERO_STRUCT(writefds);
+    FD_ZERO(&writefds);
+    ZERO_STRUCT(exceptfds);
+    FD_ZERO(&exceptfds);
+
+    /* compute fd_sets and find largest descriptor */
+    for (rc = -1, max_fd = 0, i = 0; i < nfds; i++) {
+        if (fds[i].fd == SSH_INVALID_SOCKET) {
+            continue;
+        }
+#ifndef _WIN32
+        if (fds[i].fd >= FD_SETSIZE) {
+            rc = -1;
+            break;
+        }
+#endif
+
+        if (fds[i].events & (POLLIN | POLLRDNORM)) {
+            FD_SET (fds[i].fd, &readfds);
+        }
+        if (fds[i].events & (POLLOUT | POLLWRNORM | POLLWRBAND)) {
+            FD_SET (fds[i].fd, &writefds);
+        }
+        if (fds[i].events & (POLLPRI | POLLRDBAND)) {
+            FD_SET (fds[i].fd, &exceptfds);
+        }
+        if (fds[i].fd > max_fd &&
+                (fds[i].events & (POLLIN | POLLOUT | POLLPRI |
+                                  POLLRDNORM | POLLRDBAND |
+                                  POLLWRNORM | POLLWRBAND))) {
+            max_fd = fds[i].fd;
+            rc = 0;
+        }
+    }
+
+    if (max_fd == SSH_INVALID_SOCKET || rc == -1) {
+        errno = EINVAL;
+        return -1;
+    }
+
+    if (timeout < 0) {
+        ptv = NULL;
+    } else {
+        ptv = &tv;
+        if (timeout == 0) {
+            tv.tv_sec = 0;
+            tv.tv_usec = 0;
+        } else {
+            tv.tv_sec = timeout / 1000;
+            tv.tv_usec = (timeout % 1000) * 1000;
+        }
+    }
+
+    rc = select(max_fd + 1, &readfds, &writefds, &exceptfds, ptv);
+    if (rc < 0) {
+        return -1;
+    }
+    /* A timeout occured */
+    if (rc == 0) {
+        return 0;
+    }
+
+    for (rc = 0, i = 0; i < nfds; i++) {
+        if (fds[i].fd >= 0) {
+            fds[i].revents = 0;
+
+            if (FD_ISSET(fds[i].fd, &readfds)) {
+                fds[i].revents = bsd_socket_compute_revents(fds[i].fd,
+                                                            fds[i].events);
+            }
+            if (FD_ISSET(fds[i].fd, &writefds)) {
+                fds[i].revents |= fds[i].events & (POLLOUT | POLLWRNORM | POLLWRBAND);
+            }
+
+            if (FD_ISSET(fds[i].fd, &exceptfds)) {
+                fds[i].revents |= fds[i].events & (POLLPRI | POLLRDBAND);
+            }
+
+            if (fds[i].revents != 0) {
+                rc++;
+            }
+        } else {
+            fds[i].revents = POLLNVAL;
+        }
+    }
+
+    return rc;
 }
 
 void ssh_poll_init(void) {
@@ -535,19 +602,17 @@ int ssh_poll_ctx_add(ssh_poll_ctx ctx, ssh_poll_handle p) {
  *
  * @return              0 on success, < 0 on error
  */
-int ssh_poll_ctx_add_socket (ssh_poll_ctx ctx, ssh_socket s) {
-  ssh_poll_handle p_in, p_out;
-  int ret;
-  p_in=ssh_socket_get_poll_handle_in(s);
-  if(p_in==NULL)
-  	return -1;
-  ret = ssh_poll_ctx_add(ctx,p_in);
-  if(ret != 0)
+int ssh_poll_ctx_add_socket (ssh_poll_ctx ctx, ssh_socket s)
+{
+    ssh_poll_handle p;
+    int ret;
+
+    p = ssh_socket_get_poll_handle(s);
+    if (p == NULL) {
+        return -1;
+    }
+    ret = ssh_poll_ctx_add(ctx,p);
     return ret;
-  p_out=ssh_socket_get_poll_handle_out(s);
-  if(p_in != p_out)
-    ret = ssh_poll_ctx_add(ctx,p_out);
-  return ret;
 }
 
 
@@ -595,59 +660,64 @@ void ssh_poll_ctx_remove(ssh_poll_ctx ctx, ssh_poll_handle p) {
  *          SSH_AGAIN   Timeout occured
  */
 
-int ssh_poll_ctx_dopoll(ssh_poll_ctx ctx, int timeout) {
-  int rc;
-  int i, used;
-  ssh_poll_handle p;
-  socket_t fd;
-  int revents;
-  struct ssh_timestamp ts;
+int ssh_poll_ctx_dopoll(ssh_poll_ctx ctx, int timeout)
+{
+    int rc;
+    size_t i, used;
+    ssh_poll_handle p;
+    socket_t fd;
+    int revents;
+    struct ssh_timestamp ts;
 
-  if (!ctx->polls_used)
-    return SSH_ERROR;
-
-  ssh_timestamp_init(&ts);
-  do {
-    int tm = ssh_timeout_update(&ts, timeout);
-    rc = ssh_poll(ctx->pollfds, ctx->polls_used, tm);
-  } while (rc == -1 && errno == EINTR);
-
-  if(rc < 0)
-    return SSH_ERROR;
-  if (rc == 0)
-    return SSH_AGAIN;
-  used = ctx->polls_used;
-  for (i = 0; i < used && rc > 0; ) {
-    if (!ctx->pollfds[i].revents || ctx->pollptrs[i]->lock) {
-      i++;
-    } else {
-      int ret;
-
-      p = ctx->pollptrs[i];
-      fd = ctx->pollfds[i].fd;
-      revents = ctx->pollfds[i].revents;
-      /* avoid having any event caught during callback */
-      ctx->pollfds[i].events = 0;
-      p->lock = 1;
-      if (p->cb && (ret = p->cb(p, fd, revents, p->cb_data)) < 0) {
-        if (ret == -2) {
-            return -1;
-        }
-        /* the poll was removed, reload the used counter and start again */
-        used = ctx->polls_used;
-        i=0;
-      } else {
-        ctx->pollfds[i].revents = 0;
-        ctx->pollfds[i].events = p->events;
-        p->lock = 0;
-        i++;
-      }
-
-      rc--;
+    if (ctx->polls_used == 0) {
+        return SSH_ERROR;
     }
-  }
 
-  return rc;
+    ssh_timestamp_init(&ts);
+    do {
+        int tm = ssh_timeout_update(&ts, timeout);
+        rc = ssh_poll(ctx->pollfds, ctx->polls_used, tm);
+    } while (rc == -1 && errno == EINTR);
+
+    if (rc < 0) {
+        return SSH_ERROR;
+    }
+    if (rc == 0) {
+        return SSH_AGAIN;
+    }
+
+    used = ctx->polls_used;
+    for (i = 0; i < used && rc > 0; ) {
+        if (!ctx->pollfds[i].revents || ctx->pollptrs[i]->lock) {
+            i++;
+        } else {
+            int ret;
+
+            p = ctx->pollptrs[i];
+            fd = ctx->pollfds[i].fd;
+            revents = ctx->pollfds[i].revents;
+            /* avoid having any event caught during callback */
+            ctx->pollfds[i].events = 0;
+            p->lock = 1;
+            if (p->cb && (ret = p->cb(p, fd, revents, p->cb_data)) < 0) {
+                if (ret == -2) {
+                    return -1;
+                }
+                /* the poll was removed, reload the used counter and start again */
+                used = ctx->polls_used;
+                i = 0;
+            } else {
+                ctx->pollfds[i].revents = 0;
+                ctx->pollfds[i].events = p->events;
+                p->lock = 0;
+                i++;
+            }
+
+            rc--;
+        }
+    }
+
+    return rc;
 }
 
 /**
@@ -882,6 +952,7 @@ int ssh_event_add_connector(ssh_event event, ssh_connector connector){
  *                      the poll() function.
  * @returns SSH_OK      on success.
  *          SSH_ERROR   Error happened during the poll.
+ *          SSH_AGAIN   Timeout occured
  */
 int ssh_event_dopoll(ssh_event event, int timeout) {
     int rc;
@@ -1015,17 +1086,20 @@ int ssh_event_remove_connector(ssh_event event, ssh_connector connector){
  *                      fds before freeing the event object.
  *
  */
-void ssh_event_free(ssh_event event) {
-	int used, i;
-	ssh_poll_handle p;
-	if(event == NULL) {
+void ssh_event_free(ssh_event event)
+{
+    size_t used, i;
+    ssh_poll_handle p;
+
+    if(event == NULL) {
         return;
     }
-    if(event->ctx != NULL) {
+
+    if (event->ctx != NULL) {
         used = event->ctx->polls_used;
         for(i = 0; i < used; i++) {
-        	p = event->ctx->pollptrs[i];
-        	if(p->session != NULL){
+            p = event->ctx->pollptrs[i];
+            if (p->session != NULL) {
                 ssh_poll_ctx_remove(event->ctx, p);
                 ssh_poll_ctx_add(p->session->default_poll_ctx, p);
                 p->session = NULL;
@@ -1044,5 +1118,3 @@ void ssh_event_free(ssh_event event) {
 }
 
 /** @} */
-
-/* vim: set ts=4 sw=4 et cindent: */

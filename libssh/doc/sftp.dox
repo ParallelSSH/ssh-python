@@ -61,7 +61,7 @@ int sftp_helloworld(ssh_session session)
   rc = sftp_init(sftp);
   if (rc != SSH_OK)
   {
-    fprintf(stderr, "Error initializing SFTP session: %s.\n",
+    fprintf(stderr, "Error initializing SFTP session: code %d.\n",
             sftp_get_error(sftp));
     sftp_free(sftp);
     return rc;
@@ -100,7 +100,7 @@ Possible errors are:
 
 @subsection sftp_mkdir Creating a directory
 
-The function sftp_mkdir() tahes the "SFTP session" we juste created as
+The function sftp_mkdir() takes the "SFTP session" we just created as
 its first argument. It also needs the name of the file to create, and the
 desired permissions. The permissions are the same as for the usual mkdir()
 function. To get a comprehensive list of the available permissions, use the
@@ -358,19 +358,19 @@ int sftp_read_async(ssh_session session, sftp_session sftp)
 @subsection sftp_ls Listing the contents of a directory
 
 The functions sftp_opendir(), sftp_readdir(), sftp_dir_eof(),
-and sftp_closedir() enable to list the contents of a directory. 
+and sftp_closedir() enable to list the contents of a directory.
 They use a new handle_type, "sftp_dir", which gives access to the
 directory being read.
 
 In addition, sftp_readdir() returns a "sftp_attributes" which is a pointer
-to a structure with informations about a directory entry:
+to a structure with information about a directory entry:
   - name: the name of the file or directory
   - size: its size in bytes
   - etc.
 
 sftp_readdir() might return NULL under two conditions:
   - when the end of the directory has been met
-  - when an error occured
+  - when an error occurred
 
 To tell the difference, call sftp_dir_eof().
 

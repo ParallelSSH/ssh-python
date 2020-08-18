@@ -1,0 +1,114 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@0.3.2
+
+jobs:
+  python_test:
+    parameters:
+      python_ver:
+        type: string
+        default: "3.6"
+    docker:
+      - image: circleci/python:<< parameters.python_ver >>
+    steps:
+      - checkout
+      - python/load-cache:
+          dependency-file: requirements_dev.txt
+          key: depsv3-{{ .Branch }}.{{ arch }}-PY<< parameters.python_ver >>
+      - run:
+          name: Deps
+          command: |
+            sudo apt-get install cmake openssh-server
+            pip install flake8 jinja2 sphinx sphinx_rtd_theme pytest pytest-rerunfailures
+      - python/save-cache:
+          dependency-file: requirements_dev.txt
+          key: depsv3-{{ .Branch }}.{{ arch }}-PY<< parameters.python_ver >>
+      - run:
+          command: |
+            python setup.py build_ext --inplace
+            eval "$(ssh-agent -s)"
+          name: Build
+      - run:
+          command: |
+            ls -lhtr ssh/
+            pwd
+            pytest tests
+            flake8 ssh
+            python setup.py sdist
+            cd dist; pip install *; cd ..
+          name: Test
+  osx:
+    macos:
+      xcode: 11.6.0
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      PYENV: 3.6.11
+      SYSTEM_LIBSSH: 1
+    steps:
+      - checkout
+      - run:
+          name: deps
+          command: |
+            brew install cmake git-lfs
+            pip install twine
+            which twine
+  manylinux:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - python/load-cache:
+          key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
+          dependency-file: requirements_dev.txt
+      - run:
+          name: Git LFS
+          command: |
+            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
+            sudo apt-get install git-lfs
+            git lfs install
+            git lfs pull
+      - run:
+          name: Deps
+          command: |
+            sudo apt-get install python-pip
+            pip install -U pip
+            pip install twine
+            which twine
+      - python/save-cache:
+          key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
+          dependency-file: requirements_dev.txt
+      - run:
+          name: Build Wheels
+          command: |
+            if [[ -z "${CIRCLE_PULL_REQUEST}" ]]; then
+              echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
+            fi
+            ./ci/travis/build-manylinux.sh
+      - run:
+          name: Upload Wheels
+          command: twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheelhouse/*
+workflows:
+  version: 2.1
+  main:
+    jobs:
+      - python_test:
+          matrix:
+            parameters:
+              python_ver:
+                - "3.6"
+                - "3.7"
+                - "3.8"
+      - manylinux:
+          context: Docker
+          requires:
+            - python_test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /.*/
+      # - osx
+        # filters:
+        #   tags:
+        #     only: /.*/

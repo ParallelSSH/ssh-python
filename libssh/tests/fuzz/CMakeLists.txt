@@ -6,8 +6,4 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         PROPERTIES
             COMPILE_FLAGS "-fsanitize=fuzzer"
             LINK_FLAGS "-fsanitize=fuzzer")
-
-    target_link_libraries(ssh_server_fuzzer
-        ${LIBSSH_THREADS_STATIC_LIBRARY}
-        ${LIBSSH_THREADS_LINK_LIBRARIES})
 endif()

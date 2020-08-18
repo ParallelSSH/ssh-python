@@ -32,7 +32,7 @@
 
 static int sshd_setup(void **state)
 {
-    torture_setup_sshd_server(state);
+    torture_setup_sshd_server(state, false);
 
     return 0;
 }
@@ -55,7 +55,8 @@ static int session_setup(void **state)
     rc = setuid(pwd->pw_uid);
     assert_return_code(rc, errno);
 
-    s->ssh.session = torture_ssh_session(TORTURE_SSH_SERVER,
+    s->ssh.session = torture_ssh_session(s,
+                                         TORTURE_SSH_SERVER,
                                          NULL,
                                          TORTURE_SSH_USER_ALICE,
                                          NULL);
@@ -82,9 +83,12 @@ static void torture_ssh_forward(void **state)
     int dport;
     int bound_port;
     int rc;
+    int verbosity = SSH_LOG_TRACE;
+
+    ssh_options_set(session, SSH_OPTIONS_LOG_VERBOSITY, &verbosity);
 
     rc = ssh_channel_listen_forward(session, "127.0.0.21", 8080, &bound_port);
-    assert_int_equal(rc, SSH_OK);
+    assert_ssh_return_code(session, rc);
 
     c = ssh_channel_accept_forward(session, 10, &dport);
     /* We do not get a listener and run into the timeout here */

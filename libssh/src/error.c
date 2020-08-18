@@ -104,6 +104,21 @@ void _ssh_set_error_invalid(void *error, const char *function)
 }
 
 /**
+ * @internal
+ *
+ * @brief Reset the error code and message
+ *
+ * @param  error       The place to reset the error.
+ */
+void ssh_reset_error(void *error)
+{
+    struct ssh_common_struct *err = error;
+
+    ZERO_STRUCT(err->error.error_buffer);
+    err->error.error_code = 0;
+}
+
+/**
  * @brief Retrieve the error text message from the last error.
  *
  * @param  error        An ssh_session or ssh_bind.
@@ -137,5 +152,3 @@ int ssh_get_error_code(void *error) {
 }
 
 /** @} */
-
-/* vim: set ts=4 sw=4 et cindent: */

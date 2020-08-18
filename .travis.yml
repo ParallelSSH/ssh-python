@@ -1,5 +1,10 @@
 language: python
-cache: pip
+cache:
+  - pip
+  - directories:
+      - "$HOME/.pyenv"
+      - "$HOME/Library/Caches/Homebrew"
+      - "$HOME/.git/lfs"
 notifications:
   email: false
 sudo: required
@@ -7,9 +12,9 @@ services:
   - docker
 python:
   - 2.7
-  - 3.4
-  - 3.5
   - 3.6
+  - 3.7
+  - 3.8
 addons:
   apt:
     packages:
@@ -22,11 +27,10 @@ install:
   - python setup.py build_ext --inplace
   - eval "$(ssh-agent -s)"
 script:
-  - nosetests
+  - pytest tests
   - flake8 ssh
   - python setup.py sdist
   - cd dist; pip install *; cd ..
-  - cd doc; make html; cd ..
 jobs:
   include:
     - stage: build wheels

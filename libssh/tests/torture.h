@@ -40,6 +40,8 @@
 
 #include <cmocka.h>
 
+#include "torture_cmocka.h"
+
 #ifndef assert_return_code
 /* hack for older versions of cmocka */
 #define assert_return_code(code, errno) \
@@ -69,10 +71,15 @@ struct torture_state {
     char *pcap_file;
     char *srv_pidfile;
     char *srv_config;
+    bool srv_pam;
+    char *srv_additional_config;
     struct {
         ssh_session session;
         struct torture_sftp *tsftp;
     } ssh;
+#ifdef WITH_PCAP
+    ssh_pcap_file plain_pcap;
+#endif
 };
 
 #ifndef ZERO_STRUCT
@@ -91,7 +98,8 @@ int torture_terminate_process(const char *pidfile);
  */
 int torture_libssh_verbosity(void);
 
-ssh_session torture_ssh_session(const char *host,
+ssh_session torture_ssh_session(struct torture_state *s,
+                                const char *host,
                                 const unsigned int *port,
                                 const char *user,
                                 const char *password);
@@ -113,14 +121,24 @@ const char *torture_server_address(int domain);
 int torture_server_port(void);
 
 void torture_setup_socket_dir(void **state);
-void torture_setup_sshd_server(void **state);
+void torture_setup_sshd_server(void **state, bool pam);
 
 void torture_teardown_socket_dir(void **state);
 void torture_teardown_sshd_server(void **state);
+
+int torture_update_sshd_config(void **state, const char *config);
+
+void torture_reset_config(ssh_session session);
 
 /*
  * This function must be defined in every unit test file.
  */
 int torture_run_tests(void);
+
+char *torture_make_temp_dir(const char *template);
+char *torture_create_temp_file(const char *template);
+
+char *torture_get_current_working_dir(void);
+int torture_change_dir(char *path);
 
 #endif /* _TORTURE_H */

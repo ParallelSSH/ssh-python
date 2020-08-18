@@ -38,16 +38,22 @@ uint8_t aes256_cbc_encrypted[144] =
     "\x0c\xd3\xfa\xc1\x33\x5b\xe1\xa1\xd4\x3d\x8f\xb8\x50\xc5\xb5"
     "\x72\xdd\x6d\x32\x1f\x58\x00\x48\xbe";
 
-static int get_cipher(struct ssh_cipher_struct *cipher, const char *ciphername){
+static int get_cipher(struct ssh_cipher_struct *cipher, const char *ciphername)
+{
     struct ssh_cipher_struct *ciphers = ssh_get_ciphertab();
-    int i, cmp;
+    size_t i;
+    int cmp;
+
+    assert_non_null(cipher);
+
     for (i = 0; ciphers[i].name != NULL; i++) {
-            cmp = strcmp(ciphername, ciphers[i].name);
-            if (cmp == 0){
-                memcpy(cipher, &ciphers[i], sizeof(*cipher));
-                return SSH_OK;
-            }
+        cmp = strcmp(ciphername, ciphers[i].name);
+        if (cmp == 0){
+            memcpy(cipher, &ciphers[i], sizeof(*cipher));
+            return SSH_OK;
         }
+    }
+
     return SSH_ERROR;
 }
 
@@ -55,12 +61,15 @@ static void torture_crypto_aes256_cbc(void **state)
 {
     uint8_t output[sizeof(cleartext)] = {0};
     uint8_t iv[16] = {0};
-    struct ssh_cipher_struct cipher;
+    struct ssh_cipher_struct cipher = {0};
     int rc;
     (void)state;
 
     rc = get_cipher(&cipher, "aes256-cbc");
     assert_int_equal(rc, SSH_OK);
+
+    assert_non_null(cipher.set_encrypt_key);
+    assert_non_null(cipher.encrypt);
 
     memcpy(iv, IV, sizeof(IV));
     cipher.set_encrypt_key(&cipher,
@@ -79,6 +88,9 @@ static void torture_crypto_aes256_cbc(void **state)
 
     rc = get_cipher(&cipher, "aes256-cbc");
     assert_int_equal(rc, SSH_OK);
+
+    assert_non_null(cipher.set_decrypt_key);
+    assert_non_null(cipher.decrypt);
 
     memcpy(iv, IV, sizeof(IV));
     cipher.set_decrypt_key(&cipher,

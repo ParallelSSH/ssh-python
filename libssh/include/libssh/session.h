@@ -20,6 +20,8 @@
 
 #ifndef SESSION_H_
 #define SESSION_H_
+#include <stdbool.h>
+
 #include "libssh/priv.h"
 #include "libssh/kex.h"
 #include "libssh/packet.h"
@@ -27,6 +29,8 @@
 #include "libssh/auth.h"
 #include "libssh/channels.h"
 #include "libssh/poll.h"
+#include "libssh/config.h"
+#include "libssh/misc.h"
 
 /* These are the different states a SSH session can be into its life */
 enum ssh_session_state_e {
@@ -45,6 +49,8 @@ enum ssh_session_state_e {
 
 enum ssh_dh_state_e {
   DH_STATE_INIT=0,
+  DH_STATE_GROUP_SENT,
+  DH_STATE_REQUEST_SENT,
   DH_STATE_INIT_SENT,
   DH_STATE_NEWKEYS_SENT,
   DH_STATE_FINISHED
@@ -86,6 +92,13 @@ enum ssh_pending_call_e {
 #define SSH_OPT_FLAG_KBDINT_AUTH 0x4
 #define SSH_OPT_FLAG_GSSAPI_AUTH 0x8
 
+/* extensions flags */
+/* negotiation enabled */
+#define SSH_EXT_NEGOTIATION     0x01
+/* server-sig-algs extension */
+#define SSH_EXT_SIG_RSA_SHA256  0x02
+#define SSH_EXT_SIG_RSA_SHA512  0x04
+
 /* members that are common to ssh_session and ssh_bind */
 struct ssh_common_struct {
     struct error_struct error;
@@ -104,6 +117,7 @@ struct ssh_session_struct {
     int openssh;
     uint32_t send_seq;
     uint32_t recv_seq;
+    struct ssh_timestamp last_rekey_time;
 
     int connected;
     /* !=0 when the user got a session handle */
@@ -114,6 +128,9 @@ struct ssh_session_struct {
     /* session flags (SSH_SESSION_FLAG_*) */
     int flags;
 
+    /* Extensions negotiated using RFC 8308 */
+    uint32_t extensions;
+
     ssh_string banner; /* that's the issue banner from
                        the server */
     char *discon_msg; /* disconnect message from
@@ -121,18 +138,25 @@ struct ssh_session_struct {
     ssh_buffer in_buffer;
     PACKET in_packet;
     ssh_buffer out_buffer;
+    struct ssh_list *out_queue; /* This list is used for delaying packets
+                                   when rekeying is required */
 
     /* the states are used by the nonblocking stuff to remember */
     /* where it was before being interrupted */
     enum ssh_pending_call_e pending_call_state;
     enum ssh_session_state_e session_state;
-    int packet_state;
+    enum ssh_packet_state_e packet_state;
     enum ssh_dh_state_e dh_handshake_state;
-    enum ssh_auth_service_state_e auth_service_state;
-    enum ssh_auth_state_e auth_state;
     enum ssh_channel_request_state_e global_req_state;
     struct ssh_agent_state_struct *agent_state;
-    struct ssh_auth_auto_state_struct *auth_auto_state;
+
+    struct {
+        struct ssh_auth_auto_state_struct *auto_state;
+        enum ssh_auth_service_state_e service_state;
+        enum ssh_auth_state_e state;
+        uint32_t supported_methods;
+        uint32_t current_method;
+    } auth;
 
     /*
      * RFC 4253, 7.1: if the first_kex_packet_follows flag was set in
@@ -150,14 +174,12 @@ struct ssh_session_struct {
 
     struct ssh_list *channels; /* linked list of channels */
     int maxchannel;
-    int exec_channel_opened; /* version 1 only. more
-                                info in channels1.c */
     ssh_agent agent; /* ssh agent */
 
 /* keyb interactive data */
     struct ssh_kbdint_struct *kbdint;
     struct ssh_gssapi_struct *gssapi;
-    int version; /* 1 or 2 */
+
     /* server host keys */
     struct {
         ssh_key rsa_key;
@@ -166,9 +188,10 @@ struct ssh_session_struct {
         ssh_key ed25519_key;
         /* The type of host key wanted by client */
         enum ssh_keytypes_e hostkey;
+        enum ssh_digest_e hostkey_digest;
     } srv;
+
     /* auths accepted by server */
-    int auth_methods;
     struct ssh_list *ssh_message_list; /* list of delayed SSH messages */
     int (*ssh_message_callback)( struct ssh_session_struct *session, ssh_message msg, void *userdata);
     void *ssh_message_callback_data;
@@ -190,7 +213,8 @@ struct ssh_session_struct {
         char *sshdir;
         char *knownhosts;
         char *global_knownhosts;
-        char *wanted_methods[10];
+        char *wanted_methods[SSH_KEX_METHODS];
+        char *pubkey_accepted_types;
         char *ProxyCommand;
         char *custombanner;
         unsigned long timeout; /* seconds */
@@ -198,14 +222,16 @@ struct ssh_session_struct {
         unsigned int port;
         socket_t fd;
         int StrictHostKeyChecking;
-        int ssh2;
-        int ssh1;
         char compressionlevel;
         char *gss_server_identity;
         char *gss_client_identity;
         int gss_delegate_creds;
         int flags;
         int nodelay;
+        bool config_processed;
+        uint8_t options_seen[SOC_MAX];
+        uint64_t rekey_data;
+        uint32_t rekey_time;
     } opts;
     /* counters */
     ssh_counter socket_counter;
@@ -219,8 +245,10 @@ struct ssh_session_struct {
  */
 typedef int (*ssh_termination_function)(void *user);
 int ssh_handle_packets(ssh_session session, int timeout);
-int ssh_handle_packets_termination(ssh_session session, int timeout,
-    ssh_termination_function fct, void *user);
+int ssh_handle_packets_termination(ssh_session session,
+                                   long timeout,
+                                   ssh_termination_function fct,
+                                   void *user);
 void ssh_socket_exception_callback(int code, int errno_code, void *user);
 
 #endif /* SESSION_H_ */

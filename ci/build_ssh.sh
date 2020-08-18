@@ -5,7 +5,7 @@ if [ -d /usr/local/opt/openssl ]; then
 fi
 
 mkdir -p src && cd src
-cmake -DCMAKE_BUILD_TYPE=Release ../libssh
+cmake -DCMAKE_BUILD_TYPE=Release -DWITH_GSSAPI=ON ../libssh
 make -j6
 cd ..
 cp src/src/libssh.so* ssh/

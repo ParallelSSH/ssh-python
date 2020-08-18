@@ -17,18 +17,41 @@
 import unittest
 import socket
 import os
+from select import select
 
 from .base_test import SSHTestCase
 
-from ssh.session import Session
+from ssh.session import Session, SSH_AUTH_AGAIN, SSH_READ_PENDING, SSH_WRITE_PENDING
 from ssh.channel import Channel
 from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
 from ssh import options
 from ssh.exceptions import RequestDenied, KeyImportError, InvalidAPIUse
 from ssh.scp import SCP, SSH_SCP_READ, SSH_SCP_WRITE, SSH_SCP_RECURSIVE
+from ssh.error_codes import SSH_AGAIN
+from ssh.utils import wait_socket
 
 
 class SessionTest(SSHTestCase):
+
+    def test_non_blocking_connect(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((self.host, self.port))
+        session = Session()
+        session.options_set(options.USER, self.user)
+        session.options_set(options.HOST, self.host)
+        session.options_set_port(self.port)
+        self.assertEqual(session.set_socket(sock), 0)
+        session.set_blocking(0)
+        rc = session.connect()
+        while rc == SSH_AGAIN:
+            wait_socket(session, sock)
+            rc = session.connect()
+        self.assertEqual(rc, 0)
+        rc = session.userauth_publickey(self.pkey)
+        while rc == SSH_AUTH_AGAIN:
+            wait_socket(session, sock)
+            rc = session.userauth_publickey(self.pkey)
+        self.assertEqual(rc, 0)
 
     def test_should_not_segfault(self):
         session = Session()
@@ -42,6 +65,7 @@ class SessionTest(SSHTestCase):
         self.assertRaises(InvalidAPIUse, session.get_disconnect_message)
         self.assertRaises(InvalidAPIUse, session.get_issue_banner)
         self.assertRaises(InvalidAPIUse, session.get_openssh_version)
+        self.assertIsNone(session.dump_knownhost())
         self.assertIsNone(session.get_clientbanner())
         self.assertIsNone(session.get_serverbanner())
         self.assertIsNone(session.get_kex_algo())
@@ -110,7 +134,7 @@ class SessionTest(SSHTestCase):
             fh.write(test_data)
         try:
             fileinfo = os.stat(remote_filename)
-            scp.push_file64(to_copy, fileinfo.st_size, fileinfo.st_mode & 777)
+            scp.push_file64(to_copy, fileinfo.st_size, fileinfo.st_mode & 0o777)
             scp.write(test_data)
             del scp
         finally:

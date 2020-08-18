@@ -19,7 +19,7 @@ from cpython cimport PyObject_AsFileDescriptor
 from channel cimport Channel
 from session cimport Session
 
-from utils cimport handle_ssh_error_codes
+from utils cimport handle_error_codes
 cimport c_ssh
 
 
@@ -70,14 +70,14 @@ cdef class Connector:
         with nogil:
             rc = c_ssh.ssh_connector_set_in_channel(
                 self._connector, channel._channel, flag._flag)
-        return handle_ssh_error_codes(rc, self.session._session)
+        return handle_error_codes(rc, self.session._session)
 
     def set_out_channel(self, Channel channel, Flag flag):
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_connector_set_out_channel(
                 self._connector, channel._channel, flag._flag)
-        return handle_ssh_error_codes(rc, self.session._session)
+        return handle_error_codes(rc, self.session._session)
 
     def set_in_fd(self, socket):
         cdef c_ssh.socket_t _sock = PyObject_AsFileDescriptor(socket)

@@ -18,6 +18,12 @@ except ImportError:
 else:
     USING_CYTHON = True
 
+if platform.system() == 'Windows' and platform.python_version_tuple()[0] == "2":
+    raise ImportError("ssh-python requires Python 3 or above on Windows platforms.")
+
+_PYTHON_MAJOR_VERSION = int(platform.python_version_tuple()[0])
+ON_WINDOWS = platform.system() == 'Windows'
+SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0))
 
 # Only build libssh if running a build
 if (len(sys.argv) >= 2 and not (
@@ -26,16 +32,15 @@ if (len(sys.argv) >= 2 and not (
             '--help-commands', 'egg_info', '--version', 'clean',
             'sdist', '--long-description')) and
         __name__ == '__main__'):
-    build_ssh()
-
-ON_WINDOWS = platform.system() == 'Windows'
-SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0))
+    if not (ON_WINDOWS and _PYTHON_MAJOR_VERSION != 2):
+        build_ssh()
 
 ext = 'pyx' if USING_CYTHON else 'c'
 sources = glob('ssh/*.%s' % (ext,))
+_arch = platform.architecture()[0][0:2]
 _libs = ['ssh'] if not ON_WINDOWS else [
-    'Ws2_32', 'libssh', 'user32',
-    'libeay32MD', 'ssleay32MD',
+    'ssh', 'Ws2_32', 'user32',
+    'libcrypto%sMD' % _arch, 'libssl%sMD' % _arch,
     'zlibstatic',
 ]
 
@@ -50,7 +55,7 @@ cython_directives = {
 cython_args = {
     'cython_directives': cython_directives,
     'cython_compile_time_env': {
-        # Compile flags here
+        'ON_WINDOWS': ON_WINDOWS,
     }} \
     if USING_CYTHON else {}
 
@@ -59,8 +64,8 @@ if USING_CYTHON:
 
 
 runtime_library_dirs = ["$ORIGIN/."] if not SYSTEM_LIBSSH else None
-_lib_dir = os.path.abspath("./src/src") if not SYSTEM_LIBSSH else "/usr/local/lib"
-include_dirs = ["libssh/include"] if not SYSTEM_LIBSSH else ["/usr/local/include"]
+_lib_dir = os.path.abspath("./src/lib") if not SYSTEM_LIBSSH else "/usr/local/lib"
+include_dirs = ["libssh/include"] if ON_WINDOWS or not SYSTEM_LIBSSH else ["/usr/local/include"]
 
 extensions = [
     Extension(
@@ -79,12 +84,28 @@ package_data = {'ssh': ['*.pxd', 'libssh.so*']}
 
 if ON_WINDOWS:
     package_data['ssh'].extend([
-        'libeay32.dll', 'ssleay32.dll',
+        'libcrypto*.dll', 'libssl*.dll',
     ])
+    cython_args['LIBSSH_STATIC'] = '1'
 
 cmdclass = versioneer.get_cmdclass()
 if USING_CYTHON:
     cmdclass['build_ext'] = build_ext
+
+
+sys.stdout.write("Windows platform: %s, Python major version: %s.%s" % (ON_WINDOWS, _PYTHON_MAJOR_VERSION, os.sep))
+if ON_WINDOWS and _PYTHON_MAJOR_VERSION == 2:
+    # Python 2 on Windows builds are unsupported.
+    extensions = [
+        Extension(
+            'ssh',
+            sources=[os.sep.join(['ssh', '__init__.%s' % (ext,)])],
+            extra_compile_args=_comp_args,
+            **cython_args
+        )
+    ]
+    package_data = {}
+    sys.stdout.write("Windows Python 2 build - %s extensions: %s" % (len(extensions), os.sep))
 
 setup(
     name='ssh-python',
@@ -94,7 +115,7 @@ setup(
     license='LGPLv2',
     author='Panos Kittenis',
     author_email='22e889d8@opayq.com',
-    description=('Wrapper for libssh C library.'),
+    description=('libssh C library bindings for Python.'),
     long_description=open('README.rst').read(),
     packages=find_packages(
         '.', exclude=('embedded_server', 'embedded_server.*',
@@ -111,13 +132,11 @@ setup(
         'Programming Language :: C',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
         'Topic :: System :: Shells',
         'Topic :: System :: Networking',
         'Topic :: Software Development :: Libraries',

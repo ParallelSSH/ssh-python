@@ -60,7 +60,7 @@ following to $HOME/.vimrc:
 
 You can use the Vim gitmodline plugin to store this in the git config:
 
-    http://git.cryptomilk.org/projects/vim-gitmodeline.git/
+    https://git.cryptomilk.org/projects/vim-gitmodeline.git/
 
 For Vim, the following settings in $HOME/.vimrc will also deal with
 displaying trailing whitespace:

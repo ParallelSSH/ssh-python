@@ -23,7 +23,7 @@ much easier to work with individuals who have ownership than corporate
 legal departments if we ever need to make reasonable compromises with
 people using and working with libssh.
 
-We track the ownership of every part of libssh via http://git.libssh.org,
+We track the ownership of every part of libssh via https://git.libssh.org,
 our source code control system, so we know the provenance of every piece
 of code that is committed to libssh.
 
@@ -85,7 +85,7 @@ By making a contribution to this project, I certify that:
     Free Software Foundation; either version 2.1 of
     the License, or (at the option of the project) any later version.
 
-    http://www.gnu.org/licenses/lgpl-2.1.html
+    https://www.gnu.org/licenses/lgpl-2.1.html
 
 
 We will maintain a copy of that email as a record that you have the

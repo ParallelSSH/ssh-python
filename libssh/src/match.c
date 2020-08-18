@@ -38,16 +38,21 @@
 #include "config.h"
 
 #include <ctype.h>
+#include <stdbool.h>
 #include <sys/types.h>
 
 #include "libssh/priv.h"
+
+#define MAX_MATCH_RECURSION 32
 
 /*
  * Returns true if the given string matches the pattern (which may contain ?
  * and * as wildcards), and zero if it does not match.
  */
-static int match_pattern(const char *s, const char *pattern) {
-  if (s == NULL || pattern == NULL) {
+static int match_pattern(const char *s, const char *pattern, size_t limit)
+{
+  bool had_asterisk = false;
+  if (s == NULL || pattern == NULL || limit <= 0) {
     return 0;
   }
 
@@ -57,23 +62,26 @@ static int match_pattern(const char *s, const char *pattern) {
         return (*s == '\0');
     }
 
-    if (*pattern == '*') {
+    while (*pattern == '*') {
       /* Skip the asterisk. */
+      had_asterisk = true;
       pattern++;
+    }
 
+    if (had_asterisk) {
       /* If at end of pattern, accept immediately. */
       if (!*pattern)
         return 1;
 
       /* If next character in pattern is known, optimize. */
-      if (*pattern != '?' && *pattern != '*') {
+      if (*pattern != '?') {
         /*
          * Look instances of the next character in
          * pattern, and try to match starting from
          * those.
          */
         for (; *s; s++)
-          if (*s == *pattern && match_pattern(s + 1, pattern + 1)) {
+          if (*s == *pattern && match_pattern(s + 1, pattern + 1, limit - 1)) {
             return 1;
           }
         /* Failed. */
@@ -84,7 +92,7 @@ static int match_pattern(const char *s, const char *pattern) {
        * match at each position.
        */
       for (; *s; s++) {
-        if (match_pattern(s, pattern)) {
+        if (match_pattern(s, pattern, limit - 1)) {
           return 1;
         }
       }
@@ -119,7 +127,7 @@ static int match_pattern(const char *s, const char *pattern) {
  * Returns -1 if negation matches, 1 if there is a positive match, 0 if there is
  * no match at all.
  */
-static int match_pattern_list(const char *string, const char *pattern,
+int match_pattern_list(const char *string, const char *pattern,
     unsigned int len, int dolower) {
   char sub[1024];
   int negated;
@@ -161,7 +169,7 @@ static int match_pattern_list(const char *string, const char *pattern,
     sub[subi] = '\0';
 
     /* Try to match the subpattern against the string. */
-    if (match_pattern(string, sub)) {
+    if (match_pattern(string, sub, MAX_MATCH_RECURSION)) {
       if (negated) {
         return -1;        /* Negative */
       } else {
@@ -187,5 +195,3 @@ static int match_pattern_list(const char *string, const char *pattern,
 int match_hostname(const char *host, const char *pattern, unsigned int len) {
   return match_pattern_list(host, pattern, len, 1);
 }
-
-/* vim: set ts=2 sw=2 et cindent: */

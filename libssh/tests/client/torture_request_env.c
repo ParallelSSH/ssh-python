@@ -28,10 +28,11 @@
 
 #include <sys/types.h>
 #include <pwd.h>
+#include <errno.h>
 
 static int sshd_setup(void **state)
 {
-    torture_setup_sshd_server(state);
+    torture_setup_sshd_server(state, false);
 
     return 0;
 }
@@ -46,12 +47,16 @@ static int session_setup(void **state)
 {
     struct torture_state *s = *state;
     struct passwd *pwd;
+    int rc;
 
     pwd = getpwnam("bob");
     assert_non_null(pwd);
-    setuid(pwd->pw_uid);
 
-    s->ssh.session = torture_ssh_session(TORTURE_SSH_SERVER,
+    rc = setuid(pwd->pw_uid);
+    assert_return_code(rc, errno);
+
+    s->ssh.session = torture_ssh_session(s,
+                                         TORTURE_SSH_SERVER,
                                          NULL,
                                          TORTURE_SSH_USER_ALICE,
                                          NULL);
@@ -84,13 +89,13 @@ static void torture_request_env(void **state)
     assert_non_null(c);
 
     rc = ssh_channel_open_session(c);
-    assert_int_equal(rc, SSH_OK);
+    assert_ssh_return_code(session, rc);
 
     rc = ssh_channel_request_env(c, "LC_LIBSSH", "LIBSSH_EXPORTED_VARIABLE");
-    assert_int_equal(rc, SSH_OK);
+    assert_ssh_return_code(session, rc);
 
     rc = ssh_channel_request_exec(c, "echo $LC_LIBSSH");
-    assert_int_equal(rc, SSH_OK);
+    assert_ssh_return_code(session, rc);
 
     nbytes = ssh_channel_read(c, buffer, sizeof(buffer) - 1, 0);
     printf("nbytes=%d\n", nbytes);

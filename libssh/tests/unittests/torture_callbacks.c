@@ -23,7 +23,7 @@ static int setup(void **state)
     struct ssh_callbacks_struct *cb;
 
     cb = malloc(sizeof(struct ssh_callbacks_struct));
-    assert_false(cb == NULL);
+    assert_non_null(cb);
     ZERO_STRUCTP(cb);
 
     cb->userdata = (void *) 0x0badc0de;

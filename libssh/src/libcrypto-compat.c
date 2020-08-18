@@ -10,8 +10,11 @@
 #include "config.h"
 
 #include <string.h>
-#include <openssl/engine.h>
 #include "libcrypto-compat.h"
+
+#ifndef OPENSSL_NO_ENGINE
+#include <openssl/engine.h>
+#endif
 
 static void *OPENSSL_zalloc(size_t num)
 {
@@ -332,3 +335,62 @@ void EVP_CIPHER_CTX_free(EVP_CIPHER_CTX *ctx)
     OPENSSL_free(ctx);
 }
 #endif
+
+void DH_get0_pqg(const DH *dh,
+                 const BIGNUM **p, const BIGNUM **q, const BIGNUM **g)
+{
+    if (p) {
+        *p = dh->p;
+    }
+    if (q) {
+        *q = NULL;
+    }
+    if (g) {
+        *g = dh->g;
+    }
+}
+
+int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g)
+{
+    if (p) {
+        if (dh->p) {
+            BN_free(dh->p);
+        }
+        dh->p = p;
+    }
+    if (g) {
+        if (dh->g) {
+            BN_free(dh->g);
+        }
+        dh->g = g;
+    }
+    return 1;
+}
+
+void DH_get0_key(const DH *dh,
+                 const BIGNUM **pub_key, const BIGNUM **priv_key)
+{
+    if (pub_key) {
+        *pub_key = dh->pub_key;
+    }
+    if (priv_key) {
+        *priv_key = dh->priv_key;
+    }
+}
+
+int DH_set0_key(DH *dh, BIGNUM *pub_key, BIGNUM *priv_key)
+{
+    if (pub_key) {
+        if (dh->pub_key) {
+            BN_free(dh->pub_key);
+        }
+        dh->pub_key = pub_key;
+    }
+    if (priv_key) {
+        if (dh->priv_key) {
+            BN_free(dh->priv_key);
+        }
+        dh->priv_key = priv_key;
+    }
+    return 1;
+}

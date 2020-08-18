@@ -16,7 +16,7 @@
 
 from cpython cimport PyObject_AsFileDescriptor
 
-from utils cimport handle_ssh_error_codes
+from utils cimport handle_error_codes
 
 from connector cimport Connector
 from session cimport Session
@@ -80,7 +80,7 @@ cdef class Event:
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_event_add_session(self._event, session._session)
-        handle_ssh_error_codes(rc, session._session)
+        handle_error_codes(rc, session._session)
         self.session = session
         return rc
 
@@ -91,7 +91,7 @@ cdef class Event:
                 self._event, connector._connector)
         if rc == 0:
             self.connector = connector
-        return handle_ssh_error_codes(rc, connector.session._session)
+        return handle_error_codes(rc, connector.session._session)
 
     def dopoll(self, int timeout):
         cdef int rc
@@ -103,7 +103,7 @@ cdef class Event:
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_event_remove_session(self._event, session._session)
-        handle_ssh_error_codes(rc, session._session)
+        handle_error_codes(rc, session._session)
         self.session = None
         return rc
 
@@ -114,4 +114,4 @@ cdef class Event:
                 self._event, connector._connector)
         if rc == 0:
             self.connector = None
-        return handle_ssh_error_codes(rc, connector.session._session)
+        return handle_error_codes(rc, connector.session._session)

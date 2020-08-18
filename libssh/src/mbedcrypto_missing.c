@@ -45,14 +45,14 @@ void ssh_mbedcry_bn_free(bignum bn)
     SAFE_FREE(bn);
 }
 
-char *ssh_mbedcry_bn2num(bignum num, int radix)
+unsigned char *ssh_mbedcry_bn2num(const_bignum num, int radix)
 {
     char *buf = NULL;
     size_t olen;
     int rc;
 
     rc = mbedtls_mpi_write_string(num, radix, buf, 0, &olen);
-    if (rc != 0) {
+    if (rc != 0 && rc != MBEDTLS_ERR_MPI_BUFFER_TOO_SMALL) {
         return NULL;
     }
 
@@ -67,7 +67,7 @@ char *ssh_mbedcry_bn2num(bignum num, int radix)
         return NULL;
     }
 
-    return buf;
+    return (unsigned char *) buf;
 }
 
 int ssh_mbedcry_rand(bignum rnd, int bits, int top, int bottom)
@@ -81,8 +81,16 @@ int ssh_mbedcry_rand(bignum rnd, int bits, int top, int bottom)
     }
 
     len = bits / 8 + 1;
-    rc = mbedtls_mpi_fill_random(rnd, len, mbedtls_ctr_drbg_random,
-            &ssh_mbedtls_ctr_drbg);
+    /* FIXME weird bug: over 1024, fill_random function returns an error code
+     * MBEDTLS_ERR_MPI_BAD_INPUT_DATA   -0x0004
+     */
+    if (len > 1024){
+        len = 1024;
+    }
+    rc = mbedtls_mpi_fill_random(rnd,
+                                 len,
+                                 mbedtls_ctr_drbg_random,
+                                 ssh_get_mbedtls_ctr_drbg_context());
     if (rc != 0) {
         return 0;
     }
@@ -96,6 +104,9 @@ int ssh_mbedcry_rand(bignum rnd, int bits, int top, int bottom)
 
     if (top == 0) {
         rc = mbedtls_mpi_set_bit(rnd, bits - 1, 0);
+        if (rc != 0) {
+            return 0;
+        }
     }
 
     if (top == 1) {
@@ -125,4 +136,45 @@ int ssh_mbedcry_is_bit_set(bignum num, size_t pos)
     bit = mbedtls_mpi_get_bit(num, pos);
     return bit;
 }
+
+/** @brief generates a random integer between 0 and max
+ * @returns 1 in case of success, 0 otherwise
+ */
+int ssh_mbedcry_rand_range(bignum dest, bignum max)
+{
+    size_t bits;
+    bignum rnd;
+    int rc;
+
+    bits = bignum_num_bits(max) + 64;
+    rnd = bignum_new();
+    if (rnd == NULL){
+        return 0;
+    }
+    rc = bignum_rand(rnd, bits);
+    if (rc != 1) {
+        bignum_safe_free(rnd);
+        return rc;
+    }
+    mbedtls_mpi_mod_mpi(dest, rnd, max);
+    bignum_safe_free(rnd);
+    return 1;
+}
+
+int ssh_mbedcry_hex2bn(bignum *dest, char *data)
+{
+    int rc;
+
+    *dest = bignum_new();
+    if (*dest == NULL){
+        return 0;
+    }
+    rc = mbedtls_mpi_read_string(*dest, 16, data);
+    if (rc == 0) {
+        return 1;
+    }
+
+    return 0;
+}
+
 #endif

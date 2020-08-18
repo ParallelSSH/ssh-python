@@ -353,12 +353,11 @@ void publickey_free(ssh_public_key key) {
     case SSH_KEYTYPE_DSS:
 #ifdef HAVE_LIBGCRYPT
       gcry_sexp_release(key->dsa_pub);
-#elif HAVE_LIBCRYPTO
+#elif defined HAVE_LIBCRYPTO
       DSA_free(key->dsa_pub);
 #endif
       break;
     case SSH_KEYTYPE_RSA:
-    case SSH_KEYTYPE_RSA1:
 #ifdef HAVE_LIBGCRYPT
       gcry_sexp_release(key->rsa_pub);
 #elif defined HAVE_LIBCRYPTO
@@ -545,6 +544,10 @@ ssh_string publickey_to_string(ssh_public_key pubkey) {
     ssh_key key;
     ssh_string key_blob;
     int rc;
+
+    if (pubkey == NULL) {
+        return NULL;
+    }
 
     key = ssh_key_new();
     if (key == NULL) {

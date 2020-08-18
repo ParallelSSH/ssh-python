@@ -43,18 +43,13 @@ enum ssh_packet_state_e {
   PACKET_STATE_PROCESSING
 };
 
+enum ssh_packet_filter_result_e {
+    SSH_PACKET_UNKNOWN,
+    SSH_PACKET_ALLOWED,
+    SSH_PACKET_DENIED
+};
+
 int ssh_packet_send(ssh_session session);
-
-#ifdef WITH_SSH1
-int ssh_packet_send1(ssh_session session) ;
-void ssh_packet_set_default_callbacks1(ssh_session session);
-
-SSH_PACKET_CALLBACK(ssh_packet_disconnect1);
-SSH_PACKET_CALLBACK(ssh_packet_smsg_success1);
-SSH_PACKET_CALLBACK(ssh_packet_smsg_failure1);
-int ssh_packet_socket_callback1(const void *data, size_t receivedlen, void *user);
-
-#endif
 
 SSH_PACKET_CALLBACK(ssh_packet_unimplemented);
 SSH_PACKET_CALLBACK(ssh_packet_disconnect_callback);
@@ -62,6 +57,7 @@ SSH_PACKET_CALLBACK(ssh_packet_ignore_callback);
 SSH_PACKET_CALLBACK(ssh_packet_dh_reply);
 SSH_PACKET_CALLBACK(ssh_packet_newkeys);
 SSH_PACKET_CALLBACK(ssh_packet_service_accept);
+SSH_PACKET_CALLBACK(ssh_packet_ext_info);
 
 #ifdef WITH_SERVER
 SSH_PACKET_CALLBACK(ssh_packet_kexdh_init);
@@ -74,16 +70,22 @@ int ssh_packet_parse_type(ssh_session session);
 int ssh_packet_socket_callback(const void *data, size_t len, void *user);
 void ssh_packet_register_socket_callback(ssh_session session, struct ssh_socket_struct *s);
 void ssh_packet_set_callbacks(ssh_session session, ssh_packet_callbacks callbacks);
+void ssh_packet_remove_callbacks(ssh_session session, ssh_packet_callbacks callbacks);
 void ssh_packet_set_default_callbacks(ssh_session session);
 void ssh_packet_process(ssh_session session, uint8_t type);
 
 /* PACKET CRYPT */
-uint32_t ssh_packet_decrypt_len(ssh_session session, char *crypted);
-int ssh_packet_decrypt(ssh_session session, void *packet, unsigned int len);
+uint32_t ssh_packet_decrypt_len(ssh_session session, uint8_t *destination, uint8_t *source);
+int ssh_packet_decrypt(ssh_session session, uint8_t *destination, uint8_t *source,
+        size_t start, size_t encrypted_size);
 unsigned char *ssh_packet_encrypt(ssh_session session,
                                   void *packet,
                                   unsigned int len);
-int ssh_packet_hmac_verify(ssh_session session,ssh_buffer buffer,
+int ssh_packet_hmac_verify(ssh_session session, const void *data, size_t len,
                            unsigned char *mac, enum ssh_hmac_e type);
+int ssh_packet_set_newkeys(ssh_session session,
+                           enum ssh_crypto_direction_e direction);
+struct ssh_crypto_struct *ssh_packet_get_current_crypto(ssh_session session,
+        enum ssh_crypto_direction_e direction);
 
 #endif /* PACKET_H_ */

@@ -18,7 +18,7 @@ from libc.stdlib cimport malloc, free
 from libc.string cimport memset
 
 from session cimport Session
-from utils cimport handle_ssh_error_codes
+from utils cimport handle_error_codes
 
 from c_ssh cimport ssh_auth_callback
 cimport c_callbacks
@@ -65,4 +65,4 @@ cdef class Callbacks:
         with nogil:
             rc = c_callbacks.ssh_set_callbacks(
                 session._session, self._cb)
-        return handle_ssh_error_codes(rc, session._session)
+        return handle_error_codes(rc, session._session)

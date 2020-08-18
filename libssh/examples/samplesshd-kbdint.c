@@ -23,6 +23,7 @@ clients must be made or how a client should react.
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #define SSHD_USER "libssh"
 #define SSHD_PASSWORD "libssh"
@@ -36,6 +37,7 @@ clients must be made or how a client should react.
 #endif
 
 static int port = 22;
+static bool authenticated = false;
 
 #ifdef WITH_PCAP
 static const char *pcap_file = "debug.server.pcap";
@@ -61,11 +63,20 @@ static void cleanup_pcap(void) {
 #endif
 
 
-static int auth_password(const char *user, const char *password){
-    if(strcmp(user, SSHD_USER))
+static int auth_password(const char *user, const char *password)
+{
+    int cmp;
+
+    cmp = strcmp(user, SSHD_USER);
+    if (cmp != 0) {
         return 0;
-    if(strcmp(password, SSHD_PASSWORD))
+    }
+    cmp = strcmp(password, SSHD_PASSWORD);
+    if (cmp != 0) {
         return 0;
+    }
+
+    authenticated = true;
     return 1; // authenticated
 }
 #ifdef HAVE_ARGP_H
@@ -200,6 +211,7 @@ static int kbdint_check_response(ssh_session session) {
         return 0;
     }
 
+    authenticated = true;
     return 1;
 }
 
@@ -328,7 +340,7 @@ int main(int argc, char **argv){
 
     /* proceed to authentication */
     auth = authenticate(session);
-    if(!auth){
+    if (!auth || !authenticated) {
         printf("Authentication error: %s\n", ssh_get_error(session));
         ssh_disconnect(session);
         return 1;

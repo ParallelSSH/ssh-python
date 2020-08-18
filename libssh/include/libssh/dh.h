@@ -25,25 +25,37 @@
 
 #include "libssh/crypto.h"
 
-int ssh_dh_generate_e(ssh_session session);
-int ssh_dh_generate_f(ssh_session session);
-int ssh_dh_generate_x(ssh_session session);
-int ssh_dh_generate_y(ssh_session session);
+struct dh_ctx;
 
-int ssh_crypto_init(void);
-void ssh_crypto_finalize(void);
+#define DH_CLIENT_KEYPAIR 0
+#define DH_SERVER_KEYPAIR 1
 
-ssh_string ssh_dh_get_e(ssh_session session);
-ssh_string ssh_dh_get_f(ssh_session session);
-int ssh_dh_import_f(ssh_session session,ssh_string f_string);
-int ssh_dh_import_e(ssh_session session, ssh_string e_string);
+/* functions implemented by crypto backends */
+int ssh_dh_init_common(struct ssh_crypto_struct *crypto);
+void ssh_dh_cleanup(struct ssh_crypto_struct *crypto);
 
-int ssh_dh_import_pubkey_blob(ssh_session session, ssh_string pubkey_blob);
-int ssh_dh_import_next_pubkey_blob(ssh_session session, ssh_string pubkey_blob);
+int ssh_dh_get_parameters(struct dh_ctx *ctx,
+                          const_bignum *modulus, const_bignum *generator);
+int ssh_dh_set_parameters(struct dh_ctx *ctx,
+                          const bignum modulus, const bignum generator);
 
-int ssh_dh_build_k(ssh_session session);
-int ssh_client_dh_init(ssh_session session);
-int ssh_client_dh_reply(ssh_session session, ssh_buffer packet);
+int ssh_dh_keypair_gen_keys(struct dh_ctx *ctx, int peer);
+int ssh_dh_keypair_get_keys(struct dh_ctx *ctx, int peer,
+                            const_bignum *priv, const_bignum *pub);
+int ssh_dh_keypair_set_keys(struct dh_ctx *ctx, int peer,
+                            const bignum priv, const bignum pub);
+
+int ssh_dh_compute_shared_secret(struct dh_ctx *ctx, int local, int remote,
+                                 bignum *dest);
+
+void ssh_dh_debug_crypto(struct ssh_crypto_struct *c);
+
+/* common functions */
+int ssh_dh_init(void);
+void ssh_dh_finalize(void);
+
+int ssh_dh_import_next_pubkey_blob(ssh_session session,
+                                   ssh_string pubkey_blob);
 
 ssh_key ssh_dh_get_current_server_publickey(ssh_session session);
 int ssh_dh_get_current_server_publickey_blob(ssh_session session,
@@ -52,10 +64,12 @@ ssh_key ssh_dh_get_next_server_publickey(ssh_session session);
 int ssh_dh_get_next_server_publickey_blob(ssh_session session,
                                           ssh_string *pubkey_blob);
 
-int ssh_make_sessionid(ssh_session session);
-/* add data for the final cookie */
-int ssh_hashbufin_add_cookie(ssh_session session, unsigned char *cookie);
-int ssh_hashbufout_add_cookie(ssh_session session);
-int ssh_generate_session_keys(ssh_session session);
+int ssh_client_dh_init(ssh_session session);
+#ifdef WITH_SERVER
+void ssh_server_dh_init(ssh_session session);
+#endif /* WITH_SERVER */
+int ssh_server_dh_process_init(ssh_session session, ssh_buffer packet);
+int ssh_fallback_group(uint32_t pmax, bignum *p, bignum *g);
+bool ssh_dh_is_known_group(bignum modulus, bignum generator);
 
 #endif /* DH_H_ */

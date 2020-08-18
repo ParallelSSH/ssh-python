@@ -22,9 +22,12 @@ program.
 #include <libssh/libssh.h>
 #include "examples_common.h"
 
-int verbosity=0;
-const char *createcommand="rm -fr /tmp/libssh_tests && mkdir /tmp/libssh_tests && cd /tmp/libssh_tests && date > a && date > b && mkdir c && date > d";
-char *host=NULL;
+static int verbosity = 0;
+static const char *createcommand =
+    "rm -fr /tmp/libssh_tests && mkdir /tmp/libssh_tests && "
+    "cd /tmp/libssh_tests && date > a && date > b && mkdir c && date > d";
+static char *host = NULL;
+
 static void usage(const char *argv0){
   fprintf(stderr,"Usage : %s [options] host\n"
       "sample tiny scp downloader client - libssh-%s\n"

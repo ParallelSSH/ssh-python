@@ -72,7 +72,7 @@ char *ssh_gcry_bn2dec(bignum bn) {
     num = bignum_new();
     if (num == NULL) {
       SAFE_FREE(ret);
-      bignum_free(ten);
+      bignum_safe_free(ten);
       return NULL;
     }
 
@@ -91,13 +91,34 @@ char *ssh_gcry_bn2dec(bignum bn) {
       ret[count2] = ret[count2 + count];
     }
     ret[count2] = 0;
-    bignum_free(num);
-    bignum_free(bndup);
-    bignum_free(ten);
+    bignum_safe_free(num);
+    bignum_safe_free(bndup);
+    bignum_safe_free(ten);
   }
 
   return ret;
 }
 
+/** @brief generates a random integer between 0 and max
+ * @returns 1 in case of success, 0 otherwise
+ */
+int ssh_gcry_rand_range(bignum dest, bignum max)
+{
+    size_t bits;
+    bignum rnd;
+    int rc;
+
+    bits = bignum_num_bits(max) + 64;
+    rnd = bignum_new();
+    if (rnd == NULL) {
+        return 0;
+    }
+    rc = bignum_rand(rnd, bits);
+    if (rc != 1) {
+        return rc;
+    }
+    gcry_mpi_mod(dest, rnd, max);
+    bignum_safe_free(rnd);
+    return 1;
+}
 #endif
-/* vim: set ts=2 sw=2 et cindent: */

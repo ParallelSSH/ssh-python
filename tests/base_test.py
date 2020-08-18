@@ -17,7 +17,7 @@
 import unittest
 import pwd
 import os
-# import socket
+import socket
 from sys import version_info
 
 from .embedded_server.openssh import OpenSSHServer
@@ -52,13 +52,14 @@ class SSHTestCase(unittest.TestCase):
         self.user_key = PKEY_FILENAME
         self.user_pub_key = PUB_FILE
         self.user = pwd.getpwuid(os.geteuid()).pw_name
-        # sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        # sock.connect((self.host, self.port))
-        # self.sock = sock
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((self.host, self.port))
+        self.sock = sock
         self.session = Session()
         self.session.options_set(options.HOST, self.host)
         self.session.options_set_port(self.port)
         self.session.options_set(options.USER, self.user)
+        self.session.set_socket(sock)
         self.pkey = import_privkey_file(self.user_key)
         # self.session.options_set(options.LOG_VERBOSITY, '1')
 

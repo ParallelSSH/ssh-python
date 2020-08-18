@@ -17,8 +17,7 @@
 from libc.stdlib cimport malloc, free
 from libc.string cimport const_char
 
-from utils cimport to_bytes, to_str, handle_ssh_error_codes, \
-    handle_ok_error_codes
+from utils cimport to_bytes, to_str, handle_error_codes
 
 cimport c_ssh
 
@@ -58,7 +57,7 @@ cdef class SCP:
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_scp_accept_request(self._scp)
-        return handle_ok_error_codes(rc)
+        return handle_error_codes(rc, self.session._session)
 
     def deny_request(self, reason=None):
         cdef int rc
@@ -69,7 +68,7 @@ cdef class SCP:
             _reason = b_reason
         with nogil:
             rc = c_ssh.ssh_scp_deny_request(self._scp, _reason)
-        return handle_ok_error_codes(rc)
+        return handle_error_codes(rc, self.session._session)
 
     cpdef close(self):
         cdef int rc
@@ -79,26 +78,26 @@ cdef class SCP:
             rc = c_ssh.ssh_scp_close(self._scp)
             if rc == 0:
                 self.closed = True
-        return handle_ok_error_codes(rc)
+        return handle_error_codes(rc, self.session._session)
 
     def init(self):
         """Handled by session.scp_new"""
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_scp_init(self._scp)
-        return handle_ok_error_codes(rc)
+        return handle_error_codes(rc, self.session._session)
 
     def leave_directory(self):
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_scp_leave_directory(self._scp)
-        return handle_ok_error_codes(rc)
+        return handle_error_codes(rc, self.session._session)
 
     def pull_request(self):
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_scp_pull_request(self._scp)
-        return handle_ok_error_codes(rc)
+        return handle_error_codes(rc, self.session._session)
 
     def push_directory(self, dirname not None, int mode):
         cdef int rc
@@ -106,7 +105,7 @@ cdef class SCP:
         cdef const char *_dirname = b_dirname
         with nogil:
             rc = c_ssh.ssh_scp_push_directory(self._scp, _dirname, mode)
-        return handle_ok_error_codes(rc)
+        return handle_error_codes(rc, self.session._session)
 
     def push_file(self, filename not None, size_t size, int perms):
         cdef int rc
@@ -114,7 +113,7 @@ cdef class SCP:
         cdef const char *_filename = b_filename
         with nogil:
             rc = c_ssh.ssh_scp_push_file(self._scp, _filename, size, perms)
-        return handle_ok_error_codes(rc)
+        return handle_error_codes(rc, self.session._session)
 
     def push_file64(self, filename not None, c_ssh.uint64_t size, int perms):
         cdef int rc
@@ -122,7 +121,7 @@ cdef class SCP:
         cdef const char *_filename = b_filename
         with nogil:
             rc = c_ssh.ssh_scp_push_file64(self._scp, _filename, size, perms)
-        return handle_ok_error_codes(rc)
+        return handle_error_codes(rc, self.session._session)
 
     def read(self, c_ssh.uint32_t size=1024*1024):
         cdef int rc
@@ -139,7 +138,7 @@ cdef class SCP:
                 buf = cbuf[:rc]
         finally:
             free(cbuf)
-        return handle_ok_error_codes(rc), buf
+        return handle_error_codes(rc, self.session._session), buf
 
     def request_get_filename(self):
         cdef const char *_filename
@@ -185,4 +184,4 @@ cdef class SCP:
         cdef int rc
         with nogil:
             rc = c_ssh.ssh_scp_write(self._scp, c_data, size)
-        return handle_ok_error_codes(rc)
+        return handle_error_codes(rc, self.session._session)

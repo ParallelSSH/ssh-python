@@ -22,7 +22,7 @@ static int setup(void **state) {
 }
 
 static int teardown(void **state) {
-    ssh_buffer_free(*state);
+    SSH_BUFFER_FREE(*state);
 
     return 0;
 }
@@ -125,9 +125,9 @@ static void torture_ssh_buffer_get_ssh_string(void **state) {
         for(l=0;l<k;++l){
           ssh_string str = ssh_buffer_get_ssh_string(buffer);
           assert_null(str);
-          ssh_string_free(str);
+          SSH_STRING_FREE(str);
         }
-        ssh_buffer_free(buffer);
+        SSH_BUFFER_FREE(buffer);
       }
     }
   }
@@ -161,7 +161,7 @@ static void torture_ssh_buffer_add_format(void **state) {
     assert_int_equal(len, sizeof(verif) - 1);
     assert_memory_equal(ssh_buffer_get(buffer), verif, sizeof(verif) -1);
 
-    ssh_string_free(s);
+    SSH_STRING_FREE(s);
 }
 
 static void torture_ssh_buffer_get_format(void **state) {
@@ -191,14 +191,14 @@ static void torture_ssh_buffer_get_format(void **state) {
     assert_true(d == 0xbadc0de);
     assert_true(q == 0x13243546acbdcedf);
 
-    assert_true(s != NULL);
+    assert_non_null(s);
     assert_int_equal(ssh_string_len(s), 6);
     assert_memory_equal(ssh_string_data(s), "libssh", 6);
 
-    assert_true(s1 != NULL);
+    assert_non_null(s1);
     assert_string_equal(s1, "rocks");
 
-    assert_true(s2 != NULL);
+    assert_non_null(s2);
     assert_memory_equal(s2, "So much", 7);
 
     len = ssh_buffer_get_len(buffer);
@@ -228,9 +228,9 @@ static void torture_ssh_buffer_get_format_error(void **state) {
     rc = ssh_buffer_unpack(buffer, "bwdqSsPb",&b,&w,&d,&q,&s,&s1,(size_t)7,&s2,&b);
     assert_int_equal(rc, SSH_ERROR);
 
-    assert_true(s==NULL);
-    assert_true(s1 == NULL);
-    assert_true(s2 == NULL);
+    assert_null(s);
+    assert_null(s1);
+    assert_null(s2);
 }
 
 static void torture_buffer_pack_badformat(void **state){
@@ -245,10 +245,8 @@ static void torture_buffer_pack_badformat(void **state){
 
     /* with additional format */
     rc = ssh_buffer_pack(buffer, "bb", b);
-#ifdef HAVE_GCC_NARG_MACRO
-    /* We can only detect errors if we have support for NARG macros */
+    /* check that we detect the missing parameter */
     assert_int_equal(rc, SSH_ERROR);
-#endif
 
     /* unpack with missing format */
     ssh_buffer_reinit(buffer);

@@ -53,9 +53,14 @@ extern "C" {
   typedef uint32_t gid_t;
 #endif /* gid_t */
 #ifdef _MSC_VER
-#ifndef ssize_t
-  typedef _W64 SSIZE_T ssize_t;
-#endif /* ssize_t */
+
+# ifndef _SSIZE_T_DEFINED
+#  undef ssize_t
+#  include <BaseTsd.h>
+   typedef _W64 SSIZE_T ssize_t;
+#  define _SSIZE_T_DEFINED
+# endif /* _SSIZE_T_DEFINED */
+
 #endif /* _MSC_VER */
 #endif /* _WIN32 */
 
@@ -84,6 +89,7 @@ struct sftp_session_struct {
     int errnum;
     void **handles;
     sftp_ext ext;
+    sftp_packet read_packet;
 };
 
 struct sftp_packet_struct {
@@ -134,6 +140,7 @@ struct sftp_client_message_struct {
     ssh_string data; /* can be newpath of rename() */
     ssh_buffer complete_message; /* complete message in case of retransmission*/
     char *str_data; /* cstring version of data */
+    char *submessage; /* for extended messages */
 };
 
 struct sftp_request_queue_struct {
@@ -194,13 +201,18 @@ struct sftp_statvfs_struct {
 };
 
 /**
- * @brief Start a new sftp session.
+ * @brief Creates a new sftp session.
+ *
+ * This function creates a new sftp session and allocates a new sftp channel
+ * with the server inside of the provided ssh session. This function call is
+ * usually followed by the sftp_init(), which initializes SFTP protocol itself.
  *
  * @param session       The ssh session to use.
  *
  * @return              A new sftp session or NULL on error.
  *
  * @see sftp_free()
+ * @see sftp_init()
  */
 LIBSSH_API sftp_session sftp_new(ssh_session session);
 
@@ -225,7 +237,10 @@ LIBSSH_API sftp_session sftp_new_channel(ssh_session session, ssh_channel channe
 LIBSSH_API void sftp_free(sftp_session sftp);
 
 /**
- * @brief Initialize the sftp session with the server.
+ * @brief Initialize the sftp protocol with the server.
+ *
+ * This function involves the SFTP protocol initialization (as described
+ * in the SFTP specification), including the version and extensions negotiation.
  *
  * @param sftp          The sftp session to initialize.
  *
@@ -811,7 +826,9 @@ LIBSSH_API int sftp_fsync(sftp_file file);
  *
  * @param path          The path to be canonicalized.
  *
- * @return              The canonicalize path, NULL on error.
+ * @return              A pointer to the newly allocated canonicalized path,
+ *                      NULL on error. The caller needs to free the memory
+ *                      using ssh_string_free_char().
  */
 LIBSSH_API char *sftp_canonicalize_path(sftp_session sftp, const char *path);
 
@@ -844,15 +861,15 @@ LIBSSH_API sftp_session sftp_server_new(ssh_session session, ssh_channel chan);
  * @return             0 on success, < 0 on error.
  */
 LIBSSH_API int sftp_server_init(sftp_session sftp);
+
+/**
+ * @brief Close and deallocate a sftp server session.
+ *
+ * @param sftp          The sftp session handle to free.
+ */
+LIBSSH_API void sftp_server_free(sftp_session sftp);
 #endif  /* WITH_SERVER */
 
-/* this is not a public interface */
-#define SFTP_HANDLES 256
-sftp_packet sftp_packet_read(sftp_session sftp);
-int sftp_packet_write(sftp_session sftp,uint8_t type, ssh_buffer payload);
-void sftp_packet_free(sftp_packet packet);
-int buffer_add_attributes(ssh_buffer buffer, sftp_attributes attr);
-sftp_attributes sftp_parse_attr(sftp_session session, ssh_buffer buf,int expectname);
 /* sftpserver.c */
 
 LIBSSH_API sftp_client_message sftp_get_client_message(sftp_session sftp);
@@ -862,6 +879,7 @@ LIBSSH_API const char *sftp_client_message_get_filename(sftp_client_message msg)
 LIBSSH_API void sftp_client_message_set_filename(sftp_client_message msg, const char *newname);
 LIBSSH_API const char *sftp_client_message_get_data(sftp_client_message msg);
 LIBSSH_API uint32_t sftp_client_message_get_flags(sftp_client_message msg);
+LIBSSH_API const char *sftp_client_message_get_submessage(sftp_client_message msg);
 LIBSSH_API int sftp_send_client_message(sftp_session sftp, sftp_client_message msg);
 LIBSSH_API int sftp_reply_name(sftp_client_message msg, const char *name,
     sftp_attributes attr);
@@ -1011,6 +1029,7 @@ LIBSSH_API void sftp_handle_remove(sftp_session sftp, void *handle);
 #define SFTP_RENAME SSH_FXP_RENAME
 #define SFTP_READLINK SSH_FXP_READLINK
 #define SFTP_SYMLINK SSH_FXP_SYMLINK
+#define SFTP_EXTENDED SSH_FXP_EXTENDED
 
 /* openssh flags */
 #define SSH_FXE_STATVFS_ST_RDONLY 0x1 /* read-only */
@@ -1023,4 +1042,3 @@ LIBSSH_API void sftp_handle_remove(sftp_session sftp, void *handle);
 #endif /* SFTP_H */
 
 /** @} */
-/* vim: set ts=2 sw=2 et cindent: */

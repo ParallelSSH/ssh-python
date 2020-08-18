@@ -60,7 +60,7 @@ class KeyGenerationError(BaseSSHError):
 
 
 class SSHError(BaseSSHError):
-    """Raised on SSH errors"""
+    """Raised on errors using the libssh API and unknown errors from servers"""
 
 
 class EOF(BaseSSHError):
@@ -161,3 +161,7 @@ class SFTPError(BaseSSHError):
 
 class SFTPHandleError(SFTPError):
     """Raised on SFTP handle errors"""
+
+
+class ChannelClosed(BaseSSHError):
+    """Raised on operations on closed channels"""

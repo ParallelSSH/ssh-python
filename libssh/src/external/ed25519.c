@@ -63,9 +63,9 @@ static void get_hram(unsigned char *hram,
                      const unsigned char *sm,
                      const unsigned char *pk,
                      unsigned char *playground,
-                     unsigned long long smlen)
+                     uint64_t smlen)
 {
-    unsigned long long i;
+    uint64_t i;
     SHA512CTX ctx;
     for (i =  0;i < 32;++i)    playground[i] = sm[i];
     for (i = 32;i < 64;++i)    playground[i] = pk[i-32];
@@ -85,10 +85,10 @@ int crypto_sign_ed25519_keypair(unsigned char *pk,
     SHA512CTX ctx;
     unsigned char extsk[64];
     int i;
-    int rc;
+    int ok;
 
-    rc = ssh_get_random(sk, 32, 0);
-    if (rc < 0){
+    ok = ssh_get_random(sk, 32, 0);
+    if (!ok) {
         return -1;
     }
 
@@ -111,9 +111,9 @@ int crypto_sign_ed25519_keypair(unsigned char *pk,
 }
 
 int crypto_sign_ed25519(unsigned char *sm,
-                        unsigned long long *smlen,
+                        uint64_t *smlen,
                         const unsigned char *m,
-                        unsigned long long mlen,
+                        uint64_t mlen,
                         const unsigned char *sk)
 {
     sc25519 sck, scs, scsk;
@@ -122,7 +122,7 @@ int crypto_sign_ed25519(unsigned char *sm,
     unsigned char r[32];
     unsigned char s[32];
     unsigned char extsk[64];
-    unsigned long long i;
+    uint64_t i;
     unsigned char hmg[SHA512_DIGEST_LEN];
     unsigned char hram[SHA512_DIGEST_LEN];
 
@@ -174,9 +174,9 @@ int crypto_sign_ed25519(unsigned char *sm,
 }
 
 int crypto_sign_ed25519_open(unsigned char *m,
-                             unsigned long long *mlen,
+                             uint64_t *mlen,
                              const unsigned char *sm,
-                             unsigned long long smlen,
+                             uint64_t smlen,
                              const unsigned char *pk)
 {
     unsigned int i;
@@ -186,7 +186,7 @@ int crypto_sign_ed25519_open(unsigned char *m,
     sc25519 schram, scs;
     unsigned char hram[SHA512_DIGEST_LEN];
 
-    *mlen = (unsigned long long) -1;
+    *mlen = (uint64_t) -1;
     if (smlen < 64) return -1;
 
     if (ge25519_unpackneg_vartime(&get1, pk)) {

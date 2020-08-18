@@ -20,61 +20,64 @@
  */
 
 #include "config.h"
+#include "libssh/threads.h"
 #include <libssh/callbacks.h>
-
-#ifdef HAVE_PTHREAD
 
 #include <errno.h>
 #include <stdlib.h>
 #include <pthread.h>
 
-/** @brief Defines the needed callbacks for pthread. Use this if your
- * OS supports libpthread and want to use it for threading.
- * @code
- * #include <libssh/callbacks.h>
- * #include <errno.h>
- * #include <pthread.h>
- * SSH_THREADS_PTHREAD(ssh_pthread_callbacks);
- * int main(){
- *   ssh_init_set_threads_callbacks(&ssh_pthread_callbacks);
- *   ssh_init();
- *   ...
- * }
- * @endcode
- * @param name name of the structure to be declared, containing the
- * callbacks for threading
- *
- */
+static int ssh_pthread_mutex_init (void **mutex)
+{
+    int rc = 0;
 
-static int ssh_pthread_mutex_init (void **priv){
-  int err = 0;
-  *priv = malloc (sizeof (pthread_mutex_t));
-  if (*priv==NULL)
-    return ENOMEM;
-  err = pthread_mutex_init (*priv, NULL);
-  if (err != 0){
-    free (*priv);
-    *priv=NULL;
-  }
-  return err;
+    if (mutex == NULL) {
+        return EINVAL;
+    }
+
+    *mutex = malloc(sizeof(pthread_mutex_t));
+    if (*mutex == NULL) {
+        return ENOMEM;
+    }
+
+    rc = pthread_mutex_init ((pthread_mutex_t *)*mutex, NULL);
+    if (rc){
+        free (*mutex);
+        *mutex = NULL;
+    }
+
+    return rc;
 }
 
-static int ssh_pthread_mutex_destroy (void **lock) {
-  int err = pthread_mutex_destroy (*lock);
-  free (*lock);
-  *lock=NULL;
-  return err;
+static int ssh_pthread_mutex_destroy (void **mutex)
+{
+
+    int rc = 0;
+
+    if (mutex == NULL) {
+        return EINVAL;
+    }
+
+    rc = pthread_mutex_destroy ((pthread_mutex_t *)*mutex);
+
+    free (*mutex);
+    *mutex = NULL;
+
+    return rc;
 }
 
-static int ssh_pthread_mutex_lock (void **lock) {
-  return pthread_mutex_lock (*lock);
+static int ssh_pthread_mutex_lock (void **mutex)
+{
+    return pthread_mutex_lock((pthread_mutex_t *)*mutex);
 }
 
-static int ssh_pthread_mutex_unlock (void **lock){
-  return pthread_mutex_unlock (*lock);
+static int ssh_pthread_mutex_unlock (void **mutex)
+{
+    return pthread_mutex_unlock((pthread_mutex_t *)*mutex);
 }
 
-static unsigned long ssh_pthread_thread_id (void){
+static unsigned long ssh_pthread_thread_id (void)
+{
 #if defined(_WIN32) && !defined(__WINPTHREADS_VERSION)
     return (unsigned long) pthread_self().p;
 #else
@@ -84,16 +87,54 @@ static unsigned long ssh_pthread_thread_id (void){
 
 static struct ssh_threads_callbacks_struct ssh_threads_pthread =
 {
-		.type="threads_pthread",
-    .mutex_init=ssh_pthread_mutex_init,
-    .mutex_destroy=ssh_pthread_mutex_destroy,
-    .mutex_lock=ssh_pthread_mutex_lock,
-    .mutex_unlock=ssh_pthread_mutex_unlock,
-    .thread_id=ssh_pthread_thread_id
+    .type = "threads_pthread",
+    .mutex_init = ssh_pthread_mutex_init,
+    .mutex_destroy = ssh_pthread_mutex_destroy,
+    .mutex_lock = ssh_pthread_mutex_lock,
+    .mutex_unlock = ssh_pthread_mutex_unlock,
+    .thread_id = ssh_pthread_thread_id
 };
 
-struct ssh_threads_callbacks_struct *ssh_threads_get_pthread(void) {
-	return &ssh_threads_pthread;
+/* Threads interface implementation */
+
+#if (HAVE_PTHREAD)
+void ssh_mutex_lock(SSH_MUTEX *mutex)
+{
+    int rc;
+
+    if (mutex == NULL) {
+        exit(EINVAL);
+    }
+
+    rc = pthread_mutex_lock(mutex);
+
+    if (rc) {
+        exit(rc);
+    }
 }
 
-#endif /* HAVE_PTHREAD */
+void ssh_mutex_unlock(SSH_MUTEX *mutex)
+{
+    int rc;
+
+    if (mutex == NULL) {
+        exit(EINVAL);
+    }
+
+    rc = pthread_mutex_unlock(mutex);
+
+    if (rc) {
+        exit(rc);
+    }
+}
+
+struct ssh_threads_callbacks_struct *ssh_threads_get_default(void)
+{
+    return &ssh_threads_pthread;
+}
+#endif
+
+struct ssh_threads_callbacks_struct *ssh_threads_get_pthread(void)
+{
+    return &ssh_threads_pthread;
+}

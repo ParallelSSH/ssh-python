@@ -14,11 +14,14 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
+from select import select
+
 from cpython.version cimport PY_MAJOR_VERSION
 
 from c_ssh cimport ssh_error_types_e, ssh_get_error, ssh_auth_e, \
     SSH_OK, SSH_ERROR, SSH_AGAIN, SSH_EOF, ssh_session, ssh_string, \
-    ssh_string_get_char, ssh_string_free, ssh_string_len
+    ssh_string_get_char, ssh_string_free, ssh_string_len, SSH_READ_PENDING, \
+    SSH_WRITE_PENDING
 
 from exceptions import RequestDenied, FatalError, OtherError, \
     AuthenticationPartial, AuthenticationDenied, AuthenticationError, \
@@ -67,22 +70,34 @@ cdef bytes ssh_string_to_bytes(ssh_string _str):
         ssh_string_free(_str)
 
 
-cdef int handle_ok_error_codes(int errcode) except -1:
+def wait_socket(session not None, sock not None, timeout=None):
+    directions = session.get_poll_flags()
+    if directions == 0:
+        return 0
+    readfds = (sock,) \
+        if (directions & SSH_READ_PENDING) else ()
+    writefds = (sock,) \
+        if (directions & SSH_WRITE_PENDING) else ()
+    select(readfds, writefds, (), timeout)
+
+
+cdef int _handle_general_error_codes(
+        int errcode, ssh_session session) except -1:
     if errcode == SSH_OK:
         return SSH_OK
     elif errcode == SSH_ERROR:
-        raise SSHError
+        raise SSHError(errcode, ssh_get_error(session))
     elif errcode == SSH_EOF:
-        raise EOF
+        raise EOF(ssh_get_error(session))
     elif errcode == SSH_AGAIN:
         return SSH_AGAIN
     else:
         if errcode < 0:
-            raise OtherError
+            raise OtherError(ssh_get_error(session))
         return errcode
 
 
-cdef int handle_ssh_error_codes(int errcode, ssh_session session) except -1:
+cdef int handle_error_codes(int errcode, ssh_session session) except -1:
     if errcode == ssh_error_types_e.SSH_NO_ERROR:
         return 0
     elif errcode == ssh_error_types_e.SSH_REQUEST_DENIED:
@@ -90,9 +105,7 @@ cdef int handle_ssh_error_codes(int errcode, ssh_session session) except -1:
     elif errcode == ssh_error_types_e.SSH_FATAL:
         raise FatalError(ssh_get_error(session))
     else:
-        if errcode < 0:
-            raise OtherError(ssh_get_error(session))
-        return errcode
+        return _handle_general_error_codes(errcode, session)
 
 
 cdef int handle_auth_error_codes(int errcode, ssh_session session) except -1:
@@ -107,6 +120,4 @@ cdef int handle_auth_error_codes(int errcode, ssh_session session) except -1:
     elif errcode == ssh_auth_e.SSH_AUTH_AGAIN:
         return ssh_auth_e.SSH_AUTH_AGAIN
     else:
-        if errcode < 0:
-            raise OtherError(ssh_get_error(session))
-        return errcode
+        return handle_error_codes(errcode, session)

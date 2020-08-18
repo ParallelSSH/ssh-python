@@ -3,59 +3,29 @@ environment:
     # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
     # /E:ON and /V:ON options are not enabled in the batch script intepreter
     # See: http://stackoverflow.com/a/13751649/163740
-    CMD_IN_ENV: "cmd /E:ON /V:ON /C %APPVEYOR_BUILD_FOLDER%\\ci\\appveyor\\run_with_env.cmd"
+    # CMD_IN_ENV: "cmd /E:ON /V:ON /C %APPVEYOR_BUILD_FOLDER%\\ci\\appveyor\\run_with_env.cmd"
     PYTHONUNBUFFERED: 1
-    EMBEDDED_LIB: 1
-    OPENSSL_VER: 1.0.2l
+    OPENSSL_VER: 1.1.0h
+    SYSTEM_LIBSSH: 1
     PYPI_USER:
       secure: 2m0jy6JD/R9RExIosOT6YA==
     PYPI_PASS:
       secure: x+dF0A8BZUf2IrPNRN1O0w==
   matrix:
-    - PYTHON: "C:\\Python27"
-      PYTHON_VERSION: "2.7"
-      PYTHON_ARCH: "32"
-      MSVC: "Visual Studio 9"
-      ARCH: i386
-
-    - PYTHON: "C:\\Python27-x64"
-      PYTHON_VERSION: "2.7"
-      PYTHON_ARCH: "64"
-      MSVC: "Visual Studio 9"
-      ARCH: x64_86
-
-    - PYTHON: "C:\\Python34"
-      PYTHON_VERSION: "3.4"
-      PYTHON_ARCH: "32"
-      MSVC: "Visual Studio 10"
-      ARCH: i386
-
-    - PYTHON: "C:\\Python34-x64"
-      PYTHON_VERSION: "3.4"
-      PYTHON_ARCH: "64"
-      MSVC: "Visual Studio 10 Win64"
-      ARCH: x64_86
-
-    - PYTHON: "C:\\Python35"
-      PYTHON_VERSION: "3.5"
-      PYTHON_ARCH: "32"
-      MSVC: "Visual Studio 14"
-      ARCH: i386
-
-    - PYTHON: "C:\\Python35-x64"
-      PYTHON_VERSION: "3.5"
+    - PYTHON: "C:\\Python36-x64"
+      PYTHON_VERSION: "3.6"
       PYTHON_ARCH: "64"
       MSVC: "Visual Studio 14 Win64"
       ARCH: x64_86
 
-    - PYTHON: "C:\\Python36"
-      PYTHON_VERSION: "3.6"
-      PYTHON_ARCH: "32"
-      MSVC: "Visual Studio 14"
-      ARCH: i386
+    - PYTHON: "C:\\Python37-x64"
+      PYTHON_VERSION: "3.7"
+      PYTHON_ARCH: "64"
+      MSVC: "Visual Studio 14 Win64"
+      ARCH: x64_86
 
-    - PYTHON: "C:\\Python36-x64"
-      PYTHON_VERSION: "3.6"
+    - PYTHON: "C:\\Python38-x64"
+      PYTHON_VERSION: "3.8"
       PYTHON_ARCH: "64"
       MSVC: "Visual Studio 14 Win64"
       ARCH: x64_86
@@ -92,7 +62,6 @@ install:
   # target Python version and architecture
   - "%CMD_IN_ENV% pip install -r requirements_dev.txt"
   - "%CMD_IN_ENV% pip install -U wheel setuptools twine"
-  - git submodule update --init --recursive
 
   # .c files need to be generated on Windows to handle platform
   # specific code.
@@ -100,23 +69,30 @@ install:
   # do not cause a version change.
   - python ci/appveyor/fix_version.py .
   - mv -f .git .git.bak
-  - appveyor DownloadFile http://zlib.net/zlib1211.zip
-  - 7z x zlib1211.zip
-  - appveyor DownloadFile https://indy.fulgan.com/SSL/openssl-%OPENSSL_VER%-%ARCH%-win%PYTHON_ARCH%.zip
-  - 7z x openssl-%OPENSSL_VER%-%ARCH%-win%PYTHON_ARCH%.zip
-  - cp ssleay32.dll ssh2\
-  - cp libeay32.dll ssh2\
-  - ps: ls ssh2
+  - IF NOT "%PYTHON_VERSION%" == "2.7" (
+      7z x ci\appveyor\zlib1211.zip
+      7z x ci\appveyor\kfw-4.1-src.zip
+      appveyor DownloadFile https://indy.fulgan.com/SSL/Archive/Experimental/openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
+      7z x openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017.zip
+      cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libssl-1_1.dll ssh\
+      cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1-x%PYTHON_ARCH%.dll ssh\ || cp openssl-%OPENSSL_VER%-x%PYTHON_ARCH%-VC2017\libcrypto-1_1.dll ssh\
+    )
+  - ps: ls ssh
+  - ps: ls
 
 build_script:
+  - "%CMD_IN_ENV% ci\\appveyor\\build_krb.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_zlib.bat"
-  - "%CMD_IN_ENV% ci\\appveyor\\build_ssh2.bat"
-  - rm -f ssh2/*.c
+  - "%CMD_IN_ENV% ci\\appveyor\\build_ssh.bat"
+  - rm -f ssh/*.c
+  - "%CMD_IN_ENV% python setup.py build_ext -I ci/appveyor/include"
   - "%CMD_IN_ENV% python setup.py build"
-  - "%CMD_IN_ENV% python setup.py build_ext -i"
+  - "%CMD_IN_ENV% python setup.py install"
 
 test_script:
-  - python -c "from ssh2.session import Session; Session()"
+  - cd dist
+  - python ..\\ci\\appveyor\\import_test.py
+  - cd ..
 
 after_test:
   # If tests are successful, create binary packages for the project.

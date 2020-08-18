@@ -29,6 +29,7 @@
 #ifndef _LIBSSH_PRIV_H
 #define _LIBSSH_PRIV_H
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -44,8 +45,16 @@
 # endif
 #endif /* !defined(HAVE_STRTOULL) */
 
+#if !defined(HAVE_STRNDUP)
+char *strndup(const char *s, size_t n);
+#endif /* ! HAVE_STRNDUP */
+
 #ifdef HAVE_BYTESWAP_H
 #include <byteswap.h>
+#endif
+
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
 #endif
 
 #ifndef bswap_32
@@ -68,6 +77,22 @@
 #   define PRIu64 "llu"
 #  endif /* __WORDSIZE */
 # endif /* PRIu64 */
+
+# ifndef PRIu32
+#  define PRIu32 "u"
+# endif /* PRIu32 */
+
+# ifndef PRIx64
+#  if __WORDSIZE == 64
+#   define PRIx64 "lx"
+#  else
+#   define PRIx64 "llx"
+#  endif /* __WORDSIZE */
+# endif /* PRIx64 */
+
+# ifndef PRIx32
+#  define PRIx32 "x"
+# endif /* PRIx32 */
 
 # ifdef _MSC_VER
 #  include <stdio.h>
@@ -120,6 +145,13 @@
 #   endif /* HAVE__VSNPRINTF */
 #  endif /* HAVE__VSNPRINTF_S */
 
+#  ifndef _SSIZE_T_DEFINED
+#   undef ssize_t
+#   include <BaseTsd.h>
+    typedef _W64 SSIZE_T ssize_t;
+#   define _SSIZE_T_DEFINED
+#  endif /* _SSIZE_T_DEFINED */
+
 # endif /* _MSC_VER */
 
 struct timeval;
@@ -146,12 +178,11 @@ int gettimeofday(struct timeval *__p, void *__t);
 #ifndef ERROR_BUFFERLEN
 #define ERROR_BUFFERLEN 1024
 #endif
-#ifndef CLIENTBANNER1
-#define CLIENTBANNER1 "SSH-1.5-libssh_" SSH_STRINGIFY(LIBSSH_VERSION)
-#endif
-#ifndef CLIENTBANNER2
-#define CLIENTBANNER2 "SSH-2.0-libssh_" SSH_STRINGIFY(LIBSSH_VERSION)
-#endif
+
+#ifndef CLIENT_BANNER_SSH2
+#define CLIENT_BANNER_SSH2 "SSH-2.0-libssh_" SSH_STRINGIFY(LIBSSH_VERSION)
+#endif /* CLIENT_BANNER_SSH2 */
+
 #ifndef KBDINT_MAX_PROMPT
 #define KBDINT_MAX_PROMPT 256 /* more than openssh's :) */
 #endif
@@ -190,7 +221,17 @@ int gettimeofday(struct timeval *__p, void *__t);
 struct ssh_common_struct;
 struct ssh_kex_struct;
 
-int ssh_get_key_params(ssh_session session, ssh_key *privkey);
+enum ssh_digest_e {
+    SSH_DIGEST_AUTO=0,
+    SSH_DIGEST_SHA1=1,
+    SSH_DIGEST_SHA256,
+    SSH_DIGEST_SHA384,
+    SSH_DIGEST_SHA512,
+};
+
+int ssh_get_key_params(ssh_session session,
+                       ssh_key *privkey,
+                       enum ssh_digest_e *digest);
 
 /* LOGGING */
 void ssh_log_function(int verbosity,
@@ -229,6 +270,7 @@ void _ssh_set_error_oom(void *error, const char *function);
     _ssh_set_error_invalid(error, __func__)
 void _ssh_set_error_invalid(void *error, const char *function);
 
+void ssh_reset_error(void *error);
 
 /* server.c */
 #ifdef WITH_SERVER
@@ -240,20 +282,20 @@ int ssh_auth_reply_success(ssh_session session, int partial);
 int ssh_send_banner(ssh_session session, int is_server);
 
 /* connect.c */
-socket_t ssh_connect_host(ssh_session session, const char *host,const char
-        *bind_addr, int port, long timeout, long usec);
 socket_t ssh_connect_host_nonblocking(ssh_session session, const char *host,
 		const char *bind_addr, int port);
 
 /* in base64.c */
 ssh_buffer base64_to_bin(const char *source);
-unsigned char *bin_to_base64(const unsigned char *source, int len);
+uint8_t *bin_to_base64(const uint8_t *source, size_t len);
 
 /* gzip.c */
 int compress_buffer(ssh_session session,ssh_buffer buf);
 int decompress_buffer(ssh_session session,ssh_buffer buf, size_t maxlen);
 
 /* match.c */
+int match_pattern_list(const char *string, const char *pattern,
+    unsigned int len, int dolower);
 int match_hostname(const char *host, const char *pattern, unsigned int len);
 
 /* connector.c */
@@ -306,7 +348,6 @@ void explicit_bzero(void *s, size_t n);
 /**
  * Get the argument cound of variadic arguments
  */
-#ifdef HAVE_GCC_NARG_MACRO
 /*
  * Since MSVC 2010 there is a bug in passing __VA_ARGS__ to subsequent
  * macros as a single token, which results in:
@@ -316,7 +357,7 @@ void explicit_bzero(void *s, size_t n);
 #define VA_APPLY_VARIADIC_MACRO(macro, tuple) macro tuple
 
 #define __VA_NARG__(...) \
-        (__VA_NARG_(_0, ## __VA_ARGS__, __RSEQ_N()) - 1)
+        (__VA_NARG_(__VA_ARGS__, __RSEQ_N()))
 #define __VA_NARG_(...) \
         VA_APPLY_VARIADIC_MACRO(__VA_ARG_N, (__VA_ARGS__))
 #define __VA_ARG_N( \
@@ -335,10 +376,6 @@ void explicit_bzero(void *s, size_t n);
         29, 28, 27, 26, 25, 24, 23, 22, 21, 20, \
         19, 18, 17, 16, 15, 14, 13, 12, 11, 10, \
          9,  8,  7,  6,  5,  4,  3,  2,  1,  0
-#else
-/* clang does not support the above construction */
-#define __VA_NARG__(...) (-1)
-#endif
 
 #define CLOSE_SOCKET(s) do { if ((s) != SSH_INVALID_SOCKET) { _XCLOSESOCKET(s); (s) = SSH_INVALID_SOCKET;} } while(0)
 
@@ -368,7 +405,22 @@ void explicit_bzero(void *s, size_t n);
 # endif /* HAVE_FALLTHROUGH_ATTRIBUTE */
 #endif /* FALL_THROUGH */
 
+#ifndef __attr_unused__
+# ifdef HAVE_UNUSED_ATTRIBUTE
+#  define __attr_unused__ __attribute__((unused))
+# else /* HAVE_UNUSED_ATTRIBUTE */
+#  define __attr_unused__
+# endif /* HAVE_UNUSED_ATTRIBUTE */
+#endif /* __attr_unused__ */
+
+#ifndef UNUSED_PARAM
+#define UNUSED_PARAM(param) param __attr_unused__
+#endif /* UNUSED_PARAM */
+
+#ifndef UNUSED_VAR
+#define UNUSED_VAR(var) __attr_unused__ var
+#endif /* UNUSED_VAR */
+
 void ssh_agent_state_free(void *data);
 
 #endif /* _LIBSSH_PRIV_H */
-/* vim: set ts=4 sw=4 et cindent: */

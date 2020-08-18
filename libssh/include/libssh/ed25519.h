@@ -56,8 +56,8 @@ int crypto_sign_ed25519_keypair(ed25519_pubkey pk, ed25519_privkey sk);
  * @return    0 on success.
  */
 int crypto_sign_ed25519(
-    unsigned char *sm,unsigned long long *smlen,
-    const unsigned char *m,unsigned long long mlen,
+    unsigned char *sm, uint64_t *smlen,
+    const unsigned char *m, uint64_t mlen,
     const ed25519_privkey sk);
 
 /** @internal
@@ -71,8 +71,8 @@ int crypto_sign_ed25519(
  * @returns   0 on success (supposedly).
  */
 int crypto_sign_ed25519_open(
-    unsigned char *m,unsigned long long *mlen,
-    const unsigned char *sm,unsigned long long smlen,
+    unsigned char *m, uint64_t *mlen,
+    const unsigned char *sm, uint64_t smlen,
     const ed25519_pubkey pk);
 
 /** @} */

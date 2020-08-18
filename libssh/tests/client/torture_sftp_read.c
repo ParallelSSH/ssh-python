@@ -7,12 +7,13 @@
 
 #include <sys/types.h>
 #include <pwd.h>
+#include <errno.h>
 
 #define MAX_XFER_BUF_SIZE 16384
 
 static int sshd_setup(void **state)
 {
-    torture_setup_sshd_server(state);
+    torture_setup_sshd_server(state, false);
 
     return 0;
 }
@@ -27,12 +28,16 @@ static int session_setup(void **state)
 {
     struct torture_state *s = *state;
     struct passwd *pwd;
+    int rc;
 
     pwd = getpwnam("bob");
     assert_non_null(pwd);
-    setuid(pwd->pw_uid);
 
-    s->ssh.session = torture_ssh_session(TORTURE_SSH_SERVER,
+    rc = setuid(pwd->pw_uid);
+    assert_return_code(rc, errno);
+
+    s->ssh.session = torture_ssh_session(s,
+                                         TORTURE_SSH_SERVER,
                                          NULL,
                                          TORTURE_SSH_USER_ALICE,
                                          NULL);
@@ -94,6 +99,13 @@ static void torture_sftp_read_blocking(void **state) {
 int torture_run_tests(void) {
     int rc;
     struct CMUnitTest tests[] = {
+        /* This test is intentionally running twice to trigger a bug in OpenSSH
+         * or in pam_wrapper, causing the second invocation to fail.
+         * See: https://bugs.libssh.org/T122
+         */
+        cmocka_unit_test_setup_teardown(torture_sftp_read_blocking,
+                                        session_setup,
+                                        session_teardown),
         cmocka_unit_test_setup_teardown(torture_sftp_read_blocking,
                                         session_setup,
                                         session_teardown)

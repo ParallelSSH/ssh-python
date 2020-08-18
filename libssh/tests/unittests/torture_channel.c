@@ -19,6 +19,8 @@ static void torture_channel_select(void **state)
 
     (void)state; /* unused */
 
+    ZERO_STRUCT(readfds);
+
     fd = open("/dev/null", 0);
     assert_true(fd > 2);
 

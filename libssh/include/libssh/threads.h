@@ -24,8 +24,40 @@
 #include <libssh/libssh.h>
 #include <libssh/callbacks.h>
 
+#if HAVE_PTHREAD
+
+#include <pthread.h>
+#define SSH_MUTEX pthread_mutex_t
+
+#if defined(PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP)
+#define SSH_MUTEX_STATIC_INIT PTHREAD_ERRORCHECK_MUTEX_INITIALIZER_NP
+#else
+#define SSH_MUTEX_STATIC_INIT PTHREAD_MUTEX_INITIALIZER
+#endif
+
+#elif (defined _WIN32) || (defined _WIN64)
+
+#include <windows.h>
+#include <winbase.h>
+#define SSH_MUTEX CRITICAL_SECTION *
+#define SSH_MUTEX_STATIC_INIT NULL
+
+#else
+
+# define SSH_MUTEX void *
+#define SSH_MUTEX_STATIC_INIT NULL
+
+#endif
+
 int ssh_threads_init(void);
 void ssh_threads_finalize(void);
 const char *ssh_threads_get_type(void);
+
+void ssh_mutex_lock(SSH_MUTEX *mutex);
+void ssh_mutex_unlock(SSH_MUTEX *mutex);
+
+struct ssh_threads_callbacks_struct *ssh_threads_get_default(void);
+int crypto_thread_init(struct ssh_threads_callbacks_struct *user_callbacks);
+void crypto_thread_finalize(void);
 
 #endif /* THREADS_H_ */

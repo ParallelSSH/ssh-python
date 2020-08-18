@@ -4,15 +4,12 @@ include(CheckSymbolExists)
 include(CheckFunctionExists)
 include(CheckLibraryExists)
 include(CheckTypeSize)
-include(CheckCXXSourceCompiles)
+include(CheckStructHasMember)
 include(TestBigEndian)
 
-set(PACKAGE ${APPLICATION_NAME})
-set(VERSION ${APPLICATION_VERSION})
-set(DATADIR ${DATA_INSTALL_DIR})
-set(LIBDIR ${LIB_INSTALL_DIR})
-set(PLUGINDIR "${PLUGIN_INSTALL_DIR}-${LIBRARY_SOVERSION}")
-set(SYSCONFDIR ${SYSCONF_INSTALL_DIR})
+set(PACKAGE ${PROJECT_NAME})
+set(VERSION ${PROJECT_VERSION})
+set(SYSCONFDIR ${CMAKE_INSTALL_SYSCONFDIR})
 
 set(BINARYDIR ${CMAKE_BINARY_DIR})
 set(SOURCEDIR ${CMAKE_SOURCE_DIR})
@@ -42,20 +39,20 @@ if(CMAKE_COMPILER_IS_GNUCC AND NOT MINGW AND NOT OS2)
 "void __attribute__((visibility(\"default\"))) test() {}
 int main(void){ return 0; }
 " WITH_VISIBILITY_HIDDEN)
-        set(CMAKE_REQUIRED_FLAGS "")
+        unset(CMAKE_REQUIRED_FLAGS)
     endif (NOT GNUCC_VERSION EQUAL 34)
 endif(CMAKE_COMPILER_IS_GNUCC AND NOT MINGW AND NOT OS2)
 
 # HEADER FILES
-set(CMAKE_REQUIRED_INCLUDES_SAVE ${CMAKE_REQUIRED_INCLUDES})
 set(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES} ${ARGP_INCLUDE_DIR})
 check_include_file(argp.h HAVE_ARGP_H)
-set(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES_SAVE})
+unset(CMAKE_REQUIRED_INCLUDES)
 
 check_include_file(pty.h HAVE_PTY_H)
 check_include_file(utmp.h HAVE_UTMP_H)
 check_include_file(termios.h HAVE_TERMIOS_H)
 check_include_file(unistd.h HAVE_UNISTD_H)
+check_include_file(stdint.h HAVE_STDINT_H)
 check_include_file(util.h HAVE_UTIL_H)
 check_include_file(libutil.h HAVE_LIBUTIL_H)
 check_include_file(sys/time.h HAVE_SYS_TIME_H)
@@ -64,6 +61,7 @@ check_include_file(sys/param.h HAVE_SYS_PARAM_H)
 check_include_file(arpa/inet.h HAVE_ARPA_INET_H)
 check_include_file(byteswap.h HAVE_BYTESWAP_H)
 check_include_file(glob.h HAVE_GLOB_H)
+check_include_file(valgrind/valgrind.h HAVE_VALGRIND_VALGRIND_H)
 
 if (WIN32)
   check_include_file(io.h HAVE_IO_H)
@@ -88,8 +86,10 @@ if (OPENSSL_FOUND)
         message(FATAL_ERROR "Could not detect openssl/aes.h")
     endif()
 
-    set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
-    check_include_file(openssl/blowfish.h HAVE_OPENSSL_BLOWFISH_H)
+    if (WITH_BLOWFISH_CIPHER)
+        set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
+        check_include_file(openssl/blowfish.h HAVE_OPENSSL_BLOWFISH_H)
+    endif()
 
     set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
     check_include_file(openssl/ecdh.h HAVE_OPENSSL_ECDH_H)
@@ -110,6 +110,10 @@ if (OPENSSL_FOUND)
 
     set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
     set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_CRYPTO_LIBRARY})
+    check_function_exists(EVP_aes_128_gcm HAVE_OPENSSL_EVP_AES_GCM)
+
+    set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
+    set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_CRYPTO_LIBRARY})
     check_function_exists(CRYPTO_THREADID_set_callback HAVE_OPENSSL_CRYPTO_THREADID_SET_CALLBACK)
 
     set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
@@ -119,6 +123,44 @@ if (OPENSSL_FOUND)
     set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
     set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_CRYPTO_LIBRARY})
     check_function_exists(EVP_CIPHER_CTX_new HAVE_OPENSSL_EVP_CIPHER_CTX_NEW)
+
+    set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
+    set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_CRYPTO_LIBRARY})
+    check_function_exists(EVP_KDF_CTX_new_id HAVE_OPENSSL_EVP_KDF_CTX_NEW_ID)
+
+    set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
+    set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_CRYPTO_LIBRARY})
+    check_function_exists(FIPS_mode HAVE_OPENSSL_FIPS_MODE)
+
+    set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
+    set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_CRYPTO_LIBRARY})
+    check_function_exists(RAND_priv_bytes HAVE_OPENSSL_RAND_PRIV_BYTES)
+
+    set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
+    set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_CRYPTO_LIBRARY})
+    check_function_exists(EVP_DigestSign HAVE_OPENSSL_EVP_DIGESTSIGN)
+
+    set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
+    set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_CRYPTO_LIBRARY})
+    check_function_exists(EVP_DigestVerify HAVE_OPENSSL_EVP_DIGESTVERIFY)
+
+    check_function_exists(OPENSSL_ia32cap_loc HAVE_OPENSSL_IA32CAP_LOC)
+
+    set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
+    set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_CRYPTO_LIBRARY})
+    check_symbol_exists(EVP_PKEY_ED25519 "openssl/evp.h" FOUND_OPENSSL_ED25519)
+
+    if (HAVE_OPENSSL_EVP_DIGESTSIGN AND HAVE_OPENSSL_EVP_DIGESTVERIFY AND
+        FOUND_OPENSSL_ED25519)
+        set(HAVE_OPENSSL_ED25519 1)
+    endif()
+
+    set(CMAKE_REQUIRED_INCLUDES ${OPENSSL_INCLUDE_DIR})
+    set(CMAKE_REQUIRED_LIBRARIES ${OPENSSL_CRYPTO_LIBRARY})
+    check_symbol_exists(EVP_PKEY_X25519 "openssl/evp.h" HAVE_OPENSSL_X25519)
+
+    unset(CMAKE_REQUIRED_INCLUDES)
+    unset(CMAKE_REQUIRED_LIBRARIES)
 endif()
 
 if (CMAKE_HAVE_PTHREAD_H)
@@ -137,18 +179,20 @@ endif ()
 
 if (NOT WITH_MBEDTLS)
     set(HAVE_DSA 1)
-endif()
+endif (NOT WITH_MBEDTLS)
 
 # FUNCTIONS
 
 check_function_exists(isblank HAVE_ISBLANK)
 check_function_exists(strncpy HAVE_STRNCPY)
+check_function_exists(strndup HAVE_STRNDUP)
 check_function_exists(strtoull HAVE_STRTOULL)
 check_function_exists(explicit_bzero HAVE_EXPLICIT_BZERO)
 check_function_exists(memset_s HAVE_MEMSET_S)
 
 if (HAVE_GLOB_H)
-  check_function_exists(glob HAVE_GLOB)
+    check_struct_has_member(glob_t gl_flags glob.h HAVE_GLOB_GL_FLAGS_MEMBER)
+    check_function_exists(glob HAVE_GLOB)
 endif (HAVE_GLOB_H)
 
 if (NOT WIN32)
@@ -174,7 +218,7 @@ if (WIN32)
         check_symbol_exists(poll "winsock2.h;ws2tcpip.h" HAVE_SELECT)
         # The getaddrinfo function is defined to the WspiapiGetAddrInfo inline function
         check_symbol_exists(getaddrinfo "winsock2.h;ws2tcpip.h" HAVE_GETADDRINFO)
-        set(CMAKE_REQUIRED_LIBRARIES)
+        unset(CMAKE_REQUIRED_LIBRARIES)
     endif (HAVE_WSPIAPI_H OR HAVE_WS2TCPIP_H)
 
     check_function_exists(_strtoui64 HAVE__STRTOUI64)
@@ -198,13 +242,13 @@ if (UNIX)
         check_library_exists(socket getaddrinfo "" HAVE_LIBSOCKET)
         if (HAVE_LIBSOCKET)
             set(HAVE_GETADDRINFO TRUE)
-            set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} socket)
+            set(_REQUIRED_LIBRARIES ${_REQUIRED_LIBRARIES} socket)
         endif (HAVE_LIBSOCKET)
 
         # libnsl/inet_pton (Solaris)
         check_library_exists(nsl inet_pton "" HAVE_LIBNSL)
         if (HAVE_LIBNSL)
-            set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} nsl)
+            set(_REQUIRED_LIBRARIES ${_REQUIRED_LIBRARIES} nsl)
         endif (HAVE_LIBNSL)
 
         # librt
@@ -213,7 +257,7 @@ if (UNIX)
 
     check_library_exists(rt clock_gettime "" HAVE_CLOCK_GETTIME)
     if (HAVE_LIBRT OR HAVE_CLOCK_GETTIME)
-        set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} rt)
+        set(_REQUIRED_LIBRARIES ${_REQUIRED_LIBRARIES} rt)
     endif (HAVE_LIBRT OR HAVE_CLOCK_GETTIME)
 
     check_library_exists(util forkpty "" HAVE_LIBUTIL)
@@ -221,7 +265,7 @@ if (UNIX)
     check_function_exists(__strtoull HAVE___STRTOULL)
 endif (UNIX)
 
-set(LIBSSH_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} CACHE INTERNAL "libssh required system libraries")
+set(LIBSSH_REQUIRED_LIBRARIES ${_REQUIRED_LIBRARIES} CACHE INTERNAL "libssh required system libraries")
 
 # LIBRARIES
 if (OPENSSL_FOUND)
@@ -245,6 +289,14 @@ if (CMAKE_USE_PTHREADS_INIT)
     set(HAVE_PTHREAD 1)
 endif (CMAKE_USE_PTHREADS_INIT)
 
+if (UNIT_TESTING)
+    if (CMOCKA_FOUND)
+        set(CMAKE_REQUIRED_LIBRARIES ${CMOCKA_LIBRARIES})
+        check_function_exists(cmocka_set_test_filter HAVE_CMOCKA_SET_TEST_FILTER)
+        unset(CMAKE_REQUIRED_LIBRARIES)
+    endif ()
+endif ()
+
 # OPTIONS
 check_c_source_compiles("
 __thread int tls;
@@ -260,25 +312,57 @@ int main(void) {
     return 0;
 }" HAVE_MSC_THREAD_LOCAL_STORAGE)
 
+###########################################################
+# For detecting attributes we need to treat warnings as
+# errors
+if (UNIX OR MINGW)
+    # Get warnings for attributs
+    check_c_compiler_flag("-Wattributes" REQUIRED_FLAGS_WERROR)
+    if (REQUIRED_FLAGS_WERROR)
+        string(APPEND CMAKE_REQUIRED_FLAGS "-Wattributes ")
+    endif()
+
+    # Turn warnings into errors
+    check_c_compiler_flag("-Werror" REQUIRED_FLAGS_WERROR)
+    if (REQUIRED_FLAGS_WERROR)
+        string(APPEND CMAKE_REQUIRED_FLAGS "-Werror ")
+    endif()
+endif ()
+
+check_c_source_compiles("
+void test_constructor_attribute(void) __attribute__ ((constructor));
+
+void test_constructor_attribute(void)
+{
+    return;
+}
+
+int main(void) {
+    return 0;
+}" HAVE_CONSTRUCTOR_ATTRIBUTE)
+
+check_c_source_compiles("
+void test_destructor_attribute(void) __attribute__ ((destructor));
+
+void test_destructor_attribute(void)
+{
+    return;
+}
+
+int main(void) {
+    return 0;
+}" HAVE_DESTRUCTOR_ATTRIBUTE)
+
 check_c_source_compiles("
 #define FALL_THROUGH __attribute__((fallthrough))
 
-enum direction_e {
-    UP = 0,
-    DOWN,
-};
-
 int main(void) {
-    enum direction_e key = UP;
-    int i = 10;
-    int j = 0;
+    int i = 2;
 
-    switch (key) {
-    case UP:
-        i = 5;
+    switch (i) {
+    case 0:
         FALL_THROUGH;
-    case DOWN:
-        j = i * 2;
+    case 1:
         break;
     default:
         break;
@@ -286,6 +370,28 @@ int main(void) {
 
     return 0;
 }" HAVE_FALLTHROUGH_ATTRIBUTE)
+
+if (NOT WIN32)
+    check_c_source_compiles("
+    #define __unused __attribute__((unused))
+
+    static int do_nothing(int i __unused)
+    {
+        return 0;
+    }
+
+    int main(void)
+    {
+        int i;
+
+        i = do_nothing(5);
+        if (i > 5) {
+            return 1;
+        }
+
+        return 0;
+    }" HAVE_UNUSED_ATTRIBUTE)
+endif()
 
 check_c_source_compiles("
 #include <string.h>
@@ -301,18 +407,6 @@ int main(void)
 
 check_c_source_compiles("
 #include <stdio.h>
-#define __VA_NARG__(...) (__VA_NARG_(_0, ## __VA_ARGS__, __RSEQ_N()) - 1)
-#define __VA_NARG_(...) __VA_ARG_N(__VA_ARGS__)
-#define __VA_ARG_N( _1, _2, _3, _4, _5, _6, _7, _8, _9,_10,N,...) N
-#define __RSEQ_N() 10, 9,  8,  7,  6,  5,  4,  3,  2,  1,  0
-#define myprintf(format, ...) printf((format), __VA_NARG__(__VA_ARGS__), __VA_ARGS__)
-int main(void) {
-    myprintf(\"%d %d %d %d\",1,2,3);
-    return 0;
-}" HAVE_GCC_NARG_MACRO)
-
-check_c_source_compiles("
-#include <stdio.h>
 int main(void) {
     printf(\"%s\", __func__);
     return 0;
@@ -325,6 +419,34 @@ int main(void) {
     return 0;
 }" HAVE_COMPILER__FUNCTION__)
 
+# This is only available with OpenBSD's gcc implementation */
+if (OPENBSD)
+check_c_source_compiles("
+#define ARRAY_LEN 16
+void test_attr(const unsigned char *k)
+    __attribute__((__bounded__(__minbytes__, 2, 16)));
+
+int main(void) {
+    return 0;
+}" HAVE_GCC_BOUNDED_ATTRIBUTE)
+endif(OPENBSD)
+
+# Stop treating warnings as errors
+unset(CMAKE_REQUIRED_FLAGS)
+
+# Check for version script support
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/conftest.map" "VERS_1 {
+        global: sym;
+};
+VERS_2 {
+        global: sym;
+} VERS_1;
+")
+
+set(CMAKE_REQUIRED_FLAGS "-Wl,--version-script=\"${CMAKE_CURRENT_BINARY_DIR}/conftest.map\"")
+check_c_source_compiles("int main(void) { return 0; }" HAVE_LD_VERSION_SCRIPT)
+unset(CMAKE_REQUIRED_FLAGS)
+file(REMOVE "${CMAKE_CURRENT_BINARY_DIR}/conftest.map")
 
 if (WITH_DEBUG_CRYPTO)
   set(DEBUG_CRYPTO 1)

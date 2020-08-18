@@ -30,16 +30,32 @@
 
 #ifdef HAVE_ECDH
 
+static SSH_PACKET_CALLBACK(ssh_packet_client_ecdh_reply);
+
+static ssh_packet_callback ecdh_client_callbacks[]= {
+    ssh_packet_client_ecdh_reply
+};
+
+struct ssh_packet_callbacks_struct ssh_ecdh_client_callbacks = {
+    .start = SSH2_MSG_KEX_ECDH_REPLY,
+    .n_callbacks = 1,
+    .callbacks = ecdh_client_callbacks,
+    .user = NULL
+};
+
 /** @internal
  * @brief parses a SSH_MSG_KEX_ECDH_REPLY packet and sends back
  * a SSH_MSG_NEWKEYS
  */
-int ssh_client_ecdh_reply(ssh_session session, ssh_buffer packet){
+SSH_PACKET_CALLBACK(ssh_packet_client_ecdh_reply){
   ssh_string q_s_string = NULL;
   ssh_string pubkey_blob = NULL;
   ssh_string signature = NULL;
   int rc;
+  (void)type;
+  (void)user;
 
+  ssh_packet_remove_callbacks(session, &ssh_ecdh_client_callbacks);
   pubkey_blob = ssh_buffer_get_ssh_string(packet);
   if (pubkey_blob == NULL) {
     ssh_set_error(session,SSH_FATAL, "No public key in packet");
@@ -47,7 +63,7 @@ int ssh_client_ecdh_reply(ssh_session session, ssh_buffer packet){
   }
 
   rc = ssh_dh_import_next_pubkey_blob(session, pubkey_blob);
-  ssh_string_free(pubkey_blob);
+  SSH_STRING_FREE(pubkey_blob);
   if (rc != 0) {
       goto error;
   }
@@ -77,10 +93,39 @@ int ssh_client_ecdh_reply(ssh_session session, ssh_buffer packet){
   }
 
   rc=ssh_packet_send(session);
+  if (rc == SSH_ERROR) {
+    goto error;
+  }
+
   SSH_LOG(SSH_LOG_PROTOCOL, "SSH_MSG_NEWKEYS sent");
-  return rc;
+  session->dh_handshake_state = DH_STATE_NEWKEYS_SENT;
+
+  return SSH_PACKET_USED;
+
 error:
-  return SSH_ERROR;
+  session->session_state=SSH_SESSION_STATE_ERROR;
+  return SSH_PACKET_USED;
 }
 
+#ifdef WITH_SERVER
+
+static ssh_packet_callback ecdh_server_callbacks[] = {
+    ssh_packet_server_ecdh_init
+};
+
+struct ssh_packet_callbacks_struct ssh_ecdh_server_callbacks = {
+    .start = SSH2_MSG_KEX_ECDH_INIT,
+    .n_callbacks = 1,
+    .callbacks = ecdh_server_callbacks,
+    .user = NULL
+};
+
+/** @internal
+ * @brief sets up the ecdh kex callbacks
+ */
+void ssh_server_ecdh_init(ssh_session session){
+    ssh_packet_set_callbacks(session, &ssh_ecdh_server_callbacks);
+}
+
+#endif /* WITH_SERVER */
 #endif /* HAVE_ECDH */

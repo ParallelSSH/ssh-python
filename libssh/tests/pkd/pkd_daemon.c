@@ -7,6 +7,8 @@
  * (c) 2014 Jon Simons
  */
 
+#include "config.h"
+
 #include <errno.h>
 #include <netinet/in.h>
 #include <pthread.h>
@@ -20,7 +22,9 @@
 #include <libssh/callbacks.h>
 #include <libssh/libssh.h>
 #include <libssh/server.h>
+#include <libssh/kex.h>
 
+#include "torture.h" // for ssh_fips_mode()
 #include "pkd_daemon.h"
 
 #include <setjmp.h> // for cmocka
@@ -72,7 +76,8 @@ static void pkd_sighandler(int signum) {
     (void) signum;
 }
 
-static int pkd_init_libssh() {
+static int pkd_init_libssh(void)
+{
     int rc = ssh_threads_set_callbacks(ssh_threads_get_pthread());
     return (rc == SSH_OK) ? 0 : 1;
 }
@@ -115,7 +120,8 @@ out:
     return rc;
 }
 
-static int pkd_accept_fd() {
+static int pkd_accept_fd(void)
+{
     int fd = -1;
     struct sockaddr_in addr;
     socklen_t len = sizeof(addr);
@@ -229,7 +235,8 @@ static struct ssh_server_callbacks_struct pkd_server_cb = {
     .channel_open_request_session_function = pkd_channel_openreq_cb,
 };
 
-static int pkd_exec_hello(int fd, struct pkd_daemon_args *args) {
+static int pkd_exec_hello(int fd, struct pkd_daemon_args *args)
+{
     int rc = -1;
     ssh_bind b = NULL;
     ssh_session s = NULL;
@@ -240,6 +247,12 @@ static int pkd_exec_hello(int fd, struct pkd_daemon_args *args) {
     int level = args->opts.libssh_log_level;
     enum pkd_hostkey_type_e type = args->type;
     const char *hostkeypath = args->hostkeypath;
+    const char *default_kex = NULL;
+    char *all_kex = NULL;
+    size_t kex_len = 0;
+    const char *all_ciphers = NULL;
+    const uint64_t rekey_data_limit = args->rekey_data_limit;
+    bool process_config = false;
 
     pkd_state.eof_received = 0;
     pkd_state.close_received  = 0;
@@ -253,6 +266,8 @@ static int pkd_exec_hello(int fd, struct pkd_daemon_args *args) {
 
     if (type == PKD_RSA) {
         opts = SSH_BIND_OPTIONS_RSAKEY;
+    } else if (type == PKD_ED25519) {
+        opts = SSH_BIND_OPTIONS_HOSTKEY;
 #ifdef HAVE_DSA
     } else if (type == PKD_DSA) {
         opts = SSH_BIND_OPTIONS_DSAKEY;
@@ -260,7 +275,7 @@ static int pkd_exec_hello(int fd, struct pkd_daemon_args *args) {
     } else if (type == PKD_ECDSA) {
         opts = SSH_BIND_OPTIONS_ECDSAKEY;
     } else {
-        pkderr("unknown kex algorithm: %d\n", type);
+        pkderr("unknown hostkey type: %d\n", type);
         rc = -1;
         goto outclose;
     }
@@ -277,9 +292,56 @@ static int pkd_exec_hello(int fd, struct pkd_daemon_args *args) {
         goto outclose;
     }
 
+    rc = ssh_bind_options_set(b, SSH_BIND_OPTIONS_PROCESS_CONFIG,
+                              &process_config);
+    if (rc != 0) {
+        pkderr("ssh_bind_options_set process config: %s\n", ssh_get_error(b));
+        goto outclose;
+    }
+
+    if (!ssh_fips_mode()) {
+        /* Add methods not enabled by default */
+#define GEX_SHA1 "diffie-hellman-group-exchange-sha1"
+        default_kex = ssh_kex_get_default_methods(SSH_KEX);
+        kex_len = strlen(default_kex) + strlen(GEX_SHA1) + 2;
+        all_kex = malloc(kex_len);
+        if (all_kex == NULL) {
+            pkderr("Failed to alloc more memory.\n");
+            goto outclose;
+        }
+        snprintf(all_kex, kex_len, "%s," GEX_SHA1, default_kex);
+        rc = ssh_bind_options_set(b, SSH_BIND_OPTIONS_KEY_EXCHANGE, all_kex);
+        free(all_kex);
+        if (rc != 0) {
+            pkderr("ssh_bind_options_set kex methods: %s\n", ssh_get_error(b));
+            goto outclose;
+        }
+
+        /* Enable all supported ciphers */
+        all_ciphers = ssh_kex_get_supported_method(SSH_CRYPT_C_S);
+        rc = ssh_bind_options_set(b, SSH_BIND_OPTIONS_CIPHERS_C_S, all_ciphers);
+        if (rc != 0) {
+            pkderr("ssh_bind_options_set Ciphers C-S: %s\n", ssh_get_error(b));
+            goto outclose;
+        }
+
+        all_ciphers = ssh_kex_get_supported_method(SSH_CRYPT_S_C);
+        rc = ssh_bind_options_set(b, SSH_BIND_OPTIONS_CIPHERS_S_C, all_ciphers);
+        if (rc != 0) {
+            pkderr("ssh_bind_options_set Ciphers S-C: %s\n", ssh_get_error(b));
+            goto outclose;
+        }
+    }
+
     s = ssh_new();
     if (s == NULL) {
         pkderr("ssh_new\n");
+        goto outclose;
+    }
+
+    rc = ssh_options_set(s, SSH_OPTIONS_REKEY_DATA, &rekey_data_limit);
+    if (rc != 0) {
+        pkderr("ssh_options_set rekey data: %s\n", ssh_get_error(s));
         goto outclose;
     }
 
@@ -340,9 +402,9 @@ static int pkd_exec_hello(int fd, struct pkd_daemon_args *args) {
         goto out;
     }
 
-    rc = ssh_channel_write(c, "hello\n", 6); /* XXX: customizable payloads */
-    if (rc != 6) {
-        pkderr("ssh_channel_write partial (%d)\n", rc);
+    rc = ssh_channel_write(c, args->payload.buf, args->payload.len);
+    if (rc != (int)args->payload.len) {
+        pkderr("ssh_channel_write partial (%d != %zd)\n", rc, args->payload.len);
     }
 
     rc = ssh_channel_request_send_exit_status(c, 0);
@@ -369,7 +431,9 @@ static int pkd_exec_hello(int fd, struct pkd_daemon_args *args) {
            (pkd_state.close_received == 0)) {
         rc = ssh_event_dopoll(e, 1000 /* milliseconds */);
         if (rc == SSH_ERROR) {
-            pkderr("ssh_event_dopoll for eof + close: %s\n", ssh_get_error(s));
+            /* log, but don't consider this fatal */
+            pkdout("ssh_event_dopoll for eof + close: %s\n", ssh_get_error(s));
+            rc = 0;
             break;
         } else {
             rc = 0;
@@ -380,7 +444,9 @@ static int pkd_exec_hello(int fd, struct pkd_daemon_args *args) {
            (ssh_is_connected(s))) {
         rc = ssh_event_dopoll(e, 1000 /* milliseconds */);
         if (rc == SSH_ERROR) {
-            pkderr("ssh_event_dopoll for session connection: %s\n", ssh_get_error(s));
+            /* log, but don't consider this fatal */
+            pkdout("ssh_event_dopoll for session connection: %s\n", ssh_get_error(s));
+            rc = 0;
             break;
         } else {
             rc = 0;
@@ -429,6 +495,9 @@ static void *pkd_main(void *args) {
         pkderr("sigaction: %d\n", rc);
         goto out;
     }
+
+    /* Ignore SIGPIPE */
+    signal(SIGPIPE, SIG_IGN);
 
     rc = pkd_init_libssh();
     if (rc != 0) {

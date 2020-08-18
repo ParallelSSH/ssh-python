@@ -61,7 +61,7 @@ SSH_PACKET_CALLBACK(ssh_packet_disconnect_callback){
   error_s = ssh_buffer_get_ssh_string(packet);
   if (error_s != NULL) {
     error = ssh_string_to_char(error_s);
-    ssh_string_free(error_s);
+    SSH_STRING_FREE(error_s);
   }
   SSH_LOG(SSH_LOG_PACKET, "Received SSH_MSG_DISCONNECT %d:%s",
                           code, error != NULL ? error : "no error");
@@ -92,49 +92,9 @@ SSH_PACKET_CALLBACK(ssh_packet_ignore_callback){
 	return SSH_PACKET_USED;
 }
 
-SSH_PACKET_CALLBACK(ssh_packet_dh_reply){
-  int rc;
-  (void)type;
-  (void)user;
-  SSH_LOG(SSH_LOG_PROTOCOL,"Received SSH_KEXDH_REPLY");
-  if (session->session_state != SSH_SESSION_STATE_DH ||
-		session->dh_handshake_state != DH_STATE_INIT_SENT){
-	ssh_set_error(session,SSH_FATAL,"ssh_packet_dh_reply called in wrong state : %d:%d",
-			session->session_state,session->dh_handshake_state);
-	goto error;
-  }
-  switch(session->next_crypto->kex_type){
-    case SSH_KEX_DH_GROUP1_SHA1:
-    case SSH_KEX_DH_GROUP14_SHA1:
-      rc=ssh_client_dh_reply(session, packet);
-      break;
-#ifdef HAVE_ECDH
-    case SSH_KEX_ECDH_SHA2_NISTP256:
-    case SSH_KEX_ECDH_SHA2_NISTP384:
-    case SSH_KEX_ECDH_SHA2_NISTP521:
-      rc = ssh_client_ecdh_reply(session, packet);
-      break;
-#endif
-#ifdef HAVE_CURVE25519
-    case SSH_KEX_CURVE25519_SHA256_LIBSSH_ORG:
-      rc = ssh_client_curve25519_reply(session, packet);
-      break;
-#endif
-    default:
-      ssh_set_error(session,SSH_FATAL,"Wrong kex type in ssh_packet_dh_reply");
-      goto error;
-  }
-  if(rc==SSH_OK) {
-    session->dh_handshake_state = DH_STATE_NEWKEYS_SENT;
-    return SSH_PACKET_USED;
-  }
-error:
-  session->session_state=SSH_SESSION_STATE_ERROR;
-  return SSH_PACKET_USED;
-}
-
 SSH_PACKET_CALLBACK(ssh_packet_newkeys){
   ssh_string sig_blob = NULL;
+  ssh_signature sig = NULL;
   int rc;
   (void)packet;
   (void)user;
@@ -157,22 +117,6 @@ SSH_PACKET_CALLBACK(ssh_packet_newkeys){
     ssh_key server_key;
 
     /* client */
-    rc = ssh_make_sessionid(session);
-    if (rc != SSH_OK) {
-      goto error;
-    }
-
-    /*
-     * Set the cryptographic functions for the next crypto
-     * (it is needed for ssh_generate_session_keys for key lengths)
-     */
-    if (crypt_set_algorithms(session, SSH_3DES) /* knows nothing about DES*/ ) {
-      goto error;
-    }
-
-    if (ssh_generate_session_keys(session) < 0) {
-      goto error;
-    }
 
     /* Verify the host's signature. FIXME do it sooner */
     sig_blob = session->next_crypto->dh_server_signature;
@@ -181,75 +125,53 @@ SSH_PACKET_CALLBACK(ssh_packet_newkeys){
     /* get the server public key */
     server_key = ssh_dh_get_next_server_publickey(session);
     if (server_key == NULL) {
-        return SSH_ERROR;
+        goto error;
     }
 
-    /* check if public key from server matches user preferences */
+    rc = ssh_pki_import_signature_blob(sig_blob, server_key, &sig);
+    if (rc != SSH_OK) {
+        goto error;
+    }
+
+    /* Check if signature from server matches user preferences */
     if (session->opts.wanted_methods[SSH_HOSTKEYS]) {
-        if(!ssh_match_group(session->opts.wanted_methods[SSH_HOSTKEYS],
-                            server_key->type_c)) {
+        if (!ssh_match_group(session->opts.wanted_methods[SSH_HOSTKEYS],
+                             sig->type_c)) {
             ssh_set_error(session,
                           SSH_FATAL,
                           "Public key from server (%s) doesn't match user "
                           "preference (%s)",
-                          server_key->type_c,
+                          sig->type_c,
                           session->opts.wanted_methods[SSH_HOSTKEYS]);
-            return -1;
+            goto error;
         }
     }
 
-    rc = ssh_pki_signature_verify_blob(session,
-                                       sig_blob,
-                                       server_key,
-                                       session->next_crypto->secret_hash,
-                                       session->next_crypto->digest_len);
+    rc = ssh_pki_signature_verify(session,
+                                  sig,
+                                  server_key,
+                                  session->next_crypto->secret_hash,
+                                  session->next_crypto->digest_len);
     ssh_string_burn(sig_blob);
-    ssh_string_free(sig_blob);
-    sig_blob = NULL;
+    SSH_STRING_FREE(sig_blob);
+    ssh_signature_free(sig);
     if (rc == SSH_ERROR) {
       goto error;
     }
     SSH_LOG(SSH_LOG_PROTOCOL,"Signature verified and valid");
 
-    /*
-     * Once we got SSH2_MSG_NEWKEYS we can switch next_crypto and
-     * current_crypto
-     */
-    if (session->current_crypto) {
-      crypto_free(session->current_crypto);
-      session->current_crypto=NULL;
-    }
-
-    /* FIXME later, include a function to change keys */
-    session->current_crypto = session->next_crypto;
-
-    session->next_crypto = crypto_new();
-    if (session->next_crypto == NULL) {
-      ssh_set_error_oom(session);
-      goto error;
-    }
-    session->next_crypto->session_id = malloc(session->current_crypto->digest_len);
-    if (session->next_crypto->session_id == NULL) {
-      ssh_set_error_oom(session);
-      goto error;
-    }
-    memcpy(session->next_crypto->session_id, session->current_crypto->session_id,
-            session->current_crypto->digest_len);
-    if (session->current_crypto->in_cipher->set_decrypt_key(session->current_crypto->in_cipher, session->current_crypto->decryptkey,
-        session->current_crypto->decryptIV) < 0) {
-      goto error;
-    }
-    if (session->current_crypto->out_cipher->set_encrypt_key(session->current_crypto->out_cipher, session->current_crypto->encryptkey,
-        session->current_crypto->encryptIV) < 0) {
-      goto error;
+    /* When receiving this packet, we switch on the incomming crypto. */
+    rc = ssh_packet_set_newkeys(session, SSH_DIRECTION_IN);
+    if (rc != SSH_OK) {
+        goto error;
     }
   }
   session->dh_handshake_state = DH_STATE_FINISHED;
   session->ssh_connection_callback(session);
-	return SSH_PACKET_USED;
+  return SSH_PACKET_USED;
 error:
-	session->session_state=SSH_SESSION_STATE_ERROR;
-	return SSH_PACKET_USED;
+  session->session_state = SSH_SESSION_STATE_ERROR;
+  return SSH_PACKET_USED;
 }
 
 /**
@@ -262,9 +184,67 @@ SSH_PACKET_CALLBACK(ssh_packet_service_accept){
 	(void)type;
 	(void)user;
 
-	session->auth_service_state=SSH_AUTH_SERVICE_ACCEPTED;
+    session->auth.service_state = SSH_AUTH_SERVICE_ACCEPTED;
 	SSH_LOG(SSH_LOG_PACKET,
 	      "Received SSH_MSG_SERVICE_ACCEPT");
 
 	return SSH_PACKET_USED;
+}
+
+/**
+ * @internal
+ * @brief handles a SSH2_MSG_EXT_INFO packet defined in RFC 8308
+ *
+ */
+SSH_PACKET_CALLBACK(ssh_packet_ext_info)
+{
+    int rc;
+    uint32_t nr_extensions = 0;
+    uint32_t i;
+    (void)type;
+    (void)user;
+
+    SSH_LOG(SSH_LOG_PACKET, "Received SSH_MSG_EXT_INFO");
+
+    rc = ssh_buffer_get_u32(packet, &nr_extensions);
+    if (rc == 0) {
+        SSH_LOG(SSH_LOG_PACKET, "Failed to read number of extensions");
+        return SSH_PACKET_USED;
+    }
+
+    nr_extensions = ntohl(nr_extensions);
+    if (nr_extensions > 128) {
+        SSH_LOG(SSH_LOG_PACKET, "Invalid number of extensions");
+        return SSH_PACKET_USED;
+    }
+
+    SSH_LOG(SSH_LOG_PACKET, "Follows %u extensions", nr_extensions);
+
+    for (i = 0; i < nr_extensions; i++) {
+        char *name = NULL;
+        char *value = NULL;
+        int cmp;
+
+        rc = ssh_buffer_unpack(packet, "ss", &name, &value);
+        if (rc != SSH_OK) {
+            SSH_LOG(SSH_LOG_PACKET, "Error reading extension name-value pair");
+            return SSH_PACKET_USED;
+        }
+
+        cmp = strcmp(name, "server-sig-algs");
+        if (cmp == 0) {
+            /* TODO check for NULL bytes */
+            SSH_LOG(SSH_LOG_PACKET, "Extension: %s=<%s>", name, value);
+            if (ssh_match_group(value, "rsa-sha2-512")) {
+                session->extensions |= SSH_EXT_SIG_RSA_SHA512;
+            }
+            if (ssh_match_group(value, "rsa-sha2-256")) {
+                session->extensions |= SSH_EXT_SIG_RSA_SHA256;
+            }
+        }
+        free(name);
+        free(value);
+    }
+
+    return SSH_PACKET_USED;
 }

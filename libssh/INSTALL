@@ -7,23 +7,28 @@
 In order to build libssh, you need to install several components:
 
 - A C compiler
-- [CMake](http://www.cmake.org) >= 2.6.0.
-- [openssl](http://www.openssl.org) >= 0.9.8
+- [CMake](https://www.cmake.org) >= 2.6.0.
+- [openssl](https://www.openssl.org) >= 0.9.8
 or
-- [gcrypt](http://www.gnu.org/directory/Security/libgcrypt.html) >= 1.4
+- [gcrypt](https://www.gnu.org/directory/Security/libgcrypt.html) >= 1.4
+- [libz](https://www.zlib.net) >= 1.2
 
 optional:
-- [libz](http://www.zlib.net) >= 1.2
+- [cmocka](https://cmocka.org/) >= 1.1.0
+- [socket_wrapper](https://cwrap.org/) >= 1.1.5
+- [nss_wrapper](https://cwrap.org/) >= 1.1.2
+- [uid_wrapper](https://cwrap.org/) >= 1.2.0
+- [pam_wrapper](https://cwrap.org/) >= 1.0.1
 
 Note that these version numbers are version we know works correctly. If you
 build and run libssh successfully with an older version, please let us know.
 
-Windows binaries known to be working:
+For Windows use vcpkg:
 
-- http://www.slproweb.com/products/Win32OpenSSL.html
-- http://zlib.net/ -> zlib compiled DLL
+https://github.com/Microsoft/vcpkg
 
-We installed them in C:\Program Files
+which you can use to install openssl and zlib. libssh itself is also part of
+vcpkg!
 
 ## Building
 First, you need to configure the compilation, using CMake. Go inside the
@@ -31,12 +36,22 @@ First, you need to configure the compilation, using CMake. Go inside the
 
 GNU/Linux, MacOS X, MSYS/MinGW:
 
-    cmake -DWITH_TESTING=ON -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug ..
+    cmake -DUNIT_TESTING=ON -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Debug ..
     make
 
 On Windows you should choose a makefile gernerator with -G or use
 
     cmake-gui.exe ..
+
+To enable additional client tests against a local OpenSSH server, add the
+compile option -DCLIENT_TESTING=ON. These tests require an OpenSSH
+server package and some wrapper libraries (see optional requirements) to
+be installed.
+
+If you're interested in server testing, then a OpenSSH client should be
+installed on the system and if possible also dropbear. Once that is done
+enable server support with -DWITH_SERVER=ON and enable testing of it with
+-DSERVER_TESTING=ON.
 
 ## Testing build
 
@@ -102,4 +117,4 @@ This document is written using [Markdown][] syntax, making it possible to
 provide usable information in both plain text and HTML format. Whenever
 modifying this document please use [Markdown][] syntax.
 
-[markdown]: http://www.daringfireball.net/projects/markdown
+[markdown]: https://www.daringfireball.net/projects/markdown

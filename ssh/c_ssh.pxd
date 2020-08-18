@@ -14,13 +14,13 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from posix.select cimport fd_set
-from posix.types cimport mode_t
+from libc.time cimport time_t
+from posix.types cimport mode_t, suseconds_t
 
 
 cdef extern from "libssh/libssh.h" nogil:
-    ctypedef long time_t
-    ctypedef long suseconds_t
+    ctypedef struct fd_set:
+        pass
     cdef struct timeval:
         time_t       tv_sec
         suseconds_t  tv_usec
@@ -366,6 +366,7 @@ cdef extern from "libssh/libssh.h" nogil:
     int ssh_init()
     int ssh_is_blocking(ssh_session session)
     int ssh_is_connected(ssh_session session)
+    int ssh_is_server_known(ssh_session session)
 
     int ssh_set_log_level(int level)
     int ssh_get_log_level()
@@ -489,7 +490,7 @@ cdef extern from "libssh/libssh.h" nogil:
                           ssh_counter rcounter)
     void ssh_set_fd_except(ssh_session session)
     void ssh_set_fd_toread(ssh_session session)
-    void _set_fd_towrite(ssh_session session)
+    void ssh_set_fd_towrite(ssh_session session)
     void ssh_silent_disconnect(ssh_session session)
     int ssh_set_pcap_file(ssh_session session, ssh_pcap_file pcapfile)
 
@@ -527,6 +528,8 @@ cdef extern from "libssh/libssh.h" nogil:
         ssh_session session, unsigned int i, const char *answer)
     int ssh_userauth_gssapi(ssh_session session)
     const char *ssh_version(int req_version)
+    int ssh_write_knownhost(ssh_session session)
+    char *ssh_dump_knownhost(ssh_session session)
 
     void ssh_string_burn(ssh_string str)
     ssh_string ssh_string_copy(ssh_string str)

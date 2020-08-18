@@ -10,6 +10,7 @@
 #include <openssl/dh.h>
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
+#include <openssl/bn.h>
 
 int RSA_set0_key(RSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d);
 int RSA_set0_factors(RSA *r, BIGNUM *p, BIGNUM *q);
@@ -37,6 +38,12 @@ HMAC_CTX *HMAC_CTX_new(void);
 int HMAC_CTX_reset(HMAC_CTX *ctx);
 void HMAC_CTX_free(HMAC_CTX *ctx);
 
+void DH_get0_pqg(const DH *dh,
+                 const BIGNUM **p, const BIGNUM **q, const BIGNUM **g);
+int DH_set0_pqg(DH *dh, BIGNUM *p, BIGNUM *q, BIGNUM *g);
+void DH_get0_key(const DH *dh,
+                 const BIGNUM **pub_key, const BIGNUM **priv_key);
+int DH_set0_key(DH *dh, BIGNUM *pub_key, BIGNUM *priv_key);
 #endif /* OPENSSL_VERSION_NUMBER */
 
 #endif /* LIBCRYPTO_COMPAT_H */

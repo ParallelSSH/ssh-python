@@ -22,6 +22,7 @@
 #define BIND_H_
 
 #include "libssh/priv.h"
+#include "libssh/kex.h"
 #include "libssh/session.h"
 
 struct ssh_bind_struct {
@@ -31,7 +32,7 @@ struct ssh_bind_struct {
 
   struct ssh_poll_handle_struct *poll;
   /* options */
-  char *wanted_methods[10];
+  char *wanted_methods[SSH_KEX_METHODS];
   char *banner;
   char *ecdsakey;
   char *dsakey;
@@ -46,6 +47,9 @@ struct ssh_bind_struct {
   unsigned int bindport;
   int blocking;
   int toaccept;
+  bool config_processed;
+  char *config_dir;
+  char *pubkey_accepted_key_types;
 };
 
 struct ssh_poll_handle_struct *ssh_bind_get_poll(struct ssh_bind_struct

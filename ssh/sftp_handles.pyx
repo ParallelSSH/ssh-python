@@ -27,10 +27,6 @@ cimport c_sftp
 
 cdef class SFTPFile:
 
-    def __dealloc__(self):
-        if not self.closed:
-            self.close()
-
     @staticmethod
     cdef SFTPFile from_ptr(c_sftp.sftp_file _file, SFTP sftp):
         cdef SFTPFile _fh = SFTPFile.__new__(SFTPFile, sftp)

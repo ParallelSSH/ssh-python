@@ -23,5 +23,5 @@ def build_ssh():
     check_call(['make', '-j%s' % (cpu_count(),)])
     os.chdir('..')
 
-    for src in glob('src/src/libssh.so*'):
+    for src in glob('src/lib/libssh.so*'):
         copy2(src, 'ssh/')
