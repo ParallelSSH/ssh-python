@@ -3,8 +3,6 @@ IF "%PYTHON_VERSION%" == "2.7" (exit 0)
 mkdir src
 cd src
 
-set OPENSSL_DIR="C:\OpenSSL-v11-Win%PYTHON_ARCH%"
-
 ls %OPENSSL_DIR%
 ls %OPENSSL_DIR%\lib\VC
 ls %OPENSSL_DIR%\lib\VC\static
@@ -21,8 +19,6 @@ cmake ..\libssh  -G %CMAKE_PLATFORM%               ^
       -DCMAKE_BUILD_TYPE=Release                   ^
       -DZLIB_LIBRARY=C:/zlib/lib/zlibstatic.lib    ^
       -DZLIB_INCLUDE_DIR=C:/zlib/include           ^
-      -DBUILD_STATIC_LIB=ON                        ^
-      -DBUILD_SHARED_LIBS=OFF                      ^
       -DWITH_GSSAPI=ON                             ^
       -DOPENSSL_ROOT_DIR=%OPENSSL_DIR%
 
@@ -36,7 +32,8 @@ cd ..
 ECHO "libssh libs"
 ls src/src/Release
 cp src/src/Release/ssh.lib %PYTHON%/libs/
-cp src/src/Release/ssh.lib ssh/
+REM cp src/src/Release/ssh.lib ssh/
+cp src/src/Release/ssh.dll ssh/
 ECHO "Build dir libs"
 ls
 ECHO "Python libs"

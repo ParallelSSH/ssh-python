@@ -53,11 +53,9 @@ cython_args = {
     'cython_directives': cython_directives,
     'cython_compile_time_env': {
         'ON_WINDOWS': ON_WINDOWS,
+        # 'LIBSSH_STATIC': 1,
     }} \
     if USING_CYTHON else {}
-
-if USING_CYTHON:
-    sys.stdout.write("Cython arguments: %s%s" % (cython_args, os.linesep))
 
 
 runtime_library_dirs = ["$ORIGIN/."] if not SYSTEM_LIBSSH else None
@@ -82,12 +80,14 @@ package_data = {'ssh': ['*.pxd', 'libssh.so*']}
 if ON_WINDOWS:
     package_data['ssh'].extend([
         'libcrypto*.dll', 'libssl*.dll',
+        'ssh.dll', 'msvcp*.dll', 'vcruntime*.dll',
     ])
-    cython_args['LIBSSH_STATIC'] = '1'
+    # cython_args['LIBSSH_STATIC'] = '1'
 
 cmdclass = versioneer.get_cmdclass()
 if USING_CYTHON:
     cmdclass['build_ext'] = build_ext
+    sys.stdout.write("Cython arguments: %s%s" % (cython_args, os.linesep))
 
 
 sys.stdout.write("Windows platform: %s, Python major version: %s.%s" % (ON_WINDOWS, _PYTHON_MAJOR_VERSION, os.sep))
