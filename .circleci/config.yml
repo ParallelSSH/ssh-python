@@ -38,6 +38,7 @@ jobs:
             python setup.py sdist
             cd dist; pip install *; cd ..
           name: Test
+
   osx:
     parameters:
       xcode_ver:
@@ -66,6 +67,7 @@ jobs:
           name: Upload Wheel
           command: |
             twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheels/*
+
   manylinux:
     machine:
       image: ubuntu-1604:201903-01
@@ -105,36 +107,37 @@ jobs:
           name: Upload Wheels
           command: |
             twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD dist/* wheelhouse/*
-# workflows:
-#   version: 2.1
-#   main:
-#     jobs:
-#       - python_test:
-#           matrix:
-#             parameters:
-#               python_ver:
-#                 - "3.6"
-#                 - "3.7"
-#                 - "3.8"
-#           filters:
-#             tags:
-#               ignore: /.*/
-#       - manylinux:
-#           context: Docker
-#           filters:
-#             tags:
-#               only: /.*/
-#             branches:
-#               ignore: /.*/
-#       - osx:
-#           matrix:
-#             parameters:
-#               xcode_ver:
-#                 - "11.6.0"
-#                 - "11.1.0"
-#           context: Docker
-#           filters:
-#             tags:
-#               only: /.*/
-#             branches:
-#               ignore: /.*/
+
+workflows:
+  version: 2.1
+  main:
+    jobs:
+      - python_test:
+          matrix:
+            parameters:
+              python_ver:
+                - "3.6"
+                - "3.7"
+                - "3.8"
+          filters:
+            tags:
+              ignore: /.*/
+      - manylinux:
+          context: Docker
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+      - osx:
+          matrix:
+            parameters:
+              xcode_ver:
+                - "11.6.0"
+                - "11.1.0"
+          context: Docker
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
