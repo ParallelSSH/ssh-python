@@ -1,7 +1,6 @@
 environment:
   global:
     PYTHONUNBUFFERED: 1
-    OPENSSL_VER: 1.1.0c
     SYSTEM_LIBSSH: 1
     PYPI_USER:
       secure: 2m0jy6JD/R9RExIosOT6YA==
