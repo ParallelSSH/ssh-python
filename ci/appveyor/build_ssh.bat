@@ -3,7 +3,7 @@ IF "%PYTHON_VERSION%" == "2.7" (exit 0)
 mkdir src
 cd src
 
-set OPENSSL_DIR="C:\OpenSSL-v11-Win%PYTHON_ARCH%\lib\VC\static"
+set OPENSSL_DIR="C:\OpenSSL-v11-Win%PYTHON_ARCH%"
 
 ls %OPENSSL_DIR%
 ls %OPENSSL_DIR%\lib\VC
