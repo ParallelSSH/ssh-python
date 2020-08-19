@@ -51,7 +51,7 @@ install:
   # Prepend newly installed Python to the PATH of this build (this cannot be
   # done from inside the powershell script as it would require to restart
   # the parent CMD process).
-  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  # - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
   # Check that we have the expected version and architecture for Python
   - "python --version"
@@ -59,14 +59,14 @@ install:
 
   # Upgrade to the latest version of pip to avoid it displaying warnings
   # about it being out of date.
-  # - "pip install --disable-pip-version-check --user --upgrade pip"
+  # - "pip install --disable-pip-version-check --user -U pip"
 
   # Install the build dependencies of the project. If some dependencies contain
   # compiled extensions and are not provided as pre-built wheel packages,
   # pip will build them from source using the MSVC compiler matching the
   # target Python version and architecture
   # - "%CMD_IN_ENV% pip install -r requirements_dev.txt"
-  - "%CMD_IN_ENV% pip install -U wheel setuptools twine cython"
+  - pip install -U pip wheel setuptools twine cython
 
   # .c files need to be generated on Windows to handle platform
   # specific code.
@@ -75,33 +75,22 @@ install:
   - python ci/appveyor/fix_version.py .
   - mv -f .git .git.bak
   - 7z x ci\appveyor\zlib1211.zip
-  # - appveyor DownloadFile https://www.openssl.org/source/openssl-%OPENSSL_VER%.tar.gz
-  # - appveyor DownloadFile http://www.p-nand-q.com/programming/windows/openssl-%OPENSSL_VER%-64bit-release-static-vs2015.7z
-  # - 7z x openssl-%OPENSSL_VER%-64bit-release-static-vs2015.7z
   # - appveyor DownloadFile https://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-src.zip
   # - 7z x kfw-4.1-src.zip
-  # - ls openssl-%OPENSSL_VER%-64bit-release-static-VS2015/lib
-  # - ls openssl-%OPENSSL_VER%-64bit-release-static-VS2015/bin
-  # - cp openssl-%OPENSSL_VER%-64bit-release-static-VS2015/bin/*.dll ssh/
   - ps: ls ssh
   - ps: ls
-  # - cinst make
 
 build_script:
-  # - "%CMD_IN_ENV% ci\\appveyor\\build_openssl.bat"
-  # - "%CMD_IN_ENV% ci\\appveyor\\rebuild_openssl_vs2015.cmd"
   # - "%CMD_IN_ENV% ci\\appveyor\\build_krb.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_zlib.bat"
   - "%CMD_IN_ENV% ci\\appveyor\\build_ssh.bat"
-  - ps: ls src/src
   - ps: ls src/src/Release
   - rm -f ssh/*.c
   - python -V
-  - "%CMD_IN_ENV% python setup.py build_ext -I libssh/include"
+  - "%CMD_IN_ENV% python setup.py build_ext"
   - "%CMD_IN_ENV% python setup.py build"
   - "%CMD_IN_ENV% python setup.py install"
   - ps: ls ssh
-  - ps: ls
 
 test_script:
   - cd dist

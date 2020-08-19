@@ -11,3 +11,5 @@ except ImportError as ex:
         sys.exit(0)
     print("{} {}".format(system(), python_version_tuple()[0]))
     raise
+else:
+    print("Import successful")

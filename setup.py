@@ -53,7 +53,6 @@ cython_args = {
     'cython_directives': cython_directives,
     'cython_compile_time_env': {
         'ON_WINDOWS': ON_WINDOWS,
-        # 'LIBSSH_STATIC': 1,
     }} \
     if USING_CYTHON else {}
 
@@ -82,7 +81,6 @@ if ON_WINDOWS:
         'libcrypto*.dll', 'libssl*.dll',
         'ssh.dll', 'msvcp*.dll', 'vcruntime*.dll',
     ])
-    # cython_args['LIBSSH_STATIC'] = '1'
 
 cmdclass = versioneer.get_cmdclass()
 if USING_CYTHON:

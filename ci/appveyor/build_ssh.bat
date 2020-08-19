@@ -3,17 +3,7 @@ IF "%PYTHON_VERSION%" == "2.7" (exit 0)
 mkdir src
 cd src
 
-ls %OPENSSL_DIR%
-ls %OPENSSL_DIR%\lib\VC
-ls %OPENSSL_DIR%\lib\VC\static
-
-IF "%MSVC%" == "Visual Studio 9" (
-   ECHO "Building without platform set"
-   set CMAKE_PLATFORM="NMake Makefiles"
-) ELSE (
-   ECHO "Building with platform %MSVC%"
-   set CMAKE_PLATFORM="%MSVC%"
-)
+set CMAKE_PLATFORM="%MSVC%"
 
 cmake ..\libssh  -G %CMAKE_PLATFORM%               ^
       -DCMAKE_BUILD_TYPE=Release                   ^
@@ -29,14 +19,5 @@ cp %OPENSSL_DIR%\lib\VC\libssl%PYTHON_ARCH%MD.lib %APPVEYOR_BUILD_FOLDER%
 cmake --build . --config Release
 
 cd ..
-ECHO "libssh libs"
-ls src/src/Release
 cp src/src/Release/ssh.lib %PYTHON%/libs/
-REM cp src/src/Release/ssh.lib ssh/
 cp src/src/Release/ssh.dll ssh/
-ECHO "Build dir libs"
-ls
-ECHO "Python libs"
-ls %PYTHON%/libs/
-ECHO "ssh/ libs"
-ls ssh/
