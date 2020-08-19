@@ -3,7 +3,7 @@ IF "%PYTHON_VERSION%" == "2.7" (exit 0)
 mkdir src
 cd src
 
-set OPENSSL_DIR="C:\OpenSSL-v11-Win%PYTHON_ARCH%"
+set OPENSSL_DIR="C:\OpenSSL-v11-Win%PYTHON_ARCH%\lib\VC\static"
 
 ls %OPENSSL_DIR%
 ls %OPENSSL_DIR%\lib\VC
@@ -35,7 +35,7 @@ cd ..
 ECHO "libssh libs"
 ls src/src/Release
 cp src/src/Release/ssh.lib %PYTHON%/libs/
-rem cp src/src/Release/* ssh/
+cp src/src/Release/ssh.lib ssh/
 ECHO "Python libs"
 ls %PYTHON%/libs/
 ECHO "ssh/ libs"
