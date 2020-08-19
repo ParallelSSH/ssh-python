@@ -1,9 +1,5 @@
 environment:
   global:
-    # SDK v7.0 MSVC Express 2008's SetEnv.cmd script will fail if the
-    # /E:ON and /V:ON options are not enabled in the batch script intepreter
-    # See: http://stackoverflow.com/a/13751649/163740
-    # CMD_IN_ENV: "cmd /E:ON /V:ON /C %APPVEYOR_BUILD_FOLDER%\\ci\\appveyor\\run_with_env.cmd"
     PYTHONUNBUFFERED: 1
     OPENSSL_VER: 1.1.0c
     SYSTEM_LIBSSH: 1
@@ -40,8 +36,6 @@ install:
         https://ci.appveyor.com/api/projects/$env:APPVEYOR_ACCOUNT_NAME/$env:APPVEYOR_PROJECT_SLUG/history?recordsNumber=50).builds | `
         Where-Object pullRequestId -eq $env:APPVEYOR_PULL_REQUEST_NUMBER)[0].buildNumber) { `
           throw "There are newer queued builds for this pull request, failing early." }
-  - ECHO "Installed SDKs:"
-  - ps: "ls \"C:/Program Files/Microsoft SDKs/Windows\""
   - set OPENSSL_DIR="C:\OpenSSL-v11-Win%PYTHON_ARCH%"
   - set VCLIBDIR=%WINDIR%\System32
   - cp %VCLIBDIR%/vcruntime*.dll ssh/
@@ -71,7 +65,7 @@ install:
   - ps: ls
 
 build_script:
-  # - "%CMD_IN_ENV% ci\\appveyor\\build_krb.bat"
+  # - ci\\appveyor\\build_krb.bat
   - ci\\appveyor\\build_zlib.bat
   - ci\\appveyor\\build_ssh.bat
   - ps: ls src/src/Release
@@ -88,12 +82,10 @@ test_script:
   - cd ..
 
 after_test:
-  # If tests are successful, create binary packages for the project.
-  - "%CMD_IN_ENV% python setup.py bdist_wheel"
+  - python setup.py bdist_wheel
   - mv dist/* .
 
 artifacts:
-  # Archive the generated packages in the ci.appveyor.com build report.
   - path: "*.whl"
 
 deploy_script:
