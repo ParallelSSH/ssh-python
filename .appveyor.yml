@@ -39,6 +39,7 @@ install:
   - set VCLIBDIR=%WINDIR%\System32
   - cp %VCLIBDIR%/vcruntime*.dll ssh/
   - cp %VCLIBDIR%/msvcp*.dll ssh/
+  - cp %VCLIBDIR%/msvcr*.dll ssh/
   - cp %OPENSSL_DIR%/bin/*.dll ssh/
 
   # Prepend newly installed Python to the PATH of this build (this cannot be

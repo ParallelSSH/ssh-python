@@ -83,7 +83,7 @@ package_data = {'ssh': ['*.pxd', 'libssh.so*']}
 if ON_WINDOWS:
     package_data['ssh'].extend([
         'libcrypto*.dll', 'libssl*.dll',
-        'ssh.dll', 'msvcp*.dll', 'vcruntime*.dll',
+        'ssh.dll', 'msvc*.dll', 'vcruntime*.dll',
     ])
 
 cmdclass = versioneer.get_cmdclass()
