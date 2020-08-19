@@ -22,6 +22,10 @@ _PYTHON_MAJOR_VERSION = int(platform.python_version_tuple()[0])
 ON_WINDOWS = platform.system() == 'Windows'
 SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0))
 
+if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
+    raise ImportError(
+        "ssh-python requires Python 3 or above on Windows platforms.")
+
 # Only build libssh if running a build
 if (len(sys.argv) >= 2 and not (
         '--help' in sys.argv[1:] or
