@@ -1,3 +1,9 @@
+max_jobs: 5
+build:
+  parallel: true
+  verbosity: minimal
+skip_branch_with_pr: true
+
 environment:
   global:
     PYTHONUNBUFFERED: 1
