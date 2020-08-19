@@ -21,7 +21,7 @@ cmake ..\libssh  -G %CMAKE_PLATFORM%               ^
       -DCMAKE_BUILD_TYPE=Release                   ^
       -DZLIB_LIBRARY=C:/zlib/lib/zlibstatic.lib    ^
       -DZLIB_INCLUDE_DIR=C:/zlib/include           ^
-      -DLIBSSH_STATIC=1                            ^
+      -DBUILD_STATIC_LIB=ON                        ^
       -DWITH_GSSAPI=ON                             ^
       -DOPENSSL_ROOT_DIR=%OPENSSL_DIR%
 
