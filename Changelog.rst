@@ -15,6 +15,8 @@ Packaging
 ----------
 
 * Added manylinux 2010 binary wheels.
+* Added OSX 10.14 and 10.15 binary wheels for Python 3.8
+* Added Windows 64-bit binary wheels for Python 3.6/3.7/3.8
 
 0.3.0
 ++++++++

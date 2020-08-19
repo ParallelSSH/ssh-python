@@ -15,6 +15,9 @@ Bindings for libssh_ C library.
    :target: https://pypi.python.org/pypi/ssh-python
 .. image:: https://img.shields.io/pypi/pyversions/ssh-python.svg
    :target: https://pypi.python.org/pypi/ssh-python
+.. image:: https://ci.appveyor.com/api/projects/status/2t4bmmtjvfy5s1in/branch/master?svg=true
+   :target: https://ci.appveyor.com/project/pkittenis/ssh-python
+
 
 Installation
 _____________

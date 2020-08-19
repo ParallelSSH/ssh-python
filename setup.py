@@ -18,12 +18,13 @@ except ImportError:
 else:
     USING_CYTHON = True
 
-if platform.system() == 'Windows' and platform.python_version_tuple()[0] == "2":
-    raise ImportError("ssh-python requires Python 3 or above on Windows platforms.")
-
 _PYTHON_MAJOR_VERSION = int(platform.python_version_tuple()[0])
 ON_WINDOWS = platform.system() == 'Windows'
 SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0))
+
+if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
+    raise ImportError(
+        "ssh-python requires Python 3 or above on Windows platforms.")
 
 # Only build libssh if running a build
 if (len(sys.argv) >= 2 and not (
@@ -59,9 +60,6 @@ cython_args = {
     }} \
     if USING_CYTHON else {}
 
-if USING_CYTHON:
-    sys.stdout.write("Cython arguments: %s%s" % (cython_args, os.linesep))
-
 
 runtime_library_dirs = ["$ORIGIN/."] if not SYSTEM_LIBSSH else None
 _lib_dir = os.path.abspath("./src/lib") if not SYSTEM_LIBSSH else "/usr/local/lib"
@@ -85,12 +83,13 @@ package_data = {'ssh': ['*.pxd', 'libssh.so*']}
 if ON_WINDOWS:
     package_data['ssh'].extend([
         'libcrypto*.dll', 'libssl*.dll',
+        'ssh.dll', 'msvc*.dll', 'vcruntime*.dll',
     ])
-    cython_args['LIBSSH_STATIC'] = '1'
 
 cmdclass = versioneer.get_cmdclass()
 if USING_CYTHON:
     cmdclass['build_ext'] = build_ext
+    sys.stdout.write("Cython arguments: %s%s" % (cython_args, os.linesep))
 
 
 sys.stdout.write("Windows platform: %s, Python major version: %s.%s" % (ON_WINDOWS, _PYTHON_MAJOR_VERSION, os.sep))

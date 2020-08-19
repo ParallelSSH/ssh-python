@@ -38,21 +38,36 @@ jobs:
             python setup.py sdist
             cd dist; pip install *; cd ..
           name: Test
+
   osx:
+    parameters:
+      xcode_ver:
+        type: string
+        default: "11.6.0"
     macos:
-      xcode: 11.6.0
+      xcode: << parameters.xcode_ver >>
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
-      PYENV: 3.6.11
       SYSTEM_LIBSSH: 1
     steps:
       - checkout
       - run:
           name: deps
           command: |
-            brew install cmake git-lfs
-            pip install twine
+            brew install cmake git-lfs krb5 python libssh
+            pip3 install twine
             which twine
+      - run:
+          name: Build Wheel
+          command: |
+            ./ci/osx-wheel.sh
+      - store_artifacts:
+          path: wheels
+      - run:
+          name: Upload Wheel
+          command: |
+            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheels/*
+
   manylinux:
     machine:
       image: ubuntu-1604:201903-01
@@ -92,6 +107,7 @@ jobs:
           name: Upload Wheels
           command: |
             twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD dist/* wheelhouse/*
+
 workflows:
   version: 2.1
   main:
@@ -113,7 +129,15 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
-      # - osx
-        # filters:
-        #   tags:
-        #     only: /.*/
+      - osx:
+          matrix:
+            parameters:
+              xcode_ver:
+                - "11.6.0"
+                - "11.1.0"
+          context: Docker
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
