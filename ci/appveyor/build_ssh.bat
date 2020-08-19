@@ -21,6 +21,7 @@ cmake ..\libssh  -G %CMAKE_PLATFORM%               ^
       -DCMAKE_BUILD_TYPE=Release                   ^
       -DZLIB_LIBRARY=C:/zlib/lib/zlibstatic.lib    ^
       -DZLIB_INCLUDE_DIR=C:/zlib/include           ^
+      -DLIBSSH_STATIC=1                            ^
       -DWITH_GSSAPI=ON                             ^
       -DOPENSSL_ROOT_DIR=%OPENSSL_DIR%
 
@@ -34,7 +35,7 @@ cd ..
 ECHO "libssh libs"
 ls src/src/Release
 cp src/src/Release/ssh.lib %PYTHON%/libs/
-cp src/src/Release/ssh.lib ssh/
+rem cp src/src/Release/* ssh/
 ECHO "Python libs"
 ls %PYTHON%/libs/
 ECHO "ssh/ libs"
