@@ -1,5 +1,6 @@
 # This file is part of ssh-python.
-# Copyright (C) 2017-2018 Panos Kittenis
+#
+# Copyright (C) 2017-2020 Panos Kittenis
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -19,7 +20,6 @@ from c_ssh cimport ssh_session, ssh_string
 cdef bytes to_bytes(_str)
 cdef object to_str(char *c_str)
 cdef object to_str_len(char *c_str, int length)
-cdef int _handle_general_error_codes(int errcode, ssh_session) except -1
 cdef int handle_error_codes(int errcode, ssh_session) except -1
 cdef int handle_auth_error_codes(int errcode, ssh_session) except -1
 cdef bytes ssh_string_to_bytes(ssh_string _str)

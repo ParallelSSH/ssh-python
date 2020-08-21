@@ -7431,7 +7431,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_86userauth_none(struct __pyx_ob
  *         with nogil:
  *             _check_connected(self._session)             # <<<<<<<<<<<<<<
  *             rc = c_ssh.ssh_userauth_none(self._session, NULL)
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  */
         __pyx_t_1 = __pyx_f_3ssh_7session__check_connected(__pyx_v_self->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 392, __pyx_L4_error)
 
@@ -7439,7 +7439,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_86userauth_none(struct __pyx_ob
  *         with nogil:
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_none(self._session, NULL)             # <<<<<<<<<<<<<<
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  * 
  */
         __pyx_v_rc = ssh_userauth_none(__pyx_v_self->_session, NULL);
@@ -7474,12 +7474,12 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_86userauth_none(struct __pyx_ob
   /* "ssh/session.pyx":394
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_none(self._session, NULL)
- *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
+ *         return handle_auth_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
  * 
  *     def userauth_list(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 394, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_3ssh_5utils_handle_auth_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 394, __pyx_L1_error)
   __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 394, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
@@ -7506,7 +7506,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_86userauth_none(struct __pyx_ob
 }
 
 /* "ssh/session.pyx":396
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  * 
  *     def userauth_list(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -7615,7 +7615,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_88userauth_list(struct __pyx_ob
   goto __pyx_L0;
 
   /* "ssh/session.pyx":396
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  * 
  *     def userauth_list(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
@@ -8175,7 +8175,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_96userauth_publickey_auto(struc
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_publickey_auto(             # <<<<<<<<<<<<<<
  *                 self._session, NULL, c_passphrase)
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  */
         __pyx_v_rc = ssh_userauth_publickey_auto(__pyx_v_self->_session, NULL, __pyx_v_c_passphrase);
       }
@@ -8209,12 +8209,12 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_96userauth_publickey_auto(struc
   /* "ssh/session.pyx":438
  *             rc = c_ssh.ssh_userauth_publickey_auto(
  *                 self._session, NULL, c_passphrase)
- *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
+ *         return handle_auth_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
  * 
  *     def userauth_password(self, username not None, password not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 438, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_auth_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 438, __pyx_L1_error)
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 438, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
@@ -8242,7 +8242,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_96userauth_publickey_auto(struc
 }
 
 /* "ssh/session.pyx":440
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  * 
  *     def userauth_password(self, username not None, password not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_username = to_bytes(username)
@@ -8422,7 +8422,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_password(             # <<<<<<<<<<<<<<
  *                 self._session, c_username, c_password)
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  */
         __pyx_v_rc = ssh_userauth_password(__pyx_v_self->_session, __pyx_v_c_username, __pyx_v_c_password);
       }
@@ -8456,12 +8456,12 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
   /* "ssh/session.pyx":450
  *             rc = c_ssh.ssh_userauth_password(
  *                 self._session, c_username, c_password)
- *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
+ *         return handle_auth_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
  * 
  *     def userauth_kbdint(self, username not None, submethods not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 450, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_auth_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 450, __pyx_L1_error)
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 450, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
@@ -8469,7 +8469,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
   goto __pyx_L0;
 
   /* "ssh/session.pyx":440
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  * 
  *     def userauth_password(self, username not None, password not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_username = to_bytes(username)
@@ -8490,7 +8490,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_98userauth_password(struct __py
 }
 
 /* "ssh/session.pyx":452
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  * 
  *     def userauth_kbdint(self, username not None, submethods not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_username = to_bytes(username)
@@ -8670,7 +8670,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
  *             _check_connected(self._session)
  *             rc = c_ssh.ssh_userauth_kbdint(             # <<<<<<<<<<<<<<
  *                 self._session, c_username, c_submethods)
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  */
         __pyx_v_rc = ssh_userauth_kbdint(__pyx_v_self->_session, __pyx_v_c_username, __pyx_v_c_submethods);
       }
@@ -8704,12 +8704,12 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
   /* "ssh/session.pyx":462
  *             rc = c_ssh.ssh_userauth_kbdint(
  *                 self._session, c_username, c_submethods)
- *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
+ *         return handle_auth_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
  * 
  *     def userauth_kbdint_getinstruction(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 462, __pyx_L1_error)
+  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_auth_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 462, __pyx_L1_error)
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 462, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
@@ -8717,7 +8717,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
   goto __pyx_L0;
 
   /* "ssh/session.pyx":452
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  * 
  *     def userauth_kbdint(self, username not None, submethods not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_username = to_bytes(username)
@@ -8738,7 +8738,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_100userauth_kbdint(struct __pyx
 }
 
 /* "ssh/session.pyx":464
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  * 
  *     def userauth_kbdint_getinstruction(self):             # <<<<<<<<<<<<<<
  *         cdef bytes b_instruction
@@ -8857,7 +8857,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_102userauth_kbdint_getinstructi
   goto __pyx_L0;
 
   /* "ssh/session.pyx":464
- *         return handle_error_codes(rc, self._session)
+ *         return handle_auth_error_codes(rc, self._session)
  * 
  *     def userauth_kbdint_getinstruction(self):             # <<<<<<<<<<<<<<
  *         cdef bytes b_instruction

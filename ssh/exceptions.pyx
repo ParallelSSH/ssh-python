@@ -23,14 +23,6 @@ class BaseSSHError(Exception):
     """Base class for all errors produced by libssh"""
 
 
-class RequestDenied(BaseSSHError):
-    """Raised on request denied by server errors"""
-
-
-class FatalError(BaseSSHError):
-    """Raised on unrecoverable errors"""
-
-
 class OtherError(BaseSSHError):
     """Raised on other non-specific fatal errors"""
 

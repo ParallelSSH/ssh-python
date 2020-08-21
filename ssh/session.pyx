@@ -391,7 +391,7 @@ cdef class Session:
         with nogil:
             _check_connected(self._session)
             rc = c_ssh.ssh_userauth_none(self._session, NULL)
-        return handle_error_codes(rc, self._session)
+        return handle_auth_error_codes(rc, self._session)
 
     def userauth_list(self):
         cdef int rc
@@ -435,7 +435,7 @@ cdef class Session:
             _check_connected(self._session)
             rc = c_ssh.ssh_userauth_publickey_auto(
                 self._session, NULL, c_passphrase)
-        return handle_error_codes(rc, self._session)
+        return handle_auth_error_codes(rc, self._session)
 
     def userauth_password(self, username not None, password not None):
         cdef bytes b_username = to_bytes(username)
@@ -447,7 +447,7 @@ cdef class Session:
             _check_connected(self._session)
             rc = c_ssh.ssh_userauth_password(
                 self._session, c_username, c_password)
-        return handle_error_codes(rc, self._session)
+        return handle_auth_error_codes(rc, self._session)
 
     def userauth_kbdint(self, username not None, submethods not None):
         cdef bytes b_username = to_bytes(username)
@@ -459,7 +459,7 @@ cdef class Session:
             _check_connected(self._session)
             rc = c_ssh.ssh_userauth_kbdint(
                 self._session, c_username, c_submethods)
-        return handle_error_codes(rc, self._session)
+        return handle_auth_error_codes(rc, self._session)
 
     def userauth_kbdint_getinstruction(self):
         cdef bytes b_instruction

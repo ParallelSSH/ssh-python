@@ -867,13 +867,13 @@ struct __pyx_obj_3ssh_7session_Session {
  * 
  * cdef class Channel:             # <<<<<<<<<<<<<<
  *     cdef c_ssh.ssh_channel _channel
- *     cdef readonly Session session
+ *     cdef Session _session
  */
 struct __pyx_obj_3ssh_7channel_Channel {
   PyObject_HEAD
   struct __pyx_vtabstruct_3ssh_7channel_Channel *__pyx_vtab;
   ssh_channel _channel;
-  struct __pyx_obj_3ssh_7session_Session *session;
+  struct __pyx_obj_3ssh_7session_Session *_session;
   int closed;
 };
 
@@ -913,7 +913,7 @@ struct __pyx_obj_3ssh_9connector_Connector {
  * 
  * cdef class Channel:             # <<<<<<<<<<<<<<
  *     cdef c_ssh.ssh_channel _channel
- *     cdef readonly Session session
+ *     cdef Session _session
  */
 
 struct __pyx_vtabstruct_3ssh_7channel_Channel {
