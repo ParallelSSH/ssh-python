@@ -77,11 +77,11 @@ cdef class Session:
         cdef c_ssh.socket_t _sock = PyObject_AsFileDescriptor(socket)
         cdef c_ssh.ssh_options_e fd = c_ssh.ssh_options_e.SSH_OPTIONS_FD
         cdef int rc
+        self.sock = socket
+        self._sock = _sock
         with nogil:
             rc = c_ssh.ssh_options_set(self._session, fd, &_sock)
         handle_error_codes(rc, self._session)
-        self._sock = _sock
-        self.sock = socket
         return rc
 
     def blocking_flush(self, int timeout):
@@ -96,10 +96,9 @@ cdef class Session:
         with nogil:
             _check_connected(self._session)
             _channel = c_ssh.ssh_channel_new(self._session)
-            if _channel is NULL:
-                with gil:
-                    return handle_error_codes(
-                        c_ssh.ssh_get_error_code(self._session), self._session)
+        if _channel is NULL:
+            return handle_error_codes(
+                c_ssh.ssh_get_error_code(self._session), self._session)
         channel = Channel.from_ptr(_channel, self)
         return channel
 
