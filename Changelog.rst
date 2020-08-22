@@ -1,6 +1,25 @@
 Change Log
 =============
 
+
+0.5.0
++++++
+
+Changes
+--------
+
+* Updated exception handling to match libssh API - `ssh.exceptions.SSHError` raised on all non-specific errors.
+* Updated authentication exception handling to raise specific authentication errors.
+* Added `Session.disconnect` implementation.
+* Channel object initialisation now requires Session object to be passed in.
+
+
+Fixes
+------
+
+* Channel deallocation would crash on double free when session channel open failed.
+
+
 0.4.0
 +++++++
 

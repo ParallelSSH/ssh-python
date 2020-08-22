@@ -28,6 +28,7 @@ Bindings for libssh_ C library.
 
    installation
    api
+   Changelog
 
 
 Indices and tables

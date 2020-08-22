@@ -141,15 +141,11 @@ cdef class Session:
         return handle_error_codes(rc, self._session)
 
     def disconnect(self):
-        """No-op. Handled by object de-allocation."""
-        # Due to bug in libssh that segfaults if session
-        # is disconnected before freeing channels spawned
-        # by that session - even if channels are closed.
-        pass
-        # if not c_ssh.ssh_is_connected(self._session):
-        #     return
-        # with nogil:
-        #     c_ssh.ssh_disconnect(self._session)
+        """Disconnect session and close socket"""
+        if not c_ssh.ssh_is_connected(self._session):
+            return
+        with nogil:
+            c_ssh.ssh_disconnect(self._session)
 
     def connector_new(self):
         cdef c_ssh.ssh_connector _connector
