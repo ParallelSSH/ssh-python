@@ -19,8 +19,6 @@ import socket
 import os
 from select import select
 
-from .base_test import SSHTestCase
-
 from ssh.session import Session, SSH_AUTH_AGAIN, SSH_READ_PENDING, SSH_WRITE_PENDING
 from ssh.channel import Channel
 from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
@@ -30,6 +28,8 @@ from ssh.exceptions import KeyImportError, InvalidAPIUse, \
 from ssh.scp import SCP, SSH_SCP_READ, SSH_SCP_WRITE, SSH_SCP_RECURSIVE
 from ssh.error_codes import SSH_AGAIN
 from ssh.utils import wait_socket
+
+from .base_case import SSHTestCase
 
 
 class SessionTest(SSHTestCase):

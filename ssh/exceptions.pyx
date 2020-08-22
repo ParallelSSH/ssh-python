@@ -23,6 +23,17 @@ class BaseSSHError(Exception):
     """Base class for all errors produced by libssh"""
 
 
+class SSHError(BaseSSHError):
+    """Raised on errors returned by libssh.
+
+    This is the general error libssh returns when any error
+    occurs, whether that be server error or API error.
+
+    Some functions like authentication have more specific error
+    codes.
+    """
+
+
 class OtherError(BaseSSHError):
     """Raised on other non-specific fatal errors"""
 
@@ -51,12 +62,8 @@ class KeyGenerationError(BaseSSHError):
     """Raised on errors generating key"""
 
 
-class SSHError(BaseSSHError):
-    """Raised on errors using the libssh API and unknown errors from servers"""
-
-
 class EOF(BaseSSHError):
-    """Raised on EOF errors"""
+    """Raised on EOF from remote channel"""
 
 
 class InvalidAPIUse(BaseSSHError):

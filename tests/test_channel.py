@@ -18,14 +18,14 @@ import unittest
 from pytest import mark
 from time import sleep
 
-from .base_test import SSHTestCase
-
 from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
 from ssh import options
 from ssh.exceptions import KeyImportError
 from ssh.utils import wait_socket
 from ssh.error_codes import SSH_AGAIN
 from ssh.exceptions import EOF, SSHError
+
+from .base_case import SSHTestCase
 
 
 class ChannelTest(SSHTestCase):

@@ -71,7 +71,12 @@ cdef bytes ssh_string_to_bytes(ssh_string _str):
 
 
 def wait_socket(session not None, sock not None, timeout=None):
-    directions = session.get_poll_flags()
+    """Helper function for testing non-blocking mode.
+
+    This function blocks the calling thread for <timeout> seconds -
+    to be used only for testing purposes.
+    """
+    cdef int directions = session.get_poll_flags()
     if directions == 0:
         return 0
     readfds = (sock,) \
