@@ -19,5 +19,3 @@ cp %OPENSSL_DIR%\lib\VC\libssl%PYTHON_ARCH%MD.lib %APPVEYOR_BUILD_FOLDER%
 cmake --build . --config Release
 
 cd ..
-cp src/src/Release/ssh.lib %PYTHON%/libs/
-cp src/src/Release/ssh.dll ssh/

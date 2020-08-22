@@ -54,20 +54,8 @@ install:
   - cp %VCLIBDIR%/msvcr*.dll ssh/
   - cp %OPENSSL_DIR%/bin/*.dll ssh/
 
-  # Prepend newly installed Python to the PATH of this build (this cannot be
-  # done from inside the powershell script as it would require to restart
-  # the parent CMD process).
-  # - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-
-  # Check that we have the expected version and architecture for Python
   - for %%I in (%PYTHONVERS%) do %%I\python.exe -V
   - for %%I in (%PYTHONVERS%) do %%I\Scripts\pip install -U wheel setuptools twine cython
-
-  # - for %%PYTHONDIR in (%PYTHONVERS%) do %%PYTHONDIR\python.exe -V
-    #     set pip=%python_dir\\Scripts\\pip
-    #     %python% -V
-    #     %pip% install -U wheel setuptools twine cython
-    # )
 
   # .c files need to be generated on Windows to handle platform
   # specific code.
@@ -86,8 +74,13 @@ install:
 build_script:
   # - ci\\appveyor\\build_krb.bat
   - ci\\appveyor\\build_zlib.bat
+  - for %%I in (%PYTHONVERS%) do cp C:/zlib/lib/zlibstatic.lib %%I/libs/
+  - for %%I in (%PYTHONVERS%) do ls %%I/libs/
+
   - ci\\appveyor\\build_ssh.bat
   - ps: ls src/src/Release
+  - cp src/src/Release/ssh.dll ssh/
+  - for %%I in (%PYTHONVERS%) do cp src/src/Release/ssh.lib %%I/libs/
   - rm -f ssh/*.c
   - for %%I in (%PYTHONVERS%) do %%I\python.exe -V
   - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py build_ext
