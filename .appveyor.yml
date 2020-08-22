@@ -60,12 +60,11 @@ install:
   # - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
   # Check that we have the expected version and architecture for Python
-  - for %PYTHON_DIR in (%PYTHON_VERS%) do (
-        set python=%PYTHON_DIR\\python.exe
-        set pip=%python_dir\\Scripts\\pip
-        %python% -V
-        %pip% install -U wheel setuptools twine cython
-    )
+  - for %%PYTHON_DIR in (%PYTHON_VERS%) do %%PYTHON_DIR\\python.exe -V
+    #     set pip=%python_dir\\Scripts\\pip
+    #     %python% -V
+    #     %pip% install -U wheel setuptools twine cython
+    # )
 
   # .c files need to be generated on Windows to handle platform
   # specific code.
