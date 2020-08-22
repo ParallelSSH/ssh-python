@@ -1,6 +1,13 @@
 Change Log
 =============
 
+0.5.1
++++++
+
+Changes
+--------
+
+* Added function for setting GSSAPI credentials delegation option to session
 
 0.5.0
 +++++
