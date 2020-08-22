@@ -50,8 +50,8 @@ install:
   - 7z x ci\appveyor\zlib1211.zip
   - appveyor DownloadFile http://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-amd64.msi
   - msiexec /a kfw-4.1-amd64.msi /passive /qn
-  - ps: ls C:\Program Files\MIT\Kerberos\
-  - cp C:\Program Files\MIT\Kerberos\*.dll ssh/
+  - ps: ls "C:\Program Files\MIT\Kerberos\"
+  - cp "C:\Program Files\MIT\Kerberos\*.dll" ssh/
   - ps: ls ssh
   - ps: ls
 
