@@ -20,21 +20,21 @@ else:
 
 _PYTHON_MAJOR_VERSION = int(platform.python_version_tuple()[0])
 ON_WINDOWS = platform.system() == 'Windows'
-SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0))
+ON_RTD = os.environ.get('READTHEDOCS') == 'True'
+SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0)) or ON_RTD
 
 if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
     raise ImportError(
         "ssh-python requires Python 3 or above on Windows platforms.")
 
-# Only build libssh if running a build
-if (len(sys.argv) >= 2 and not (
+# Only build libssh if SYSTEM_LIBSSH is not set and running a build
+if not SYSTEM_LIBSSH and (len(sys.argv) >= 2 and not (
         '--help' in sys.argv[1:] or
         sys.argv[1] in (
             '--help-commands', 'egg_info', '--version', 'clean',
             'sdist', '--long-description')) and
-        __name__ == '__main__'):
-    if not (ON_WINDOWS and _PYTHON_MAJOR_VERSION != 2):
-        build_ssh()
+                          __name__ == '__main__'):
+    build_ssh()
 
 ext = 'pyx' if USING_CYTHON else 'c'
 sources = glob('ssh/*.%s' % (ext,))
