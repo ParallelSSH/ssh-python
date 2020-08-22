@@ -21,7 +21,8 @@ else:
 _PYTHON_MAJOR_VERSION = int(platform.python_version_tuple()[0])
 ON_WINDOWS = platform.system() == 'Windows'
 ON_RTD = os.environ.get('READTHEDOCS') == 'True'
-SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0)) or ON_RTD
+SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0)) or \
+                ON_RTD or ON_WINDOWS
 
 if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
     raise ImportError(
@@ -63,7 +64,8 @@ cython_args = {
 
 runtime_library_dirs = ["$ORIGIN/."] if not SYSTEM_LIBSSH else None
 _lib_dir = os.path.abspath("./src/lib") if not SYSTEM_LIBSSH else "/usr/local/lib"
-include_dirs = ["libssh/include"] if ON_WINDOWS or not SYSTEM_LIBSSH else ["/usr/local/include"]
+include_dirs = ["libssh/include"] if (ON_WINDOWS or ON_RTD) or \
+               not SYSTEM_LIBSSH else ["/usr/local/include"]
 
 extensions = [
     Extension(
