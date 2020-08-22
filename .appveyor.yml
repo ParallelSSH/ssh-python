@@ -60,9 +60,9 @@ install:
   # - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
   # Check that we have the expected version and architecture for Python
-  - FOR /r %python_dir in (%%PYTHON_VERS%%) DO (
-        set python="%python_dir\\python.exe"
-        set pip="%python_dir%\\Scripts\\pip"
+  - FOR /r %%python_dir in (%PYTHON_VERS%) DO (
+        set python="%%python_dir\\python.exe"
+        set pip="%%python_dir\\Scripts\\pip"
         "%python% -V"
         "%pip% install -U wheel setuptools twine cython"
     )
@@ -87,9 +87,9 @@ build_script:
   - ci\\appveyor\\build_ssh.bat
   - ps: ls src/src/Release
   - rm -f ssh/*.c
-  - FOR /r %python_dir in (%%PYTHON_VERS%%) DO (
-        set python="%python_dir\\python.exe"
-        set pip="%python_dir%\\Scripts\\pip"
+  - FOR /r %%python_dir in (%PYTHON_VERS%) DO (
+        set python="%%python_dir\\python.exe"
+        set pip="%%python_dir\\Scripts\\pip"
         "%python% -V"
         "%python% setup.py build_ext"
         "%python% setup.py build"
@@ -99,15 +99,15 @@ build_script:
 
 test_script:
   - cd dist
-  - FOR /r %python_dir in (%%PYTHON_VERS%%) DO (
-        set python="%python_dir\\python.exe"
+  - FOR /r %%python_dir in (%PYTHON_VERS%) DO (
+        set python="%%python_dir\\python.exe"
         "%python% ..\\ci\\appveyor\\import_test.py"
     )
   - cd ..
 
 after_test:
-  - FOR /r %python_dir in (%%PYTHON_VERS%%) DO (
-        set python="%python_dir\\python.exe"
+  - FOR /r %%python_dir in (%PYTHON_VERS%) DO (
+        set python="%%python_dir\\python.exe"
         "%python% setup.py bdist_wheel"
     )
   - mv dist/* .
