@@ -61,10 +61,10 @@ install:
 
   # Check that we have the expected version and architecture for Python
   - ps: ForEach($python in %PYTHON_VERS%) {
-            $pip="$python\\Scripts\\pip"
-            "$python --version"
-            "$python -c \"import struct; print(struct.calcsize('P') * 8)\""
-            "$pip install -U wheel setuptools twine cython"
+            $pip="$python\\Scripts\\pip";
+            "$python --version";
+            "$python -c \"import struct; print(struct.calcsize('P') * 8)\"";
+            "$pip install -U wheel setuptools twine cython";
         }
 
   # .c files need to be generated on Windows to handle platform
@@ -88,23 +88,23 @@ build_script:
   - ps: ls src/src/Release
   - rm -f ssh/*.c
   - ps: ForEach($python in %PYTHON_VERS%) {
-            "$python -V"
-            "$python setup.py build_ext"
-            "$python setup.py build"
-            "$python setup.py install"
+            "$python -V";
+            "$python setup.py build_ext";
+            "$python setup.py build";
+            "$python setup.py install";
         }
   - ps: ls ssh
 
 test_script:
   - cd dist
   - ps: ForEach($python in %PYTHON_VERS%) {
-            "$python ..\\ci\\appveyor\\import_test.py"
+            "$python ..\\ci\\appveyor\\import_test.py";
             }
   - cd ..
 
 after_test:
   - ps: ForEach($python in %PYTHON_VERS%) {
-            "$python setup.py bdist_wheel"
+            "$python setup.py bdist_wheel";
         }
   - mv dist/* .
 
