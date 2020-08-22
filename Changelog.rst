@@ -1,13 +1,16 @@
 Change Log
 =============
 
-0.5.1
+
+0.6.0
 +++++
 
 Changes
 --------
 
-* Added function for setting GSSAPI credentials delegation option to session
+* Added function for setting GSS-API credentials delegation option to session.
+* Updated error handling for all user authentication session functions to raise specific authentication errors.
+
 
 0.5.0
 +++++
@@ -42,6 +45,7 @@ Packaging
 * Added manylinux 2010 binary wheels.
 * Added OSX 10.14 and 10.15 binary wheels for Python 3.8
 * Added Windows 64-bit binary wheels for Python 3.6/3.7/3.8
+
 
 0.3.0
 ++++++++

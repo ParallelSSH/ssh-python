@@ -6479,7 +6479,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_66send_debug(struct __pyx_obj_3
  *                 self._session, c_message, always_display)
  *         return handle_error_codes(rc, self._session)             # <<<<<<<<<<<<<<
  * 
- *     def gssapi_set_creds(self, object creds not None):
+ *     def gssapi_set_creds(self, creds not None):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->_session); if (unlikely(__pyx_t_2 == ((int)-1))) __PYX_ERR(0, 352, __pyx_L1_error)
@@ -6511,7 +6511,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_66send_debug(struct __pyx_obj_3
 /* "ssh/session.pyx":354
  *         return handle_error_codes(rc, self._session)
  * 
- *     def gssapi_set_creds(self, object creds not None):             # <<<<<<<<<<<<<<
+ *     def gssapi_set_creds(self, creds not None):             # <<<<<<<<<<<<<<
  *         raise NotImplementedError
  * 
  */
@@ -6550,7 +6550,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_68gssapi_set_creds(CYTHON_UNUSE
 
   /* "ssh/session.pyx":355
  * 
- *     def gssapi_set_creds(self, object creds not None):
+ *     def gssapi_set_creds(self, creds not None):
  *         raise NotImplementedError             # <<<<<<<<<<<<<<
  * 
  *     def service_request(self, bytes service):
@@ -6561,7 +6561,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_68gssapi_set_creds(CYTHON_UNUSE
   /* "ssh/session.pyx":354
  *         return handle_error_codes(rc, self._session)
  * 
- *     def gssapi_set_creds(self, object creds not None):             # <<<<<<<<<<<<<<
+ *     def gssapi_set_creds(self, creds not None):             # <<<<<<<<<<<<<<
  *         raise NotImplementedError
  * 
  */

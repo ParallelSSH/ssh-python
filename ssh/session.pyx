@@ -351,7 +351,7 @@ cdef class Session:
                 self._session, c_message, always_display)
         return handle_error_codes(rc, self._session)
 
-    def gssapi_set_creds(self, object creds not None):
+    def gssapi_set_creds(self, creds not None):
         raise NotImplementedError
 
     def service_request(self, bytes service):
