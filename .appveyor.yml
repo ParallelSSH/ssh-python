@@ -18,24 +18,6 @@ environment:
     PYTHON_ARCH: "64"
     MSVC: "Visual Studio 14 Win64"
     ARCH: x64_86
-  # matrix:
-  #   - PYTHON: "C:\\Python36-x64"
-  #     PYTHON_VERSION: "3.6"
-  #     PYTHON_ARCH: "64"
-  #     MSVC: "Visual Studio 14 Win64"
-  #     ARCH: x64_86
-
-  #   - PYTHON: "C:\\Python37-x64"
-  #     PYTHON_VERSION: "3.7"
-  #     PYTHON_ARCH: "64"
-  #     MSVC: "Visual Studio 14 Win64"
-  #     ARCH: x64_86
-
-  #   - PYTHON: "C:\\Python38-x64"
-  #     PYTHON_VERSION: "3.8"
-  #     PYTHON_ARCH: "64"
-  #     MSVC: "Visual Studio 14 Win64"
-  #     ARCH: x64_86
 
 install:
   # If there is a newer build queued for the same PR, cancel this one.
@@ -66,26 +48,26 @@ install:
   - "%PYTHON_DEF%\\python.exe ci/appveyor/fix_version.py ."
   - mv -f .git .git.bak
   - 7z x ci\appveyor\zlib1211.zip
-  # - appveyor DownloadFile https://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-src.zip
-  # - 7z x kfw-4.1-src.zip
+  - appveyor DownloadFile http://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-amd64.msi
+  - msiexec /quiet /qn /a /passive kfw-4.1-amd64.msi
+  - ps: ls C:\Program Files\MIT\Kerberos\
   - ps: ls ssh
   - ps: ls
 
 build_script:
-  # - ci\\appveyor\\build_krb.bat
   - ci\\appveyor\\build_zlib.bat
-  - for %%I in (%PYTHONVERS%) do cp C:/zlib/lib/zlibstatic.lib %%I/libs/
-  - for %%I in (%PYTHONVERS%) do ls %%I/libs/
+  # - for %%I in (%PYTHONVERS%) do cp C:/zlib/lib/zlibstatic.lib %%I/libs/
+  # - for %%I in (%PYTHONVERS%) do ls %%I/libs/
 
   - ci\\appveyor\\build_ssh.bat
-  - ps: ls src/src/Release
-  - cp src/src/Release/ssh.dll ssh/
-  - for %%I in (%PYTHONVERS%) do cp src/src/Release/ssh.lib %%I/libs/
-  - rm -f ssh/*.c
-  - for %%I in (%PYTHONVERS%) do %%I\python.exe -V
-  - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py build_ext
-  - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py build
-  - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py install
+  # - ps: ls src/src/Release
+  # - cp src/src/Release/ssh.dll ssh/
+  # - for %%I in (%PYTHONVERS%) do cp src/src/Release/ssh.lib %%I/libs/
+  # - rm -f ssh/*.c
+  # - for %%I in (%PYTHONVERS%) do %%I\python.exe -V
+  # - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py build_ext
+  # - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py build
+  # - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py install
   - ps: ls ssh
 
 test_script:
