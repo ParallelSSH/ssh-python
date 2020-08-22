@@ -12,7 +12,7 @@ environment:
       secure: 2m0jy6JD/R9RExIosOT6YA==
     PYPI_PASS:
       secure: x+dF0A8BZUf2IrPNRN1O0w==
-    PYTHON: "C:\\Python36-x64"
+    PYTHON_DEF: "C:\\Python36-x64"
     PYTHON_VERSION: "3.6"
     PYTHON_VERS: C:\\Python36-x64 C:\\Python37-x64 C:\\Python38-x64
     PYTHON_ARCH: "64"
@@ -60,7 +60,7 @@ install:
   # - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
   # Check that we have the expected version and architecture for Python
-  - FOR %python_dir in (%%PYTHON_VERS%%) DO (
+  - FOR /r %python_dir in (%%PYTHON_VERS%%) DO (
         set python="%python_dir\\python.exe"
         set pip="%python_dir%\\Scripts\\pip"
         "%python% -V"
@@ -73,7 +73,7 @@ install:
   # do not cause a version change.
   # - python ci/appveyor/fix_version.py .
   # - mv -f .git .git.bak
-  - "%PYTHON%\\python.exe ci/appveyor/fix_version.py ."
+  - "%PYTHON_DEF%\\python.exe ci/appveyor/fix_version.py ."
   - mv -f .git .git.bak
   - 7z x ci\appveyor\zlib1211.zip
   # - appveyor DownloadFile https://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-src.zip
@@ -87,7 +87,7 @@ build_script:
   - ci\\appveyor\\build_ssh.bat
   - ps: ls src/src/Release
   - rm -f ssh/*.c
-  - FOR %python_dir in (%%PYTHON_VERS%%) DO (
+  - FOR /r %python_dir in (%%PYTHON_VERS%%) DO (
         set python="%python_dir\\python.exe"
         set pip="%python_dir%\\Scripts\\pip"
         "%python% -V"
@@ -99,14 +99,14 @@ build_script:
 
 test_script:
   - cd dist
-  - FOR %python_dir in (%%PYTHON_VERS%%) DO (
+  - FOR /r %python_dir in (%%PYTHON_VERS%%) DO (
         set python="%python_dir\\python.exe"
         "%python% ..\\ci\\appveyor\\import_test.py"
     )
   - cd ..
 
 after_test:
-  - FOR %python_dir in (%%PYTHON_VERS%%) DO (
+  - FOR /r %python_dir in (%%PYTHON_VERS%%) DO (
         set python="%python_dir\\python.exe"
         "%python% setup.py bdist_wheel"
     )
@@ -116,4 +116,4 @@ artifacts:
   - path: "*.whl"
 
 deploy_script:
-  - "%PYTHON%\\python.exe ci/appveyor/pypi_upload.py *.whl"
+  - "%PYTHON_DEF%\\python.exe ci/appveyor/pypi_upload.py *.whl"
