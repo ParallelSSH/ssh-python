@@ -17,8 +17,6 @@
 import unittest
 import socket
 
-from .base_test import SSHTestCase
-
 from ssh.session import Session
 from ssh import options
 from ssh.event import Event
@@ -26,6 +24,8 @@ from ssh.callbacks import Callbacks
 from ssh.connector import CONNECTOR_STDOUT, CONNECTOR_STDERR, \
     CONNECTOR_BOTH
 from ssh.exceptions import SSHError
+
+from .base_case import SSHTestCase
 
 
 class CallbacksTest(SSHTestCase):

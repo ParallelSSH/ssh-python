@@ -19,16 +19,17 @@ import socket
 import os
 from select import select
 
-from .base_test import SSHTestCase
-
 from ssh.session import Session, SSH_AUTH_AGAIN, SSH_READ_PENDING, SSH_WRITE_PENDING
 from ssh.channel import Channel
 from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
 from ssh import options
-from ssh.exceptions import RequestDenied, KeyImportError, InvalidAPIUse
+from ssh.exceptions import KeyImportError, InvalidAPIUse, \
+    AuthenticationDenied
 from ssh.scp import SCP, SSH_SCP_READ, SSH_SCP_WRITE, SSH_SCP_RECURSIVE
 from ssh.error_codes import SSH_AGAIN
 from ssh.utils import wait_socket
+
+from .base_case import SSHTestCase
 
 
 class SessionTest(SSHTestCase):
@@ -93,15 +94,15 @@ class SessionTest(SSHTestCase):
         session.options_set_port(self.port)
         self.assertEqual(session.set_socket(sock), 0)
         self.assertEqual(session.connect(), 0)
-        self.assertRaises(RequestDenied, session.userauth_none)
+        self.assertRaises(AuthenticationDenied, session.userauth_none)
         self.assertEqual(
             session.userauth_publickey(self.pkey), 0)
 
     def test_connect(self):
         self.assertEqual(self.session.connect(), 0)
-        self.assertRaises(RequestDenied, self.session.userauth_none)
+        self.assertRaises(AuthenticationDenied, self.session.userauth_none)
         self.assertRaises(
-            RequestDenied, self.session.userauth_publickey_auto, '')
+            AuthenticationDenied, self.session.userauth_publickey_auto, '')
 
     def test_key_auth(self):
         self.assertEqual(self.session.connect(), 0)

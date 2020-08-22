@@ -17,10 +17,10 @@
 import unittest
 import socket
 
-from .base_test import SSHTestCase
-
 from ssh.connector import Connector, CONNECTOR_STDOUT, CONNECTOR_STDERR, \
     CONNECTOR_BOTH
+
+from .base_case import SSHTestCase
 
 
 class ConnectorTest(SSHTestCase):

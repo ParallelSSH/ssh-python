@@ -23,7 +23,7 @@ from c_ssh cimport ssh_error_types_e, ssh_get_error, ssh_auth_e, \
     ssh_string_get_char, ssh_string_free, ssh_string_len, SSH_READ_PENDING, \
     SSH_WRITE_PENDING
 
-from exceptions import RequestDenied, FatalError, OtherError, \
+from exceptions import OtherError, \
     AuthenticationPartial, AuthenticationDenied, AuthenticationError, \
     SSHError, EOF
 
@@ -71,7 +71,12 @@ cdef bytes ssh_string_to_bytes(ssh_string _str):
 
 
 def wait_socket(session not None, sock not None, timeout=None):
-    directions = session.get_poll_flags()
+    """Helper function for testing non-blocking mode.
+
+    This function blocks the calling thread for <timeout> seconds -
+    to be used only for testing purposes.
+    """
+    cdef int directions = session.get_poll_flags()
     if directions == 0:
         return 0
     readfds = (sock,) \
@@ -81,7 +86,7 @@ def wait_socket(session not None, sock not None, timeout=None):
     select(readfds, writefds, (), timeout)
 
 
-cdef int _handle_general_error_codes(
+cdef int handle_error_codes(
         int errcode, ssh_session session) except -1:
     if errcode == SSH_OK:
         return SSH_OK
@@ -95,17 +100,6 @@ cdef int _handle_general_error_codes(
         if errcode < 0:
             raise OtherError(ssh_get_error(session))
         return errcode
-
-
-cdef int handle_error_codes(int errcode, ssh_session session) except -1:
-    if errcode == ssh_error_types_e.SSH_NO_ERROR:
-        return 0
-    elif errcode == ssh_error_types_e.SSH_REQUEST_DENIED:
-        raise RequestDenied(ssh_get_error(session))
-    elif errcode == ssh_error_types_e.SSH_FATAL:
-        raise FatalError(ssh_get_error(session))
-    else:
-        return _handle_general_error_codes(errcode, session)
 
 
 cdef int handle_auth_error_codes(int errcode, ssh_session session) except -1:

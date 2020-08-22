@@ -31,10 +31,10 @@ from ssh.sftp_handles import SFTPDir, SFTPFile
 from ssh.sftp_attributes import SFTPAttributes
 from ssh.exceptions import InvalidAPIUse, SFTPHandleError, SFTPError
 from ssh.error_codes import SSH_AGAIN
-from ssh.helper import wait_socket
+from ssh.utils import wait_socket
 
 
-from .base_test import SSHTestCase
+from .base_case import SSHTestCase
 
 
 class SFTPTest(SSHTestCase):

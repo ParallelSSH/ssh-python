@@ -31,6 +31,9 @@ script:
   - flake8 ssh
   - python setup.py sdist
   - cd dist; pip install *; cd ..
+  - cd doc
+  - make html
+  - cd ..
 jobs:
   include:
     - stage: build wheels

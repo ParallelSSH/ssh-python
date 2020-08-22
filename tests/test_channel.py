@@ -18,14 +18,14 @@ import unittest
 from pytest import mark
 from time import sleep
 
-from .base_test import SSHTestCase
-
 from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
 from ssh import options
-from ssh.exceptions import RequestDenied, KeyImportError
+from ssh.exceptions import KeyImportError
 from ssh.utils import wait_socket
 from ssh.error_codes import SSH_AGAIN
 from ssh.exceptions import EOF, SSHError
+
+from .base_case import SSHTestCase
 
 
 class ChannelTest(SSHTestCase):
@@ -69,7 +69,6 @@ class ChannelTest(SSHTestCase):
         self.assertFalse(chan.is_open())
         self.assertTrue(chan.is_closed())
 
-    @mark.flaky(reruns=5)
     def test_channel_non_blocking_exec(self):
         self._auth()
         self.session.set_blocking(0)
@@ -93,18 +92,19 @@ class ChannelTest(SSHTestCase):
         self.assertFalse(chan.is_eof())
         self.assertFalse(chan.is_closed())
         all_data = b""
-        wait_socket(self.session, self.sock)
-        size, data = chan.read_nonblocking()
-        while size > 0:
-            all_data += data
+        while True:
             try:
+                if chan.poll():
+                    wait_socket(self.session, self.sock)
                 size, data = chan.read_nonblocking()
+                if size > 0:
+                    all_data += data
             except EOF:
                 break
         lines = [s.decode('utf-8') for s in all_data.splitlines()]
         self.assertEqual(lines[0], self.resp)
-        wait_socket(self.session, self.sock)
         self.assertRaises(SSHError, chan.read)
+        self.assertRaises(EOF, chan.poll)
         self.assertTrue(chan.is_eof())
         rc = chan.close()
         while rc == SSH_AGAIN:
