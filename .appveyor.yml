@@ -61,7 +61,12 @@ install:
   # - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
 
   # Check that we have the expected version and architecture for Python
-  - for %%I in (%QTDIRS%) do %%I\python.exe -V
+  - for %%I in (%QTDIRS%) do (
+        set python=%%I\python.exe
+        set pip=%%I\Scripts\pip
+        %pip% install -U wheel setuptools twine cython
+        %python% -V
+    )
   # - for %%PYTHONDIR in (%PYTHONVERS%) do %%PYTHONDIR\python.exe -V
     #     set pip=%python_dir\\Scripts\\pip
     #     %python% -V
