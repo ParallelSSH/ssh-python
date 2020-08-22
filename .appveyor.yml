@@ -48,27 +48,27 @@ install:
   - "%PYTHON_DEF%\\python.exe ci/appveyor/fix_version.py ."
   - mv -f .git .git.bak
   - 7z x ci\appveyor\zlib1211.zip
-  - appveyor DownloadFile http://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-amd64.msi
-  - msiexec /a kfw-4.1-amd64.msi /passive /qn
-  - ps: ls "C:\Program Files\MIT\Kerberos\"
-  - cp "C:\Program Files\MIT\Kerberos\*.dll" ssh/
+  # - appveyor DownloadFile http://web.mit.edu/kerberos/dist/kfw/4.1/kfw-4.1-amd64.msi
+  # - msiexec /i kfw-4.1-amd64.msi /passive /qn
+  # - ps: ls "C:\Program Files\MIT\Kerberos\"
+  # - cp "C:\Program Files\MIT\Kerberos\*.dll" ssh/
   - ps: ls ssh
   - ps: ls
 
 build_script:
   - ci\\appveyor\\build_zlib.bat
-  # - for %%I in (%PYTHONVERS%) do cp C:/zlib/lib/zlibstatic.lib %%I/libs/
-  # - for %%I in (%PYTHONVERS%) do ls %%I/libs/
-
+  - for %%I in (%PYTHONVERS%) do cp C:/zlib/lib/zlibstatic.lib %%I/libs/
+  - for %%I in (%PYTHONVERS%) do ls %%I/libs/
   - ci\\appveyor\\build_ssh.bat
-  # - ps: ls src/src/Release
-  # - cp src/src/Release/ssh.dll ssh/
-  # - for %%I in (%PYTHONVERS%) do cp src/src/Release/ssh.lib %%I/libs/
-  # - rm -f ssh/*.c
-  # - for %%I in (%PYTHONVERS%) do %%I\python.exe -V
-  # - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py build_ext
-  # - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py build
-  # - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py install
+  - ps: ls src/src/Release
+  - cp src/src/Release/ssh.dll ssh/
+  - for %%I in (%PYTHONVERS%) do cp src/src/Release/ssh.lib %%I/libs/
+  # Clean C files before build
+  - rm -f ssh/*.c
+  - for %%I in (%PYTHONVERS%) do %%I\python.exe -V
+  - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py build_ext
+  - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py build
+  - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py install
   - ps: ls ssh
 
 test_script:
