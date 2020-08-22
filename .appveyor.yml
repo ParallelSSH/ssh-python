@@ -14,7 +14,7 @@ environment:
       secure: x+dF0A8BZUf2IrPNRN1O0w==
     PYTHON_DEF: "C:\\Python36-x64"
     PYTHON_VERSION: "3.6"
-    QTDIRS: bearer iconengines
+    QTDIRS: C:\Python36-x64 bearer iconengines
     PYTHONVERS: C:\Python36-x64 C:\Python37-x64 C:\Python38-x64
     PYTHON_ARCH: "64"
     MSVC: "Visual Studio 14 Win64"
@@ -62,7 +62,7 @@ install:
 
   # Check that we have the expected version and architecture for Python
   - for %%I in (%QTDIRS%) do echo %%I
-  - for %%PYTHONDIR in (%PYTHONVERS%) do %%PYTHONDIR\\python.exe -V
+  - for %%PYTHONDIR in (%PYTHONVERS%) do %%PYTHONDIR\python.exe -V
     #     set pip=%python_dir\\Scripts\\pip
     #     %python% -V
     #     %pip% install -U wheel setuptools twine cython
