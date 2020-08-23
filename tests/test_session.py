@@ -153,3 +153,8 @@ class SessionTest(SSHTestCase):
         rc = self.session.options_set_gssapi_delegate_credentials(False)
         self.assertEqual(rc, 0)
         self.assertRaises(AuthenticationDenied, self.session.userauth_gssapi)
+
+    def test_agent_auth(self):
+        self.session.connect()
+        self.assertRaises(
+            AuthenticationDenied, self.session.userauth_agent, self.user)

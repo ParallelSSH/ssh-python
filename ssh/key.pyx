@@ -134,7 +134,7 @@ def generate(KeyType key_type, int bits):
     return key
 
 
-def import_privkey_base64(bytes b64_key, passphrase=None):
+def import_privkey_base64(bytes b64_key, passphrase=b''):
     cdef const_char *c_key = b64_key
     cdef bytes b_passphrase
     cdef const_char *c_passphrase = NULL
@@ -153,7 +153,7 @@ def import_privkey_base64(bytes b64_key, passphrase=None):
     return key
 
 
-def import_privkey_file(filepath, passphrase=None):
+def import_privkey_file(filepath, passphrase=b''):
     cdef bytes b_passphrase
     cdef bytes b_filepath = to_bytes(filepath)
     cdef const_char *c_passphrase = NULL
