@@ -281,6 +281,20 @@ cdef class Session:
                 self._session, c_ssh.ssh_options_e.SSH_OPTIONS_PORT, &port)
         return handle_error_codes(rc, self._session)
 
+    def options_set_gssapi_delegate_credentials(self, bint delegate):
+        """
+        Set delegating credentials to server on/off.
+
+        :param delegate: Delegation on/off
+        :type delegate: bool
+        """
+        with nogil:
+            rc = c_ssh.ssh_options_set(
+                self._session,
+                c_ssh.ssh_options_e.SSH_OPTIONS_GSSAPI_DELEGATE_CREDENTIALS,
+                &delegate)
+        return handle_error_codes(rc, self._session)
+
     def options_set(self, Option option, value):
         """Set an option for session. This function can only be used for
         string options like host. For numeric options, port etc, use the
@@ -337,7 +351,7 @@ cdef class Session:
                 self._session, c_message, always_display)
         return handle_error_codes(rc, self._session)
 
-    def gssapi_set_creds(self, creds):
+    def gssapi_set_creds(self, creds not None):
         raise NotImplementedError
 
     def service_request(self, bytes service):
@@ -425,7 +439,7 @@ cdef class Session:
             with nogil:
                 _check_connected(self._session)
                 rc = c_ssh.ssh_userauth_agent(self._session, c_username)
-            return handle_error_codes(rc, self._session)
+            return handle_auth_error_codes(rc, self._session)
 
     def userauth_publickey_auto(self, passphrase not None):
         cdef bytes b_passphrase = to_bytes(passphrase)
@@ -522,14 +536,14 @@ cdef class Session:
             _check_connected(self._session)
             rc = c_ssh.ssh_userauth_kbdint_setanswer(
                 self._session, i, <const_char *>(c_answer))
-        return handle_error_codes(rc, self._session)
+        return handle_auth_error_codes(rc, self._session)
 
     def userauth_gssapi(self):
         cdef int rc
         with nogil:
             _check_connected(self._session)
             rc = c_ssh.ssh_userauth_gssapi(self._session)
-        return handle_error_codes(rc, self._session)
+        return handle_auth_error_codes(rc, self._session)
 
     def write_knownhost(self):
         cdef int rc

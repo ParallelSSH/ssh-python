@@ -1286,6 +1286,7 @@ int __pyx_module_is_main_ssh__key = 0;
 /* Implementation of 'ssh.key' */
 static PyObject *__pyx_builtin_MemoryError;
 static PyObject *__pyx_builtin_TypeError;
+static const char __pyx_k__3[] = "";
 static const char __pyx_k_rc[] = "rc";
 static const char __pyx_k_key[] = "key";
 static const char __pyx_k_bits[] = "bits";
@@ -1332,6 +1333,7 @@ static PyObject *__pyx_n_s_KeyImportError;
 static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_n_s_SSHKey;
 static PyObject *__pyx_n_s_TypeError;
+static PyObject *__pyx_kp_b__3;
 static PyObject *__pyx_n_s_b64_key;
 static PyObject *__pyx_n_s_b_filepath;
 static PyObject *__pyx_n_s_b_passphrase;
@@ -1386,16 +1388,16 @@ static PyObject *__pyx_pf_3ssh_3key_8import_pubkey_file(CYTHON_UNUSED PyObject *
 static PyObject *__pyx_tp_new_3ssh_3key_SSHKey(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
-static PyObject *__pyx_tuple__3;
-static PyObject *__pyx_tuple__5;
-static PyObject *__pyx_tuple__7;
-static PyObject *__pyx_tuple__9;
-static PyObject *__pyx_tuple__11;
-static PyObject *__pyx_codeobj__4;
-static PyObject *__pyx_codeobj__6;
-static PyObject *__pyx_codeobj__8;
-static PyObject *__pyx_codeobj__10;
-static PyObject *__pyx_codeobj__12;
+static PyObject *__pyx_tuple__4;
+static PyObject *__pyx_tuple__6;
+static PyObject *__pyx_tuple__8;
+static PyObject *__pyx_tuple__10;
+static PyObject *__pyx_tuple__12;
+static PyObject *__pyx_codeobj__5;
+static PyObject *__pyx_codeobj__7;
+static PyObject *__pyx_codeobj__9;
+static PyObject *__pyx_codeobj__11;
+static PyObject *__pyx_codeobj__13;
 /* Late includes */
 
 /* "ssh/key.pyx":30
@@ -3198,14 +3200,14 @@ static PyObject *__pyx_pf_3ssh_3key_generate(CYTHON_UNUSED PyObject *__pyx_self,
 /* "ssh/key.pyx":137
  * 
  * 
- * def import_privkey_base64(bytes b64_key, passphrase=None):             # <<<<<<<<<<<<<<
+ * def import_privkey_base64(bytes b64_key, passphrase=b''):             # <<<<<<<<<<<<<<
  *     cdef const_char *c_key = b64_key
  *     cdef bytes b_passphrase
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_3ssh_3key_3import_privkey_base64(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3ssh_3key_2import_privkey_base64[] = "import_privkey_base64(bytes b64_key, passphrase=None)";
+static char __pyx_doc_3ssh_3key_2import_privkey_base64[] = "import_privkey_base64(bytes b64_key, passphrase=b'')";
 static PyMethodDef __pyx_mdef_3ssh_3key_3import_privkey_base64 = {"import_privkey_base64", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3ssh_3key_3import_privkey_base64, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3ssh_3key_2import_privkey_base64};
 static PyObject *__pyx_pw_3ssh_3key_3import_privkey_base64(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_b64_key = 0;
@@ -3219,7 +3221,7 @@ static PyObject *__pyx_pw_3ssh_3key_3import_privkey_base64(PyObject *__pyx_self,
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_b64_key,&__pyx_n_s_passphrase,0};
     PyObject* values[2] = {0,0};
-    values[1] = ((PyObject *)Py_None);
+    values[1] = ((PyObject *)__pyx_kp_b__3);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
@@ -3298,7 +3300,7 @@ static PyObject *__pyx_pf_3ssh_3key_2import_privkey_base64(CYTHON_UNUSED PyObjec
 
   /* "ssh/key.pyx":138
  * 
- * def import_privkey_base64(bytes b64_key, passphrase=None):
+ * def import_privkey_base64(bytes b64_key, passphrase=b''):
  *     cdef const_char *c_key = b64_key             # <<<<<<<<<<<<<<
  *     cdef bytes b_passphrase
  *     cdef const_char *c_passphrase = NULL
@@ -3468,7 +3470,7 @@ static PyObject *__pyx_pf_3ssh_3key_2import_privkey_base64(CYTHON_UNUSED PyObjec
   /* "ssh/key.pyx":137
  * 
  * 
- * def import_privkey_base64(bytes b64_key, passphrase=None):             # <<<<<<<<<<<<<<
+ * def import_privkey_base64(bytes b64_key, passphrase=b''):             # <<<<<<<<<<<<<<
  *     cdef const_char *c_key = b64_key
  *     cdef bytes b_passphrase
  */
@@ -3489,14 +3491,14 @@ static PyObject *__pyx_pf_3ssh_3key_2import_privkey_base64(CYTHON_UNUSED PyObjec
 /* "ssh/key.pyx":156
  * 
  * 
- * def import_privkey_file(filepath, passphrase=None):             # <<<<<<<<<<<<<<
+ * def import_privkey_file(filepath, passphrase=b''):             # <<<<<<<<<<<<<<
  *     cdef bytes b_passphrase
  *     cdef bytes b_filepath = to_bytes(filepath)
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_3ssh_3key_5import_privkey_file(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_3ssh_3key_4import_privkey_file[] = "import_privkey_file(filepath, passphrase=None)";
+static char __pyx_doc_3ssh_3key_4import_privkey_file[] = "import_privkey_file(filepath, passphrase=b'')";
 static PyMethodDef __pyx_mdef_3ssh_3key_5import_privkey_file = {"import_privkey_file", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_3ssh_3key_5import_privkey_file, METH_VARARGS|METH_KEYWORDS, __pyx_doc_3ssh_3key_4import_privkey_file};
 static PyObject *__pyx_pw_3ssh_3key_5import_privkey_file(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_filepath = 0;
@@ -3510,7 +3512,7 @@ static PyObject *__pyx_pw_3ssh_3key_5import_privkey_file(PyObject *__pyx_self, P
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_filepath,&__pyx_n_s_passphrase,0};
     PyObject* values[2] = {0,0};
-    values[1] = ((PyObject *)Py_None);
+    values[1] = ((PyObject *)__pyx_kp_b__3);
     if (unlikely(__pyx_kwds)) {
       Py_ssize_t kw_args;
       const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
@@ -3584,7 +3586,7 @@ static PyObject *__pyx_pf_3ssh_3key_4import_privkey_file(CYTHON_UNUSED PyObject 
   __Pyx_RefNannySetupContext("import_privkey_file", 0);
 
   /* "ssh/key.pyx":158
- * def import_privkey_file(filepath, passphrase=None):
+ * def import_privkey_file(filepath, passphrase=b''):
  *     cdef bytes b_passphrase
  *     cdef bytes b_filepath = to_bytes(filepath)             # <<<<<<<<<<<<<<
  *     cdef const_char *c_passphrase = NULL
@@ -3767,7 +3769,7 @@ static PyObject *__pyx_pf_3ssh_3key_4import_privkey_file(CYTHON_UNUSED PyObject 
   /* "ssh/key.pyx":156
  * 
  * 
- * def import_privkey_file(filepath, passphrase=None):             # <<<<<<<<<<<<<<
+ * def import_privkey_file(filepath, passphrase=b''):             # <<<<<<<<<<<<<<
  *     cdef bytes b_passphrase
  *     cdef bytes b_filepath = to_bytes(filepath)
  */
@@ -4390,6 +4392,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
   {&__pyx_n_s_SSHKey, __pyx_k_SSHKey, sizeof(__pyx_k_SSHKey), 0, 0, 1, 1},
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
+  {&__pyx_kp_b__3, __pyx_k__3, sizeof(__pyx_k__3), 0, 0, 0, 0},
   {&__pyx_n_s_b64_key, __pyx_k_b64_key, sizeof(__pyx_k_b64_key), 0, 0, 1, 1},
   {&__pyx_n_s_b_filepath, __pyx_k_b_filepath, sizeof(__pyx_k_b_filepath), 0, 0, 1, 1},
   {&__pyx_n_s_b_passphrase, __pyx_k_b_passphrase, sizeof(__pyx_k_b_passphrase), 0, 0, 1, 1},
@@ -4464,34 +4467,34 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     cdef SSHKey key
  *     cdef c_ssh.ssh_key _key
  */
-  __pyx_tuple__3 = PyTuple_Pack(5, __pyx_n_s_key_type, __pyx_n_s_bits, __pyx_n_s_key, __pyx_n_s_key_2, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 125, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__3);
-  __Pyx_GIVEREF(__pyx_tuple__3);
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__3, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_key_pyx, __pyx_n_s_generate, 125, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __pyx_tuple__4 = PyTuple_Pack(5, __pyx_n_s_key_type, __pyx_n_s_bits, __pyx_n_s_key, __pyx_n_s_key_2, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 125, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__4);
+  __Pyx_GIVEREF(__pyx_tuple__4);
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(2, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__4, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_key_pyx, __pyx_n_s_generate, 125, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 125, __pyx_L1_error)
 
   /* "ssh/key.pyx":137
  * 
  * 
- * def import_privkey_base64(bytes b64_key, passphrase=None):             # <<<<<<<<<<<<<<
+ * def import_privkey_base64(bytes b64_key, passphrase=b''):             # <<<<<<<<<<<<<<
  *     cdef const_char *c_key = b64_key
  *     cdef bytes b_passphrase
  */
-  __pyx_tuple__5 = PyTuple_Pack(8, __pyx_n_s_b64_key, __pyx_n_s_passphrase, __pyx_n_s_c_key, __pyx_n_s_b_passphrase, __pyx_n_s_c_passphrase, __pyx_n_s_rc, __pyx_n_s_key, __pyx_n_s_key_2); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 137, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__5);
-  __Pyx_GIVEREF(__pyx_tuple__5);
-  __pyx_codeobj__6 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__5, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_key_pyx, __pyx_n_s_import_privkey_base64, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__6)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(8, __pyx_n_s_b64_key, __pyx_n_s_passphrase, __pyx_n_s_c_key, __pyx_n_s_b_passphrase, __pyx_n_s_c_passphrase, __pyx_n_s_rc, __pyx_n_s_key, __pyx_n_s_key_2); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 137, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__6);
+  __Pyx_GIVEREF(__pyx_tuple__6);
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_key_pyx, __pyx_n_s_import_privkey_base64, 137, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 137, __pyx_L1_error)
 
   /* "ssh/key.pyx":156
  * 
  * 
- * def import_privkey_file(filepath, passphrase=None):             # <<<<<<<<<<<<<<
+ * def import_privkey_file(filepath, passphrase=b''):             # <<<<<<<<<<<<<<
  *     cdef bytes b_passphrase
  *     cdef bytes b_filepath = to_bytes(filepath)
  */
-  __pyx_tuple__7 = PyTuple_Pack(9, __pyx_n_s_filepath, __pyx_n_s_passphrase, __pyx_n_s_b_passphrase, __pyx_n_s_b_filepath, __pyx_n_s_c_passphrase, __pyx_n_s_c_filepath, __pyx_n_s_rc, __pyx_n_s_key, __pyx_n_s_key_2); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(0, 156, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__7);
-  __Pyx_GIVEREF(__pyx_tuple__7);
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(2, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__7, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_key_pyx, __pyx_n_s_import_privkey_file, 156, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __pyx_tuple__8 = PyTuple_Pack(9, __pyx_n_s_filepath, __pyx_n_s_passphrase, __pyx_n_s_b_passphrase, __pyx_n_s_b_filepath, __pyx_n_s_c_passphrase, __pyx_n_s_c_filepath, __pyx_n_s_rc, __pyx_n_s_key, __pyx_n_s_key_2); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(0, 156, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__8);
+  __Pyx_GIVEREF(__pyx_tuple__8);
+  __pyx_codeobj__9 = (PyObject*)__Pyx_PyCode_New(2, 0, 9, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__8, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_key_pyx, __pyx_n_s_import_privkey_file, 156, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__9)) __PYX_ERR(0, 156, __pyx_L1_error)
 
   /* "ssh/key.pyx":176
  * 
@@ -4500,10 +4503,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     cdef const_char *c_key = b64_key
  *     cdef int rc
  */
-  __pyx_tuple__9 = PyTuple_Pack(6, __pyx_n_s_b64_key, __pyx_n_s_key_type, __pyx_n_s_c_key, __pyx_n_s_rc, __pyx_n_s_key, __pyx_n_s_key_2); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 176, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__9);
-  __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_key_pyx, __pyx_n_s_import_pubkey_base64, 176, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __pyx_tuple__10 = PyTuple_Pack(6, __pyx_n_s_b64_key, __pyx_n_s_key_type, __pyx_n_s_c_key, __pyx_n_s_rc, __pyx_n_s_key, __pyx_n_s_key_2); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(0, 176, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__10);
+  __Pyx_GIVEREF(__pyx_tuple__10);
+  __pyx_codeobj__11 = (PyObject*)__Pyx_PyCode_New(2, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__10, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_key_pyx, __pyx_n_s_import_pubkey_base64, 176, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__11)) __PYX_ERR(0, 176, __pyx_L1_error)
 
   /* "ssh/key.pyx":190
  * 
@@ -4512,10 +4515,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  *     cdef bytes b_filepath = to_bytes(filepath)
  *     cdef const_char *c_filepath = b_filepath
  */
-  __pyx_tuple__11 = PyTuple_Pack(6, __pyx_n_s_filepath, __pyx_n_s_b_filepath, __pyx_n_s_c_filepath, __pyx_n_s_rc, __pyx_n_s_key, __pyx_n_s_key_2); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 190, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__11);
-  __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(1, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_key_pyx, __pyx_n_s_import_pubkey_file, 190, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_tuple__12 = PyTuple_Pack(6, __pyx_n_s_filepath, __pyx_n_s_b_filepath, __pyx_n_s_c_filepath, __pyx_n_s_rc, __pyx_n_s_key, __pyx_n_s_key_2); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(0, 190, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__12);
+  __Pyx_GIVEREF(__pyx_tuple__12);
+  __pyx_codeobj__13 = (PyObject*)__Pyx_PyCode_New(1, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__12, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_key_pyx, __pyx_n_s_import_pubkey_file, 190, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__13)) __PYX_ERR(0, 190, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4908,7 +4911,7 @@ if (!__Pyx_RefNanny) {
   /* "ssh/key.pyx":137
  * 
  * 
- * def import_privkey_base64(bytes b64_key, passphrase=None):             # <<<<<<<<<<<<<<
+ * def import_privkey_base64(bytes b64_key, passphrase=b''):             # <<<<<<<<<<<<<<
  *     cdef const_char *c_key = b64_key
  *     cdef bytes b_passphrase
  */
@@ -4920,7 +4923,7 @@ if (!__Pyx_RefNanny) {
   /* "ssh/key.pyx":156
  * 
  * 
- * def import_privkey_file(filepath, passphrase=None):             # <<<<<<<<<<<<<<
+ * def import_privkey_file(filepath, passphrase=b''):             # <<<<<<<<<<<<<<
  *     cdef bytes b_passphrase
  *     cdef bytes b_filepath = to_bytes(filepath)
  */

@@ -140,3 +140,21 @@ class SessionTest(SSHTestCase):
             del scp
         finally:
             os.unlink(remote_filename)
+
+    def test_gssapi_creds(self):
+        self.session.connect()
+        rc = self.session.options_set(options.GSSAPI_SERVER_IDENTITY, 'identity')
+        self.assertEqual(rc, 0)
+        rc = self.session.options_set(options.GSSAPI_CLIENT_IDENTITY, 'my_id')
+        self.assertEqual(rc, 0)
+        rc = self.session.options_set_gssapi_delegate_credentials(True)
+        self.assertEqual(rc, 0)
+        self.assertRaises(AuthenticationDenied, self.session.userauth_gssapi)
+        rc = self.session.options_set_gssapi_delegate_credentials(False)
+        self.assertEqual(rc, 0)
+        self.assertRaises(AuthenticationDenied, self.session.userauth_gssapi)
+
+    def test_agent_auth(self):
+        self.session.connect()
+        self.assertRaises(
+            AuthenticationDenied, self.session.userauth_agent, self.user)
