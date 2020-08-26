@@ -10,6 +10,7 @@ Changes
 
 * Added function for setting GSS-API credentials delegation option to session.
 * Updated error handling for all user authentication session functions to raise specific authentication errors.
+* `ssh.Key.import_privkey_*` now defaults to empty passphrase.
 
 
 0.5.0
