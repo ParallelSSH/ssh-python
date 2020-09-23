@@ -103,7 +103,6 @@ class ChannelTest(SSHTestCase):
                 break
         lines = [s.decode('utf-8') for s in all_data.splitlines()]
         self.assertEqual(lines[0], self.resp)
-        self.assertRaises(SSHError, chan.read)
         self.assertRaises(EOF, chan.poll)
         self.assertTrue(chan.is_eof())
         rc = chan.close()
