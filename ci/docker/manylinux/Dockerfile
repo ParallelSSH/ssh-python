@@ -1,7 +1,7 @@
 FROM quay.io/pypa/manylinux2010_x86_64
 
 ENV OPENSSL openssl-1.0.2p
-ENV LIBSSH 0.9.4
+ENV LIBSSH 0.9.5
 ENV SYSTEM_LIBSSH 1
 
 RUN yum install zlib-devel cmake3 -y
