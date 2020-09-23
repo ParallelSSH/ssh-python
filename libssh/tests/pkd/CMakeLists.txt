@@ -3,6 +3,7 @@ project(pkd C)
 if (WITH_SERVER AND UNIX AND NOT WIN32)
 
     include_directories(${libssh_SOURCE_DIR}/include
+                        ${libssh_BINARY_DIR}/include
                         ${CMOCKA_INCLUDE_DIR}
                         ${ZLIB_INCLUDE_DIR}
                         ${CMAKE_BINARY_DIR}

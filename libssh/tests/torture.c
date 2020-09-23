@@ -22,7 +22,7 @@
  */
 
 #include "config.h"
-
+#include "tests_config.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>
@@ -61,6 +61,10 @@
 #define TORTURE_SSHD_PIDFILE "sshd/sshd.pid"
 #define TORTURE_SSHD_CONFIG "sshd/sshd_config"
 #define TORTURE_PCAP_FILE "socket_trace.pcap"
+
+#ifndef PATH_MAX
+# define PATH_MAX 4096
+#endif
 
 static const char torture_rsa_certauth_pub[]=
         "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCnA2n5vHzZbs/GvRkGloJNV1CXHI"
@@ -600,23 +604,20 @@ static void torture_setup_create_sshd_config(void **state, bool pam)
     struct stat sb;
     const char *sftp_server_locations[] = {
         "/usr/lib/ssh/sftp-server",
+        "/usr/libexec/ssh/sftp-server", /* Tumbleweed 20200829 */
         "/usr/libexec/sftp-server",
         "/usr/libexec/openssh/sftp-server",
         "/usr/lib/openssh/sftp-server",     /* Debian */
     };
-#ifndef OPENSSH_VERSION_MAJOR
-#define OPENSSH_VERSION_MAJOR 7U
-#define OPENSSH_VERSION_MINOR 0U
-#endif /* OPENSSH_VERSION_MAJOR */
     const char config_string[]=
              "Port 22\n"
              "ListenAddress 127.0.0.10\n"
-             "%s %s\n"
+             "%s %s\n" /* ed25519 HostKey */
 #ifdef HAVE_DSA
-             "%s %s\n"
+             "%s %s\n" /* DSA HostKey */
 #endif /* HAVE_DSA */
-             "%s %s\n"
-             "%s %s\n"
+             "%s %s\n" /* RSA HostKey */
+             "%s %s\n" /* ECDSA HostKey */
              "\n"
              "TrustedUserCAKeys %s\n"
              "\n"
@@ -630,33 +631,14 @@ static void torture_setup_create_sshd_config(void **state, bool pam)
              "\n"
              "%s" /* Here comes UsePam */
              "\n"
-#if (OPENSSH_VERSION_MAJOR == 6 && OPENSSH_VERSION_MINOR >= 7) || (OPENSSH_VERSION_MAJOR >= 7)
-# ifdef HAVE_DSA
-             "HostKeyAlgorithms +ssh-dss\n"
-# else /* HAVE_DSA */
-             "HostKeyAlgorithms +ssh-rsa\n"
-# endif /* HAVE_DSA */
-# if (OPENSSH_VERSION_MAJOR == 7 && OPENSSH_VERSION_MINOR < 6)
-             "Ciphers +3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,blowfish-cbc\n"
-# else /* OPENSSH_VERSION 7.0 - 7.5 */
-             "Ciphers +3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc\n"
-# endif /* OPENSSH_VERSION 7.0 - 7.6 */
-             "KexAlgorithms +diffie-hellman-group1-sha1,"
-             "diffie-hellman-group-exchange-sha1"
-#else /* OPENSSH_VERSION >= 6.7 */
-             "Ciphers 3des-cbc,aes128-cbc,aes192-cbc,aes256-cbc,aes128-ctr,"
-                     "aes192-ctr,aes256-ctr,aes128-gcm@openssh.com,"
-                     "aes256-gcm@openssh.com,arcfour128,arcfour256,arcfour,"
-                     "blowfish-cbc,cast128-cbc,chacha20-poly1305@openssh.com\n"
-             "KexAlgorithms curve25519-sha256@libssh.org,ecdh-sha2-nistp256,"
-                           "ecdh-sha2-nistp384,ecdh-sha2-nistp521,"
-                           "diffie-hellman-group-exchange-sha256,"
-                           "diffie-hellman-group-exchange-sha1,"
-                           "diffie-hellman-group16-sha512,"
-                           "diffie-hellman-group18-sha512,"
-                           "diffie-hellman-group14-sha1,"
-                           "diffie-hellman-group1-sha1\n"
-#endif /* OPENSSH_VERSION >= 6.7 */
+             /* add all supported algorithms */
+             "HostKeyAlgorithms " OPENSSH_KEYS "\n"
+#if OPENSSH_VERSION_MAJOR == 8 && OPENSSH_VERSION_MINOR >= 2
+             "CASignatureAlgorithms " OPENSSH_KEYS "\n"
+#endif
+             "Ciphers " OPENSSH_CIPHERS "\n"
+             "KexAlgorithms " OPENSSH_KEX "\n"
+             "MACs " OPENSSH_MACS "\n"
              "\n"
              "AcceptEnv LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES\n"
              "AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT\n"
@@ -668,8 +650,8 @@ static void torture_setup_create_sshd_config(void **state, bool pam)
     const char fips_config_string[]=
              "Port 22\n"
              "ListenAddress 127.0.0.10\n"
-             "%s %s\n" /* HostKey */
-             "%s %s\n" /* HostKey */
+             "%s %s\n" /* RSA HostKey */
+             "%s %s\n" /* ECDSA HostKey */
              "\n"
              "TrustedUserCAKeys %s\n" /* Trusted CA */
              "\n"
@@ -867,7 +849,7 @@ void torture_setup_sshd_server(void **state, bool pam)
     s = *state;
 
     snprintf(sshd_start_cmd, sizeof(sshd_start_cmd),
-             "/usr/sbin/sshd -r -f %s -E %s/sshd/daemon.log 2> %s/sshd/cwrap.log",
+             SSHD_EXECUTABLE " -r -f %s -E %s/sshd/daemon.log 2> %s/sshd/cwrap.log",
              s->srv_config, s->socket_dir, s->socket_dir);
 
     rc = system(sshd_start_cmd);

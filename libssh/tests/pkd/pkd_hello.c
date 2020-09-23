@@ -610,7 +610,7 @@ static void torture_pkd_runtest(const char *testname,
 #define emit_keytest(client, testname, sshcmd, setup, teardown) \
     static void torture_pkd_## client ## _ ## testname(void **state) { \
         const char *tname = "torture_pkd_" #client "_" #testname;      \
-        char testcmd[1024] = { 0 };                                    \
+        char testcmd[2048] = { 0 };                                    \
         (void) state;                                                  \
         snprintf(&testcmd[0], sizeof(testcmd), sshcmd, tname, tname);  \
         torture_pkd_runtest(tname, testcmd);                           \

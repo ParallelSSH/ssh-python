@@ -307,6 +307,7 @@ static void torture_knownhosts_other_auto(void **state) {
     char tmp_file[1024] = {0};
     char *known_hosts_file = NULL;
     int rc;
+    bool process_config = false;
 
     snprintf(tmp_file,
              sizeof(tmp_file),
@@ -344,6 +345,9 @@ static void torture_knownhosts_other_auto(void **state) {
 
     s->ssh.session = session;
 
+    rc = ssh_options_set(session, SSH_OPTIONS_PROCESS_CONFIG, &process_config);
+    assert_ssh_return_code(session, rc);
+
     rc = ssh_options_set(session, SSH_OPTIONS_HOST, TORTURE_SSH_SERVER);
     assert_ssh_return_code(session, rc);
 
@@ -368,6 +372,7 @@ static void torture_knownhosts_conflict(void **state) {
     char *known_hosts_file = NULL;
     FILE *file;
     int rc;
+    bool process_config = false;
 
     snprintf(tmp_file,
              sizeof(tmp_file),
@@ -410,6 +415,9 @@ static void torture_knownhosts_conflict(void **state) {
     assert_non_null(session);
 
     s->ssh.session = session;
+
+    rc = ssh_options_set(session, SSH_OPTIONS_PROCESS_CONFIG, &process_config);
+    assert_ssh_return_code(session, rc);
 
     ssh_options_set(session, SSH_OPTIONS_HOST, TORTURE_SSH_SERVER);
     ssh_options_set(session, SSH_OPTIONS_KNOWNHOSTS, known_hosts_file);
