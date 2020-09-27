@@ -13,6 +13,7 @@ set(LIBSSH_SERVER_TESTS
 )
 
 include_directories(${libssh_SOURCE_DIR}/include
+                    ${libssh_BINARY_DIR}/include
                     ${libssh_BINARY_DIR}
                     test_server)
 

@@ -6,7 +6,7 @@ set(examples_SRCS
   connect_ssh.c
 )
 
-include_directories(${libssh_BINARY_DIR})
+include_directories(${libssh_BINARY_DIR}/include ${libssh_BINARY_DIR})
 
 if (ARGP_INCLUDE_DIR)
     include_directories(${ARGP_INCLUDE_DIR})

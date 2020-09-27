@@ -135,14 +135,20 @@ void libssh_constructor(void)
 /**
  * @brief Initialize global cryptographic data structures.
  *
- * Since version 0.8.0, it is not necessary to call this function on systems
- * which are fully supported with regards to threading (that is, system with
- * pthreads available).
+ * Since version 0.8.0, when libssh is dynamically linked, it is not necessary
+ * to call this function on systems which are fully supported with regards to
+ * threading (that is, system with pthreads available).
+ *
+ * If libssh is statically linked, it is necessary to explicitly call ssh_init()
+ * before calling any other provided API, and it is necessary to explicitly call
+ * ssh_finalize() to free the allocated resources before exiting.
  *
  * If the library is already initialized, increments the _ssh_initialized
  * counter and return the error code cached in _ssh_init_ret.
  *
  * @returns             SSH_OK on success, SSH_ERROR if an error occurred.
+ *
+ * @see ssh_finalize()
  */
 int ssh_init(void) {
     return _ssh_init(0);
@@ -202,8 +208,13 @@ void libssh_destructor(void)
 /**
  * @brief Finalize and cleanup all libssh and cryptographic data structures.
  *
- * Since version 0.8.0, it is not necessary to call this function, since it is
- * automatically called when the library is unloaded.
+ * Since version 0.8.0, when libssh is dynamically linked, it is not necessary
+ * to call this function, since it is automatically called when the library is
+ * unloaded.
+ *
+ * If libssh is statically linked, it is necessary to explicitly call ssh_init()
+ * before calling any other provided API, and it is necessary to explicitly call
+ * ssh_finalize() to free the allocated resources before exiting.
  *
  * If ssh_init() is called explicitly, then ssh_finalize() must be called
  * explicitly.
@@ -211,9 +222,9 @@ void libssh_destructor(void)
  * When called, decrements the counter _ssh_initialized. If the counter reaches
  * zero, then the libssh and cryptographic data structures are cleaned up.
  *
- * @returns             0 on succes, -1 if an error occured.
+ * @returns             0 on success, -1 if an error occurred.
  *
- @returns 0 otherwise
+ * @see ssh_init()
  */
 int ssh_finalize(void) {
     return _ssh_finalize(0);
@@ -249,5 +260,24 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL,
 #endif /* _MSC_VER && !LIBSSH_STATIC */
 
 #endif /* _WIN32 */
+
+/**
+ * @internal
+ * @brief Return whether the library is initialized
+ *
+ * @returns true if the library is initialized; false otherwise.
+ *
+ * @see ssh_init()
+ */
+bool is_ssh_initialized() {
+
+    bool is_initialized = false;
+
+    ssh_mutex_lock(&ssh_init_mutex);
+    is_initialized = _ssh_initialized > 0;
+    ssh_mutex_unlock(&ssh_init_mutex);
+
+    return is_initialized;
+}
 
 /** @} */

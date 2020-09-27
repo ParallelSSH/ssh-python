@@ -73,7 +73,7 @@ static void torture_sftp_read_blocking(void **state) {
     sftp_file file;
     mode_t mask;
 
-    file = sftp_open(t->sftp, "/usr/bin/ssh", O_RDONLY, 0);
+    file = sftp_open(t->sftp, SSH_EXECUTABLE, O_RDONLY, 0);
     assert_non_null(file);
 
     mask = umask(S_IRWXO | S_IRWXG);

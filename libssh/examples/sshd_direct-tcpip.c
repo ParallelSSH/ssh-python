@@ -27,6 +27,8 @@ clients must be made or how a client should react.
 #ifdef HAVE_ARGP_H
 #include <argp.h>
 #endif
+#include <sys/types.h>
+#include <sys/socket.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -79,7 +81,10 @@ static struct cleanup_node_struct *cleanup_stack = NULL;
 
 static void _close_socket(struct event_fd_data_struct event_fd_data);
 
-static void cleanup_push(struct cleanup_node_struct** head_ref, struct event_fd_data_struct *new_data) {
+static void
+cleanup_push(struct cleanup_node_struct** head_ref,
+             struct event_fd_data_struct *new_data)
+{
     // Allocate memory for node
     struct cleanup_node_struct *new_node = malloc(sizeof *new_node);
 
@@ -92,7 +97,9 @@ static void cleanup_push(struct cleanup_node_struct** head_ref, struct event_fd_
     (*head_ref) = new_node;
 }
 
-static void do_cleanup(struct cleanup_node_struct **head_ref) {
+static void
+do_cleanup(struct cleanup_node_struct **head_ref)
+{
     struct cleanup_node_struct *current = (*head_ref);
     struct cleanup_node_struct *previous = NULL, *gone = NULL;
 
@@ -131,16 +138,22 @@ static void do_cleanup(struct cleanup_node_struct **head_ref) {
     }
 }
 
-static int auth_password(ssh_session session, const char *user,
-            const char *password, void *userdata) {
-    (void)userdata;
-    _ssh_log(SSH_LOG_PROTOCOL, "=== auth_password", "Authenticating user %s pwd %s",user, password);
-    if (strcmp(user,USER) == 0 && strcmp(password, PASSWORD) == 0){
+static int
+auth_password(ssh_session session,
+              const char *user,
+              const char *password,
+              UNUSED_PARAM(void *userdata))
+{
+    _ssh_log(SSH_LOG_PROTOCOL,
+             "=== auth_password", "Authenticating user %s pwd %s",
+             user,
+             password);
+    if (strcmp(user, USER) == 0 && strcmp(password, PASSWORD) == 0) {
         authenticated = true;
         printf("Authenticated\n");
         return SSH_AUTH_SUCCESS;
     }
-    if (tries >= 3){
+    if (tries >= 3) {
         printf("Too many authentication tries\n");
         ssh_disconnect(session);
         error_set = true;
@@ -150,25 +163,34 @@ static int auth_password(ssh_session session, const char *user,
     return SSH_AUTH_DENIED;
 }
 
-static int auth_gssapi_mic(ssh_session session, const char *user, const char *principal, void *userdata) {
+static int
+auth_gssapi_mic(ssh_session session,
+                const char *user,
+                const char *principal,
+                UNUSED_PARAM(void *userdata))
+{
     ssh_gssapi_creds creds = ssh_gssapi_get_creds(session);
-    (void)userdata;
-    printf("Authenticating user %s with gssapi principal %s\n", user, principal);
-    if (creds != NULL)
+    printf("Authenticating user %s with gssapi principal %s\n",
+           user, principal);
+    if (creds != NULL) {
         printf("Received some gssapi credentials\n");
-    else
+    } else {
         printf("Not received any forwardable creds\n");
+    }
     printf("authenticated\n");
     authenticated = true;
     return SSH_AUTH_SUCCESS;
 }
 
-static int subsystem_request(ssh_session session, ssh_channel channel, const char *subsystem, void *userdata) {
-    (void)session;
-    (void)channel;
-    //(void)subsystem;
-    (void)userdata;
-    _ssh_log(SSH_LOG_PROTOCOL, "=== subsystem_request", "Channel subsystem reqeuest: %s", subsystem);
+static int
+subsystem_request(UNUSED_PARAM(ssh_session session),
+                  UNUSED_PARAM(ssh_channel channel),
+                  const char *subsystem,
+                  UNUSED_PARAM(void *userdata))
+{
+    _ssh_log(SSH_LOG_PROTOCOL,
+             "=== subsystem_request", "Channel subsystem reqeuest: %s",
+             subsystem);
     return 0;
 }
 
@@ -176,9 +198,10 @@ struct ssh_channel_callbacks_struct channel_cb = {
     .channel_subsystem_request_function = subsystem_request
 };
 
-static ssh_channel new_session_channel(ssh_session session, void *userdata) {
-    (void)session;
-    (void)userdata;
+static ssh_channel
+new_session_channel(UNUSED_PARAM(ssh_session session),
+                    UNUSED_PARAM(void *userdata))
+{
     _ssh_log(SSH_LOG_PROTOCOL, "=== subsystem_request", "Session channel request");
     /* For TCP forward only there seems to be no need for a session channel */
     /*if(chan != NULL)
@@ -191,18 +214,25 @@ static ssh_channel new_session_channel(ssh_session session, void *userdata) {
     return NULL;
 }
 
-static void stack_socket_close(UNUSED_PARAM(ssh_session session),
-                               struct event_fd_data_struct *event_fd_data)
+static void
+stack_socket_close(UNUSED_PARAM(ssh_session session),
+                   struct event_fd_data_struct *event_fd_data)
 {
     if (event_fd_data->stacked != 1) {
-        _ssh_log(SSH_LOG_FUNCTIONS, "=== stack_socket_close", "Closing fd = %d sockets_cnt = %d", *event_fd_data->p_fd, sockets_cnt);
+        _ssh_log(SSH_LOG_FUNCTIONS, "=== stack_socket_close",
+                 "Closing fd = %d sockets_cnt = %d", *event_fd_data->p_fd,
+                 sockets_cnt);
         event_fd_data->stacked = 1;
         cleanup_push(&cleanup_stack, event_fd_data);
     }
 }
 
-static void _close_socket(struct event_fd_data_struct event_fd_data) {
-    _ssh_log(SSH_LOG_FUNCTIONS, "=== close_socket", "Closing fd = %d sockets_cnt = %d", *event_fd_data.p_fd, sockets_cnt);
+static void
+_close_socket(struct event_fd_data_struct event_fd_data)
+{
+    _ssh_log(SSH_LOG_FUNCTIONS, "=== close_socket",
+             "Closing fd = %d sockets_cnt = %d", *event_fd_data.p_fd,
+             sockets_cnt);
     ssh_event_remove_fd(mainloop, *event_fd_data.p_fd);
     sockets_cnt--;
 #ifdef _WIN32
@@ -213,23 +243,31 @@ static void _close_socket(struct event_fd_data_struct event_fd_data) {
     (*event_fd_data.p_fd) = SSH_INVALID_SOCKET;
 }
 
-static int service_request(ssh_session session, const char *service, void *userdata) {
-    (void)session;
-    //(void)service;
-    (void)userdata;
+static int
+service_request(UNUSED_PARAM(ssh_session session),
+                const char *service,
+                UNUSED_PARAM(void *userdata))
+{
     _ssh_log(SSH_LOG_PROTOCOL, "=== service_request", "Service request: %s", service);
     return 0;
 }
 
-static void global_request(ssh_session session, ssh_message message, void *userdata) {
-    (void)session;
-    (void)userdata;
-    _ssh_log(SSH_LOG_PROTOCOL, "=== global_request", "Global request, message type: %d", ssh_message_type(message));
+static void
+global_request(UNUSED_PARAM(ssh_session session),
+               ssh_message message,
+               UNUSED_PARAM(void *userdata))
+{
+    _ssh_log(SSH_LOG_PROTOCOL,
+             "=== global_request", "Global request, message type: %d",
+             ssh_message_type(message));
 }
 
-static void my_channel_close_function(ssh_session session, ssh_channel channel, void *userdata) {
+static void
+my_channel_close_function(ssh_session session,
+                          UNUSED_PARAM(ssh_channel channel),
+                          void *userdata)
+{
     struct event_fd_data_struct *event_fd_data = (struct event_fd_data_struct *)userdata;
-    (void)session;
 
     _ssh_log(SSH_LOG_PROTOCOL,
              "=== my_channel_close_function",
@@ -238,9 +276,12 @@ static void my_channel_close_function(ssh_session session, ssh_channel channel, 
     stack_socket_close(session, event_fd_data);
 }
 
-static void my_channel_eof_function(ssh_session session, ssh_channel channel, void *userdata) {
+static void
+my_channel_eof_function(ssh_session session,
+                        UNUSED_PARAM(ssh_channel channel),
+                        void *userdata)
+{
     struct event_fd_data_struct *event_fd_data = (struct event_fd_data_struct *)userdata;
-    (void)session;
 
     _ssh_log(SSH_LOG_PROTOCOL,
              "=== my_channel_eof_function",
@@ -250,9 +291,13 @@ static void my_channel_eof_function(ssh_session session, ssh_channel channel, vo
     stack_socket_close(session, event_fd_data);
 }
 
-static void my_channel_exit_status_function(ssh_session session, ssh_channel channel, int exit_status, void *userdata) {
+static void
+my_channel_exit_status_function(UNUSED_PARAM(ssh_session session),
+                                UNUSED_PARAM(ssh_channel channel),
+                                int exit_status,
+                                void *userdata)
+{
     struct event_fd_data_struct *event_fd_data = (struct event_fd_data_struct *)userdata;
-    (void)session;
 
     _ssh_log(SSH_LOG_PROTOCOL,
              "=== my_channel_exit_status_function",
@@ -260,12 +305,13 @@ static void my_channel_exit_status_function(ssh_session session, ssh_channel cha
              exit_status, *event_fd_data->p_fd);
 }
 
-static int my_channel_data_function(ssh_session session,
-                                    ssh_channel channel,
-                                    void *data,
-                                    uint32_t len,
-                                    UNUSED_PARAM(int is_stderr),
-                                    void *userdata)
+static int
+my_channel_data_function(ssh_session session,
+                         UNUSED_PARAM(ssh_channel channel),
+                         void *data,
+                         uint32_t len,
+                         UNUSED_PARAM(int is_stderr),
+                         void *userdata)
 {
     int i = 0;
     struct event_fd_data_struct *event_fd_data = (struct event_fd_data_struct *)userdata;
@@ -283,7 +329,9 @@ static int my_channel_data_function(ssh_session session,
         i = send(*event_fd_data->p_fd, data, len, 0);
     }
     if (i < 0) {
-        _ssh_log(SSH_LOG_WARNING, "=== my_channel_data_function", "Writing to tcp socket %d: %s", *event_fd_data->p_fd, strerror(errno));
+        _ssh_log(SSH_LOG_WARNING, "=== my_channel_data_function",
+                 "Writing to tcp socket %d: %s", *event_fd_data->p_fd,
+                 strerror(errno));
         stack_socket_close(session, event_fd_data);
     }
     else {
@@ -292,9 +340,10 @@ static int my_channel_data_function(ssh_session session,
     return i;
 }
 
-static int my_fd_data_function(UNUSED_PARAM(socket_t fd),
-                               int revents,
-                               void *userdata)
+static int
+my_fd_data_function(UNUSED_PARAM(socket_t fd),
+                    int revents,
+                    void *userdata)
 {
     struct event_fd_data_struct *event_fd_data = (struct event_fd_data_struct *)userdata;
     ssh_channel channel = event_fd_data->channel;
@@ -387,7 +436,9 @@ static int my_fd_data_function(UNUSED_PARAM(socket_t fd),
     return len;
 }
 
-static int open_tcp_socket(ssh_message msg) {
+static int
+open_tcp_socket(ssh_message msg)
+{
     struct sockaddr_in sin;
     int forwardsock = -1;
     struct hostent *host;
@@ -428,17 +479,20 @@ static int open_tcp_socket(ssh_message msg) {
     return forwardsock;
 }
 
-static int message_callback(ssh_session session, ssh_message message, void *userdata) {
+static int
+message_callback(UNUSED_PARAM(ssh_session session),
+                 ssh_message message,
+                 UNUSED_PARAM(void *userdata))
+{
     ssh_channel channel;
     int socket_fd, *pFd;
     struct ssh_channel_callbacks_struct *cb_chan;
     struct event_fd_data_struct *event_fd_data;
-    (void)session;
-    (void)message;
-    (void)userdata;
 
-    _ssh_log(SSH_LOG_PACKET, "=== message_callback", "Message type: %d", ssh_message_type(message));
-    _ssh_log(SSH_LOG_PACKET, "=== message_callback", "Message Subtype: %d", ssh_message_subtype(message));
+    _ssh_log(SSH_LOG_PACKET, "=== message_callback", "Message type: %d",
+             ssh_message_type(message));
+    _ssh_log(SSH_LOG_PACKET, "=== message_callback", "Message Subtype: %d",
+             ssh_message_subtype(message));
     if (ssh_message_type(message) == SSH_REQUEST_CHANNEL_OPEN) {
         _ssh_log(SSH_LOG_PROTOCOL, "=== message_callback", "channel_request_open");
 
@@ -542,7 +596,9 @@ static struct argp_option options[] = {
 };
 
 /* Parse a single option. */
-static error_t parse_opt (int key, char *arg, struct argp_state *state) {
+static error_t
+parse_opt (int key, char *arg, struct argp_state *state)
+{
     /* Get the input argument from argp_parse, which we
      * know is a pointer to our arguments structure.
      */
@@ -588,7 +644,9 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state) {
 static struct argp argp = {options, parse_opt, args_doc, doc, NULL, NULL, NULL};
 #endif /* HAVE_ARGP_H */
 
-int main(int argc, char **argv){
+int
+main(int argc, char **argv)
+{
     ssh_session session;
     ssh_bind sshbind;
     struct ssh_server_callbacks_struct cb = {

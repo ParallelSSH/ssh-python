@@ -283,7 +283,7 @@ static void torture_rekey_recv(void **state)
     memcpy(secret_hash, c->secret_hash, c->digest_len);
 
     /* Download a file */
-    file = sftp_open(s->ssh.tsftp->sftp, "/usr/bin/ssh", O_RDONLY, 0);
+    file = sftp_open(s->ssh.tsftp->sftp, SSH_EXECUTABLE, O_RDONLY, 0);
     assert_non_null(file);
 
     mask = umask(S_IRWXO | S_IRWXG);
@@ -473,7 +473,7 @@ static void torture_rekey_server_recv(void **state)
     memcpy(secret_hash, c->secret_hash, c->digest_len);
 
     /* Download a file */
-    file = sftp_open(s->ssh.tsftp->sftp, "/usr/bin/ssh", O_RDONLY, 0);
+    file = sftp_open(s->ssh.tsftp->sftp, SSH_EXECUTABLE, O_RDONLY, 0);
     assert_non_null(file);
 
     mask = umask(S_IRWXO | S_IRWXG);

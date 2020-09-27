@@ -1,6 +1,17 @@
 ChangeLog
 ==========
 
+version 0.9.5 (released 2020-XX-XX)
+  * CVE-2020-16135: Avoid null pointer dereference in sftpserver (T232)
+  * Improve handling of library initialization (T222)
+  * Fix parsing of subsecond times in SFTP (T219)
+  * Make the documentation reproducible
+  * Remove deprecated API usage in OpenSSL
+  * Fix regression of ssh_channel_poll_timeout() returning SSH_AGAIN
+  * Define version in one place (T226)
+  * Prevent invalid free when using different C runtimes than OpenSSL (T229)
+  * Compatibility improvements to testsuite
+
 version 0.9.4 (released 2020-04-09)
   * Fixed CVE-2020-1730 - Possible DoS in client and server when handling
     AES-CTR keys with OpenSSL

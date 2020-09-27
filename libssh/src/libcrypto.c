@@ -536,7 +536,7 @@ static int evp_cipher_set_encrypt_key(struct ssh_cipher_struct *cipher,
     int rc;
 
     evp_cipher_init(cipher);
-    EVP_CIPHER_CTX_init(cipher->ctx);
+    EVP_CIPHER_CTX_reset(cipher->ctx);
 
     rc = EVP_EncryptInit_ex(cipher->ctx, cipher->cipher, NULL, key, IV);
     if (rc != 1){
@@ -569,7 +569,7 @@ static int evp_cipher_set_decrypt_key(struct ssh_cipher_struct *cipher,
     int rc;
 
     evp_cipher_init(cipher);
-    EVP_CIPHER_CTX_init(cipher->ctx);
+    EVP_CIPHER_CTX_reset(cipher->ctx);
 
     rc = EVP_DecryptInit_ex(cipher->ctx, cipher->cipher, NULL, key, IV);
     if (rc != 1){
@@ -652,7 +652,6 @@ static void evp_cipher_decrypt(struct ssh_cipher_struct *cipher,
 
 static void evp_cipher_cleanup(struct ssh_cipher_struct *cipher) {
     if (cipher->ctx != NULL) {
-        EVP_CIPHER_CTX_cleanup(cipher->ctx);
         EVP_CIPHER_CTX_free(cipher->ctx);
     }
 }
@@ -1084,11 +1083,11 @@ int ssh_crypto_init(void)
     if (libcrypto_initialized) {
         return SSH_OK;
     }
-    if (SSLeay() != OPENSSL_VERSION_NUMBER){
+    if (OpenSSL_version_num() != OPENSSL_VERSION_NUMBER){
         SSH_LOG(SSH_LOG_WARNING, "libssh compiled with %s "
             "headers, currently running with %s.",
             OPENSSL_VERSION_TEXT,
-            SSLeay_version(SSLeay())
+            OpenSSL_version(OpenSSL_version_num())
         );
     }
 #ifdef CAN_DISABLE_AESNI

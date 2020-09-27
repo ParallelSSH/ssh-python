@@ -16,12 +16,19 @@ def build_ssh():
 
     if not os.path.exists('src'):
         os.mkdir('src')
+    if not os.path.exists('local'):
+        os.mkdir('local')
+    if not os.path.exists('local/lib'):
+        os.mkdir('local/lib')
+    # Depending on architecture cmake installs libraries into lib64,
+    # but we don't care about that.
+    os.symlink('lib', 'local/lib64')
 
     os.chdir('src')
-    check_call('cmake -DCMAKE_BUILD_TYPE=Release -DWITH_GSS_API=ON ../libssh',
+    check_call('cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../local -DWITH_GSS_API=ON ../libssh',
                shell=True, env=os.environ)
-    check_call(['make', '-j%s' % (cpu_count(),)])
+    check_call(['make', '-j%s' % (cpu_count(),), 'all', 'install'])
     os.chdir('..')
 
-    for src in glob('src/lib/libssh.so*'):
+    for src in glob('local/lib/libssh.so*'):
         copy2(src, 'ssh/')

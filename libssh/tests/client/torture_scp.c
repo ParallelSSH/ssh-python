@@ -37,6 +37,7 @@
 #define BUF_SIZE 1024
 
 #define TEMPLATE BINARYDIR "/tests/home/alice/temp_dir_XXXXXX"
+#define ALICE_HOME BINARYDIR "/tests/home/alice"
 
 struct scp_st {
     struct torture_state *s;
@@ -540,6 +541,86 @@ static void torture_scp_upload_newline(void **state)
     fclose(file);
 }
 
+static void torture_scp_upload_appended_command(void **state)
+{
+    struct scp_st *ts = NULL;
+    struct torture_state *s = NULL;
+
+    ssh_session session = NULL;
+    ssh_scp scp = NULL;
+
+    FILE *file = NULL;
+
+    char buf[1024];
+    char *rs = NULL;
+    int rc;
+
+    assert_non_null(state);
+    ts = *state;
+
+    assert_non_null(ts->s);
+    s = ts->s;
+
+    session = s->ssh.session;
+    assert_non_null(session);
+
+    assert_non_null(ts->tmp_dir_basename);
+    assert_non_null(ts->tmp_dir);
+
+    /* Upload a file path with a command appended */
+
+    /* Append a command to the file path */
+    snprintf(buf, BUF_SIZE, "%s"
+             "/;touch hack",
+             ts->tmp_dir);
+
+    /* When writing the file_name must be the directory name */
+    scp = ssh_scp_new(session, SSH_SCP_WRITE | SSH_SCP_RECURSIVE,
+                      buf);
+    assert_non_null(scp);
+
+    rc = ssh_scp_init(scp);
+    assert_ssh_return_code(session, rc);
+
+    /* Push directory where the new file will be copied */
+    rc = ssh_scp_push_directory(scp, ";touch hack", 0755);
+    assert_ssh_return_code(session, rc);
+
+    /* Try to push file */
+    rc = ssh_scp_push_file(scp, "original", 8, 0644);
+    assert_ssh_return_code(session, rc);
+
+    rc = ssh_scp_write(scp, "original", 8);
+    assert_ssh_return_code(session, rc);
+
+    /* Leave the directory */
+    rc = ssh_scp_leave_directory(scp);
+    assert_ssh_return_code(session, rc);
+
+    /* Cleanup */
+    ssh_scp_close(scp);
+    ssh_scp_free(scp);
+
+    /* Make sure the command was not executed */
+    snprintf(buf, BUF_SIZE, ALICE_HOME "/hack");
+    file = fopen(buf, "r");
+    assert_null(file);
+
+    /* Open the file and check content */
+    snprintf(buf, BUF_SIZE, "%s"
+             "/;touch hack/original",
+             ts->tmp_dir);
+
+    file = fopen(buf, "r");
+    assert_non_null(file);
+
+    rs = fgets(buf, 1024, file);
+    assert_non_null(rs);
+    assert_string_equal(buf, "original");
+
+    fclose(file);
+}
+
 int torture_run_tests(void)
 {
     int rc;
@@ -557,6 +638,9 @@ int torture_run_tests(void)
                                         session_setup,
                                         session_teardown),
         cmocka_unit_test_setup_teardown(torture_scp_upload_newline,
+                                        session_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_scp_upload_appended_command,
                                         session_setup,
                                         session_teardown),
     };

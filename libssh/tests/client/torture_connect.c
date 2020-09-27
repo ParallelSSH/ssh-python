@@ -183,6 +183,38 @@ static void torture_connect_socket(void **state) {
     assert_ssh_return_code(session, rc);
 }
 
+static void torture_connect_uninitialized(UNUSED_PARAM(void **state))
+{
+    int rc;
+    ssh_session session;
+    struct passwd *pwd;
+
+    /* Make sure the library is unitialized */
+    while (is_ssh_initialized()) {
+        rc = ssh_finalize();
+        assert_return_code(rc, errno);
+    }
+
+    pwd = getpwnam("bob");
+    assert_non_null(pwd);
+
+    rc = setuid(pwd->pw_uid);
+    assert_return_code(rc, errno);
+
+    session = ssh_new();
+    assert_non_null(session);
+
+    rc = ssh_options_set(session, SSH_OPTIONS_HOST, TORTURE_SSH_SERVER);
+    assert_ssh_return_code(session, rc);
+
+    /* Expect error from ssh_connect */
+    rc = ssh_connect(session);
+    assert_false(rc == SSH_OK);
+    assert_string_equal(ssh_get_error(session), "Library not initialized.");
+
+    ssh_free(session);
+}
+
 int torture_run_tests(void) {
     int rc;
     struct CMUnitTest tests[] = {
@@ -193,6 +225,7 @@ int torture_run_tests(void) {
         cmocka_unit_test_setup_teardown(torture_connect_timeout, session_setup, session_teardown),
 #endif
         cmocka_unit_test_setup_teardown(torture_connect_socket, session_setup, session_teardown),
+        cmocka_unit_test(torture_connect_uninitialized),
     };
 
     ssh_init();
