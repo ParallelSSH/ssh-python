@@ -5,4 +5,3 @@ sphinx
 sphinx_rtd_theme
 pytest<6.1.0
 pytest-rerunfailures
-.
