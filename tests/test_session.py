@@ -22,7 +22,7 @@ from select import select
 from ssh.session import Session, SSH_AUTH_AGAIN, SSH_READ_PENDING, SSH_WRITE_PENDING
 from ssh.channel import Channel
 from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
-from ssh import options
+from ssh import options, set_log_level, SSH_LOG_DEBUG, SSH_LOG_TRACE
 from ssh.exceptions import KeyImportError, InvalidAPIUse, \
     AuthenticationDenied
 from ssh.scp import SCP, SSH_SCP_READ, SSH_SCP_WRITE, SSH_SCP_RECURSIVE
@@ -80,7 +80,7 @@ class SessionTest(SSHTestCase):
     def test_disconnect(self):
         self._auth()
         chan = self.session.channel_new()
-        chan.open_session()
+        self.assertEqual(chan.open_session(), 0)
         chan.close()
         self.session.disconnect()
         del chan
@@ -158,3 +158,17 @@ class SessionTest(SSHTestCase):
         self.session.connect()
         self.assertRaises(
             AuthenticationDenied, self.session.userauth_agent, self.user)
+
+    def test_set_timeout(self):
+        session = Session()
+        self.assertEqual(session.options_set(options.TIMEOUT, "1000"), 0)
+        self.assertEqual(session.options_set(options.TIMEOUT_USEC, "1000"), 0)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((self.host, self.port))
+        session = Session()
+        session.options_set(options.USER, self.user)
+        session.options_set(options.HOST, self.host)
+        session.options_set_port(self.port)
+        self.assertEqual(session.set_socket(sock), 0)
+        self.assertEqual(session.options_set(options.TIMEOUT, "1000"), 0)
+        self.assertEqual(session.options_set(options.TIMEOUT_USEC, "1000"), 0)
