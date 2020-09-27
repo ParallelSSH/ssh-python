@@ -31,3 +31,9 @@ install(
     headers
 )
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/libssh_version.h.cmake
+               ${libssh_BINARY_DIR}/include/libssh/libssh_version.h
+               @ONLY)
+install(FILES ${libssh_BINARY_DIR}/include/libssh/libssh_version.h
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${APPLICATION_NAME}
+        COMPONENT headers)

@@ -280,6 +280,12 @@ void EVP_MD_CTX_free(EVP_MD_CTX *ctx)
     OPENSSL_free(ctx);
 }
 
+int EVP_CIPHER_CTX_reset(EVP_CIPHER_CTX *ctx)
+{
+    EVP_CIPHER_CTX_init(ctx);
+    return 1;
+}
+
 HMAC_CTX *HMAC_CTX_new(void)
 {
     HMAC_CTX *ctx = OPENSSL_zalloc(sizeof(HMAC_CTX));
@@ -393,4 +399,13 @@ int DH_set0_key(DH *dh, BIGNUM *pub_key, BIGNUM *priv_key)
         dh->priv_key = priv_key;
     }
     return 1;
+}
+
+const char *OpenSSL_version(int type)
+{
+    return SSLeay_version(type);
+}
+unsigned long OpenSSL_version_num(void)
+{
+    return SSLeay();
 }

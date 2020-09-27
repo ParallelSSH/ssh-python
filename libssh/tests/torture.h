@@ -41,6 +41,7 @@
 #include <cmocka.h>
 
 #include "torture_cmocka.h"
+#include "tests_config.h"
 
 #ifndef assert_return_code
 /* hack for older versions of cmocka */

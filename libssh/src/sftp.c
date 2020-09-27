@@ -1173,13 +1173,13 @@ static sftp_attributes sftp_parse_attr_4(sftp_session sftp, ssh_buffer buf,
         break;
       }
       attr->atime64 = ntohll(attr->atime64);
-    }
 
-    if (flags & SSH_FILEXFER_ATTR_SUBSECOND_TIMES) {
-      if (ssh_buffer_get_u32(buf, &attr->atime_nseconds) != 4) {
-        break;
+      if (flags & SSH_FILEXFER_ATTR_SUBSECOND_TIMES) {
+        if (ssh_buffer_get_u32(buf, &attr->atime_nseconds) != 4) {
+          break;
+        }
+        attr->atime_nseconds = ntohl(attr->atime_nseconds);
       }
-      attr->atime_nseconds = ntohl(attr->atime_nseconds);
     }
 
     if (flags & SSH_FILEXFER_ATTR_CREATETIME) {
@@ -1187,13 +1187,13 @@ static sftp_attributes sftp_parse_attr_4(sftp_session sftp, ssh_buffer buf,
         break;
       }
       attr->createtime = ntohll(attr->createtime);
-    }
 
-    if (flags & SSH_FILEXFER_ATTR_SUBSECOND_TIMES) {
-      if (ssh_buffer_get_u32(buf, &attr->createtime_nseconds) != 4) {
-        break;
+      if (flags & SSH_FILEXFER_ATTR_SUBSECOND_TIMES) {
+        if (ssh_buffer_get_u32(buf, &attr->createtime_nseconds) != 4) {
+          break;
+        }
+        attr->createtime_nseconds = ntohl(attr->createtime_nseconds);
       }
-      attr->createtime_nseconds = ntohl(attr->createtime_nseconds);
     }
 
     if (flags & SSH_FILEXFER_ATTR_MODIFYTIME) {
@@ -1201,13 +1201,13 @@ static sftp_attributes sftp_parse_attr_4(sftp_session sftp, ssh_buffer buf,
         break;
       }
       attr->mtime64 = ntohll(attr->mtime64);
-    }
 
-    if (flags & SSH_FILEXFER_ATTR_SUBSECOND_TIMES) {
-      if (ssh_buffer_get_u32(buf, &attr->mtime_nseconds) != 4) {
-        break;
+      if (flags & SSH_FILEXFER_ATTR_SUBSECOND_TIMES) {
+        if (ssh_buffer_get_u32(buf, &attr->mtime_nseconds) != 4) {
+          break;
+        }
+        attr->mtime_nseconds = ntohl(attr->mtime_nseconds);
       }
-      attr->mtime_nseconds = ntohl(attr->mtime_nseconds);
     }
 
     if (flags & SSH_FILEXFER_ATTR_ACL) {

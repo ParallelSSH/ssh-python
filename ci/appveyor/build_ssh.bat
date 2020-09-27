@@ -17,5 +17,6 @@ cp %OPENSSL_DIR%\lib\VC\libcrypto%PYTHON_ARCH%MD.lib %APPVEYOR_BUILD_FOLDER%
 cp %OPENSSL_DIR%\lib\VC\libssl%PYTHON_ARCH%MD.lib %APPVEYOR_BUILD_FOLDER%
 
 cmake --build . --config Release
+cmake --install . --prefix ../local
 
 cd ..

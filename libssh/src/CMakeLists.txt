@@ -1,6 +1,7 @@
 set(LIBSSH_PUBLIC_INCLUDE_DIRS ${libssh_SOURCE_DIR}/include)
 
 set(LIBSSH_PRIVATE_INCLUDE_DIRS
+  ${libssh_BINARY_DIR}/include
   ${libssh_BINARY_DIR}
 )
 
@@ -362,6 +363,7 @@ endif (WITH_VISIBILITY_HIDDEN)
 
 if (MINGW)
     set_target_properties(ssh PROPERTIES LINK_FLAGS "-Wl,--enable-stdcall-fixup")
+    set_target_properties(ssh PROPERTIES COMPILE_FLAGS "-D_POSIX_SOURCE")
 endif ()
 
 
