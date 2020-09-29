@@ -5,6 +5,7 @@ build
 *~
 *.so*
 src
+local
 libssh/compile_commands.json
 wheelhouse
 .idea
