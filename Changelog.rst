@@ -8,6 +8,7 @@ Changes
 -------
 
 * Updated embedded libssh to ``0.9.5``.
+* ``Session.channel_new`` now raises ``ssh.exceptions.ChannelOpenFailure`` on failure to create new channel.
 
 0.6.0
 +++++
@@ -17,6 +18,7 @@ Changes
 
 * Added function for setting GSS-API credentials delegation option to session.
 * Updated error handling for all user authentication session functions to raise specific authentication errors.
+* `ssh.Key.import_privkey_*` now defaults to empty passphrase.
 
 
 0.5.0

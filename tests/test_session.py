@@ -80,7 +80,7 @@ class SessionTest(SSHTestCase):
     def test_disconnect(self):
         self._auth()
         chan = self.session.channel_new()
-        chan.open_session()
+        self.assertEqual(chan.open_session(), 0)
         chan.close()
         self.session.disconnect()
         del chan
@@ -158,3 +158,17 @@ class SessionTest(SSHTestCase):
         self.session.connect()
         self.assertRaises(
             AuthenticationDenied, self.session.userauth_agent, self.user)
+
+    def test_set_timeout(self):
+        session = Session()
+        self.assertEqual(session.options_set(options.TIMEOUT, "1000"), 0)
+        self.assertEqual(session.options_set(options.TIMEOUT_USEC, "1000"), 0)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((self.host, self.port))
+        session = Session()
+        session.options_set(options.USER, self.user)
+        session.options_set(options.HOST, self.host)
+        session.options_set_port(self.port)
+        self.assertEqual(session.set_socket(sock), 0)
+        self.assertEqual(session.options_set(options.TIMEOUT, "1000"), 0)
+        self.assertEqual(session.options_set(options.TIMEOUT_USEC, "1000"), 0)
