@@ -9,9 +9,9 @@ environment:
     PYTHONUNBUFFERED: 1
     SYSTEM_LIBSSH: 1
     PYPI_USER:
-      secure: 2m0jy6JD/R9RExIosOT6YA==
+      secure: WKF8ok0UPIgkA+isDUuHww==
     PYPI_PASS:
-      secure: x+dF0A8BZUf2IrPNRN1O0w==
+      secure: uXkrTaPGSNQdXTJIt3aiy2E1GBnbn6gH3opi7DgMIcmpLgZt7RTeqsaszbjPToGkoqfVXN+jdkQca4LfGAKZ8a2LgrrVYoITdxbjNkZB3yDBKk6ULNMsqdHmt4I1evRhSPSSZnRKU2rSzL+gOTViEVnhcahsUJPgNAIFvpZWsZfdRAafFtF1D33B03aAPwuhYuZTIwRyhUrwVGsYzOzIoDLtnpGj/0+GHazwjhHXfg/yTd600SPiWVsgknxjoeBu+cmi2iMDeT3ULu3P8UGjuQ==
     # Default python version to run single commands with
     PYTHON_DEF: "C:\\Python36-x64"
     PYTHON_VERSION: "3.6"
