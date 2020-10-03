@@ -8,6 +8,7 @@ Changes
 -------
 
 * Updated embedded libssh to ``0.9.5``.
+* ``Session.channel_new`` now raises ``ssh.exceptions.ChannelOpenFailure`` on failure to create new channel.
 
 0.6.0
 +++++
