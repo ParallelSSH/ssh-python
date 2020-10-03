@@ -26,7 +26,7 @@ from key cimport SSHKey
 from sftp cimport SFTP
 from scp cimport SCP
 
-from exceptions import OptionError, InvalidAPIUse
+from exceptions import OptionError, InvalidAPIUse, ChannelOpenFailure
 
 from c_sftp cimport sftp_session, sftp_new, sftp_init
 cimport c_ssh
@@ -97,8 +97,7 @@ cdef class Session:
             _check_connected(self._session)
             _channel = c_ssh.ssh_channel_new(self._session)
         if _channel is NULL:
-            return handle_error_codes(
-                c_ssh.ssh_get_error_code(self._session), self._session)
+            raise ChannelOpenFailure
         channel = Channel.from_ptr(_channel, self)
         return channel
 

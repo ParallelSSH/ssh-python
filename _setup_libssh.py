@@ -22,7 +22,8 @@ def build_ssh():
         os.mkdir('local/lib')
     # Depending on architecture cmake installs libraries into lib64,
     # but we don't care about that.
-    os.symlink('lib', 'local/lib64')
+    if not os.path.exists('local/lib64'):
+        os.symlink('lib', 'local/lib64')
 
     os.chdir('src')
     check_call('cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../local -DWITH_GSS_API=ON ../libssh',
