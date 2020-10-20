@@ -67,22 +67,64 @@ cdef class RSACert01Key(KeyType):
     pass
 
 
+cdef class ECDSA_P256(KeyType):
+    pass
+
+
+cdef class ECDSA_P384(KeyType):
+    pass
+
+
+cdef class ECDSA_P521(KeyType):
+    pass
+
+
+cdef class ECDSA_P256_CERT01(KeyType):
+    pass
+
+
+cdef class ECDSA_P384_CERT01(KeyType):
+    pass
+
+
+cdef class ECDSA_P521_CERT01(KeyType):
+    pass
+
+
+cdef class ED25519_CERT01(KeyType):
+    pass
+
+
 cdef KeyType from_keytype(ssh_keytypes_e _type):
     cdef KeyType key_type
     if _type == ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN:
-        key_type = UnknownKey.__new__(KeyType)
+        key_type = UnknownKey()
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS:
-        key_type = DSSKey.__new__(KeyType)
+        key_type = DSSKey()
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA:
-        key_type = RSAKey.__new__(KeyType)
+        key_type = RSAKey()
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA1:
-        key_type = RSA1Key.__new__(KeyType)
+        key_type = RSA1Key()
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA:
-        key_type = ECDSAKey.__new__(KeyType)
+        key_type = ECDSAKey()
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS_CERT01:
-        key_type = DSSCert01Key.__new__(KeyType)
+        key_type = DSSCert01Key()
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01:
-        key_type = RSACert01Key.__new__(KeyType)
+        key_type = RSACert01Key()
+    elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256:
+        key_type = ECDSA_P256()
+    elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384:
+        key_type = ECDSA_P384()
+    elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521:
+        key_type = ECDSA_P521()
+    elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256_CERT01:
+        key_type = ECDSA_P256_CERT01()
+    elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384_CERT01:
+        key_type = ECDSA_P384_CERT01()
+    elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521_CERT01:
+        key_type = ECDSA_P521_CERT01()
+    elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519_CERT01:
+        key_type = ED25519_CERT01()
     else:
         raise Exception("Unknown keytype %s", _type)
     key_type._type = _type
@@ -96,12 +138,3 @@ def key_type_from_name(key_name):
     with nogil:
         _type = ssh_key_type_from_name(&_key_name)
     return from_keytype(_type)
-
-
-# UNKNOWN = KeyType.from_keytype(ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN)
-# DSS = KeyType.from_keytype(ssh_keytypes_e.SSH_KEYTYPE_DSS)
-# RSA = KeyType.from_keytype(ssh_keytypes_e.SSH_KEYTYPE_RSA)
-# RSA1 = KeyType.from_keytype(ssh_keytypes_e.SSH_KEYTYPE_RSA1)
-# ECDSA = KeyType.from_keytype(ssh_keytypes_e.SSH_KEYTYPE_ECDSA)
-# DSS_CERT01 = KeyType.from_keytype(ssh_keytypes_e.SSH_KEYTYPE_DSS_CERT01)
-# RSA_CERT01 = KeyType.from_keytype(ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01)

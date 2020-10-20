@@ -28,6 +28,9 @@ from ssh import options
 
 PKEY_FILENAME = os.path.sep.join([os.path.dirname(__file__), 'unit_test_key'])
 PUB_FILE = "%s.pub" % (PKEY_FILENAME,)
+USER_CA_KEY = os.path.sep.join([os.path.dirname(__file__), 'embedded_server', 'ca_user_key'])
+USER_CERT_FILE = os.path.sep.join([os.path.dirname(__file__), 'embedded_server', 'ca_user_key-cert.pub'])
+# CA_USER_PUB_KEY = "%s.pub" % (PKEY_FILENAME,)
 
 
 class SSHTestCase(unittest.TestCase):
@@ -51,6 +54,8 @@ class SSHTestCase(unittest.TestCase):
         self.resp = u'me'
         self.user_key = PKEY_FILENAME
         self.user_pub_key = PUB_FILE
+        self.user_ca_key = USER_CA_KEY
+        self.user_cert_file = USER_CERT_FILE
         self.user = pwd.getpwuid(os.geteuid()).pw_name
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((self.host, self.port))

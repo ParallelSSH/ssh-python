@@ -21,7 +21,9 @@ from select import select
 
 from ssh.session import Session, SSH_AUTH_AGAIN, SSH_READ_PENDING, SSH_WRITE_PENDING
 from ssh.channel import Channel
-from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
+from ssh.key import SSHKey, import_pubkey_file, import_privkey_file, import_cert_file, \
+    import_cert_base64, copy_cert_to_privkey
+from ssh.keytypes import RSACert01Key
 from ssh import options
 from ssh.exceptions import KeyImportError, InvalidAPIUse, \
     AuthenticationDenied
@@ -116,6 +118,29 @@ class SessionTest(SSHTestCase):
         pkey = import_privkey_file(self.user_key)
         self.assertEqual(
             self.session.userauth_publickey(pkey), 0)
+
+    def test_cert_auth(self):
+        self.assertEqual(self.session.connect(), 0)
+        cert_key = import_cert_file(self.user_cert_file)
+        self.assertIsInstance(cert_key, SSHKey)
+        key_type = cert_key.key_type()
+        self.assertIsInstance(key_type, RSACert01Key)
+        # priv_key = copy_cert_to_privkey(cert_key)
+        # self.assertIsInstance(priv_key, SSHKey)
+        # priv_key.key_type()
+        import ipdb; ipdb.set_trace()
+        self.assertEqual(self.session.userauth_try_publickey(cert_key), 0)
+        # copy_cert_to_privkey
+        # self.assertRaises(KeyImportError, import_pubkey_file, self.user_key)
+        # key = import_pubkey_file(self.user_pub_key)
+        # self.assertIsInstance(key, SSHKey)
+        # self.assertEqual(
+        #     self.session.userauth_try_publickey(key), 0)
+        # # Private key as public key import error
+        # self.assertRaises(KeyImportError, import_privkey_file, self.user_pub_key)
+        # pkey = import_privkey_file(self.user_key)
+        # self.assertEqual(
+        #     self.session.userauth_publickey(pkey), 0)
 
     def test_open_channel(self):
         self._auth()
