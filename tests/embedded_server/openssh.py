@@ -17,6 +17,8 @@
 import os
 import socket
 import pwd
+import random
+import string
 from subprocess import Popen
 from time import sleep
 from sys import version_info
@@ -40,6 +42,8 @@ class OpenSSHServer(object):
         self.port = port
         self.server_proc = None
         self._fix_masks()
+        self.random_server = ''.join(random.choice(string.ascii_lowercase + string.digits)
+                                     for _ in range(8))
         self.make_config()
 
     def _fix_masks(self):

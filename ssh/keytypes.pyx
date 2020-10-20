@@ -23,6 +23,9 @@ from c_ssh cimport ssh_keytypes_e, ssh_key_type_to_char, ssh_key_type_from_name
 
 cdef class KeyType:
 
+    def __cinit__(self):
+        self._type = ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN
+
     @property
     def value(self):
         return self._type
@@ -64,7 +67,9 @@ cdef class DSSCert01Key(KeyType):
 
 
 cdef class RSACert01Key(KeyType):
-    pass
+
+    def __cinit__(self):
+        self._type = ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01
 
 
 cdef class ECDSA_P256(KeyType):
@@ -98,33 +103,33 @@ cdef class ED25519_CERT01(KeyType):
 cdef KeyType from_keytype(ssh_keytypes_e _type):
     cdef KeyType key_type
     if _type == ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN:
-        key_type = UnknownKey()
+        key_type = UnknownKey.__new__(UnknownKey)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS:
-        key_type = DSSKey()
+        key_type = DSSKey.__new__(DSSKey)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA:
-        key_type = RSAKey()
+        key_type = RSAKey.__new__(RSAKey)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA1:
-        key_type = RSA1Key()
+        key_type = RSA1Key.__new__(RSA1Key)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA:
-        key_type = ECDSAKey()
+        key_type = ECDSAKey.__new__(ECDSAKey)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS_CERT01:
-        key_type = DSSCert01Key()
+        key_type = DSSCert01Key.__new__(DSSCert01Key)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01:
-        key_type = RSACert01Key()
+        key_type = RSACert01Key.__new__(RSACert01Key)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256:
-        key_type = ECDSA_P256()
+        key_type = ECDSA_P256.__new__(ECDSA_P256)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384:
-        key_type = ECDSA_P384()
+        key_type = ECDSA_P384.__new__(ECDSA_P384)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521:
-        key_type = ECDSA_P521()
+        key_type = ECDSA_P521.__new__(ECDSA_P521)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256_CERT01:
-        key_type = ECDSA_P256_CERT01()
+        key_type = ECDSA_P256_CERT01.__new__(ECDSA_P256_CERT01)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384_CERT01:
-        key_type = ECDSA_P384_CERT01()
+        key_type = ECDSA_P384_CERT01.__new__(ECDSA_P384_CERT01)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521_CERT01:
-        key_type = ECDSA_P521_CERT01()
+        key_type = ECDSA_P521_CERT01.__new__(ECDSA_P521_CERT01)
     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519_CERT01:
-        key_type = ED25519_CERT01()
+        key_type = ED25519_CERT01.__new__(ED25519_CERT01)
     else:
         raise Exception("Unknown keytype %s", _type)
     key_type._type = _type

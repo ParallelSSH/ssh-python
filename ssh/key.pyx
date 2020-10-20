@@ -213,7 +213,6 @@ def import_cert_base64(bytes b64_cert, KeyType key_type):
         rc = c_ssh.ssh_pki_import_cert_base64(
             c_key, key_type._type, &_key)
     if rc != c_ssh.SSH_OK:
-        # Leak?
         raise KeyImportError
     key = SSHKey.from_ptr(_key)
     return key
@@ -229,19 +228,18 @@ def import_cert_file(filepath):
         rc = c_ssh.ssh_pki_import_cert_file(
             c_filepath, &_key)
     if rc != c_ssh.SSH_OK:
-        # Leak?
         raise KeyImportError
     key = SSHKey.from_ptr(_key)
     return key
 
 
-def copy_cert_to_privkey(SSHKey cert_key):
-    cdef SSHKey privkey = SSHKey()
-    cdef c_ssh.ssh_key _priv_key = privkey._key
+def copy_cert_to_privkey(SSHKey cert_key, SSHKey priv_key):
+    if priv_key.is_private() is False:
+        raise KeyImportError
+    cdef c_ssh.ssh_key _priv_key = priv_key._key
     cdef c_ssh.ssh_key _cert_key = cert_key._key
     with nogil:
         rc = c_ssh.ssh_pki_copy_cert_to_privkey(
             _cert_key, _priv_key)
     if rc != c_ssh.SSH_OK:
         raise KeyImportError
-    return privkey
