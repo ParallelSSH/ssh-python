@@ -1,5 +1,5 @@
 # This file is part of ssh-python.
-# Copyright (C) 2018 Panos Kittenis
+# Copyright (C) 2018-2020 Panos Kittenis
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -18,6 +18,7 @@ import unittest
 import pwd
 import os
 import socket
+import subprocess
 from sys import version_info
 
 from .embedded_server.openssh import OpenSSHServer
@@ -29,14 +30,24 @@ from ssh import options
 PKEY_FILENAME = os.path.sep.join([os.path.dirname(__file__), 'unit_test_key'])
 PUB_FILE = "%s.pub" % (PKEY_FILENAME,)
 USER_CERT_PRIV_KEY = os.path.sep.join([os.path.dirname(__file__), 'unit_test_cert_key'])
+USER_CERT_PUB_KEY = os.path.sep.join([os.path.dirname(__file__), 'unit_test_cert_key.pub'])
 USER_CERT_FILE = os.path.sep.join([os.path.dirname(__file__), 'unit_test_cert_key-cert.pub'])
-# CA_USER_PUB_KEY = "%s.pub" % (PKEY_FILENAME,)
+CA_USER_KEY = os.path.sep.join([os.path.dirname(__file__), 'embedded_server', 'ca_user_key'])
+USER = pwd.getpwuid(os.geteuid()).pw_name
 
 
 class SSHTestCase(unittest.TestCase):
 
     @classmethod
+    def sign_cert(cls):
+        cmd = [
+            'ssh-keygen', '-s', CA_USER_KEY, '-n', USER, '-I', 'tests', USER_CERT_PUB_KEY,
+        ]
+        subprocess.check_call(cmd)
+
+    @classmethod
     def setUpClass(cls):
+        cls.sign_cert()
         _mask = int('0600') if version_info <= (2,) else 0o600
         os.chmod(PKEY_FILENAME, _mask)
         cls.server = OpenSSHServer()
@@ -56,7 +67,7 @@ class SSHTestCase(unittest.TestCase):
         self.user_pub_key = PUB_FILE
         self.user_ca_key = USER_CERT_PRIV_KEY
         self.user_cert_file = USER_CERT_FILE
-        self.user = pwd.getpwuid(os.geteuid()).pw_name
+        self.user = USER
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((self.host, self.port))
         self.sock = sock
