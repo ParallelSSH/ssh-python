@@ -17,11 +17,14 @@
 import unittest
 import socket
 import os
+import base64
 from select import select
 
 from ssh.session import Session, SSH_AUTH_AGAIN, SSH_READ_PENDING, SSH_WRITE_PENDING
 from ssh.channel import Channel
-from ssh.key import SSHKey, import_pubkey_file, import_privkey_file
+from ssh.key import SSHKey, import_pubkey_file, import_privkey_file, import_cert_file, \
+    import_cert_base64, copy_cert_to_privkey
+from ssh.keytypes import RSACert01Key
 from ssh import options
 from ssh.exceptions import KeyImportError, InvalidAPIUse, \
     AuthenticationDenied
@@ -116,6 +119,33 @@ class SessionTest(SSHTestCase):
         pkey = import_privkey_file(self.user_key)
         self.assertEqual(
             self.session.userauth_publickey(pkey), 0)
+
+    def test_cert_auth(self):
+        self.assertEqual(self.session.connect(), 0)
+        cert_key = import_cert_file(self.user_cert_file)
+        self.assertIsInstance(cert_key, SSHKey)
+        key_type = cert_key.key_type()
+        self.assertIsInstance(key_type, RSACert01Key)
+        cert_priv_key = import_privkey_file(self.user_ca_key)
+        copy_cert_to_privkey(cert_key, cert_priv_key)
+        self.assertEqual(self.session.userauth_try_publickey(cert_key), 0)
+        self.assertEqual(self.session.userauth_publickey(cert_priv_key), 0)
+        chan = self.session.channel_new()
+        self.assertIsInstance(chan, Channel)
+
+    def test_cert_imports(self):
+        self.assertRaises(KeyImportError, import_cert_file, self.user_key)
+        priv_key = SSHKey()
+        cert_key = import_cert_file(self.user_cert_file)
+        self.assertRaises(KeyImportError, copy_cert_to_privkey, cert_key, priv_key)
+        with open(self.user_cert_file, 'rb') as fh:
+            cert_key_data = base64.b64encode(fh.read())
+            # cert_key_data = fh.read()
+        rsa_cert = RSACert01Key()
+        self.assertIsNotNone(rsa_cert.value)
+        # Failing
+        # cert_key_b64 = import_cert_base64(cert_key_data, rsa_cert)
+        # self.assertIsInstance(cert_key_b64.key_type(), RSACert01Key)
 
     def test_open_channel(self):
         self._auth()

@@ -9,3 +9,4 @@ local
 libssh/compile_commands.json
 wheelhouse
 .idea
+tests/unit_test_cert_key-cert.pub
