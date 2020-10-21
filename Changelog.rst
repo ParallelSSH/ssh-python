@@ -1,6 +1,16 @@
 Change Log
 =============
 
+0.8.0
++++++
+
+Changes
+--------
+
+* Updated supported key types in ``ssh.keytypes`` for libssh 0.9.5.
+* Added certificate import and handling functions to ``ssh.key``
+
+
 0.7.0
 +++++
 
