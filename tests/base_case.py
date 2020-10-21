@@ -47,9 +47,10 @@ class SSHTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.sign_cert()
         _mask = int('0600') if version_info <= (2,) else 0o600
-        os.chmod(PKEY_FILENAME, _mask)
+        for _file in [PKEY_FILENAME, USER_CERT_PRIV_KEY, CA_USER_KEY]:
+            os.chmod(_file, _mask)
+        cls.sign_cert()
         cls.server = OpenSSHServer()
         cls.server.start_server()
 
