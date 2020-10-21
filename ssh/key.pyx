@@ -123,7 +123,6 @@ cdef class SSHKey:
         return b_key
 
 
-
 def generate(KeyType key_type, int bits):
     cdef SSHKey key
     cdef c_ssh.ssh_key _key
