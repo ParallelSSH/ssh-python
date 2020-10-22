@@ -10,6 +10,11 @@ Changes
 * Updated supported key types in ``ssh.keytypes`` for libssh 0.9.5.
 * Added certificate import and handling functions to ``ssh.key``
 
+Packaging
+---------
+
+* Updated OpenSSL in manylinux wheels to 1.1
+* Added Python 3.9 Windows 64-bit binary wheel
 
 0.7.0
 +++++
