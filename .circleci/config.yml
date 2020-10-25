@@ -102,7 +102,7 @@ jobs:
       - run:
           name: Build Wheels
           command: |
-            if [[ -z "${CIRCLE_PULL_REQUEST}" ]]; then
+            if [[ -z "${CIRCLE_PR_NUMBER}" ]]; then
               echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
             fi
             ./ci/build-manylinux.sh
