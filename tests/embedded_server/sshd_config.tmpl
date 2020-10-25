@@ -2,7 +2,7 @@ Protocol 2
 UsePAM no
 HostbasedAuthentication no
 IgnoreUserKnownHosts yes
-ListenAddress 127.0.0.1
+ListenAddress {{listen_ip}}
 HostKey {{parent_dir}}/ca_host_key
 HostCertificate {{parent_dir}}/ca_host_key-cert.pub
 TrustedUserCAKeys {{parent_dir}}/ca_user_key.pub
