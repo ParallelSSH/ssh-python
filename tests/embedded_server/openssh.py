@@ -38,7 +38,8 @@ PRINCIPALS = os.path.abspath(os.path.sep.join([DIR_NAME, 'principals']))
 
 class OpenSSHServer(object):
 
-    def __init__(self, port=2222):
+    def __init__(self, listen_ip='127.0.0.1', port=2222):
+        self.listen_ip = listen_ip
         self.port = port
         self.server_proc = None
         self._fix_masks()
@@ -59,7 +60,11 @@ class OpenSSHServer(object):
             tmpl = fh.read()
         template = Template(tmpl)
         with open(SSHD_CONFIG, 'w') as fh:
-            fh.write(template.render(parent_dir=os.path.abspath(DIR_NAME)))
+            fh.write(template.render(
+                parent_dir=os.path.abspath(DIR_NAME),
+                listen_ip=self.listen_ip,
+                random_server=self.random_server,
+            ))
             fh.write(os.linesep)
         with open(PRINCIPALS_TMPL) as fh:
             _princ_tmpl = fh.read()
