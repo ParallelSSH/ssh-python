@@ -1389,12 +1389,12 @@ static PyObject *__pyx_f_3ssh_5utils_to_bytes(PyObject *__pyx_v__str) {
 /* "ssh/utils.pyx":42
  * 
  * 
- * cdef object to_str(char *c_str):             # <<<<<<<<<<<<<<
+ * cdef object to_str(const char *c_str):             # <<<<<<<<<<<<<<
  *     _len = len(c_str)
  *     if PY_MAJOR_VERSION < 3:
  */
 
-static PyObject *__pyx_f_3ssh_5utils_to_str(char *__pyx_v_c_str) {
+static PyObject *__pyx_f_3ssh_5utils_to_str(char const *__pyx_v_c_str) {
   Py_ssize_t __pyx_v__len;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -1411,7 +1411,7 @@ static PyObject *__pyx_f_3ssh_5utils_to_str(char *__pyx_v_c_str) {
 
   /* "ssh/utils.pyx":43
  * 
- * cdef object to_str(char *c_str):
+ * cdef object to_str(const char *c_str):
  *     _len = len(c_str)             # <<<<<<<<<<<<<<
  *     if PY_MAJOR_VERSION < 3:
  *         return c_str[:_len]
@@ -1420,7 +1420,7 @@ static PyObject *__pyx_f_3ssh_5utils_to_str(char *__pyx_v_c_str) {
   __pyx_v__len = __pyx_t_1;
 
   /* "ssh/utils.pyx":44
- * cdef object to_str(char *c_str):
+ * cdef object to_str(const char *c_str):
  *     _len = len(c_str)
  *     if PY_MAJOR_VERSION < 3:             # <<<<<<<<<<<<<<
  *         return c_str[:_len]
@@ -1444,7 +1444,7 @@ static PyObject *__pyx_f_3ssh_5utils_to_str(char *__pyx_v_c_str) {
     goto __pyx_L0;
 
     /* "ssh/utils.pyx":44
- * cdef object to_str(char *c_str):
+ * cdef object to_str(const char *c_str):
  *     _len = len(c_str)
  *     if PY_MAJOR_VERSION < 3:             # <<<<<<<<<<<<<<
  *         return c_str[:_len]
@@ -1490,7 +1490,7 @@ static PyObject *__pyx_f_3ssh_5utils_to_str(char *__pyx_v_c_str) {
   /* "ssh/utils.pyx":42
  * 
  * 
- * cdef object to_str(char *c_str):             # <<<<<<<<<<<<<<
+ * cdef object to_str(const char *c_str):             # <<<<<<<<<<<<<<
  *     _len = len(c_str)
  *     if PY_MAJOR_VERSION < 3:
  */
@@ -1512,12 +1512,12 @@ static PyObject *__pyx_f_3ssh_5utils_to_str(char *__pyx_v_c_str) {
 /* "ssh/utils.pyx":49
  * 
  * 
- * cdef object to_str_len(char *c_str, int length):             # <<<<<<<<<<<<<<
+ * cdef object to_str_len(const char *c_str, int length):             # <<<<<<<<<<<<<<
  *     if PY_MAJOR_VERSION < 3:
  *         return c_str[:length]
  */
 
-static PyObject *__pyx_f_3ssh_5utils_to_str_len(char *__pyx_v_c_str, int __pyx_v_length) {
+static PyObject *__pyx_f_3ssh_5utils_to_str_len(char const *__pyx_v_c_str, int __pyx_v_length) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -1532,7 +1532,7 @@ static PyObject *__pyx_f_3ssh_5utils_to_str_len(char *__pyx_v_c_str, int __pyx_v
 
   /* "ssh/utils.pyx":50
  * 
- * cdef object to_str_len(char *c_str, int length):
+ * cdef object to_str_len(const char *c_str, int length):
  *     if PY_MAJOR_VERSION < 3:             # <<<<<<<<<<<<<<
  *         return c_str[:length]
  *     return c_str[:length].decode(ENCODING)
@@ -1541,7 +1541,7 @@ static PyObject *__pyx_f_3ssh_5utils_to_str_len(char *__pyx_v_c_str, int __pyx_v
   if (__pyx_t_1) {
 
     /* "ssh/utils.pyx":51
- * cdef object to_str_len(char *c_str, int length):
+ * cdef object to_str_len(const char *c_str, int length):
  *     if PY_MAJOR_VERSION < 3:
  *         return c_str[:length]             # <<<<<<<<<<<<<<
  *     return c_str[:length].decode(ENCODING)
@@ -1556,7 +1556,7 @@ static PyObject *__pyx_f_3ssh_5utils_to_str_len(char *__pyx_v_c_str, int __pyx_v
 
     /* "ssh/utils.pyx":50
  * 
- * cdef object to_str_len(char *c_str, int length):
+ * cdef object to_str_len(const char *c_str, int length):
  *     if PY_MAJOR_VERSION < 3:             # <<<<<<<<<<<<<<
  *         return c_str[:length]
  *     return c_str[:length].decode(ENCODING)
@@ -1601,7 +1601,7 @@ static PyObject *__pyx_f_3ssh_5utils_to_str_len(char *__pyx_v_c_str, int __pyx_v
   /* "ssh/utils.pyx":49
  * 
  * 
- * cdef object to_str_len(char *c_str, int length):             # <<<<<<<<<<<<<<
+ * cdef object to_str_len(const char *c_str, int length):             # <<<<<<<<<<<<<<
  *     if PY_MAJOR_VERSION < 3:
  *         return c_str[:length]
  */
@@ -2862,8 +2862,8 @@ static int __Pyx_modinit_function_export_code(void) {
   __Pyx_RefNannySetupContext("__Pyx_modinit_function_export_code", 0);
   /*--- Function export code ---*/
   if (__Pyx_ExportFunction("to_bytes", (void (*)(void))__pyx_f_3ssh_5utils_to_bytes, "PyObject *(PyObject *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("to_str", (void (*)(void))__pyx_f_3ssh_5utils_to_str, "PyObject *(char *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ExportFunction("to_str_len", (void (*)(void))__pyx_f_3ssh_5utils_to_str_len, "PyObject *(char *, int)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("to_str", (void (*)(void))__pyx_f_3ssh_5utils_to_str, "PyObject *(char const *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ExportFunction("to_str_len", (void (*)(void))__pyx_f_3ssh_5utils_to_str_len, "PyObject *(char const *, int)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (__Pyx_ExportFunction("handle_error_codes", (void (*)(void))__pyx_f_3ssh_5utils_handle_error_codes, "int (int, ssh_session)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (__Pyx_ExportFunction("handle_auth_error_codes", (void (*)(void))__pyx_f_3ssh_5utils_handle_auth_error_codes, "int (int, ssh_session)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (__Pyx_ExportFunction("ssh_string_to_bytes", (void (*)(void))__pyx_f_3ssh_5utils_ssh_string_to_bytes, "PyObject *(ssh_string)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)

@@ -172,7 +172,7 @@ cdef extern from "libssh/libssh.h" nogil:
         SSH_KEYTYPE_DSS,
         SSH_KEYTYPE_RSA,
         SSH_KEYTYPE_RSA1,
-        SSH_KEYTYPE_ECDSA,
+        SSH_KEYTYPE_ECDSA,  # Deprecated
         SSH_KEYTYPE_ED25519,
         SSH_KEYTYPE_DSS_CERT01,
         SSH_KEYTYPE_RSA_CERT01,
