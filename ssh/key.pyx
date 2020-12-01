@@ -69,8 +69,9 @@ cdef class SSHKey:
 
     def key_type(self):
         cdef c_ssh.ssh_keytypes_e _type
-        with nogil:
-            _type = c_ssh.ssh_key_type(self._key)
+        if self._key is NULL:
+            return
+        _type = c_ssh.ssh_key_type(self._key)
         return from_keytype(_type)
 
     def ecdsa_name(self):
@@ -200,3 +201,44 @@ def import_pubkey_file(filepath):
         raise KeyImportError
     key = SSHKey.from_ptr(_key)
     return key
+
+
+def import_cert_base64(bytes b64_cert, KeyType key_type):
+    cdef const_char *c_key = b64_cert
+    cdef int rc
+    cdef SSHKey key
+    cdef c_ssh.ssh_key _key
+    with nogil:
+        rc = c_ssh.ssh_pki_import_cert_base64(
+            c_key, key_type._type, &_key)
+    if rc != c_ssh.SSH_OK:
+        raise KeyImportError
+    key = SSHKey.from_ptr(_key)
+    return key
+
+
+def import_cert_file(filepath):
+    cdef bytes b_filepath = to_bytes(filepath)
+    cdef const_char *c_filepath = b_filepath
+    cdef int rc
+    cdef SSHKey key
+    cdef c_ssh.ssh_key _key
+    with nogil:
+        rc = c_ssh.ssh_pki_import_cert_file(
+            c_filepath, &_key)
+    if rc != c_ssh.SSH_OK:
+        raise KeyImportError
+    key = SSHKey.from_ptr(_key)
+    return key
+
+
+def copy_cert_to_privkey(SSHKey cert_key, SSHKey priv_key):
+    if priv_key.is_private() is False:
+        raise KeyImportError
+    cdef c_ssh.ssh_key _priv_key = priv_key._key
+    cdef c_ssh.ssh_key _cert_key = cert_key._key
+    with nogil:
+        rc = c_ssh.ssh_pki_copy_cert_to_privkey(
+            _cert_key, _priv_key)
+    if rc != c_ssh.SSH_OK:
+        raise KeyImportError

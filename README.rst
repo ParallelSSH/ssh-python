@@ -27,57 +27,27 @@ _____________
 
 Binary wheels are provided for Linux (manylinux 2010), OSX (10.14 and 10.15 for brew Python), and Windows 64-bit (Python 3.6/3.7/3.8).
 
-Wheels have *no dependencies*. For building from source, see `documentation <http://ssh-python.readthedocs.org/en/latest/>`_.
+Wheels have *no dependencies*.
+
+For building from source, see `documentation <https://ssh-python.readthedocs.io/en/latest/installation.html#building-from-source>`_.
 
 
 .. code-block:: shell
 
    pip install ssh-python
 
+Pip may need to be updated to be able to install binary wheels.
 
-Project is beta status, please report any issues.
+.. code-block:: shell
+
+   pip install -U pip
+   pip install ssh-python
 
 
 Quick Start
 _____________
 
-
-.. code-block:: python
-
-   from __future__ import print_function
-
-   import os
-   import pwd
-
-   from ssh.session import Session
-   from ssh import options
-
-   # Linux only
-   USERNAME = pwd.getpwuid(os.geteuid()).pw_name
-   HOST = 'localhost'
-
-   s = Session()
-   s.options_set(options.HOST, HOST)
-   s.connect()
-
-   # Authenticate with agent
-   s.userauth_agent(USERNAME)
-
-   chan = s.channel_new()
-   chan.open_session()
-   chan.request_exec('echo me')
-   size, data = chan.read()
-   while size > 0:
-       print(data.strip())
-       size, data = chan.read()
-   chan.close()
-
-Output:
-
-.. code-block:: shell
-
-  me
-
+See `command execution script <https://github.com/ParallelSSH/ssh-python/blob/master/examples/exec.py>`_ for complete example.
 
 Features
 _________

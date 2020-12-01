@@ -53,6 +53,7 @@ cython_directives = {
     'boundscheck': False,
     'optimize.use_switch': True,
     'wraparound': False,
+    'language_level': 2,
 }
 cython_args = {
     'cython_directives': cython_directives,

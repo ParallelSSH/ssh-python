@@ -45,4 +45,32 @@ cdef class RSACert01Key(KeyType):
     pass
 
 
+cdef class ECDSA_P256(KeyType):
+    pass
+
+
+cdef class ECDSA_P384(KeyType):
+    pass
+
+
+cdef class ECDSA_P521(KeyType):
+    pass
+
+
+cdef class ECDSA_P256_CERT01(KeyType):
+    pass
+
+
+cdef class ECDSA_P384_CERT01(KeyType):
+    pass
+
+
+cdef class ECDSA_P521_CERT01(KeyType):
+    pass
+
+
+cdef class ED25519_CERT01(KeyType):
+    pass
+
+
 cdef KeyType from_keytype(ssh_keytypes_e _type)

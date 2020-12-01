@@ -175,7 +175,14 @@ cdef extern from "libssh/libssh.h" nogil:
         SSH_KEYTYPE_ECDSA,
         SSH_KEYTYPE_ED25519,
         SSH_KEYTYPE_DSS_CERT01,
-        SSH_KEYTYPE_RSA_CERT01
+        SSH_KEYTYPE_RSA_CERT01,
+        SSH_KEYTYPE_ECDSA_P256,
+        SSH_KEYTYPE_ECDSA_P384,
+        SSH_KEYTYPE_ECDSA_P521,
+        SSH_KEYTYPE_ECDSA_P256_CERT01,
+        SSH_KEYTYPE_ECDSA_P384_CERT01,
+        SSH_KEYTYPE_ECDSA_P521_CERT01,
+        SSH_KEYTYPE_ED25519_CERT01
     enum ssh_keycmp_e:
         SSH_KEY_CMP_PUBLIC,
         SSH_KEY_CMP_PRIVATE
@@ -452,6 +459,12 @@ cdef extern from "libssh/libssh.h" nogil:
 
     const char *ssh_pki_key_ecdsa_name(const ssh_key key)
 
+    char *ssh_get_fingerprint_hash(ssh_publickey_hash_type type,
+                                   unsigned char *hash,
+                                   size_t len)
+    void ssh_print_hash(ssh_publickey_hash_type type,
+                        unsigned char *hash,
+                        size_t len)
     void ssh_print_hexa(
         const char *descr, const unsigned char *what, size_t len)
     int ssh_send_ignore(ssh_session session, const char *data)
