@@ -39,14 +39,14 @@ cdef bytes to_bytes(_str):
     return _str
 
 
-cdef object to_str(char *c_str):
+cdef object to_str(const char *c_str):
     _len = len(c_str)
     if PY_MAJOR_VERSION < 3:
         return c_str[:_len]
     return c_str[:_len].decode(ENCODING)
 
 
-cdef object to_str_len(char *c_str, int length):
+cdef object to_str_len(const char *c_str, int length):
     if PY_MAJOR_VERSION < 3:
         return c_str[:length]
     return c_str[:length].decode(ENCODING)

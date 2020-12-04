@@ -1418,7 +1418,7 @@ static struct __pyx_obj_3ssh_8keytypes_KeyType *(*__pyx_f_3ssh_8keytypes_from_ke
 
 /* Module declarations from 'ssh.utils' */
 static PyObject *(*__pyx_f_3ssh_5utils_to_bytes)(PyObject *); /*proto*/
-static PyObject *(*__pyx_f_3ssh_5utils_to_str)(char *); /*proto*/
+static PyObject *(*__pyx_f_3ssh_5utils_to_str)(char const *); /*proto*/
 
 /* Module declarations from 'ssh.key' */
 static PyTypeObject *__pyx_ptype_3ssh_3key_SSHKey = 0;
@@ -2308,7 +2308,7 @@ static PyObject *__pyx_pf_3ssh_3key_6SSHKey_12ecdsa_name(struct __pyx_obj_3ssh_3
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  char *__pyx_t_2;
+  char const *__pyx_t_2;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -2378,7 +2378,7 @@ static PyObject *__pyx_pf_3ssh_3key_6SSHKey_12ecdsa_name(struct __pyx_obj_3ssh_3
  *     def export_privkey_file(self, filepath, passphrase=None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v_b_name); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_name); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L1_error)
   __pyx_t_1 = __pyx_f_3ssh_5utils_to_str(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
@@ -5554,7 +5554,7 @@ static int __Pyx_modinit_function_import_code(void) {
   __pyx_t_1 = PyImport_ImportModule("ssh.utils"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (__Pyx_ImportFunction(__pyx_t_1, "to_bytes", (void (**)(void))&__pyx_f_3ssh_5utils_to_bytes, "PyObject *(PyObject *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "to_str", (void (**)(void))&__pyx_f_3ssh_5utils_to_str, "PyObject *(char *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "to_str", (void (**)(void))&__pyx_f_3ssh_5utils_to_str, "PyObject *(char const *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;

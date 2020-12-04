@@ -850,6 +850,7 @@ struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01;
 struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01;
 struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01;
 struct __pyx_obj_3ssh_8keytypes_UnknownKey;
+struct __pyx_obj_3ssh_8keytypes_ED25519Key;
 
 /* "ssh/keytypes.pxd":20
  * 
@@ -1020,14 +1021,26 @@ struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 {
 };
 
 
-/* "ssh/keytypes.pyx":45
+/* "ssh/keytypes.pyx":43
  * 
  * 
  * cdef class UnknownKey(KeyType):             # <<<<<<<<<<<<<<
- *     pass
- * 
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN
  */
 struct __pyx_obj_3ssh_8keytypes_UnknownKey {
+  struct __pyx_obj_3ssh_8keytypes_KeyType __pyx_base;
+};
+
+
+/* "ssh/keytypes.pyx":108
+ * 
+ * 
+ * cdef class ED25519Key(KeyType):             # <<<<<<<<<<<<<<
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ED25519
+ */
+struct __pyx_obj_3ssh_8keytypes_ED25519Key {
   struct __pyx_obj_3ssh_8keytypes_KeyType __pyx_base;
 };
 
@@ -1204,9 +1217,6 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 /* RaiseException.proto */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
-/* ExtTypeTest.proto */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type);
-
 /* PyObject_GenericGetAttrNoDict.proto */
 #if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
 static CYTHON_INLINE PyObject* __Pyx_PyObject_GenericGetAttrNoDict(PyObject* obj, PyObject* attr_name);
@@ -1290,9 +1300,6 @@ static void __Pyx_AddTraceback(const char *funcname, int c_line,
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_enum__ssh_keytypes_e(enum ssh_keytypes_e value);
 
-/* CIntFromPy.proto */
-static CYTHON_INLINE char __Pyx_PyInt_As_char(PyObject *);
-
 /* CIntToPy.proto */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value);
 
@@ -1340,7 +1347,7 @@ static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
 /* Module declarations from 'ssh.utils' */
 static PyObject *(*__pyx_f_3ssh_5utils_to_bytes)(PyObject *); /*proto*/
-static PyObject *(*__pyx_f_3ssh_5utils_to_str)(char *); /*proto*/
+static PyObject *(*__pyx_f_3ssh_5utils_to_str)(char const *); /*proto*/
 
 /* Module declarations from 'ssh.keytypes' */
 static PyTypeObject *__pyx_ptype_3ssh_8keytypes_KeyType = 0;
@@ -1358,6 +1365,7 @@ static PyTypeObject *__pyx_ptype_3ssh_8keytypes_ECDSA_P384_CERT01 = 0;
 static PyTypeObject *__pyx_ptype_3ssh_8keytypes_ECDSA_P521_CERT01 = 0;
 static PyTypeObject *__pyx_ptype_3ssh_8keytypes_ED25519_CERT01 = 0;
 static PyTypeObject *__pyx_ptype_3ssh_8keytypes_UnknownKey = 0;
+static PyTypeObject *__pyx_ptype_3ssh_8keytypes_ED25519Key = 0;
 static struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_f_3ssh_8keytypes_from_keytype(enum ssh_keytypes_e); /*proto*/
 #define __Pyx_MODULE_NAME "ssh.keytypes"
 extern int __pyx_module_is_main_ssh__keytypes;
@@ -1365,6 +1373,7 @@ int __pyx_module_is_main_ssh__keytypes = 0;
 
 /* Implementation of 'ssh.keytypes' */
 static PyObject *__pyx_builtin_TypeError;
+static PyObject *__pyx_builtin_ValueError;
 static const char __pyx_k_str[] = "__str__";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
@@ -1375,6 +1384,7 @@ static const char __pyx_k_RSAKey[] = "RSAKey";
 static const char __pyx_k_reduce[] = "__reduce__";
 static const char __pyx_k_KeyType[] = "KeyType";
 static const char __pyx_k_RSA1Key[] = "RSA1Key";
+static const char __pyx_k_unknown[] = "unknown";
 static const char __pyx_k_ECDSAKey[] = "ECDSAKey";
 static const char __pyx_k_getstate[] = "__getstate__";
 static const char __pyx_k_key_name[] = "key_name";
@@ -1384,7 +1394,9 @@ static const char __pyx_k_reduce_ex[] = "__reduce_ex__";
 static const char __pyx_k_ECDSA_P256[] = "ECDSA_P256";
 static const char __pyx_k_ECDSA_P384[] = "ECDSA_P384";
 static const char __pyx_k_ECDSA_P521[] = "ECDSA_P521";
+static const char __pyx_k_ED25519Key[] = "ED25519Key";
 static const char __pyx_k_UnknownKey[] = "UnknownKey";
+static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_b_key_name[] = "b_key_name";
 static const char __pyx_k_key_name_2[] = "_key_name";
 static const char __pyx_k_DSSCert01Key[] = "DSSCert01Key";
@@ -1410,6 +1422,7 @@ static PyObject *__pyx_n_s_ECDSA_P384;
 static PyObject *__pyx_n_s_ECDSA_P384_CERT01;
 static PyObject *__pyx_n_s_ECDSA_P521;
 static PyObject *__pyx_n_s_ECDSA_P521_CERT01;
+static PyObject *__pyx_n_s_ED25519Key;
 static PyObject *__pyx_n_s_ED25519_CERT01;
 static PyObject *__pyx_n_s_KeyType;
 static PyObject *__pyx_n_s_RSA1Key;
@@ -1418,6 +1431,7 @@ static PyObject *__pyx_n_s_RSAKey;
 static PyObject *__pyx_n_s_TypeError;
 static PyObject *__pyx_n_s_UnknownKey;
 static PyObject *__pyx_kp_s_Unknown_keytype_s;
+static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_b_key_name;
 static PyObject *__pyx_n_s_cline_in_traceback;
 static PyObject *__pyx_n_s_getstate;
@@ -1437,41 +1451,58 @@ static PyObject *__pyx_kp_s_ssh_keytypes_pyx;
 static PyObject *__pyx_n_s_str;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_s_type;
+static PyObject *__pyx_n_s_unknown;
 static int __pyx_pf_3ssh_8keytypes_7KeyType___cinit__(struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_5value___get__(struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_2__str__(struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_4__repr__(struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_6__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_8__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_10UnknownKey___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_UnknownKey *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_10UnknownKey_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_UnknownKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_6DSSKey___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSKey *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_6DSSKey_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_6RSAKey___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSAKey *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_6RSAKey_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSAKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_7RSA1Key___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSA1Key *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_7RSA1Key_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSA1Key *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_8ECDSAKey___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSAKey *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_8ECDSAKey_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSAKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_12DSSCert01Key___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_12DSSCert01Key_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_10UnknownKey___cinit__(struct __pyx_obj_3ssh_8keytypes_UnknownKey *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_10UnknownKey_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_UnknownKey *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_10UnknownKey_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_UnknownKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_6DSSKey___cinit__(struct __pyx_obj_3ssh_8keytypes_DSSKey *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_6DSSKey_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSKey *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_6DSSKey_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_6RSAKey___cinit__(struct __pyx_obj_3ssh_8keytypes_RSAKey *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_6RSAKey_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSAKey *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_6RSAKey_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSAKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_7RSA1Key___cinit__(struct __pyx_obj_3ssh_8keytypes_RSA1Key *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_7RSA1Key_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSA1Key *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_7RSA1Key_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSA1Key *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_8ECDSAKey___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSAKey *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_8ECDSAKey_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSAKey *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_8ECDSAKey_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSAKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_12DSSCert01Key___cinit__(struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_12DSSCert01Key_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_12DSSCert01Key_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_3ssh_8keytypes_12RSACert01Key___cinit__(struct __pyx_obj_3ssh_8keytypes_RSACert01Key *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3ssh_8keytypes_12RSACert01Key_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSACert01Key *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_3ssh_8keytypes_12RSACert01Key_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSACert01Key *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P256___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P256_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P384___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P384_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P521___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P521_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_10ECDSA_P256___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P256_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P256_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_10ECDSA_P384___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P384_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P384_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_10ECDSA_P521___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P521_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P521_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_10ED25519Key___cinit__(struct __pyx_obj_3ssh_8keytypes_ED25519Key *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_10ED25519Key_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519Key *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_10ED25519Key_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519Key *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static int __pyx_pf_3ssh_8keytypes_14ED25519_CERT01___cinit__(struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static PyObject *__pyx_pf_3ssh_8keytypes_key_type_from_name(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_key_name); /* proto */
 static PyObject *__pyx_tp_new_3ssh_8keytypes_KeyType(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_3ssh_8keytypes_DSSKey(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -1488,6 +1519,7 @@ static PyObject *__pyx_tp_new_3ssh_8keytypes_ECDSA_P384_CERT01(PyTypeObject *t, 
 static PyObject *__pyx_tp_new_3ssh_8keytypes_ECDSA_P521_CERT01(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_3ssh_8keytypes_ED25519_CERT01(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_3ssh_8keytypes_UnknownKey(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_3ssh_8keytypes_ED25519Key(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__3;
@@ -1519,12 +1551,14 @@ static PyObject *__pyx_tuple__28;
 static PyObject *__pyx_tuple__29;
 static PyObject *__pyx_tuple__30;
 static PyObject *__pyx_tuple__31;
-static PyObject *__pyx_codeobj__32;
+static PyObject *__pyx_tuple__32;
+static PyObject *__pyx_tuple__33;
+static PyObject *__pyx_codeobj__34;
 /* Late includes */
 
-/* "ssh/keytypes.pyx":26
- * cdef class KeyType:
+/* "ssh/keytypes.pyx":25
  * 
+ * cdef class KeyType:
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
  *         self._type = ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN
  * 
@@ -1551,8 +1585,8 @@ static int __pyx_pf_3ssh_8keytypes_7KeyType___cinit__(struct __pyx_obj_3ssh_8key
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "ssh/keytypes.pyx":27
- * 
+  /* "ssh/keytypes.pyx":26
+ * cdef class KeyType:
  *     def __cinit__(self):
  *         self._type = ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN             # <<<<<<<<<<<<<<
  * 
@@ -1560,9 +1594,9 @@ static int __pyx_pf_3ssh_8keytypes_7KeyType___cinit__(struct __pyx_obj_3ssh_8key
  */
   __pyx_v_self->_type = SSH_KEYTYPE_UNKNOWN;
 
-  /* "ssh/keytypes.pyx":26
- * cdef class KeyType:
+  /* "ssh/keytypes.pyx":25
  * 
+ * cdef class KeyType:
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
  *         self._type = ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN
  * 
@@ -1574,7 +1608,7 @@ static int __pyx_pf_3ssh_8keytypes_7KeyType___cinit__(struct __pyx_obj_3ssh_8key
   return __pyx_r;
 }
 
-/* "ssh/keytypes.pyx":30
+/* "ssh/keytypes.pyx":29
  * 
  *     @property
  *     def value(self):             # <<<<<<<<<<<<<<
@@ -1604,7 +1638,7 @@ static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_5value___get__(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__get__", 0);
 
-  /* "ssh/keytypes.pyx":31
+  /* "ssh/keytypes.pyx":30
  *     @property
  *     def value(self):
  *         return self._type             # <<<<<<<<<<<<<<
@@ -1612,13 +1646,13 @@ static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_5value___get__(struct __pyx_ob
  *     def __str__(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_enum__ssh_keytypes_e(__pyx_v_self->_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 31, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_enum__ssh_keytypes_e(__pyx_v_self->_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/keytypes.pyx":30
+  /* "ssh/keytypes.pyx":29
  * 
  *     @property
  *     def value(self):             # <<<<<<<<<<<<<<
@@ -1637,12 +1671,12 @@ static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_5value___get__(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "ssh/keytypes.pyx":33
+/* "ssh/keytypes.pyx":32
  *         return self._type
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         cdef bytes _type
  *         cdef const_char *c_type
+ *         c_type = ssh_key_type_to_char(self._type)
  */
 
 /* Python wrapper */
@@ -1659,110 +1693,91 @@ static PyObject *__pyx_pw_3ssh_8keytypes_7KeyType_3__str__(PyObject *__pyx_v_sel
 }
 
 static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_2__str__(struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_v_self) {
-  PyObject *__pyx_v__type = 0;
   const char *__pyx_v_c_type;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  char *__pyx_t_2;
+  int __pyx_t_1;
+  PyObject *__pyx_t_2 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__str__", 0);
 
-  /* "ssh/keytypes.pyx":36
- *         cdef bytes _type
+  /* "ssh/keytypes.pyx":34
+ *     def __str__(self):
  *         cdef const_char *c_type
- *         with nogil:             # <<<<<<<<<<<<<<
- *             c_type = ssh_key_type_to_char(self._type)
- *         _type = c_type
+ *         c_type = ssh_key_type_to_char(self._type)             # <<<<<<<<<<<<<<
+ *         if c_type is not NULL:
+ *             return to_str(c_type)
  */
-  {
-      #ifdef WITH_THREAD
-      PyThreadState *_save;
-      Py_UNBLOCK_THREADS
-      __Pyx_FastGIL_Remember();
-      #endif
-      /*try:*/ {
+  __pyx_v_c_type = ssh_key_type_to_char(__pyx_v_self->_type);
 
-        /* "ssh/keytypes.pyx":37
+  /* "ssh/keytypes.pyx":35
  *         cdef const_char *c_type
- *         with nogil:
- *             c_type = ssh_key_type_to_char(self._type)             # <<<<<<<<<<<<<<
- *         _type = c_type
- *         return to_str(_type)
+ *         c_type = ssh_key_type_to_char(self._type)
+ *         if c_type is not NULL:             # <<<<<<<<<<<<<<
+ *             return to_str(c_type)
+ *         return "unknown"
  */
-        __pyx_v_c_type = ssh_key_type_to_char(__pyx_v_self->_type);
-      }
+  __pyx_t_1 = ((__pyx_v_c_type != NULL) != 0);
+  if (__pyx_t_1) {
 
-      /* "ssh/keytypes.pyx":36
- *         cdef bytes _type
- *         cdef const_char *c_type
- *         with nogil:             # <<<<<<<<<<<<<<
- *             c_type = ssh_key_type_to_char(self._type)
- *         _type = c_type
- */
-      /*finally:*/ {
-        /*normal exit:*/{
-          #ifdef WITH_THREAD
-          __Pyx_FastGIL_Forget();
-          Py_BLOCK_THREADS
-          #endif
-          goto __pyx_L5;
-        }
-        __pyx_L5:;
-      }
-  }
-
-  /* "ssh/keytypes.pyx":38
- *         with nogil:
- *             c_type = ssh_key_type_to_char(self._type)
- *         _type = c_type             # <<<<<<<<<<<<<<
- *         return to_str(_type)
+    /* "ssh/keytypes.pyx":36
+ *         c_type = ssh_key_type_to_char(self._type)
+ *         if c_type is not NULL:
+ *             return to_str(c_type)             # <<<<<<<<<<<<<<
+ *         return "unknown"
  * 
  */
-  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_c_type); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 38, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_v__type = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
+    __Pyx_XDECREF(__pyx_r);
+    __pyx_t_2 = __pyx_f_3ssh_5utils_to_str(__pyx_v_c_type); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 36, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_2);
+    __pyx_r = __pyx_t_2;
+    __pyx_t_2 = 0;
+    goto __pyx_L0;
 
-  /* "ssh/keytypes.pyx":39
- *             c_type = ssh_key_type_to_char(self._type)
- *         _type = c_type
- *         return to_str(_type)             # <<<<<<<<<<<<<<
+    /* "ssh/keytypes.pyx":35
+ *         cdef const_char *c_type
+ *         c_type = ssh_key_type_to_char(self._type)
+ *         if c_type is not NULL:             # <<<<<<<<<<<<<<
+ *             return to_str(c_type)
+ *         return "unknown"
+ */
+  }
+
+  /* "ssh/keytypes.pyx":37
+ *         if c_type is not NULL:
+ *             return to_str(c_type)
+ *         return "unknown"             # <<<<<<<<<<<<<<
  * 
  *     def __repr__(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyBytes_AsWritableString(__pyx_v__type); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(1, 39, __pyx_L1_error)
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_str(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 39, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
+  __Pyx_INCREF(__pyx_n_s_unknown);
+  __pyx_r = __pyx_n_s_unknown;
   goto __pyx_L0;
 
-  /* "ssh/keytypes.pyx":33
+  /* "ssh/keytypes.pyx":32
  *         return self._type
  * 
  *     def __str__(self):             # <<<<<<<<<<<<<<
- *         cdef bytes _type
  *         cdef const_char *c_type
+ *         c_type = ssh_key_type_to_char(self._type)
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
   __Pyx_AddTraceback("ssh.keytypes.KeyType.__str__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v__type);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "ssh/keytypes.pyx":41
- *         return to_str(_type)
+/* "ssh/keytypes.pyx":39
+ *         return "unknown"
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return self.__str__()
@@ -1793,7 +1808,7 @@ static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_4__repr__(struct __pyx_obj_3ss
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("__repr__", 0);
 
-  /* "ssh/keytypes.pyx":42
+  /* "ssh/keytypes.pyx":40
  * 
  *     def __repr__(self):
  *         return self.__str__()             # <<<<<<<<<<<<<<
@@ -1801,7 +1816,7 @@ static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_4__repr__(struct __pyx_obj_3ss
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_str); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 42, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_str); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
@@ -1815,15 +1830,15 @@ static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_4__repr__(struct __pyx_obj_3ss
   }
   __pyx_t_1 = (__pyx_t_3) ? __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3) : __Pyx_PyObject_CallNoArg(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 42, __pyx_L1_error)
+  if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/keytypes.pyx":41
- *         return to_str(_type)
+  /* "ssh/keytypes.pyx":39
+ *         return "unknown"
  * 
  *     def __repr__(self):             # <<<<<<<<<<<<<<
  *         return self.__str__()
@@ -1958,6 +1973,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_8__setstate_cython__(CYTHON_UN
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":44
+ * 
+ * cdef class UnknownKey(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_10UnknownKey_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_10UnknownKey_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10UnknownKey___cinit__(((struct __pyx_obj_3ssh_8keytypes_UnknownKey *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_10UnknownKey___cinit__(struct __pyx_obj_3ssh_8keytypes_UnknownKey *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":45
+ * cdef class UnknownKey(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_UNKNOWN;
+
+  /* "ssh/keytypes.pyx":44
+ * 
+ * cdef class UnknownKey(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -1965,20 +2032,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_7KeyType_8__setstate_cython__(CYTHON_UN
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_10UnknownKey_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_10UnknownKey___reduce_cython__[] = "UnknownKey.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_10UnknownKey_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_10UnknownKey_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_10UnknownKey_2__reduce_cython__[] = "UnknownKey.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_10UnknownKey_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_10UnknownKey___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_UnknownKey *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10UnknownKey_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_UnknownKey *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_10UnknownKey___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_UnknownKey *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_10UnknownKey_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_UnknownKey *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2023,20 +2090,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10UnknownKey___reduce_cython__(CYTHON_U
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_10UnknownKey_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_10UnknownKey_2__setstate_cython__[] = "UnknownKey.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_10UnknownKey_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_10UnknownKey_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_10UnknownKey_4__setstate_cython__[] = "UnknownKey.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_10UnknownKey_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_10UnknownKey_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_UnknownKey *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10UnknownKey_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_UnknownKey *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_10UnknownKey_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_UnknownKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_10UnknownKey_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_UnknownKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2073,6 +2140,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10UnknownKey_2__setstate_cython__(CYTHO
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":49
+ * 
+ * cdef class DSSKey(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_DSS
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_6DSSKey_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_6DSSKey_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_6DSSKey___cinit__(((struct __pyx_obj_3ssh_8keytypes_DSSKey *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_6DSSKey___cinit__(struct __pyx_obj_3ssh_8keytypes_DSSKey *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":50
+ * cdef class DSSKey(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_DSS             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_DSS;
+
+  /* "ssh/keytypes.pyx":49
+ * 
+ * cdef class DSSKey(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_DSS
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -2080,20 +2199,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10UnknownKey_2__setstate_cython__(CYTHO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_6DSSKey_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_6DSSKey___reduce_cython__[] = "DSSKey.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_6DSSKey_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_6DSSKey_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_6DSSKey_2__reduce_cython__[] = "DSSKey.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_6DSSKey_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_6DSSKey___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_DSSKey *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_6DSSKey_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_DSSKey *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_6DSSKey___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSKey *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_6DSSKey_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSKey *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2138,20 +2257,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_6DSSKey___reduce_cython__(CYTHON_UNUSED
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_6DSSKey_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_6DSSKey_2__setstate_cython__[] = "DSSKey.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_6DSSKey_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_6DSSKey_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_6DSSKey_4__setstate_cython__[] = "DSSKey.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_6DSSKey_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_6DSSKey_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_DSSKey *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_6DSSKey_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_DSSKey *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_6DSSKey_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_6DSSKey_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2188,6 +2307,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_6DSSKey_2__setstate_cython__(CYTHON_UNU
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":54
+ * 
+ * cdef class RSAKey(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_RSA
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_6RSAKey_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_6RSAKey_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_6RSAKey___cinit__(((struct __pyx_obj_3ssh_8keytypes_RSAKey *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_6RSAKey___cinit__(struct __pyx_obj_3ssh_8keytypes_RSAKey *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":55
+ * cdef class RSAKey(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_RSA             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_RSA;
+
+  /* "ssh/keytypes.pyx":54
+ * 
+ * cdef class RSAKey(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_RSA
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -2195,20 +2366,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_6DSSKey_2__setstate_cython__(CYTHON_UNU
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_6RSAKey_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_6RSAKey___reduce_cython__[] = "RSAKey.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_6RSAKey_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_6RSAKey_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_6RSAKey_2__reduce_cython__[] = "RSAKey.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_6RSAKey_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_6RSAKey___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_RSAKey *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_6RSAKey_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_RSAKey *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_6RSAKey___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSAKey *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_6RSAKey_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSAKey *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2253,20 +2424,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_6RSAKey___reduce_cython__(CYTHON_UNUSED
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_6RSAKey_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_6RSAKey_2__setstate_cython__[] = "RSAKey.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_6RSAKey_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_6RSAKey_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_6RSAKey_4__setstate_cython__[] = "RSAKey.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_6RSAKey_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_6RSAKey_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_RSAKey *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_6RSAKey_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_RSAKey *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_6RSAKey_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSAKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_6RSAKey_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSAKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2303,6 +2474,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_6RSAKey_2__setstate_cython__(CYTHON_UNU
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":59
+ * 
+ * cdef class RSA1Key(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_RSA1
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_7RSA1Key_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_7RSA1Key_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_7RSA1Key___cinit__(((struct __pyx_obj_3ssh_8keytypes_RSA1Key *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_7RSA1Key___cinit__(struct __pyx_obj_3ssh_8keytypes_RSA1Key *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":60
+ * cdef class RSA1Key(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_RSA1             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_RSA1;
+
+  /* "ssh/keytypes.pyx":59
+ * 
+ * cdef class RSA1Key(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_RSA1
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -2310,20 +2533,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_6RSAKey_2__setstate_cython__(CYTHON_UNU
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_7RSA1Key_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_7RSA1Key___reduce_cython__[] = "RSA1Key.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_7RSA1Key_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_7RSA1Key_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_7RSA1Key_2__reduce_cython__[] = "RSA1Key.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_7RSA1Key_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_7RSA1Key___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_RSA1Key *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_7RSA1Key_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_RSA1Key *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_7RSA1Key___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSA1Key *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_7RSA1Key_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSA1Key *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2368,20 +2591,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_7RSA1Key___reduce_cython__(CYTHON_UNUSE
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_7RSA1Key_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_7RSA1Key_2__setstate_cython__[] = "RSA1Key.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_7RSA1Key_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_7RSA1Key_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_7RSA1Key_4__setstate_cython__[] = "RSA1Key.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_7RSA1Key_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_7RSA1Key_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_RSA1Key *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_7RSA1Key_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_RSA1Key *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_7RSA1Key_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSA1Key *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_7RSA1Key_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_RSA1Key *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2418,6 +2641,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_7RSA1Key_2__setstate_cython__(CYTHON_UN
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":64
+ * 
+ * cdef class ECDSAKey(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_8ECDSAKey_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_8ECDSAKey_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_8ECDSAKey___cinit__(((struct __pyx_obj_3ssh_8keytypes_ECDSAKey *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_8ECDSAKey___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSAKey *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":65
+ * cdef class ECDSAKey(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_ECDSA;
+
+  /* "ssh/keytypes.pyx":64
+ * 
+ * cdef class ECDSAKey(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -2425,20 +2700,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_7RSA1Key_2__setstate_cython__(CYTHON_UN
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_8ECDSAKey_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_8ECDSAKey___reduce_cython__[] = "ECDSAKey.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_8ECDSAKey_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_8ECDSAKey_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_8ECDSAKey_2__reduce_cython__[] = "ECDSAKey.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_8ECDSAKey_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_8ECDSAKey___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSAKey *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_8ECDSAKey_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSAKey *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_8ECDSAKey___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSAKey *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_8ECDSAKey_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSAKey *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2483,20 +2758,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_8ECDSAKey___reduce_cython__(CYTHON_UNUS
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_8ECDSAKey_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_8ECDSAKey_2__setstate_cython__[] = "ECDSAKey.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_8ECDSAKey_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_8ECDSAKey_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_8ECDSAKey_4__setstate_cython__[] = "ECDSAKey.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_8ECDSAKey_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_8ECDSAKey_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSAKey *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_8ECDSAKey_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSAKey *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_8ECDSAKey_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSAKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_8ECDSAKey_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSAKey *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2533,6 +2808,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_8ECDSAKey_2__setstate_cython__(CYTHON_U
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":69
+ * 
+ * cdef class DSSCert01Key(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_DSS_CERT01
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_12DSSCert01Key_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_12DSSCert01Key_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_12DSSCert01Key___cinit__(((struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_12DSSCert01Key___cinit__(struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":70
+ * cdef class DSSCert01Key(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_DSS_CERT01             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_DSS_CERT01;
+
+  /* "ssh/keytypes.pyx":69
+ * 
+ * cdef class DSSCert01Key(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_DSS_CERT01
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -2540,20 +2867,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_8ECDSAKey_2__setstate_cython__(CYTHON_U
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_12DSSCert01Key_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_12DSSCert01Key___reduce_cython__[] = "DSSCert01Key.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_12DSSCert01Key_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_12DSSCert01Key_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_12DSSCert01Key_2__reduce_cython__[] = "DSSCert01Key.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_12DSSCert01Key_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_12DSSCert01Key___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_12DSSCert01Key_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_12DSSCert01Key___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_12DSSCert01Key_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2598,20 +2925,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_12DSSCert01Key___reduce_cython__(CYTHON
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_12DSSCert01Key_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_12DSSCert01Key_2__setstate_cython__[] = "DSSCert01Key.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_12DSSCert01Key_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_12DSSCert01Key_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_12DSSCert01Key_4__setstate_cython__[] = "DSSCert01Key.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_12DSSCert01Key_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_12DSSCert01Key_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_12DSSCert01Key_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_12DSSCert01Key_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_12DSSCert01Key_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_DSSCert01Key *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2648,9 +2975,9 @@ static PyObject *__pyx_pf_3ssh_8keytypes_12DSSCert01Key_2__setstate_cython__(CYT
   return __pyx_r;
 }
 
-/* "ssh/keytypes.pyx":71
- * cdef class RSACert01Key(KeyType):
+/* "ssh/keytypes.pyx":74
  * 
+ * cdef class RSACert01Key(KeyType):
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
  *         self._type = ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01
  * 
@@ -2677,8 +3004,8 @@ static int __pyx_pf_3ssh_8keytypes_12RSACert01Key___cinit__(struct __pyx_obj_3ss
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "ssh/keytypes.pyx":72
- * 
+  /* "ssh/keytypes.pyx":75
+ * cdef class RSACert01Key(KeyType):
  *     def __cinit__(self):
  *         self._type = ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01             # <<<<<<<<<<<<<<
  * 
@@ -2686,9 +3013,9 @@ static int __pyx_pf_3ssh_8keytypes_12RSACert01Key___cinit__(struct __pyx_obj_3ss
  */
   __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_RSA_CERT01;
 
-  /* "ssh/keytypes.pyx":71
- * cdef class RSACert01Key(KeyType):
+  /* "ssh/keytypes.pyx":74
  * 
+ * cdef class RSACert01Key(KeyType):
  *     def __cinit__(self):             # <<<<<<<<<<<<<<
  *         self._type = ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01
  * 
@@ -2815,6 +3142,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_12RSACert01Key_4__setstate_cython__(CYT
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":79
+ * 
+ * cdef class ECDSA_P256(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_10ECDSA_P256_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_10ECDSA_P256_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P256___cinit__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_10ECDSA_P256___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":80
+ * cdef class ECDSA_P256(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_ECDSA_P256;
+
+  /* "ssh/keytypes.pyx":79
+ * 
+ * cdef class ECDSA_P256(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -2822,20 +3201,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_12RSACert01Key_4__setstate_cython__(CYT
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P256_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_10ECDSA_P256___reduce_cython__[] = "ECDSA_P256.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P256_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P256_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_10ECDSA_P256_2__reduce_cython__[] = "ECDSA_P256.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P256_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P256___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P256_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P256___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P256_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2880,20 +3259,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P256___reduce_cython__(CYTHON_U
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P256_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_10ECDSA_P256_2__setstate_cython__[] = "ECDSA_P256.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P256_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P256_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_10ECDSA_P256_4__setstate_cython__[] = "ECDSA_P256.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P256_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P256_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P256_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P256_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P256_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2930,6 +3309,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P256_2__setstate_cython__(CYTHO
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":84
+ * 
+ * cdef class ECDSA_P384(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_10ECDSA_P384_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_10ECDSA_P384_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P384___cinit__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_10ECDSA_P384___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":85
+ * cdef class ECDSA_P384(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_ECDSA_P384;
+
+  /* "ssh/keytypes.pyx":84
+ * 
+ * cdef class ECDSA_P384(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -2937,20 +3368,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P256_2__setstate_cython__(CYTHO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P384_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_10ECDSA_P384___reduce_cython__[] = "ECDSA_P384.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P384_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P384_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_10ECDSA_P384_2__reduce_cython__[] = "ECDSA_P384.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P384_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P384___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P384_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P384___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P384_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2995,20 +3426,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P384___reduce_cython__(CYTHON_U
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P384_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_10ECDSA_P384_2__setstate_cython__[] = "ECDSA_P384.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P384_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P384_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_10ECDSA_P384_4__setstate_cython__[] = "ECDSA_P384.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P384_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P384_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P384_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P384_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P384_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3045,6 +3476,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P384_2__setstate_cython__(CYTHO
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":89
+ * 
+ * cdef class ECDSA_P521(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_10ECDSA_P521_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_10ECDSA_P521_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P521___cinit__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_10ECDSA_P521___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":90
+ * cdef class ECDSA_P521(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_ECDSA_P521;
+
+  /* "ssh/keytypes.pyx":89
+ * 
+ * cdef class ECDSA_P521(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -3052,20 +3535,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P384_2__setstate_cython__(CYTHO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P521_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_10ECDSA_P521___reduce_cython__[] = "ECDSA_P521.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P521_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P521_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_10ECDSA_P521_2__reduce_cython__[] = "ECDSA_P521.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P521_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P521___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P521_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P521___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P521_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3110,20 +3593,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P521___reduce_cython__(CYTHON_U
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P521_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_10ECDSA_P521_2__setstate_cython__[] = "ECDSA_P521.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P521_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P521_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_10ECDSA_P521_4__setstate_cython__[] = "ECDSA_P521.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_10ECDSA_P521_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P521_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ECDSA_P521_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P521_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P521_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3160,6 +3643,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P521_2__setstate_cython__(CYTHO
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":94
+ * 
+ * cdef class ECDSA_P256_CERT01(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256_CERT01
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01___cinit__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":95
+ * cdef class ECDSA_P256_CERT01(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256_CERT01             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_ECDSA_P256_CERT01;
+
+  /* "ssh/keytypes.pyx":94
+ * 
+ * cdef class ECDSA_P256_CERT01(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256_CERT01
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -3167,20 +3702,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_10ECDSA_P521_2__setstate_cython__(CYTHO
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_17ECDSA_P256_CERT01___reduce_cython__[] = "ECDSA_P256_CERT01.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_17ECDSA_P256_CERT01_2__reduce_cython__[] = "ECDSA_P256_CERT01.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3225,20 +3760,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01___reduce_cython__(C
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_17ECDSA_P256_CERT01_2__setstate_cython__[] = "ECDSA_P256_CERT01.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_17ECDSA_P256_CERT01_4__setstate_cython__[] = "ECDSA_P256_CERT01.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P256_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3275,6 +3810,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01_2__setstate_cython_
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":99
+ * 
+ * cdef class ECDSA_P384_CERT01(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384_CERT01
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01___cinit__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":100
+ * cdef class ECDSA_P384_CERT01(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384_CERT01             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_ECDSA_P384_CERT01;
+
+  /* "ssh/keytypes.pyx":99
+ * 
+ * cdef class ECDSA_P384_CERT01(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384_CERT01
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -3282,20 +3869,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P256_CERT01_2__setstate_cython_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_17ECDSA_P384_CERT01___reduce_cython__[] = "ECDSA_P384_CERT01.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_17ECDSA_P384_CERT01_2__reduce_cython__[] = "ECDSA_P384_CERT01.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3340,20 +3927,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01___reduce_cython__(C
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_17ECDSA_P384_CERT01_2__setstate_cython__[] = "ECDSA_P384_CERT01.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_17ECDSA_P384_CERT01_4__setstate_cython__[] = "ECDSA_P384_CERT01.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P384_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3390,6 +3977,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01_2__setstate_cython_
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":104
+ * 
+ * cdef class ECDSA_P521_CERT01(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521_CERT01
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01___cinit__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01___cinit__(struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":105
+ * cdef class ECDSA_P521_CERT01(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521_CERT01             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_ECDSA_P521_CERT01;
+
+  /* "ssh/keytypes.pyx":104
+ * 
+ * cdef class ECDSA_P521_CERT01(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521_CERT01
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -3397,20 +4036,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P384_CERT01_2__setstate_cython_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_17ECDSA_P521_CERT01___reduce_cython__[] = "ECDSA_P521_CERT01.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_17ECDSA_P521_CERT01_2__reduce_cython__[] = "ECDSA_P521_CERT01.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3455,20 +4094,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01___reduce_cython__(C
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_17ECDSA_P521_CERT01_2__setstate_cython__[] = "ECDSA_P521_CERT01.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_17ECDSA_P521_CERT01_4__setstate_cython__[] = "ECDSA_P521_CERT01.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ECDSA_P521_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3505,6 +4144,58 @@ static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01_2__setstate_cython_
   return __pyx_r;
 }
 
+/* "ssh/keytypes.pyx":109
+ * 
+ * cdef class ED25519Key(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ED25519
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_10ED25519Key_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_10ED25519Key_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ED25519Key___cinit__(((struct __pyx_obj_3ssh_8keytypes_ED25519Key *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_10ED25519Key___cinit__(struct __pyx_obj_3ssh_8keytypes_ED25519Key *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":110
+ * cdef class ED25519Key(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ED25519             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_ED25519;
+
+  /* "ssh/keytypes.pyx":109
+ * 
+ * cdef class ED25519Key(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ED25519
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -3512,20 +4203,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_17ECDSA_P521_CERT01_2__setstate_cython_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_14ED25519_CERT01___reduce_cython__[] = "ED25519_CERT01.__reduce_cython__(self)";
-static PyObject *__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_3ssh_8keytypes_10ED25519Key_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_10ED25519Key_2__reduce_cython__[] = "ED25519Key.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_10ED25519Key_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_14ED25519_CERT01___reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *)__pyx_v_self));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ED25519Key_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ED25519Key *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01___reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *__pyx_v_self) {
+static PyObject *__pyx_pf_3ssh_8keytypes_10ED25519Key_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519Key *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3555,7 +4246,7 @@ static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01___reduce_cython__(CYTH
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("ssh.keytypes.ED25519_CERT01.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("ssh.keytypes.ED25519Key.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
@@ -3570,20 +4261,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01___reduce_cython__(CYTH
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static char __pyx_doc_3ssh_8keytypes_14ED25519_CERT01_2__setstate_cython__[] = "ED25519_CERT01.__setstate_cython__(self, __pyx_state)";
-static PyObject *__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_3ssh_8keytypes_10ED25519Key_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_10ED25519Key_4__setstate_cython__[] = "ED25519Key.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_10ED25519Key_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_3ssh_8keytypes_14ED25519_CERT01_2__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_3ssh_8keytypes_10ED25519Key_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ED25519Key *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01_2__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_3ssh_8keytypes_10ED25519Key_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519Key *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3613,6 +4304,173 @@ static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01_2__setstate_cython__(C
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("ssh.keytypes.ED25519Key.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "ssh/keytypes.pyx":114
+ * 
+ * cdef class ED25519_CERT01(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ED25519_CERT01
+ * 
+ */
+
+/* Python wrapper */
+static int __pyx_pw_3ssh_8keytypes_14ED25519_CERT01_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static int __pyx_pw_3ssh_8keytypes_14ED25519_CERT01_1__cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__ (wrapper)", 0);
+  if (unlikely(PyTuple_GET_SIZE(__pyx_args) > 0)) {
+    __Pyx_RaiseArgtupleInvalid("__cinit__", 1, 0, 0, PyTuple_GET_SIZE(__pyx_args)); return -1;}
+  if (unlikely(__pyx_kwds) && unlikely(PyDict_Size(__pyx_kwds) > 0) && unlikely(!__Pyx_CheckKeywordStrings(__pyx_kwds, "__cinit__", 0))) return -1;
+  __pyx_r = __pyx_pf_3ssh_8keytypes_14ED25519_CERT01___cinit__(((struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static int __pyx_pf_3ssh_8keytypes_14ED25519_CERT01___cinit__(struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *__pyx_v_self) {
+  int __pyx_r;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__cinit__", 0);
+
+  /* "ssh/keytypes.pyx":115
+ * cdef class ED25519_CERT01(KeyType):
+ *     def __cinit__(self):
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ED25519_CERT01             # <<<<<<<<<<<<<<
+ * 
+ * 
+ */
+  __pyx_v_self->__pyx_base._type = SSH_KEYTYPE_ED25519_CERT01;
+
+  /* "ssh/keytypes.pyx":114
+ * 
+ * cdef class ED25519_CERT01(KeyType):
+ *     def __cinit__(self):             # <<<<<<<<<<<<<<
+ *         self._type = ssh_keytypes_e.SSH_KEYTYPE_ED25519_CERT01
+ * 
+ */
+
+  /* function exit code */
+  __pyx_r = 0;
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "(tree fragment)":1
+ * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_14ED25519_CERT01_2__reduce_cython__[] = "ED25519_CERT01.__reduce_cython__(self)";
+static PyObject *__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_3__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_3ssh_8keytypes_14ED25519_CERT01_2__reduce_cython__(((struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01_2__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__reduce_cython__", 0);
+
+  /* "(tree fragment)":2
+ * def __reduce_cython__(self):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
+ * def __setstate_cython__(self, __pyx_state):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ */
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__31, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __PYX_ERR(0, 2, __pyx_L1_error)
+
+  /* "(tree fragment)":1
+ * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("ssh.keytypes.ED25519_CERT01.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "(tree fragment)":3
+ * def __reduce_cython__(self):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static char __pyx_doc_3ssh_8keytypes_14ED25519_CERT01_4__setstate_cython__[] = "ED25519_CERT01.__setstate_cython__(self, __pyx_state)";
+static PyObject *__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_5__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
+  __pyx_r = __pyx_pf_3ssh_8keytypes_14ED25519_CERT01_4__setstate_cython__(((struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01_4__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_3ssh_8keytypes_ED25519_CERT01 *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  int __pyx_lineno = 0;
+  const char *__pyx_filename = NULL;
+  int __pyx_clineno = 0;
+  __Pyx_RefNannySetupContext("__setstate_cython__", 0);
+
+  /* "(tree fragment)":4
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
+ */
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__32, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __PYX_ERR(0, 4, __pyx_L1_error)
+
+  /* "(tree fragment)":3
+ * def __reduce_cython__(self):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):             # <<<<<<<<<<<<<<
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("ssh.keytypes.ED25519_CERT01.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __Pyx_XGIVEREF(__pyx_r);
@@ -3620,16 +4478,15 @@ static PyObject *__pyx_pf_3ssh_8keytypes_14ED25519_CERT01_2__setstate_cython__(C
   return __pyx_r;
 }
 
-/* "ssh/keytypes.pyx":103
+/* "ssh/keytypes.pyx":118
  * 
  * 
  * cdef KeyType from_keytype(ssh_keytypes_e _type):             # <<<<<<<<<<<<<<
- *     cdef KeyType key_type
  *     if _type == ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN:
+ *         return UnknownKey()
  */
 
 static struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_f_3ssh_8keytypes_from_keytype(enum ssh_keytypes_e __pyx_v__type) {
-  struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_v_key_type = 0;
   struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -3639,348 +4496,386 @@ static struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_f_3ssh_8keytypes_from_keyt
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("from_keytype", 0);
 
-  /* "ssh/keytypes.pyx":105
+  /* "ssh/keytypes.pyx":119
+ * 
  * cdef KeyType from_keytype(ssh_keytypes_e _type):
- *     cdef KeyType key_type
  *     if _type == ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN:             # <<<<<<<<<<<<<<
- *         key_type = UnknownKey.__new__(UnknownKey)
+ *         return UnknownKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS:
  */
   switch (__pyx_v__type) {
     case SSH_KEYTYPE_UNKNOWN:
 
-    /* "ssh/keytypes.pyx":106
- *     cdef KeyType key_type
- *     if _type == ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN:
- *         key_type = UnknownKey.__new__(UnknownKey)             # <<<<<<<<<<<<<<
- *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS:
- *         key_type = DSSKey.__new__(DSSKey)
- */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_UnknownKey(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_UnknownKey), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 106, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 106, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
-    __pyx_t_1 = 0;
-
-    /* "ssh/keytypes.pyx":105
+    /* "ssh/keytypes.pyx":120
  * cdef KeyType from_keytype(ssh_keytypes_e _type):
- *     cdef KeyType key_type
+ *     if _type == ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN:
+ *         return UnknownKey()             # <<<<<<<<<<<<<<
+ *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS:
+ *         return DSSKey()
+ */
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_UnknownKey)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 120, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __pyx_t_1 = 0;
+    goto __pyx_L0;
+
+    /* "ssh/keytypes.pyx":119
+ * 
+ * cdef KeyType from_keytype(ssh_keytypes_e _type):
  *     if _type == ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN:             # <<<<<<<<<<<<<<
- *         key_type = UnknownKey.__new__(UnknownKey)
+ *         return UnknownKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS:
  */
     break;
     case SSH_KEYTYPE_DSS:
 
-    /* "ssh/keytypes.pyx":108
- *         key_type = UnknownKey.__new__(UnknownKey)
+    /* "ssh/keytypes.pyx":122
+ *         return UnknownKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS:
- *         key_type = DSSKey.__new__(DSSKey)             # <<<<<<<<<<<<<<
+ *         return DSSKey()             # <<<<<<<<<<<<<<
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA:
- *         key_type = RSAKey.__new__(RSAKey)
+ *         return RSAKey()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_DSSKey(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_DSSKey), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 108, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 108, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_DSSKey)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 122, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":107
+    /* "ssh/keytypes.pyx":121
  *     if _type == ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN:
- *         key_type = UnknownKey.__new__(UnknownKey)
+ *         return UnknownKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS:             # <<<<<<<<<<<<<<
- *         key_type = DSSKey.__new__(DSSKey)
+ *         return DSSKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA:
  */
     break;
     case SSH_KEYTYPE_RSA:
 
-    /* "ssh/keytypes.pyx":110
- *         key_type = DSSKey.__new__(DSSKey)
+    /* "ssh/keytypes.pyx":124
+ *         return DSSKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA:
- *         key_type = RSAKey.__new__(RSAKey)             # <<<<<<<<<<<<<<
+ *         return RSAKey()             # <<<<<<<<<<<<<<
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA1:
- *         key_type = RSA1Key.__new__(RSA1Key)
+ *         return RSA1Key()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_RSAKey(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_RSAKey), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 110, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 110, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_RSAKey)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 124, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":109
+    /* "ssh/keytypes.pyx":123
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS:
- *         key_type = DSSKey.__new__(DSSKey)
+ *         return DSSKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA:             # <<<<<<<<<<<<<<
- *         key_type = RSAKey.__new__(RSAKey)
+ *         return RSAKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA1:
  */
     break;
     case SSH_KEYTYPE_RSA1:
 
-    /* "ssh/keytypes.pyx":112
- *         key_type = RSAKey.__new__(RSAKey)
+    /* "ssh/keytypes.pyx":126
+ *         return RSAKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA1:
- *         key_type = RSA1Key.__new__(RSA1Key)             # <<<<<<<<<<<<<<
+ *         return RSA1Key()             # <<<<<<<<<<<<<<
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA:
- *         key_type = ECDSAKey.__new__(ECDSAKey)
+ *         return ECDSAKey()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_RSA1Key(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_RSA1Key), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 112, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 112, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_RSA1Key)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 126, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":111
+    /* "ssh/keytypes.pyx":125
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA:
- *         key_type = RSAKey.__new__(RSAKey)
+ *         return RSAKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA1:             # <<<<<<<<<<<<<<
- *         key_type = RSA1Key.__new__(RSA1Key)
+ *         return RSA1Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA:
  */
     break;
     case SSH_KEYTYPE_ECDSA:
 
-    /* "ssh/keytypes.pyx":114
- *         key_type = RSA1Key.__new__(RSA1Key)
+    /* "ssh/keytypes.pyx":128
+ *         return RSA1Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA:
- *         key_type = ECDSAKey.__new__(ECDSAKey)             # <<<<<<<<<<<<<<
+ *         return ECDSAKey()             # <<<<<<<<<<<<<<
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS_CERT01:
- *         key_type = DSSCert01Key.__new__(DSSCert01Key)
+ *         return DSSCert01Key()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_ECDSAKey(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_ECDSAKey), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 114, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 114, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_ECDSAKey)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 128, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":113
+    /* "ssh/keytypes.pyx":127
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA1:
- *         key_type = RSA1Key.__new__(RSA1Key)
+ *         return RSA1Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA:             # <<<<<<<<<<<<<<
- *         key_type = ECDSAKey.__new__(ECDSAKey)
+ *         return ECDSAKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS_CERT01:
  */
     break;
     case SSH_KEYTYPE_DSS_CERT01:
 
-    /* "ssh/keytypes.pyx":116
- *         key_type = ECDSAKey.__new__(ECDSAKey)
+    /* "ssh/keytypes.pyx":130
+ *         return ECDSAKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS_CERT01:
- *         key_type = DSSCert01Key.__new__(DSSCert01Key)             # <<<<<<<<<<<<<<
+ *         return DSSCert01Key()             # <<<<<<<<<<<<<<
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01:
- *         key_type = RSACert01Key.__new__(RSACert01Key)
+ *         return RSACert01Key()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_DSSCert01Key(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_DSSCert01Key), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 116, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 116, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_DSSCert01Key)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 130, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":115
+    /* "ssh/keytypes.pyx":129
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA:
- *         key_type = ECDSAKey.__new__(ECDSAKey)
+ *         return ECDSAKey()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS_CERT01:             # <<<<<<<<<<<<<<
- *         key_type = DSSCert01Key.__new__(DSSCert01Key)
+ *         return DSSCert01Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01:
  */
     break;
     case SSH_KEYTYPE_RSA_CERT01:
 
-    /* "ssh/keytypes.pyx":118
- *         key_type = DSSCert01Key.__new__(DSSCert01Key)
+    /* "ssh/keytypes.pyx":132
+ *         return DSSCert01Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01:
- *         key_type = RSACert01Key.__new__(RSACert01Key)             # <<<<<<<<<<<<<<
+ *         return RSACert01Key()             # <<<<<<<<<<<<<<
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256:
- *         key_type = ECDSA_P256.__new__(ECDSA_P256)
+ *         return ECDSA_P256()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_RSACert01Key(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_RSACert01Key), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 118, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 118, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_RSACert01Key)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 132, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":117
+    /* "ssh/keytypes.pyx":131
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_DSS_CERT01:
- *         key_type = DSSCert01Key.__new__(DSSCert01Key)
+ *         return DSSCert01Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01:             # <<<<<<<<<<<<<<
- *         key_type = RSACert01Key.__new__(RSACert01Key)
+ *         return RSACert01Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256:
  */
     break;
     case SSH_KEYTYPE_ECDSA_P256:
 
-    /* "ssh/keytypes.pyx":120
- *         key_type = RSACert01Key.__new__(RSACert01Key)
+    /* "ssh/keytypes.pyx":134
+ *         return RSACert01Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256:
- *         key_type = ECDSA_P256.__new__(ECDSA_P256)             # <<<<<<<<<<<<<<
+ *         return ECDSA_P256()             # <<<<<<<<<<<<<<
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384:
- *         key_type = ECDSA_P384.__new__(ECDSA_P384)
+ *         return ECDSA_P384()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_ECDSA_P256(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P256), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 120, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 120, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P256)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 134, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":119
+    /* "ssh/keytypes.pyx":133
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_RSA_CERT01:
- *         key_type = RSACert01Key.__new__(RSACert01Key)
+ *         return RSACert01Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256:             # <<<<<<<<<<<<<<
- *         key_type = ECDSA_P256.__new__(ECDSA_P256)
+ *         return ECDSA_P256()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384:
  */
     break;
     case SSH_KEYTYPE_ECDSA_P384:
 
-    /* "ssh/keytypes.pyx":122
- *         key_type = ECDSA_P256.__new__(ECDSA_P256)
+    /* "ssh/keytypes.pyx":136
+ *         return ECDSA_P256()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384:
- *         key_type = ECDSA_P384.__new__(ECDSA_P384)             # <<<<<<<<<<<<<<
+ *         return ECDSA_P384()             # <<<<<<<<<<<<<<
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521:
- *         key_type = ECDSA_P521.__new__(ECDSA_P521)
+ *         return ECDSA_P521()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_ECDSA_P384(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P384), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 122, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 122, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P384)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 136, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":121
+    /* "ssh/keytypes.pyx":135
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256:
- *         key_type = ECDSA_P256.__new__(ECDSA_P256)
+ *         return ECDSA_P256()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384:             # <<<<<<<<<<<<<<
- *         key_type = ECDSA_P384.__new__(ECDSA_P384)
+ *         return ECDSA_P384()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521:
  */
     break;
     case SSH_KEYTYPE_ECDSA_P521:
 
-    /* "ssh/keytypes.pyx":124
- *         key_type = ECDSA_P384.__new__(ECDSA_P384)
+    /* "ssh/keytypes.pyx":138
+ *         return ECDSA_P384()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521:
- *         key_type = ECDSA_P521.__new__(ECDSA_P521)             # <<<<<<<<<<<<<<
+ *         return ECDSA_P521()             # <<<<<<<<<<<<<<
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256_CERT01:
- *         key_type = ECDSA_P256_CERT01.__new__(ECDSA_P256_CERT01)
+ *         return ECDSA_P256_CERT01()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_ECDSA_P521(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P521), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 124, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 124, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P521)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 138, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":123
+    /* "ssh/keytypes.pyx":137
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384:
- *         key_type = ECDSA_P384.__new__(ECDSA_P384)
+ *         return ECDSA_P384()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521:             # <<<<<<<<<<<<<<
- *         key_type = ECDSA_P521.__new__(ECDSA_P521)
+ *         return ECDSA_P521()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256_CERT01:
  */
     break;
     case SSH_KEYTYPE_ECDSA_P256_CERT01:
 
-    /* "ssh/keytypes.pyx":126
- *         key_type = ECDSA_P521.__new__(ECDSA_P521)
+    /* "ssh/keytypes.pyx":140
+ *         return ECDSA_P521()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256_CERT01:
- *         key_type = ECDSA_P256_CERT01.__new__(ECDSA_P256_CERT01)             # <<<<<<<<<<<<<<
+ *         return ECDSA_P256_CERT01()             # <<<<<<<<<<<<<<
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384_CERT01:
- *         key_type = ECDSA_P384_CERT01.__new__(ECDSA_P384_CERT01)
+ *         return ECDSA_P384_CERT01()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_ECDSA_P256_CERT01(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P256_CERT01), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 126, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 126, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P256_CERT01)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 140, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":125
+    /* "ssh/keytypes.pyx":139
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521:
- *         key_type = ECDSA_P521.__new__(ECDSA_P521)
+ *         return ECDSA_P521()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256_CERT01:             # <<<<<<<<<<<<<<
- *         key_type = ECDSA_P256_CERT01.__new__(ECDSA_P256_CERT01)
+ *         return ECDSA_P256_CERT01()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384_CERT01:
  */
     break;
     case SSH_KEYTYPE_ECDSA_P384_CERT01:
 
-    /* "ssh/keytypes.pyx":128
- *         key_type = ECDSA_P256_CERT01.__new__(ECDSA_P256_CERT01)
+    /* "ssh/keytypes.pyx":142
+ *         return ECDSA_P256_CERT01()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384_CERT01:
- *         key_type = ECDSA_P384_CERT01.__new__(ECDSA_P384_CERT01)             # <<<<<<<<<<<<<<
+ *         return ECDSA_P384_CERT01()             # <<<<<<<<<<<<<<
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521_CERT01:
- *         key_type = ECDSA_P521_CERT01.__new__(ECDSA_P521_CERT01)
+ *         return ECDSA_P521_CERT01()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_ECDSA_P384_CERT01(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P384_CERT01), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 128, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 128, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P384_CERT01)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 142, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":127
+    /* "ssh/keytypes.pyx":141
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P256_CERT01:
- *         key_type = ECDSA_P256_CERT01.__new__(ECDSA_P256_CERT01)
+ *         return ECDSA_P256_CERT01()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384_CERT01:             # <<<<<<<<<<<<<<
- *         key_type = ECDSA_P384_CERT01.__new__(ECDSA_P384_CERT01)
+ *         return ECDSA_P384_CERT01()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521_CERT01:
  */
     break;
     case SSH_KEYTYPE_ECDSA_P521_CERT01:
 
-    /* "ssh/keytypes.pyx":130
- *         key_type = ECDSA_P384_CERT01.__new__(ECDSA_P384_CERT01)
+    /* "ssh/keytypes.pyx":144
+ *         return ECDSA_P384_CERT01()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521_CERT01:
- *         key_type = ECDSA_P521_CERT01.__new__(ECDSA_P521_CERT01)             # <<<<<<<<<<<<<<
- *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519_CERT01:
- *         key_type = ED25519_CERT01.__new__(ED25519_CERT01)
+ *         return ECDSA_P521_CERT01()             # <<<<<<<<<<<<<<
+ *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519:
+ *         return ED25519Key()
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_ECDSA_P521_CERT01(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P521_CERT01), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 130, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 130, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_ECDSA_P521_CERT01)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 144, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":129
+    /* "ssh/keytypes.pyx":143
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P384_CERT01:
- *         key_type = ECDSA_P384_CERT01.__new__(ECDSA_P384_CERT01)
+ *         return ECDSA_P384_CERT01()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521_CERT01:             # <<<<<<<<<<<<<<
- *         key_type = ECDSA_P521_CERT01.__new__(ECDSA_P521_CERT01)
+ *         return ECDSA_P521_CERT01()
+ *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519:
+ */
+    break;
+    case SSH_KEYTYPE_ED25519:
+
+    /* "ssh/keytypes.pyx":146
+ *         return ECDSA_P521_CERT01()
+ *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519:
+ *         return ED25519Key()             # <<<<<<<<<<<<<<
+ *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519_CERT01:
+ *         return ED25519_CERT01()
+ */
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_ED25519Key)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 146, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __pyx_t_1 = 0;
+    goto __pyx_L0;
+
+    /* "ssh/keytypes.pyx":145
+ *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521_CERT01:
+ *         return ECDSA_P521_CERT01()
+ *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519:             # <<<<<<<<<<<<<<
+ *         return ED25519Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519_CERT01:
  */
     break;
     case SSH_KEYTYPE_ED25519_CERT01:
 
-    /* "ssh/keytypes.pyx":132
- *         key_type = ECDSA_P521_CERT01.__new__(ECDSA_P521_CERT01)
+    /* "ssh/keytypes.pyx":148
+ *         return ED25519Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519_CERT01:
- *         key_type = ED25519_CERT01.__new__(ED25519_CERT01)             # <<<<<<<<<<<<<<
+ *         return ED25519_CERT01()             # <<<<<<<<<<<<<<
  *     else:
- *         raise Exception("Unknown keytype %s", _type)
+ *         raise ValueError("Unknown keytype %s", _type)
  */
-    __pyx_t_1 = ((PyObject *)__pyx_tp_new_3ssh_8keytypes_ED25519_CERT01(((PyTypeObject *)__pyx_ptype_3ssh_8keytypes_ED25519_CERT01), __pyx_empty_tuple, NULL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 132, __pyx_L1_error)
-    __Pyx_GOTREF(((PyObject *)__pyx_t_1));
-    if (!(likely(__Pyx_TypeTest(((PyObject *)__pyx_t_1), __pyx_ptype_3ssh_8keytypes_KeyType)))) __PYX_ERR(1, 132, __pyx_L1_error)
-    __pyx_v_key_type = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
+    __Pyx_XDECREF(((PyObject *)__pyx_r));
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(((PyObject *)__pyx_ptype_3ssh_8keytypes_ED25519_CERT01)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 148, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_r = ((struct __pyx_obj_3ssh_8keytypes_KeyType *)__pyx_t_1);
     __pyx_t_1 = 0;
+    goto __pyx_L0;
 
-    /* "ssh/keytypes.pyx":131
- *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ECDSA_P521_CERT01:
- *         key_type = ECDSA_P521_CERT01.__new__(ECDSA_P521_CERT01)
+    /* "ssh/keytypes.pyx":147
+ *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519:
+ *         return ED25519Key()
  *     elif _type == ssh_keytypes_e.SSH_KEYTYPE_ED25519_CERT01:             # <<<<<<<<<<<<<<
- *         key_type = ED25519_CERT01.__new__(ED25519_CERT01)
+ *         return ED25519_CERT01()
  *     else:
  */
     break;
     default:
 
-    /* "ssh/keytypes.pyx":134
- *         key_type = ED25519_CERT01.__new__(ED25519_CERT01)
+    /* "ssh/keytypes.pyx":150
+ *         return ED25519_CERT01()
  *     else:
- *         raise Exception("Unknown keytype %s", _type)             # <<<<<<<<<<<<<<
- *     key_type._type = _type
- *     return key_type
+ *         raise ValueError("Unknown keytype %s", _type)             # <<<<<<<<<<<<<<
+ * 
+ * 
  */
-    __pyx_t_1 = __Pyx_PyInt_From_enum__ssh_keytypes_e(__pyx_v__type); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 134, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyInt_From_enum__ssh_keytypes_e(__pyx_v__type); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 150, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 134, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(2); if (unlikely(!__pyx_t_2)) __PYX_ERR(1, 150, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_kp_s_Unknown_keytype_s);
     __Pyx_GIVEREF(__pyx_kp_s_Unknown_keytype_s);
@@ -3988,42 +4883,21 @@ static struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_f_3ssh_8keytypes_from_keyt
     __Pyx_GIVEREF(__pyx_t_1);
     PyTuple_SET_ITEM(__pyx_t_2, 1, __pyx_t_1);
     __pyx_t_1 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])), __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 134, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_t_2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 150, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(1, 134, __pyx_L1_error)
+    __PYX_ERR(1, 150, __pyx_L1_error)
     break;
   }
 
-  /* "ssh/keytypes.pyx":135
- *     else:
- *         raise Exception("Unknown keytype %s", _type)
- *     key_type._type = _type             # <<<<<<<<<<<<<<
- *     return key_type
- * 
- */
-  __pyx_v_key_type->_type = __pyx_v__type;
-
-  /* "ssh/keytypes.pyx":136
- *         raise Exception("Unknown keytype %s", _type)
- *     key_type._type = _type
- *     return key_type             # <<<<<<<<<<<<<<
- * 
- * 
- */
-  __Pyx_XDECREF(((PyObject *)__pyx_r));
-  __Pyx_INCREF(((PyObject *)__pyx_v_key_type));
-  __pyx_r = __pyx_v_key_type;
-  goto __pyx_L0;
-
-  /* "ssh/keytypes.pyx":103
+  /* "ssh/keytypes.pyx":118
  * 
  * 
  * cdef KeyType from_keytype(ssh_keytypes_e _type):             # <<<<<<<<<<<<<<
- *     cdef KeyType key_type
  *     if _type == ssh_keytypes_e.SSH_KEYTYPE_UNKNOWN:
+ *         return UnknownKey()
  */
 
   /* function exit code */
@@ -4033,13 +4907,12 @@ static struct __pyx_obj_3ssh_8keytypes_KeyType *__pyx_f_3ssh_8keytypes_from_keyt
   __Pyx_AddTraceback("ssh.keytypes.from_keytype", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
-  __Pyx_XDECREF((PyObject *)__pyx_v_key_type);
   __Pyx_XGIVEREF((PyObject *)__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-/* "ssh/keytypes.pyx":139
+/* "ssh/keytypes.pyx":153
  * 
  * 
  * def key_type_from_name(key_name):             # <<<<<<<<<<<<<<
@@ -4065,43 +4938,47 @@ static PyObject *__pyx_pw_3ssh_8keytypes_1key_type_from_name(PyObject *__pyx_sel
 static PyObject *__pyx_pf_3ssh_8keytypes_key_type_from_name(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_key_name) {
   enum ssh_keytypes_e __pyx_v__type;
   PyObject *__pyx_v_b_key_name = 0;
-  char __pyx_v__key_name;
+  char const *__pyx_v__key_name;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
-  char __pyx_t_2;
+  char const *__pyx_t_2;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("key_type_from_name", 0);
 
-  /* "ssh/keytypes.pyx":141
+  /* "ssh/keytypes.pyx":155
  * def key_type_from_name(key_name):
  *     cdef ssh_keytypes_e _type
  *     cdef bytes b_key_name = to_bytes(key_name)             # <<<<<<<<<<<<<<
- *     cdef char _key_name = b_key_name
+ *     cdef const char *_key_name = b_key_name
  *     with nogil:
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_key_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 141, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_key_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 155, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_key_name = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/keytypes.pyx":142
+  /* "ssh/keytypes.pyx":156
  *     cdef ssh_keytypes_e _type
  *     cdef bytes b_key_name = to_bytes(key_name)
- *     cdef char _key_name = b_key_name             # <<<<<<<<<<<<<<
+ *     cdef const char *_key_name = b_key_name             # <<<<<<<<<<<<<<
  *     with nogil:
- *         _type = ssh_key_type_from_name(&_key_name)
+ *         _type = ssh_key_type_from_name(_key_name)
  */
-  __pyx_t_2 = __Pyx_PyInt_As_char(__pyx_v_b_key_name); if (unlikely((__pyx_t_2 == (char)-1) && PyErr_Occurred())) __PYX_ERR(1, 142, __pyx_L1_error)
+  if (unlikely(__pyx_v_b_key_name == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
+    __PYX_ERR(1, 156, __pyx_L1_error)
+  }
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_key_name); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(1, 156, __pyx_L1_error)
   __pyx_v__key_name = __pyx_t_2;
 
-  /* "ssh/keytypes.pyx":143
+  /* "ssh/keytypes.pyx":157
  *     cdef bytes b_key_name = to_bytes(key_name)
- *     cdef char _key_name = b_key_name
+ *     cdef const char *_key_name = b_key_name
  *     with nogil:             # <<<<<<<<<<<<<<
- *         _type = ssh_key_type_from_name(&_key_name)
+ *         _type = ssh_key_type_from_name(_key_name)
  *     return from_keytype(_type)
  */
   {
@@ -4112,20 +4989,20 @@ static PyObject *__pyx_pf_3ssh_8keytypes_key_type_from_name(CYTHON_UNUSED PyObje
       #endif
       /*try:*/ {
 
-        /* "ssh/keytypes.pyx":144
- *     cdef char _key_name = b_key_name
+        /* "ssh/keytypes.pyx":158
+ *     cdef const char *_key_name = b_key_name
  *     with nogil:
- *         _type = ssh_key_type_from_name(&_key_name)             # <<<<<<<<<<<<<<
+ *         _type = ssh_key_type_from_name(_key_name)             # <<<<<<<<<<<<<<
  *     return from_keytype(_type)
  */
-        __pyx_v__type = ssh_key_type_from_name((&__pyx_v__key_name));
+        __pyx_v__type = ssh_key_type_from_name(__pyx_v__key_name);
       }
 
-      /* "ssh/keytypes.pyx":143
+      /* "ssh/keytypes.pyx":157
  *     cdef bytes b_key_name = to_bytes(key_name)
- *     cdef char _key_name = b_key_name
+ *     cdef const char *_key_name = b_key_name
  *     with nogil:             # <<<<<<<<<<<<<<
- *         _type = ssh_key_type_from_name(&_key_name)
+ *         _type = ssh_key_type_from_name(_key_name)
  *     return from_keytype(_type)
  */
       /*finally:*/ {
@@ -4140,19 +5017,19 @@ static PyObject *__pyx_pf_3ssh_8keytypes_key_type_from_name(CYTHON_UNUSED PyObje
       }
   }
 
-  /* "ssh/keytypes.pyx":145
+  /* "ssh/keytypes.pyx":159
  *     with nogil:
- *         _type = ssh_key_type_from_name(&_key_name)
+ *         _type = ssh_key_type_from_name(_key_name)
  *     return from_keytype(_type)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_8keytypes_from_keytype(__pyx_v__type)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 145, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_8keytypes_from_keytype(__pyx_v__type)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/keytypes.pyx":139
+  /* "ssh/keytypes.pyx":153
  * 
  * 
  * def key_type_from_name(key_name):             # <<<<<<<<<<<<<<
@@ -4283,12 +5160,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_KeyType = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_DSSKey(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_6DSSKey_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_DSSKey[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_6DSSKey_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_6DSSKey___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_6DSSKey_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_6DSSKey_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_6DSSKey_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_6DSSKey_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_6DSSKey_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_6DSSKey_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -4372,12 +5253,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_DSSKey = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_RSAKey(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_6RSAKey_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_RSAKey[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_6RSAKey_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_6RSAKey___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_6RSAKey_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_6RSAKey_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_6RSAKey_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_6RSAKey_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_6RSAKey_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_6RSAKey_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -4461,12 +5346,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_RSAKey = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_RSA1Key(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_7RSA1Key_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_RSA1Key[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_7RSA1Key_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_7RSA1Key___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_7RSA1Key_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_7RSA1Key_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_7RSA1Key_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_7RSA1Key_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_7RSA1Key_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_7RSA1Key_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -4550,12 +5439,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_RSA1Key = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_ECDSAKey(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_8ECDSAKey_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_ECDSAKey[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_8ECDSAKey_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_8ECDSAKey___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_8ECDSAKey_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_8ECDSAKey_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_8ECDSAKey_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_8ECDSAKey_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_8ECDSAKey_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_8ECDSAKey_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -4639,12 +5532,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_ECDSAKey = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_DSSCert01Key(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_12DSSCert01Key_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_DSSCert01Key[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_12DSSCert01Key_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_12DSSCert01Key___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_12DSSCert01Key_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_12DSSCert01Key_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_12DSSCert01Key_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_12DSSCert01Key_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_12DSSCert01Key_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_12DSSCert01Key_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -4821,12 +5718,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_RSACert01Key = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_ECDSA_P256(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_10ECDSA_P256_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_ECDSA_P256[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P256_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_10ECDSA_P256___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P256_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_10ECDSA_P256_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P256_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_10ECDSA_P256_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P256_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_10ECDSA_P256_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -4910,12 +5811,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_ECDSA_P256 = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_ECDSA_P384(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_10ECDSA_P384_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_ECDSA_P384[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P384_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_10ECDSA_P384___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P384_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_10ECDSA_P384_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P384_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_10ECDSA_P384_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P384_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_10ECDSA_P384_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -4999,12 +5904,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_ECDSA_P384 = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_ECDSA_P521(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_10ECDSA_P521_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_ECDSA_P521[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P521_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_10ECDSA_P521___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P521_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_10ECDSA_P521_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P521_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_10ECDSA_P521_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ECDSA_P521_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_10ECDSA_P521_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -5088,12 +5997,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_ECDSA_P521 = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_ECDSA_P256_CERT01(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_ECDSA_P256_CERT01[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_17ECDSA_P256_CERT01___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_17ECDSA_P256_CERT01_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_17ECDSA_P256_CERT01_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P256_CERT01_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_17ECDSA_P256_CERT01_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -5177,12 +6090,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01 = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_ECDSA_P384_CERT01(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_ECDSA_P384_CERT01[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_17ECDSA_P384_CERT01___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_17ECDSA_P384_CERT01_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_17ECDSA_P384_CERT01_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P384_CERT01_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_17ECDSA_P384_CERT01_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -5266,12 +6183,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01 = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_ECDSA_P521_CERT01(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_ECDSA_P521_CERT01[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_17ECDSA_P521_CERT01___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_17ECDSA_P521_CERT01_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_17ECDSA_P521_CERT01_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_17ECDSA_P521_CERT01_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_17ECDSA_P521_CERT01_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -5355,12 +6276,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01 = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_ED25519_CERT01(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_ED25519_CERT01[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_14ED25519_CERT01___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_14ED25519_CERT01_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_14ED25519_CERT01_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_14ED25519_CERT01_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_14ED25519_CERT01_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -5444,12 +6369,16 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_ED25519_CERT01 = {
 static PyObject *__pyx_tp_new_3ssh_8keytypes_UnknownKey(PyTypeObject *t, PyObject *a, PyObject *k) {
   PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
   if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_10UnknownKey_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
   return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
 }
 
 static PyMethodDef __pyx_methods_3ssh_8keytypes_UnknownKey[] = {
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10UnknownKey_1__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_10UnknownKey___reduce_cython__},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10UnknownKey_3__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_10UnknownKey_2__setstate_cython__},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10UnknownKey_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_10UnknownKey_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10UnknownKey_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_10UnknownKey_4__setstate_cython__},
   {0, 0, 0, 0}
 };
 
@@ -5530,6 +6459,99 @@ static PyTypeObject __pyx_type_3ssh_8keytypes_UnknownKey = {
   #endif
 };
 
+static PyObject *__pyx_tp_new_3ssh_8keytypes_ED25519Key(PyTypeObject *t, PyObject *a, PyObject *k) {
+  PyObject *o = __pyx_tp_new_3ssh_8keytypes_KeyType(t, a, k);
+  if (unlikely(!o)) return 0;
+  if (unlikely(__pyx_pw_3ssh_8keytypes_10ED25519Key_1__cinit__(o, __pyx_empty_tuple, NULL) < 0)) goto bad;
+  return o;
+  bad:
+  Py_DECREF(o); o = 0;
+  return NULL;
+}
+
+static PyMethodDef __pyx_methods_3ssh_8keytypes_ED25519Key[] = {
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ED25519Key_3__reduce_cython__, METH_NOARGS, __pyx_doc_3ssh_8keytypes_10ED25519Key_2__reduce_cython__},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_3ssh_8keytypes_10ED25519Key_5__setstate_cython__, METH_O, __pyx_doc_3ssh_8keytypes_10ED25519Key_4__setstate_cython__},
+  {0, 0, 0, 0}
+};
+
+static PyTypeObject __pyx_type_3ssh_8keytypes_ED25519Key = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "ssh.keytypes.ED25519Key", /*tp_name*/
+  sizeof(struct __pyx_obj_3ssh_8keytypes_ED25519Key), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_3ssh_8keytypes_KeyType, /*tp_dealloc*/
+  #if PY_VERSION_HEX < 0x030800b4
+  0, /*tp_print*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4
+  0, /*tp_vectorcall_offset*/
+  #endif
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  #if CYTHON_COMPILING_IN_PYPY
+  __pyx_pw_3ssh_8keytypes_7KeyType_5__repr__, /*tp_repr*/
+  #else
+  0, /*tp_repr*/
+  #endif
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  #if CYTHON_COMPILING_IN_PYPY
+  __pyx_pw_3ssh_8keytypes_7KeyType_3__str__, /*tp_str*/
+  #else
+  0, /*tp_str*/
+  #endif
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
+  0, /*tp_doc*/
+  0, /*tp_traverse*/
+  0, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  __pyx_methods_3ssh_8keytypes_ED25519Key, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_3ssh_8keytypes_ED25519Key, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b1
+  0, /*tp_vectorcall*/
+  #endif
+  #if PY_VERSION_HEX >= 0x030800b4 && PY_VERSION_HEX < 0x03090000
+  0, /*tp_print*/
+  #endif
+};
+
 static PyMethodDef __pyx_methods[] = {
   {0, 0, 0, 0}
 };
@@ -5585,6 +6607,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_ECDSA_P384_CERT01, __pyx_k_ECDSA_P384_CERT01, sizeof(__pyx_k_ECDSA_P384_CERT01), 0, 0, 1, 1},
   {&__pyx_n_s_ECDSA_P521, __pyx_k_ECDSA_P521, sizeof(__pyx_k_ECDSA_P521), 0, 0, 1, 1},
   {&__pyx_n_s_ECDSA_P521_CERT01, __pyx_k_ECDSA_P521_CERT01, sizeof(__pyx_k_ECDSA_P521_CERT01), 0, 0, 1, 1},
+  {&__pyx_n_s_ED25519Key, __pyx_k_ED25519Key, sizeof(__pyx_k_ED25519Key), 0, 0, 1, 1},
   {&__pyx_n_s_ED25519_CERT01, __pyx_k_ED25519_CERT01, sizeof(__pyx_k_ED25519_CERT01), 0, 0, 1, 1},
   {&__pyx_n_s_KeyType, __pyx_k_KeyType, sizeof(__pyx_k_KeyType), 0, 0, 1, 1},
   {&__pyx_n_s_RSA1Key, __pyx_k_RSA1Key, sizeof(__pyx_k_RSA1Key), 0, 0, 1, 1},
@@ -5593,6 +6616,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_TypeError, __pyx_k_TypeError, sizeof(__pyx_k_TypeError), 0, 0, 1, 1},
   {&__pyx_n_s_UnknownKey, __pyx_k_UnknownKey, sizeof(__pyx_k_UnknownKey), 0, 0, 1, 1},
   {&__pyx_kp_s_Unknown_keytype_s, __pyx_k_Unknown_keytype_s, sizeof(__pyx_k_Unknown_keytype_s), 0, 0, 1, 0},
+  {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_n_s_b_key_name, __pyx_k_b_key_name, sizeof(__pyx_k_b_key_name), 0, 0, 1, 1},
   {&__pyx_n_s_cline_in_traceback, __pyx_k_cline_in_traceback, sizeof(__pyx_k_cline_in_traceback), 0, 0, 1, 1},
   {&__pyx_n_s_getstate, __pyx_k_getstate, sizeof(__pyx_k_getstate), 0, 0, 1, 1},
@@ -5612,10 +6636,12 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_str, __pyx_k_str, sizeof(__pyx_k_str), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_s_type, __pyx_k_type, sizeof(__pyx_k_type), 0, 0, 1, 1},
+  {&__pyx_n_s_unknown, __pyx_k_unknown, sizeof(__pyx_k_unknown), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(0, 2, __pyx_L1_error)
+  __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 150, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -5910,17 +6936,36 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__30);
   __Pyx_GIVEREF(__pyx_tuple__30);
 
-  /* "ssh/keytypes.pyx":139
+  /* "(tree fragment)":2
+ * def __reduce_cython__(self):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
+ * def __setstate_cython__(self, __pyx_state):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ */
+  __pyx_tuple__31 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(0, 2, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__31);
+  __Pyx_GIVEREF(__pyx_tuple__31);
+
+  /* "(tree fragment)":4
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
+ * def __setstate_cython__(self, __pyx_state):
+ *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")             # <<<<<<<<<<<<<<
+ */
+  __pyx_tuple__32 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 4, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__32);
+  __Pyx_GIVEREF(__pyx_tuple__32);
+
+  /* "ssh/keytypes.pyx":153
  * 
  * 
  * def key_type_from_name(key_name):             # <<<<<<<<<<<<<<
  *     cdef ssh_keytypes_e _type
  *     cdef bytes b_key_name = to_bytes(key_name)
  */
-  __pyx_tuple__31 = PyTuple_Pack(4, __pyx_n_s_key_name, __pyx_n_s_type, __pyx_n_s_b_key_name, __pyx_n_s_key_name_2); if (unlikely(!__pyx_tuple__31)) __PYX_ERR(1, 139, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__31);
-  __Pyx_GIVEREF(__pyx_tuple__31);
-  __pyx_codeobj__32 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__31, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_keytypes_pyx, __pyx_n_s_key_type_from_name, 139, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__32)) __PYX_ERR(1, 139, __pyx_L1_error)
+  __pyx_tuple__33 = PyTuple_Pack(4, __pyx_n_s_key_name, __pyx_n_s_type, __pyx_n_s_b_key_name, __pyx_n_s_key_name_2); if (unlikely(!__pyx_tuple__33)) __PYX_ERR(1, 153, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__33);
+  __Pyx_GIVEREF(__pyx_tuple__33);
+  __pyx_codeobj__34 = (PyObject*)__Pyx_PyCode_New(1, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__33, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_keytypes_pyx, __pyx_n_s_key_type_from_name, 153, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__34)) __PYX_ERR(1, 153, __pyx_L1_error)
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -5992,15 +7037,15 @@ static int __Pyx_modinit_type_init_code(void) {
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_KeyType) < 0) __PYX_ERR(1, 24, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_KeyType = &__pyx_type_3ssh_8keytypes_KeyType;
   __pyx_type_3ssh_8keytypes_DSSKey.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_DSSKey) < 0) __PYX_ERR(1, 49, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_DSSKey) < 0) __PYX_ERR(1, 48, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_DSSKey.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_DSSKey.tp_dictoffset && __pyx_type_3ssh_8keytypes_DSSKey.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_DSSKey.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DSSKey, (PyObject *)&__pyx_type_3ssh_8keytypes_DSSKey) < 0) __PYX_ERR(1, 49, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_DSSKey) < 0) __PYX_ERR(1, 49, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DSSKey, (PyObject *)&__pyx_type_3ssh_8keytypes_DSSKey) < 0) __PYX_ERR(1, 48, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_DSSKey) < 0) __PYX_ERR(1, 48, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_DSSKey = &__pyx_type_3ssh_8keytypes_DSSKey;
   __pyx_type_3ssh_8keytypes_RSAKey.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
   if (PyType_Ready(&__pyx_type_3ssh_8keytypes_RSAKey) < 0) __PYX_ERR(1, 53, __pyx_L1_error)
@@ -6014,137 +7059,148 @@ static int __Pyx_modinit_type_init_code(void) {
   if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_RSAKey) < 0) __PYX_ERR(1, 53, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_RSAKey = &__pyx_type_3ssh_8keytypes_RSAKey;
   __pyx_type_3ssh_8keytypes_RSA1Key.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_RSA1Key) < 0) __PYX_ERR(1, 57, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_RSA1Key) < 0) __PYX_ERR(1, 58, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_RSA1Key.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_RSA1Key.tp_dictoffset && __pyx_type_3ssh_8keytypes_RSA1Key.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_RSA1Key.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RSA1Key, (PyObject *)&__pyx_type_3ssh_8keytypes_RSA1Key) < 0) __PYX_ERR(1, 57, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_RSA1Key) < 0) __PYX_ERR(1, 57, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RSA1Key, (PyObject *)&__pyx_type_3ssh_8keytypes_RSA1Key) < 0) __PYX_ERR(1, 58, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_RSA1Key) < 0) __PYX_ERR(1, 58, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_RSA1Key = &__pyx_type_3ssh_8keytypes_RSA1Key;
   __pyx_type_3ssh_8keytypes_ECDSAKey.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSAKey) < 0) __PYX_ERR(1, 61, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSAKey) < 0) __PYX_ERR(1, 63, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_ECDSAKey.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_ECDSAKey.tp_dictoffset && __pyx_type_3ssh_8keytypes_ECDSAKey.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_ECDSAKey.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSAKey, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSAKey) < 0) __PYX_ERR(1, 61, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSAKey) < 0) __PYX_ERR(1, 61, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSAKey, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSAKey) < 0) __PYX_ERR(1, 63, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSAKey) < 0) __PYX_ERR(1, 63, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_ECDSAKey = &__pyx_type_3ssh_8keytypes_ECDSAKey;
   __pyx_type_3ssh_8keytypes_DSSCert01Key.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_DSSCert01Key) < 0) __PYX_ERR(1, 65, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_DSSCert01Key) < 0) __PYX_ERR(1, 68, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_DSSCert01Key.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_DSSCert01Key.tp_dictoffset && __pyx_type_3ssh_8keytypes_DSSCert01Key.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_DSSCert01Key.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DSSCert01Key, (PyObject *)&__pyx_type_3ssh_8keytypes_DSSCert01Key) < 0) __PYX_ERR(1, 65, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_DSSCert01Key) < 0) __PYX_ERR(1, 65, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_DSSCert01Key, (PyObject *)&__pyx_type_3ssh_8keytypes_DSSCert01Key) < 0) __PYX_ERR(1, 68, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_DSSCert01Key) < 0) __PYX_ERR(1, 68, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_DSSCert01Key = &__pyx_type_3ssh_8keytypes_DSSCert01Key;
   __pyx_type_3ssh_8keytypes_RSACert01Key.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_RSACert01Key) < 0) __PYX_ERR(1, 69, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_RSACert01Key) < 0) __PYX_ERR(1, 73, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_RSACert01Key.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_RSACert01Key.tp_dictoffset && __pyx_type_3ssh_8keytypes_RSACert01Key.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_RSACert01Key.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RSACert01Key, (PyObject *)&__pyx_type_3ssh_8keytypes_RSACert01Key) < 0) __PYX_ERR(1, 69, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_RSACert01Key) < 0) __PYX_ERR(1, 69, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_RSACert01Key, (PyObject *)&__pyx_type_3ssh_8keytypes_RSACert01Key) < 0) __PYX_ERR(1, 73, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_RSACert01Key) < 0) __PYX_ERR(1, 73, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_RSACert01Key = &__pyx_type_3ssh_8keytypes_RSACert01Key;
   __pyx_type_3ssh_8keytypes_ECDSA_P256.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P256) < 0) __PYX_ERR(1, 75, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P256) < 0) __PYX_ERR(1, 78, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_ECDSA_P256.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_ECDSA_P256.tp_dictoffset && __pyx_type_3ssh_8keytypes_ECDSA_P256.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_ECDSA_P256.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P256, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P256) < 0) __PYX_ERR(1, 75, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P256) < 0) __PYX_ERR(1, 75, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P256, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P256) < 0) __PYX_ERR(1, 78, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P256) < 0) __PYX_ERR(1, 78, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_ECDSA_P256 = &__pyx_type_3ssh_8keytypes_ECDSA_P256;
   __pyx_type_3ssh_8keytypes_ECDSA_P384.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P384) < 0) __PYX_ERR(1, 79, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P384) < 0) __PYX_ERR(1, 83, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_ECDSA_P384.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_ECDSA_P384.tp_dictoffset && __pyx_type_3ssh_8keytypes_ECDSA_P384.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_ECDSA_P384.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P384, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P384) < 0) __PYX_ERR(1, 79, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P384) < 0) __PYX_ERR(1, 79, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P384, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P384) < 0) __PYX_ERR(1, 83, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P384) < 0) __PYX_ERR(1, 83, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_ECDSA_P384 = &__pyx_type_3ssh_8keytypes_ECDSA_P384;
   __pyx_type_3ssh_8keytypes_ECDSA_P521.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P521) < 0) __PYX_ERR(1, 83, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P521) < 0) __PYX_ERR(1, 88, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_ECDSA_P521.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_ECDSA_P521.tp_dictoffset && __pyx_type_3ssh_8keytypes_ECDSA_P521.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_ECDSA_P521.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P521, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P521) < 0) __PYX_ERR(1, 83, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P521) < 0) __PYX_ERR(1, 83, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P521, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P521) < 0) __PYX_ERR(1, 88, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P521) < 0) __PYX_ERR(1, 88, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_ECDSA_P521 = &__pyx_type_3ssh_8keytypes_ECDSA_P521;
   __pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01) < 0) __PYX_ERR(1, 87, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01) < 0) __PYX_ERR(1, 93, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01.tp_dictoffset && __pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P256_CERT01, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01) < 0) __PYX_ERR(1, 87, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01) < 0) __PYX_ERR(1, 87, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P256_CERT01, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01) < 0) __PYX_ERR(1, 93, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01) < 0) __PYX_ERR(1, 93, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_ECDSA_P256_CERT01 = &__pyx_type_3ssh_8keytypes_ECDSA_P256_CERT01;
   __pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01) < 0) __PYX_ERR(1, 91, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01) < 0) __PYX_ERR(1, 98, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01.tp_dictoffset && __pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P384_CERT01, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01) < 0) __PYX_ERR(1, 91, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01) < 0) __PYX_ERR(1, 91, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P384_CERT01, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01) < 0) __PYX_ERR(1, 98, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01) < 0) __PYX_ERR(1, 98, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_ECDSA_P384_CERT01 = &__pyx_type_3ssh_8keytypes_ECDSA_P384_CERT01;
   __pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01) < 0) __PYX_ERR(1, 95, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01) < 0) __PYX_ERR(1, 103, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01.tp_dictoffset && __pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P521_CERT01, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01) < 0) __PYX_ERR(1, 95, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01) < 0) __PYX_ERR(1, 95, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ECDSA_P521_CERT01, (PyObject *)&__pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01) < 0) __PYX_ERR(1, 103, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01) < 0) __PYX_ERR(1, 103, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_ECDSA_P521_CERT01 = &__pyx_type_3ssh_8keytypes_ECDSA_P521_CERT01;
   __pyx_type_3ssh_8keytypes_ED25519_CERT01.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ED25519_CERT01) < 0) __PYX_ERR(1, 99, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ED25519_CERT01) < 0) __PYX_ERR(1, 113, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_ED25519_CERT01.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_ED25519_CERT01.tp_dictoffset && __pyx_type_3ssh_8keytypes_ED25519_CERT01.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_ED25519_CERT01.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ED25519_CERT01, (PyObject *)&__pyx_type_3ssh_8keytypes_ED25519_CERT01) < 0) __PYX_ERR(1, 99, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ED25519_CERT01) < 0) __PYX_ERR(1, 99, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ED25519_CERT01, (PyObject *)&__pyx_type_3ssh_8keytypes_ED25519_CERT01) < 0) __PYX_ERR(1, 113, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ED25519_CERT01) < 0) __PYX_ERR(1, 113, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_ED25519_CERT01 = &__pyx_type_3ssh_8keytypes_ED25519_CERT01;
   __pyx_type_3ssh_8keytypes_UnknownKey.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
-  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_UnknownKey) < 0) __PYX_ERR(1, 45, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_UnknownKey) < 0) __PYX_ERR(1, 43, __pyx_L1_error)
   #if PY_VERSION_HEX < 0x030800B1
   __pyx_type_3ssh_8keytypes_UnknownKey.tp_print = 0;
   #endif
   if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_UnknownKey.tp_dictoffset && __pyx_type_3ssh_8keytypes_UnknownKey.tp_getattro == PyObject_GenericGetAttr)) {
     __pyx_type_3ssh_8keytypes_UnknownKey.tp_getattro = __Pyx_PyObject_GenericGetAttr;
   }
-  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_UnknownKey, (PyObject *)&__pyx_type_3ssh_8keytypes_UnknownKey) < 0) __PYX_ERR(1, 45, __pyx_L1_error)
-  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_UnknownKey) < 0) __PYX_ERR(1, 45, __pyx_L1_error)
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_UnknownKey, (PyObject *)&__pyx_type_3ssh_8keytypes_UnknownKey) < 0) __PYX_ERR(1, 43, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_UnknownKey) < 0) __PYX_ERR(1, 43, __pyx_L1_error)
   __pyx_ptype_3ssh_8keytypes_UnknownKey = &__pyx_type_3ssh_8keytypes_UnknownKey;
+  __pyx_type_3ssh_8keytypes_ED25519Key.tp_base = __pyx_ptype_3ssh_8keytypes_KeyType;
+  if (PyType_Ready(&__pyx_type_3ssh_8keytypes_ED25519Key) < 0) __PYX_ERR(1, 108, __pyx_L1_error)
+  #if PY_VERSION_HEX < 0x030800B1
+  __pyx_type_3ssh_8keytypes_ED25519Key.tp_print = 0;
+  #endif
+  if ((CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP) && likely(!__pyx_type_3ssh_8keytypes_ED25519Key.tp_dictoffset && __pyx_type_3ssh_8keytypes_ED25519Key.tp_getattro == PyObject_GenericGetAttr)) {
+    __pyx_type_3ssh_8keytypes_ED25519Key.tp_getattro = __Pyx_PyObject_GenericGetAttr;
+  }
+  if (PyObject_SetAttr(__pyx_m, __pyx_n_s_ED25519Key, (PyObject *)&__pyx_type_3ssh_8keytypes_ED25519Key) < 0) __PYX_ERR(1, 108, __pyx_L1_error)
+  if (__Pyx_setup_reduce((PyObject*)&__pyx_type_3ssh_8keytypes_ED25519Key) < 0) __PYX_ERR(1, 108, __pyx_L1_error)
+  __pyx_ptype_3ssh_8keytypes_ED25519Key = &__pyx_type_3ssh_8keytypes_ED25519Key;
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -6179,7 +7235,7 @@ static int __Pyx_modinit_function_import_code(void) {
   __pyx_t_1 = PyImport_ImportModule("ssh.utils"); if (!__pyx_t_1) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (__Pyx_ImportFunction(__pyx_t_1, "to_bytes", (void (**)(void))&__pyx_f_3ssh_5utils_to_bytes, "PyObject *(PyObject *)") < 0) __PYX_ERR(1, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "to_str", (void (**)(void))&__pyx_f_3ssh_5utils_to_str, "PyObject *(char *)") < 0) __PYX_ERR(1, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "to_str", (void (**)(void))&__pyx_f_3ssh_5utils_to_str, "PyObject *(char const *)") < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
   return 0;
@@ -6391,16 +7447,16 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(1, 1, __pyx_L1_error)
   #endif
 
-  /* "ssh/keytypes.pyx":139
+  /* "ssh/keytypes.pyx":153
  * 
  * 
  * def key_type_from_name(key_name):             # <<<<<<<<<<<<<<
  *     cdef ssh_keytypes_e _type
  *     cdef bytes b_key_name = to_bytes(key_name)
  */
-  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3ssh_8keytypes_1key_type_from_name, NULL, __pyx_n_s_ssh_keytypes); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 139, __pyx_L1_error)
+  __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_3ssh_8keytypes_1key_type_from_name, NULL, __pyx_n_s_ssh_keytypes); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 153, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_key_type_from_name, __pyx_t_1) < 0) __PYX_ERR(1, 139, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_key_type_from_name, __pyx_t_1) < 0) __PYX_ERR(1, 153, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "ssh/keytypes.pyx":1
@@ -6976,19 +8032,6 @@ bad:
 }
 #endif
 
-/* ExtTypeTest */
-static CYTHON_INLINE int __Pyx_TypeTest(PyObject *obj, PyTypeObject *type) {
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    if (likely(__Pyx_TypeCheck(obj, type)))
-        return 1;
-    PyErr_Format(PyExc_TypeError, "Cannot convert %.200s to %.200s",
-                 Py_TYPE(obj)->tp_name, type->tp_name);
-    return 0;
-}
-
 /* PyObject_GenericGetAttrNoDict */
 #if CYTHON_USE_TYPE_SLOTS && CYTHON_USE_PYTYPE_LOOKUP && PY_VERSION_HEX < 0x03070000
 static PyObject *__Pyx_RaiseGenericGetAttributeError(PyTypeObject *tp, PyObject *attr_name) {
@@ -7434,217 +8477,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_enum__ssh_keytypes_e(enum ssh_ke
     }
 }
 
-/* CIntFromPyVerify */
-#define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
-    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
-#define __PYX_VERIFY_RETURN_INT_EXC(target_type, func_type, func_value)\
-    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 1)
-#define __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, exc)\
-    {\
-        func_type value = func_value;\
-        if (sizeof(target_type) < sizeof(func_type)) {\
-            if (unlikely(value != (func_type) (target_type) value)) {\
-                func_type zero = 0;\
-                if (exc && unlikely(value == (func_type)-1 && PyErr_Occurred()))\
-                    return (target_type) -1;\
-                if (is_unsigned && unlikely(value < zero))\
-                    goto raise_neg_overflow;\
-                else\
-                    goto raise_overflow;\
-            }\
-        }\
-        return (target_type) value;\
-    }
-
-/* CIntFromPy */
-static CYTHON_INLINE char __Pyx_PyInt_As_char(PyObject *x) {
-    const char neg_one = (char) ((char) 0 - (char) 1), const_zero = (char) 0;
-    const int is_unsigned = neg_one > const_zero;
-#if PY_MAJOR_VERSION < 3
-    if (likely(PyInt_Check(x))) {
-        if (sizeof(char) < sizeof(long)) {
-            __PYX_VERIFY_RETURN_INT(char, long, PyInt_AS_LONG(x))
-        } else {
-            long val = PyInt_AS_LONG(x);
-            if (is_unsigned && unlikely(val < 0)) {
-                goto raise_neg_overflow;
-            }
-            return (char) val;
-        }
-    } else
-#endif
-    if (likely(PyLong_Check(x))) {
-        if (is_unsigned) {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (char) 0;
-                case  1: __PYX_VERIFY_RETURN_INT(char, digit, digits[0])
-                case 2:
-                    if (8 * sizeof(char) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(char, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(char) >= 2 * PyLong_SHIFT) {
-                            return (char) (((((char)digits[1]) << PyLong_SHIFT) | (char)digits[0]));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(char) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(char, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(char) >= 3 * PyLong_SHIFT) {
-                            return (char) (((((((char)digits[2]) << PyLong_SHIFT) | (char)digits[1]) << PyLong_SHIFT) | (char)digits[0]));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(char) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(char, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(char) >= 4 * PyLong_SHIFT) {
-                            return (char) (((((((((char)digits[3]) << PyLong_SHIFT) | (char)digits[2]) << PyLong_SHIFT) | (char)digits[1]) << PyLong_SHIFT) | (char)digits[0]));
-                        }
-                    }
-                    break;
-            }
-#endif
-#if CYTHON_COMPILING_IN_CPYTHON
-            if (unlikely(Py_SIZE(x) < 0)) {
-                goto raise_neg_overflow;
-            }
-#else
-            {
-                int result = PyObject_RichCompareBool(x, Py_False, Py_LT);
-                if (unlikely(result < 0))
-                    return (char) -1;
-                if (unlikely(result == 1))
-                    goto raise_neg_overflow;
-            }
-#endif
-            if (sizeof(char) <= sizeof(unsigned long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(char, unsigned long, PyLong_AsUnsignedLong(x))
-#ifdef HAVE_LONG_LONG
-            } else if (sizeof(char) <= sizeof(unsigned PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(char, unsigned PY_LONG_LONG, PyLong_AsUnsignedLongLong(x))
-#endif
-            }
-        } else {
-#if CYTHON_USE_PYLONG_INTERNALS
-            const digit* digits = ((PyLongObject*)x)->ob_digit;
-            switch (Py_SIZE(x)) {
-                case  0: return (char) 0;
-                case -1: __PYX_VERIFY_RETURN_INT(char, sdigit, (sdigit) (-(sdigit)digits[0]))
-                case  1: __PYX_VERIFY_RETURN_INT(char,  digit, +digits[0])
-                case -2:
-                    if (8 * sizeof(char) - 1 > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(char, long, -(long) (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(char) - 1 > 2 * PyLong_SHIFT) {
-                            return (char) (((char)-1)*(((((char)digits[1]) << PyLong_SHIFT) | (char)digits[0])));
-                        }
-                    }
-                    break;
-                case 2:
-                    if (8 * sizeof(char) > 1 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 2 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(char, unsigned long, (((((unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(char) - 1 > 2 * PyLong_SHIFT) {
-                            return (char) ((((((char)digits[1]) << PyLong_SHIFT) | (char)digits[0])));
-                        }
-                    }
-                    break;
-                case -3:
-                    if (8 * sizeof(char) - 1 > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(char, long, -(long) (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(char) - 1 > 3 * PyLong_SHIFT) {
-                            return (char) (((char)-1)*(((((((char)digits[2]) << PyLong_SHIFT) | (char)digits[1]) << PyLong_SHIFT) | (char)digits[0])));
-                        }
-                    }
-                    break;
-                case 3:
-                    if (8 * sizeof(char) > 2 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 3 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(char, unsigned long, (((((((unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(char) - 1 > 3 * PyLong_SHIFT) {
-                            return (char) ((((((((char)digits[2]) << PyLong_SHIFT) | (char)digits[1]) << PyLong_SHIFT) | (char)digits[0])));
-                        }
-                    }
-                    break;
-                case -4:
-                    if (8 * sizeof(char) - 1 > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(char, long, -(long) (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(char) - 1 > 4 * PyLong_SHIFT) {
-                            return (char) (((char)-1)*(((((((((char)digits[3]) << PyLong_SHIFT) | (char)digits[2]) << PyLong_SHIFT) | (char)digits[1]) << PyLong_SHIFT) | (char)digits[0])));
-                        }
-                    }
-                    break;
-                case 4:
-                    if (8 * sizeof(char) > 3 * PyLong_SHIFT) {
-                        if (8 * sizeof(unsigned long) > 4 * PyLong_SHIFT) {
-                            __PYX_VERIFY_RETURN_INT(char, unsigned long, (((((((((unsigned long)digits[3]) << PyLong_SHIFT) | (unsigned long)digits[2]) << PyLong_SHIFT) | (unsigned long)digits[1]) << PyLong_SHIFT) | (unsigned long)digits[0])))
-                        } else if (8 * sizeof(char) - 1 > 4 * PyLong_SHIFT) {
-                            return (char) ((((((((((char)digits[3]) << PyLong_SHIFT) | (char)digits[2]) << PyLong_SHIFT) | (char)digits[1]) << PyLong_SHIFT) | (char)digits[0])));
-                        }
-                    }
-                    break;
-            }
-#endif
-            if (sizeof(char) <= sizeof(long)) {
-                __PYX_VERIFY_RETURN_INT_EXC(char, long, PyLong_AsLong(x))
-#ifdef HAVE_LONG_LONG
-            } else if (sizeof(char) <= sizeof(PY_LONG_LONG)) {
-                __PYX_VERIFY_RETURN_INT_EXC(char, PY_LONG_LONG, PyLong_AsLongLong(x))
-#endif
-            }
-        }
-        {
-#if CYTHON_COMPILING_IN_PYPY && !defined(_PyLong_AsByteArray)
-            PyErr_SetString(PyExc_RuntimeError,
-                            "_PyLong_AsByteArray() not available in PyPy, cannot convert large numbers");
-#else
-            char val;
-            PyObject *v = __Pyx_PyNumber_IntOrLong(x);
- #if PY_MAJOR_VERSION < 3
-            if (likely(v) && !PyLong_Check(v)) {
-                PyObject *tmp = v;
-                v = PyNumber_Long(tmp);
-                Py_DECREF(tmp);
-            }
- #endif
-            if (likely(v)) {
-                int one = 1; int is_little = (int)*(unsigned char *)&one;
-                unsigned char *bytes = (unsigned char *)&val;
-                int ret = _PyLong_AsByteArray((PyLongObject *)v,
-                                              bytes, sizeof(val),
-                                              is_little, !is_unsigned);
-                Py_DECREF(v);
-                if (likely(!ret))
-                    return val;
-            }
-#endif
-            return (char) -1;
-        }
-    } else {
-        char val;
-        PyObject *tmp = __Pyx_PyNumber_IntOrLong(x);
-        if (!tmp) return (char) -1;
-        val = __Pyx_PyInt_As_char(tmp);
-        Py_DECREF(tmp);
-        return val;
-    }
-raise_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "value too large to convert to char");
-    return (char) -1;
-raise_neg_overflow:
-    PyErr_SetString(PyExc_OverflowError,
-        "can't convert negative value to char");
-    return (char) -1;
-}
-
 /* CIntToPy */
 static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
     const long neg_one = (long) ((long) 0 - (long) 1), const_zero = (long) 0;
@@ -7675,6 +8507,28 @@ static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
                                      little, !is_unsigned);
     }
 }
+
+/* CIntFromPyVerify */
+#define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
+    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
+#define __PYX_VERIFY_RETURN_INT_EXC(target_type, func_type, func_value)\
+    __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 1)
+#define __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, exc)\
+    {\
+        func_type value = func_value;\
+        if (sizeof(target_type) < sizeof(func_type)) {\
+            if (unlikely(value != (func_type) (target_type) value)) {\
+                func_type zero = 0;\
+                if (exc && unlikely(value == (func_type)-1 && PyErr_Occurred()))\
+                    return (target_type) -1;\
+                if (is_unsigned && unlikely(value < zero))\
+                    goto raise_neg_overflow;\
+                else\
+                    goto raise_overflow;\
+            }\
+        }\
+        return (target_type) value;\
+    }
 
 /* CIntFromPy */
 static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {

@@ -1273,7 +1273,7 @@ static PyTypeObject *__pyx_ptype_3ssh_7session_Session = 0;
 
 /* Module declarations from 'ssh.utils' */
 static PyObject *(*__pyx_f_3ssh_5utils_to_bytes)(PyObject *); /*proto*/
-static PyObject *(*__pyx_f_3ssh_5utils_to_str)(char *); /*proto*/
+static PyObject *(*__pyx_f_3ssh_5utils_to_str)(char const *); /*proto*/
 static int (*__pyx_f_3ssh_5utils_handle_error_codes)(int, ssh_session); /*proto*/
 
 /* Module declarations from 'ssh.scp' */
@@ -4896,7 +4896,7 @@ static int __Pyx_modinit_function_import_code(void) {
   __pyx_t_1 = PyImport_ImportModule("ssh.utils"); if (!__pyx_t_1) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (__Pyx_ImportFunction(__pyx_t_1, "to_bytes", (void (**)(void))&__pyx_f_3ssh_5utils_to_bytes, "PyObject *(PyObject *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
-  if (__Pyx_ImportFunction(__pyx_t_1, "to_str", (void (**)(void))&__pyx_f_3ssh_5utils_to_str, "PyObject *(char *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
+  if (__Pyx_ImportFunction(__pyx_t_1, "to_str", (void (**)(void))&__pyx_f_3ssh_5utils_to_str, "PyObject *(char const *)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (__Pyx_ImportFunction(__pyx_t_1, "handle_error_codes", (void (**)(void))&__pyx_f_3ssh_5utils_handle_error_codes, "int (int, ssh_session)") < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_RefNannyFinishContext();
