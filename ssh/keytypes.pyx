@@ -32,10 +32,9 @@ cdef class KeyType:
     def __str__(self):
         cdef const_char *c_type
         c_type = ssh_key_type_to_char(self._type)
-        if c_type:
+        if c_type is not NULL:
             return to_str(c_type)
-        else:
-            return "unknown"
+        return "unknown"
 
     def __repr__(self):
         return self.__str__()
