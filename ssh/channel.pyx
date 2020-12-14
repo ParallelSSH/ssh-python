@@ -298,6 +298,13 @@ cdef class Channel:
         raise NotImplementedError
 
     def write(self, data not None):
+        """Write data to stdin on channel.
+
+        :param data: Data to write.
+        :type data: str or bytes
+        :returns: Return code and bytes written tuples.
+        :rtype: (int, int)
+        """
         cdef bytes b_buf = to_bytes(data)
         cdef const char *_buf = b_buf
         cdef c_ssh.uint32_t buf_remainder = len(b_buf)
@@ -320,6 +327,13 @@ cdef class Channel:
         return rc, bytes_written
 
     def write_stderr(self, data not None):
+        """Write data to stderr.
+
+        :param data: Data to write.
+        :type data: str or bytes
+        :returns: Return code and bytes written tuples.
+        :rtype: (int, int)
+        """
         cdef bytes b_buf = to_bytes(data)
         cdef const char *_buf = b_buf
         cdef c_ssh.uint32_t buf_remainder = len(b_buf)

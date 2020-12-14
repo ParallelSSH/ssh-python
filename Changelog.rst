@@ -1,6 +1,22 @@
 Change Log
 =============
 
+0.9.0
++++++
+
+Changes
+-------
+
+* ``ssh.Channel.write`` and ``write_stderr`` now return return code and bytes written tuples.
+
+
+Fixes
+-----
+
+* ``ssh.key.generate`` could not be used.
+* Key types in ``ssh.keytypes`` were not initialised correctly.
+
+
 0.8.0
 +++++
 
