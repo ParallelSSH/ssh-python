@@ -17,6 +17,12 @@ Fixes
 * Key types in ``ssh.keytypes`` were not initialised correctly.
 
 
+Packaging
+---------
+
+* Added Windows Python 3.9 binary wheel.
+
+
 0.8.0
 +++++
 
