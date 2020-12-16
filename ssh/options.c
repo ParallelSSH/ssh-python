@@ -2993,7 +2993,7 @@ if (!__Pyx_RefNanny) {
  * PORT = Option.from_option(ssh_options_e.SSH_OPTIONS_PORT)
  * PORT_STR = Option.from_option(ssh_options_e.SSH_OPTIONS_PORT_STR)             # <<<<<<<<<<<<<<
  * FD = Option.from_option(ssh_options_e.SSH_OPTIONS_FD)
- * USER = Option.from_option(ssh_options_e.SSH_OPTIONS_USER)
+ * SSH_DIR = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH_DIR)
  */
   __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_PORT_STR)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -3004,8 +3004,8 @@ if (!__Pyx_RefNanny) {
  * PORT = Option.from_option(ssh_options_e.SSH_OPTIONS_PORT)
  * PORT_STR = Option.from_option(ssh_options_e.SSH_OPTIONS_PORT_STR)
  * FD = Option.from_option(ssh_options_e.SSH_OPTIONS_FD)             # <<<<<<<<<<<<<<
- * USER = Option.from_option(ssh_options_e.SSH_OPTIONS_USER)
  * SSH_DIR = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH_DIR)
+ * IDENTITY = Option.from_option(ssh_options_e.SSH_OPTIONS_IDENTITY)
  */
   __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_FD)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 47, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -3015,395 +3015,383 @@ if (!__Pyx_RefNanny) {
   /* "ssh/options.pyx":48
  * PORT_STR = Option.from_option(ssh_options_e.SSH_OPTIONS_PORT_STR)
  * FD = Option.from_option(ssh_options_e.SSH_OPTIONS_FD)
- * USER = Option.from_option(ssh_options_e.SSH_OPTIONS_USER)             # <<<<<<<<<<<<<<
- * SSH_DIR = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH_DIR)
- * IDENTITY = Option.from_option(ssh_options_e.SSH_OPTIONS_IDENTITY)
- */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_USER)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_USER, __pyx_t_1) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "ssh/options.pyx":49
- * FD = Option.from_option(ssh_options_e.SSH_OPTIONS_FD)
- * USER = Option.from_option(ssh_options_e.SSH_OPTIONS_USER)
  * SSH_DIR = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH_DIR)             # <<<<<<<<<<<<<<
  * IDENTITY = Option.from_option(ssh_options_e.SSH_OPTIONS_IDENTITY)
  * ADD_IDENTITY = Option.from_option(ssh_options_e.SSH_OPTIONS_ADD_IDENTITY)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_SSH_DIR)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_SSH_DIR)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_SSH_DIR, __pyx_t_1) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_SSH_DIR, __pyx_t_1) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":50
- * USER = Option.from_option(ssh_options_e.SSH_OPTIONS_USER)
+  /* "ssh/options.pyx":49
+ * FD = Option.from_option(ssh_options_e.SSH_OPTIONS_FD)
  * SSH_DIR = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH_DIR)
  * IDENTITY = Option.from_option(ssh_options_e.SSH_OPTIONS_IDENTITY)             # <<<<<<<<<<<<<<
  * ADD_IDENTITY = Option.from_option(ssh_options_e.SSH_OPTIONS_ADD_IDENTITY)
  * KNOWNHOSTS = Option.from_option(ssh_options_e.SSH_OPTIONS_KNOWNHOSTS)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_IDENTITY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_IDENTITY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_IDENTITY, __pyx_t_1) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_IDENTITY, __pyx_t_1) < 0) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":51
+  /* "ssh/options.pyx":50
  * SSH_DIR = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH_DIR)
  * IDENTITY = Option.from_option(ssh_options_e.SSH_OPTIONS_IDENTITY)
  * ADD_IDENTITY = Option.from_option(ssh_options_e.SSH_OPTIONS_ADD_IDENTITY)             # <<<<<<<<<<<<<<
  * KNOWNHOSTS = Option.from_option(ssh_options_e.SSH_OPTIONS_KNOWNHOSTS)
  * TIMEOUT = Option.from_option(ssh_options_e.SSH_OPTIONS_TIMEOUT)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_ADD_IDENTITY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_ADD_IDENTITY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ADD_IDENTITY, __pyx_t_1) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_ADD_IDENTITY, __pyx_t_1) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":52
+  /* "ssh/options.pyx":51
  * IDENTITY = Option.from_option(ssh_options_e.SSH_OPTIONS_IDENTITY)
  * ADD_IDENTITY = Option.from_option(ssh_options_e.SSH_OPTIONS_ADD_IDENTITY)
  * KNOWNHOSTS = Option.from_option(ssh_options_e.SSH_OPTIONS_KNOWNHOSTS)             # <<<<<<<<<<<<<<
  * TIMEOUT = Option.from_option(ssh_options_e.SSH_OPTIONS_TIMEOUT)
  * TIMEOUT_USEC = Option.from_option(ssh_options_e.SSH_OPTIONS_TIMEOUT_USEC)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_KNOWNHOSTS)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_KNOWNHOSTS)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_KNOWNHOSTS, __pyx_t_1) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_KNOWNHOSTS, __pyx_t_1) < 0) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":53
+  /* "ssh/options.pyx":52
  * ADD_IDENTITY = Option.from_option(ssh_options_e.SSH_OPTIONS_ADD_IDENTITY)
  * KNOWNHOSTS = Option.from_option(ssh_options_e.SSH_OPTIONS_KNOWNHOSTS)
  * TIMEOUT = Option.from_option(ssh_options_e.SSH_OPTIONS_TIMEOUT)             # <<<<<<<<<<<<<<
  * TIMEOUT_USEC = Option.from_option(ssh_options_e.SSH_OPTIONS_TIMEOUT_USEC)
  * SSH1 = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH1)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_TIMEOUT)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_TIMEOUT)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TIMEOUT, __pyx_t_1) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TIMEOUT, __pyx_t_1) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":54
+  /* "ssh/options.pyx":53
  * KNOWNHOSTS = Option.from_option(ssh_options_e.SSH_OPTIONS_KNOWNHOSTS)
  * TIMEOUT = Option.from_option(ssh_options_e.SSH_OPTIONS_TIMEOUT)
  * TIMEOUT_USEC = Option.from_option(ssh_options_e.SSH_OPTIONS_TIMEOUT_USEC)             # <<<<<<<<<<<<<<
  * SSH1 = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH1)
  * SSH2 = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH2)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_TIMEOUT_USEC)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_TIMEOUT_USEC)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TIMEOUT_USEC, __pyx_t_1) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_TIMEOUT_USEC, __pyx_t_1) < 0) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":55
+  /* "ssh/options.pyx":54
  * TIMEOUT = Option.from_option(ssh_options_e.SSH_OPTIONS_TIMEOUT)
  * TIMEOUT_USEC = Option.from_option(ssh_options_e.SSH_OPTIONS_TIMEOUT_USEC)
  * SSH1 = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH1)             # <<<<<<<<<<<<<<
  * SSH2 = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH2)
  * LOG_VERBOSITY = Option.from_option(ssh_options_e.SSH_OPTIONS_LOG_VERBOSITY)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_SSH1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_SSH1)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_SSH1, __pyx_t_1) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_SSH1, __pyx_t_1) < 0) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":56
+  /* "ssh/options.pyx":55
  * TIMEOUT_USEC = Option.from_option(ssh_options_e.SSH_OPTIONS_TIMEOUT_USEC)
  * SSH1 = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH1)
  * SSH2 = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH2)             # <<<<<<<<<<<<<<
  * LOG_VERBOSITY = Option.from_option(ssh_options_e.SSH_OPTIONS_LOG_VERBOSITY)
  * LOG_VERBOSITY_STR = Option.from_option(
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_SSH2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_SSH2)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_SSH2, __pyx_t_1) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_SSH2, __pyx_t_1) < 0) __PYX_ERR(0, 55, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":57
+  /* "ssh/options.pyx":56
  * SSH1 = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH1)
  * SSH2 = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH2)
  * LOG_VERBOSITY = Option.from_option(ssh_options_e.SSH_OPTIONS_LOG_VERBOSITY)             # <<<<<<<<<<<<<<
  * LOG_VERBOSITY_STR = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_LOG_VERBOSITY_STR)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_LOG_VERBOSITY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_LOG_VERBOSITY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_LOG_VERBOSITY, __pyx_t_1) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_LOG_VERBOSITY, __pyx_t_1) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":58
+  /* "ssh/options.pyx":57
  * SSH2 = Option.from_option(ssh_options_e.SSH_OPTIONS_SSH2)
  * LOG_VERBOSITY = Option.from_option(ssh_options_e.SSH_OPTIONS_LOG_VERBOSITY)
  * LOG_VERBOSITY_STR = Option.from_option(             # <<<<<<<<<<<<<<
  *     ssh_options_e.SSH_OPTIONS_LOG_VERBOSITY_STR)
  * CIPHERS_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_CIPHERS_C_S)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_LOG_VERBOSITY_STR)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_LOG_VERBOSITY_STR)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_LOG_VERBOSITY_STR, __pyx_t_1) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_LOG_VERBOSITY_STR, __pyx_t_1) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":60
+  /* "ssh/options.pyx":59
  * LOG_VERBOSITY_STR = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_LOG_VERBOSITY_STR)
  * CIPHERS_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_CIPHERS_C_S)             # <<<<<<<<<<<<<<
  * CIPHERS_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_CIPHERS_S_C)
  * COMPRESSION_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION_C_S)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_CIPHERS_C_S)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_CIPHERS_C_S)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_CIPHERS_C_S, __pyx_t_1) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_CIPHERS_C_S, __pyx_t_1) < 0) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":61
+  /* "ssh/options.pyx":60
  *     ssh_options_e.SSH_OPTIONS_LOG_VERBOSITY_STR)
  * CIPHERS_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_CIPHERS_C_S)
  * CIPHERS_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_CIPHERS_S_C)             # <<<<<<<<<<<<<<
  * COMPRESSION_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION_C_S)
  * COMPRESSION_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION_S_C)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_CIPHERS_S_C)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_CIPHERS_S_C)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_CIPHERS_S_C, __pyx_t_1) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_CIPHERS_S_C, __pyx_t_1) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":62
+  /* "ssh/options.pyx":61
  * CIPHERS_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_CIPHERS_C_S)
  * CIPHERS_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_CIPHERS_S_C)
  * COMPRESSION_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION_C_S)             # <<<<<<<<<<<<<<
  * COMPRESSION_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION_S_C)
  * PROXYCOMMAND = Option.from_option(ssh_options_e.SSH_OPTIONS_PROXYCOMMAND)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_COMPRESSION_C_S)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_COMPRESSION_C_S)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_COMPRESSION_C_S, __pyx_t_1) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_COMPRESSION_C_S, __pyx_t_1) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":63
+  /* "ssh/options.pyx":62
  * CIPHERS_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_CIPHERS_S_C)
  * COMPRESSION_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION_C_S)
  * COMPRESSION_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION_S_C)             # <<<<<<<<<<<<<<
  * PROXYCOMMAND = Option.from_option(ssh_options_e.SSH_OPTIONS_PROXYCOMMAND)
  * BINDADDR = Option.from_option(ssh_options_e.SSH_OPTIONS_BINDADDR)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_COMPRESSION_S_C)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_COMPRESSION_S_C)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_COMPRESSION_S_C, __pyx_t_1) < 0) __PYX_ERR(0, 63, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_COMPRESSION_S_C, __pyx_t_1) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":64
+  /* "ssh/options.pyx":63
  * COMPRESSION_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION_C_S)
  * COMPRESSION_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION_S_C)
  * PROXYCOMMAND = Option.from_option(ssh_options_e.SSH_OPTIONS_PROXYCOMMAND)             # <<<<<<<<<<<<<<
  * BINDADDR = Option.from_option(ssh_options_e.SSH_OPTIONS_BINDADDR)
  * STRICTHOSTKEYCHECK = Option.from_option(
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_PROXYCOMMAND)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_PROXYCOMMAND)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PROXYCOMMAND, __pyx_t_1) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PROXYCOMMAND, __pyx_t_1) < 0) __PYX_ERR(0, 63, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":65
+  /* "ssh/options.pyx":64
  * COMPRESSION_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION_S_C)
  * PROXYCOMMAND = Option.from_option(ssh_options_e.SSH_OPTIONS_PROXYCOMMAND)
  * BINDADDR = Option.from_option(ssh_options_e.SSH_OPTIONS_BINDADDR)             # <<<<<<<<<<<<<<
  * STRICTHOSTKEYCHECK = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_STRICTHOSTKEYCHECK)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_BINDADDR)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_BINDADDR)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_BINDADDR, __pyx_t_1) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_BINDADDR, __pyx_t_1) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":66
+  /* "ssh/options.pyx":65
  * PROXYCOMMAND = Option.from_option(ssh_options_e.SSH_OPTIONS_PROXYCOMMAND)
  * BINDADDR = Option.from_option(ssh_options_e.SSH_OPTIONS_BINDADDR)
  * STRICTHOSTKEYCHECK = Option.from_option(             # <<<<<<<<<<<<<<
  *     ssh_options_e.SSH_OPTIONS_STRICTHOSTKEYCHECK)
  * COMPRESSION = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_STRICTHOSTKEYCHECK)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_STRICTHOSTKEYCHECK)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_STRICTHOSTKEYCHECK, __pyx_t_1) < 0) __PYX_ERR(0, 66, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_STRICTHOSTKEYCHECK, __pyx_t_1) < 0) __PYX_ERR(0, 65, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":68
+  /* "ssh/options.pyx":67
  * STRICTHOSTKEYCHECK = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_STRICTHOSTKEYCHECK)
  * COMPRESSION = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION)             # <<<<<<<<<<<<<<
  * COMPRESSION_LEVEL = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_COMPRESSION_LEVEL)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_COMPRESSION)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_COMPRESSION)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_COMPRESSION, __pyx_t_1) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_COMPRESSION, __pyx_t_1) < 0) __PYX_ERR(0, 67, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":69
+  /* "ssh/options.pyx":68
  *     ssh_options_e.SSH_OPTIONS_STRICTHOSTKEYCHECK)
  * COMPRESSION = Option.from_option(ssh_options_e.SSH_OPTIONS_COMPRESSION)
  * COMPRESSION_LEVEL = Option.from_option(             # <<<<<<<<<<<<<<
  *     ssh_options_e.SSH_OPTIONS_COMPRESSION_LEVEL)
  * KEY_EXCHANGE = Option.from_option(ssh_options_e.SSH_OPTIONS_KEY_EXCHANGE)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_COMPRESSION_LEVEL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_COMPRESSION_LEVEL)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_COMPRESSION_LEVEL, __pyx_t_1) < 0) __PYX_ERR(0, 69, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_COMPRESSION_LEVEL, __pyx_t_1) < 0) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":71
+  /* "ssh/options.pyx":70
  * COMPRESSION_LEVEL = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_COMPRESSION_LEVEL)
  * KEY_EXCHANGE = Option.from_option(ssh_options_e.SSH_OPTIONS_KEY_EXCHANGE)             # <<<<<<<<<<<<<<
  * HOSTKEYS = Option.from_option(ssh_options_e.SSH_OPTIONS_HOSTKEYS)
  * GSSAPI_SERVER_IDENTITY = Option.from_option(
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_KEY_EXCHANGE)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_KEY_EXCHANGE)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_KEY_EXCHANGE, __pyx_t_1) < 0) __PYX_ERR(0, 71, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_KEY_EXCHANGE, __pyx_t_1) < 0) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":72
+  /* "ssh/options.pyx":71
  *     ssh_options_e.SSH_OPTIONS_COMPRESSION_LEVEL)
  * KEY_EXCHANGE = Option.from_option(ssh_options_e.SSH_OPTIONS_KEY_EXCHANGE)
  * HOSTKEYS = Option.from_option(ssh_options_e.SSH_OPTIONS_HOSTKEYS)             # <<<<<<<<<<<<<<
  * GSSAPI_SERVER_IDENTITY = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_GSSAPI_SERVER_IDENTITY)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_HOSTKEYS)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_HOSTKEYS)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_HOSTKEYS, __pyx_t_1) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_HOSTKEYS, __pyx_t_1) < 0) __PYX_ERR(0, 71, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":73
+  /* "ssh/options.pyx":72
  * KEY_EXCHANGE = Option.from_option(ssh_options_e.SSH_OPTIONS_KEY_EXCHANGE)
  * HOSTKEYS = Option.from_option(ssh_options_e.SSH_OPTIONS_HOSTKEYS)
  * GSSAPI_SERVER_IDENTITY = Option.from_option(             # <<<<<<<<<<<<<<
  *     ssh_options_e.SSH_OPTIONS_GSSAPI_SERVER_IDENTITY)
  * GSSAPI_CLIENT_IDENTITY = Option.from_option(
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_GSSAPI_SERVER_IDENTITY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 73, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_GSSAPI_SERVER_IDENTITY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GSSAPI_SERVER_IDENTITY, __pyx_t_1) < 0) __PYX_ERR(0, 73, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GSSAPI_SERVER_IDENTITY, __pyx_t_1) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":75
+  /* "ssh/options.pyx":74
  * GSSAPI_SERVER_IDENTITY = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_GSSAPI_SERVER_IDENTITY)
  * GSSAPI_CLIENT_IDENTITY = Option.from_option(             # <<<<<<<<<<<<<<
  *     ssh_options_e.SSH_OPTIONS_GSSAPI_CLIENT_IDENTITY)
  * GSSAPI_DELEGATE_CREDENTIALS = Option.from_option(
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_GSSAPI_CLIENT_IDENTITY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 75, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_GSSAPI_CLIENT_IDENTITY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GSSAPI_CLIENT_IDENTITY, __pyx_t_1) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GSSAPI_CLIENT_IDENTITY, __pyx_t_1) < 0) __PYX_ERR(0, 74, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":77
+  /* "ssh/options.pyx":76
  * GSSAPI_CLIENT_IDENTITY = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_GSSAPI_CLIENT_IDENTITY)
  * GSSAPI_DELEGATE_CREDENTIALS = Option.from_option(             # <<<<<<<<<<<<<<
  *     ssh_options_e.SSH_OPTIONS_GSSAPI_DELEGATE_CREDENTIALS)
  * HMAC_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_HMAC_C_S)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_GSSAPI_DELEGATE_CREDENTIALS)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 77, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_GSSAPI_DELEGATE_CREDENTIALS)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GSSAPI_DELEGATE_CREDENTIALS, __pyx_t_1) < 0) __PYX_ERR(0, 77, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GSSAPI_DELEGATE_CREDENTIALS, __pyx_t_1) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":79
+  /* "ssh/options.pyx":78
  * GSSAPI_DELEGATE_CREDENTIALS = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_GSSAPI_DELEGATE_CREDENTIALS)
  * HMAC_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_HMAC_C_S)             # <<<<<<<<<<<<<<
  * HMAC_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_HMAC_S_C)
  * PASSWORD_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_PASSWORD_AUTH)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_HMAC_C_S)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_HMAC_C_S)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_HMAC_C_S, __pyx_t_1) < 0) __PYX_ERR(0, 79, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_HMAC_C_S, __pyx_t_1) < 0) __PYX_ERR(0, 78, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":80
+  /* "ssh/options.pyx":79
  *     ssh_options_e.SSH_OPTIONS_GSSAPI_DELEGATE_CREDENTIALS)
  * HMAC_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_HMAC_C_S)
  * HMAC_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_HMAC_S_C)             # <<<<<<<<<<<<<<
  * PASSWORD_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_PASSWORD_AUTH)
  * PUBKEY_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_PUBKEY_AUTH)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_HMAC_S_C)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_HMAC_S_C)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_HMAC_S_C, __pyx_t_1) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_HMAC_S_C, __pyx_t_1) < 0) __PYX_ERR(0, 79, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":81
+  /* "ssh/options.pyx":80
  * HMAC_C_S = Option.from_option(ssh_options_e.SSH_OPTIONS_HMAC_C_S)
  * HMAC_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_HMAC_S_C)
  * PASSWORD_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_PASSWORD_AUTH)             # <<<<<<<<<<<<<<
  * PUBKEY_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_PUBKEY_AUTH)
  * KBDINT_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_KBDINT_AUTH)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_PASSWORD_AUTH)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_PASSWORD_AUTH)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PASSWORD_AUTH, __pyx_t_1) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PASSWORD_AUTH, __pyx_t_1) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":82
+  /* "ssh/options.pyx":81
  * HMAC_S_C = Option.from_option(ssh_options_e.SSH_OPTIONS_HMAC_S_C)
  * PASSWORD_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_PASSWORD_AUTH)
  * PUBKEY_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_PUBKEY_AUTH)             # <<<<<<<<<<<<<<
  * KBDINT_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_KBDINT_AUTH)
  * GSSAPI_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_GSSAPI_AUTH)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_PUBKEY_AUTH)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_PUBKEY_AUTH)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PUBKEY_AUTH, __pyx_t_1) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_PUBKEY_AUTH, __pyx_t_1) < 0) __PYX_ERR(0, 81, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":83
+  /* "ssh/options.pyx":82
  * PASSWORD_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_PASSWORD_AUTH)
  * PUBKEY_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_PUBKEY_AUTH)
  * KBDINT_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_KBDINT_AUTH)             # <<<<<<<<<<<<<<
  * GSSAPI_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_GSSAPI_AUTH)
  * GLOBAL_KNOWNHOSTS = Option.from_option(
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_KBDINT_AUTH)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_KBDINT_AUTH)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_KBDINT_AUTH, __pyx_t_1) < 0) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_KBDINT_AUTH, __pyx_t_1) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":84
+  /* "ssh/options.pyx":83
  * PUBKEY_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_PUBKEY_AUTH)
  * KBDINT_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_KBDINT_AUTH)
  * GSSAPI_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_GSSAPI_AUTH)             # <<<<<<<<<<<<<<
  * GLOBAL_KNOWNHOSTS = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_GLOBAL_KNOWNHOSTS)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_GSSAPI_AUTH)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_GSSAPI_AUTH)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GSSAPI_AUTH, __pyx_t_1) < 0) __PYX_ERR(0, 84, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GSSAPI_AUTH, __pyx_t_1) < 0) __PYX_ERR(0, 83, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":85
+  /* "ssh/options.pyx":84
  * KBDINT_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_KBDINT_AUTH)
  * GSSAPI_AUTH = Option.from_option(ssh_options_e.SSH_OPTIONS_GSSAPI_AUTH)
  * GLOBAL_KNOWNHOSTS = Option.from_option(             # <<<<<<<<<<<<<<
  *     ssh_options_e.SSH_OPTIONS_GLOBAL_KNOWNHOSTS)
  * NODELAY = Option.from_option(ssh_options_e.SSH_OPTIONS_NODELAY)
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_GLOBAL_KNOWNHOSTS)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_GLOBAL_KNOWNHOSTS)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GLOBAL_KNOWNHOSTS, __pyx_t_1) < 0) __PYX_ERR(0, 85, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_GLOBAL_KNOWNHOSTS, __pyx_t_1) < 0) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ssh/options.pyx":87
+  /* "ssh/options.pyx":86
  * GLOBAL_KNOWNHOSTS = Option.from_option(
  *     ssh_options_e.SSH_OPTIONS_GLOBAL_KNOWNHOSTS)
  * NODELAY = Option.from_option(ssh_options_e.SSH_OPTIONS_NODELAY)             # <<<<<<<<<<<<<<
  */
-  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_NODELAY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_3ssh_7options_6Option_from_option(SSH_OPTIONS_NODELAY)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_d, __pyx_n_s_NODELAY, __pyx_t_1) < 0) __PYX_ERR(0, 87, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_d, __pyx_n_s_NODELAY, __pyx_t_1) < 0) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "(tree fragment)":1
