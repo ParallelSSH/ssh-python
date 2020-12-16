@@ -3,9 +3,7 @@ IF "%PYTHON_VERSION%" == "2.7" (exit 0)
 mkdir src
 cd src
 
-set CMAKE_PLATFORM="%MSVC%"
-
-cmake ..\libssh  -G %CMAKE_PLATFORM%               ^
+cmake ..\libssh                                    ^
       -DCMAKE_BUILD_TYPE=Release                   ^
       -DZLIB_LIBRARY=C:/zlib/lib/zlibstatic.lib    ^
       -DZLIB_INCLUDE_DIR=C:/zlib/include           ^
