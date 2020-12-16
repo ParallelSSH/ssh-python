@@ -4,6 +4,7 @@ mkdir src
 cd src
 
 cmake ..\libssh                                    ^
+      -A x64                                       ^
       -DCMAKE_BUILD_TYPE=Release                   ^
       -DZLIB_LIBRARY=C:/zlib/lib/zlibstatic.lib    ^
       -DZLIB_INCLUDE_DIR=C:/zlib/include           ^
