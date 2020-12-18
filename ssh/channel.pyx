@@ -297,21 +297,63 @@ cdef class Channel:
     def set_counter(self, counter):
         raise NotImplementedError
 
-    def write(self, bytes data):
-        cdef c_ssh.uint32_t size = len(data)
-        cdef const_char *c_data = data
-        cdef int rc
-        with nogil:
-            rc = c_ssh.ssh_channel_write(self._channel, c_data, size)
-        return handle_error_codes(rc, self._session._session)
+    def write(self, data not None):
+        """Write data to stdin on channel.
 
-    def write_stderr(self, bytes data):
-        cdef c_ssh.uint32_t size = len(data)
-        cdef const_char *c_data = data
+        :param data: Data to write.
+        :type data: str or bytes
+        :returns: Return code and bytes written tuples.
+        :rtype: (int, int)
+        """
+        cdef bytes b_buf = to_bytes(data)
+        cdef const char *_buf = b_buf
+        cdef c_ssh.uint32_t buf_remainder = len(b_buf)
+        cdef c_ssh.uint32_t buf_tot_size = buf_remainder
+        cdef c_ssh.uint32_t bytes_written = 0
         cdef int rc
         with nogil:
-            rc = c_ssh.ssh_channel_write_stderr(self._channel, c_data, size)
-        return handle_error_codes(rc, self._session._session)
+            while buf_remainder > 0:
+                rc = c_ssh.ssh_channel_write(
+                    self._channel, _buf, buf_remainder)
+                if rc < 0 and rc != c_ssh.SSH_AGAIN:
+                    with gil:
+                        return handle_error_codes(
+                            rc, self._session._session)
+                elif rc == c_ssh.SSH_AGAIN:
+                    break
+                _buf += rc
+                buf_remainder -= rc
+            bytes_written = buf_tot_size - buf_remainder
+        return rc, bytes_written
+
+    def write_stderr(self, data not None):
+        """Write data to stderr.
+
+        :param data: Data to write.
+        :type data: str or bytes
+        :returns: Return code and bytes written tuples.
+        :rtype: (int, int)
+        """
+        cdef bytes b_buf = to_bytes(data)
+        cdef const char *_buf = b_buf
+        cdef c_ssh.uint32_t buf_remainder = len(b_buf)
+        cdef c_ssh.uint32_t buf_tot_size = buf_remainder
+        cdef c_ssh.uint32_t bytes_written = 0
+        cdef int rc
+        with nogil:
+            while buf_remainder > 0:
+                rc = c_ssh.ssh_channel_write_stderr(
+                    self._channel, _buf, buf_remainder)
+                if rc < 0 and rc != c_ssh.SSH_AGAIN:
+                    with gil:
+                        return handle_error_codes(
+                            rc, self._session._session)
+                elif rc == c_ssh.SSH_AGAIN:
+                    break
+                _buf += rc
+                buf_remainder -= rc
+            bytes_written = buf_tot_size - buf_remainder
+        return rc, bytes_written
 
     def window_size(self):
         cdef c_ssh.uint32_t size

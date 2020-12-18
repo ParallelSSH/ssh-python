@@ -156,3 +156,30 @@ class ChannelTest(SSHTestCase):
         self.assertTrue(size > 0)
         lines = [s.decode('utf-8') for s in data.splitlines()]
         self.assertListEqual(expected, lines)
+
+    def test_write_stdin(self):
+        self._auth()
+        _in = u'writing to stdin'
+        chan = self.session.channel_new()
+        chan.open_session()
+        chan.request_exec('cat')
+        chan.write(_in + '\n')
+        self.assertEqual(chan.send_eof(), 0)
+        size, data = chan.read()
+        self.assertTrue(size > 0)
+        lines = [line.decode('utf-8') for line in data.splitlines()]
+        self.assertListEqual([_in], lines)
+        chan.close()
+        chan.read()
+        self.assertTrue(chan.is_eof())
+
+    def test_write_stderr(self):
+        self._auth()
+        chan = self.session.channel_new()
+        chan.open_session()
+        chan.request_exec('echo something')
+        _in = u'stderr'
+        rc, bytes_written = chan.write_stderr(_in + '\n')
+        self.assertEqual(rc, 7)
+        self.assertEqual(bytes_written, 7)
+        self.assertEqual(chan.close(), 0)
