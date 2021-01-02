@@ -25,7 +25,7 @@ s.userauth_agent(USERNAME)
 
 chan = s.channel_new()
 chan.open_session()
-chan.request_exec('echo me')
+chan.request_exec('ls')
 size, data = chan.read()
 while size > 0:
     print(data.strip())
