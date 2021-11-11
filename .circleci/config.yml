@@ -72,10 +72,10 @@ jobs:
           command: |
             twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheels/*
 
-  manylinux:
+  manylinux-x86_64:
     machine:
       image: ubuntu-1604:201903-01
-    steps:
+    steps: &manylinux-steps
       - checkout
       - run:
           name: sdist
@@ -112,6 +112,12 @@ jobs:
           command: |
             twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD dist/* wheelhouse/*
 
+  manylinux2014-aarch64:
+    machine:
+      image: ubuntu-2004:202101-01
+    resource_class: arm.medium
+    steps: *manylinux-steps
+
 workflows:
   version: 2.1
   main:
@@ -126,13 +132,14 @@ workflows:
           filters:
             tags:
               ignore: /.*/
-      - manylinux:
+      - manylinux-x86_64: &manylinux-wf
           context: Docker
           filters:
             tags:
               only: /.*/
             branches:
               ignore: /.*/
+      - manylinux2014-aarch64: *manylinux-wf
       - osx:
           matrix:
             parameters:
