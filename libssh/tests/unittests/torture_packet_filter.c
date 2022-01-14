@@ -517,12 +517,108 @@ static void torture_packet_filter_check_channel_open(void **state)
     assert_int_equal(rc, 0);
 }
 
+static void torture_packet_filter_check_channel_success(void **state)
+{
+    int rc;
+
+    /* The only condition to accept a CHANNEL_SUCCESS is to be authenticated */
+    global_state accepted[] = {
+        {
+            .flags = COMPARE_SESSION_STATE,
+            .session = SSH_SESSION_STATE_AUTHENTICATED,
+        }
+    };
+
+    int accepted_count = 1;
+
+    /* Unused */
+    (void) state;
+
+    rc = check_message_in_all_states(accepted, accepted_count,
+            SSH2_MSG_CHANNEL_SUCCESS);
+
+    assert_int_equal(rc, 0);
+}
+
+static void torture_packet_filter_check_channel_failure(void **state)
+{
+    int rc;
+
+    /* The only condition to accept a CHANNEL_FAILURE is to be authenticated */
+    global_state accepted[] = {
+        {
+            .flags = COMPARE_SESSION_STATE,
+            .session = SSH_SESSION_STATE_AUTHENTICATED,
+        }
+    };
+
+    int accepted_count = 1;
+
+    /* Unused */
+    (void) state;
+
+    rc = check_message_in_all_states(accepted, accepted_count,
+            SSH2_MSG_CHANNEL_FAILURE);
+
+    assert_int_equal(rc, 0);
+}
+
+static void torture_packet_filter_check_request_success(void **state)
+{
+    int rc;
+
+    /* The only condition to accept a REQUEST_SUCCESS is to be authenticated */
+    global_state accepted[] = {
+        {
+            .flags = COMPARE_SESSION_STATE,
+            .session = SSH_SESSION_STATE_AUTHENTICATED,
+        }
+    };
+
+    int accepted_count = 1;
+
+    /* Unused */
+    (void) state;
+
+    rc = check_message_in_all_states(accepted, accepted_count,
+            SSH2_MSG_REQUEST_SUCCESS);
+
+    assert_int_equal(rc, 0);
+}
+
+static void torture_packet_filter_check_request_failure(void **state)
+{
+    int rc;
+
+    /* The only condition to accept a REQUEST_FAILURE is to be authenticated */
+    global_state accepted[] = {
+        {
+            .flags = COMPARE_SESSION_STATE,
+            .session = SSH_SESSION_STATE_AUTHENTICATED,
+        }
+    };
+
+    int accepted_count = 1;
+
+    /* Unused */
+    (void) state;
+
+    rc = check_message_in_all_states(accepted, accepted_count,
+            SSH2_MSG_REQUEST_FAILURE);
+
+    assert_int_equal(rc, 0);
+}
+
 int torture_run_tests(void)
 {
     int rc;
     struct CMUnitTest tests[] = {
         cmocka_unit_test(torture_packet_filter_check_auth_success),
         cmocka_unit_test(torture_packet_filter_check_channel_open),
+        cmocka_unit_test(torture_packet_filter_check_channel_success),
+        cmocka_unit_test(torture_packet_filter_check_channel_failure),
+        cmocka_unit_test(torture_packet_filter_check_request_success),
+        cmocka_unit_test(torture_packet_filter_check_request_failure),
         cmocka_unit_test(torture_packet_filter_check_unfiltered),
         cmocka_unit_test(torture_packet_filter_check_msg_ext_info)
     };

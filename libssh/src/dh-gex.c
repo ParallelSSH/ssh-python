@@ -263,6 +263,8 @@ static SSH_PACKET_CALLBACK(ssh_packet_client_dhgex_reply)
         bignum_safe_free(server_pubkey);
         goto error;
     }
+    /* The ownership was passed to the crypto structure */
+    server_pubkey = NULL;
 
     rc = ssh_dh_import_next_pubkey_blob(session, pubkey_blob);
     SSH_STRING_FREE(pubkey_blob);
@@ -293,6 +295,7 @@ static SSH_PACKET_CALLBACK(ssh_packet_client_dhgex_reply)
 
     return SSH_PACKET_USED;
 error:
+    SSH_STRING_FREE(pubkey_blob);
     ssh_dh_cleanup(session->next_crypto);
     session->session_state = SSH_SESSION_STATE_ERROR;
 

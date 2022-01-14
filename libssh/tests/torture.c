@@ -421,7 +421,8 @@ ssh_bind torture_ssh_bind(const char *addr,
 
 #ifdef WITH_SFTP
 
-struct torture_sftp *torture_sftp_session(ssh_session session) {
+struct torture_sftp *torture_sftp_session_channel(ssh_session session, ssh_channel channel)
+{
     struct torture_sftp *t;
     char template[] = "/tmp/ssh_torture_XXXXXX";
     char *p;
@@ -437,9 +438,26 @@ struct torture_sftp *torture_sftp_session(ssh_session session) {
     }
 
     t->ssh = session;
-    t->sftp = sftp_new(session);
-    if (t->sftp == NULL) {
-        goto failed;
+    if (channel == NULL) {
+        t->sftp = sftp_new(session);
+        if (t->sftp == NULL) {
+            goto failed;
+        }
+    } else {
+        t->sftp = sftp_new_channel(session, channel);
+        if (t->sftp == NULL) {
+            goto failed;
+        }
+
+        rc = ssh_channel_open_session(channel);
+        if (rc != SSH_OK) {
+            goto failed;
+        }
+
+        rc = ssh_channel_request_sftp(channel);
+        if (rc != SSH_OK) {
+            goto failed;
+        }
     }
 
     rc = sftp_init(t->sftp);
@@ -468,6 +486,11 @@ failed:
     free(t);
 
     return NULL;
+}
+
+struct torture_sftp *torture_sftp_session(ssh_session session)
+{
+    return torture_sftp_session_channel(session, NULL);
 }
 
 void torture_sftp_close(struct torture_sftp *t) {
@@ -629,7 +652,8 @@ static void torture_setup_create_sshd_config(void **state, bool pam)
              "\n"
              "StrictModes no\n"
              "\n"
-             "%s" /* Here comes UsePam */
+             "%s\n" /* Here comes UsePam */
+             "%s" /* The space for test-specific options */
              "\n"
              /* add all supported algorithms */
              "HostKeyAlgorithms " OPENSSH_KEYS "\n"
@@ -644,8 +668,7 @@ static void torture_setup_create_sshd_config(void **state, bool pam)
              "AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT\n"
              "AcceptEnv LC_IDENTIFICATION LC_ALL LC_LIBSSH\n"
              "\n"
-             "PidFile %s\n"
-             "%s\n"; /* The space for test-specific options */
+             "PidFile %s\n";
     /* FIPS config */
     const char fips_config_string[]=
              "Port 22\n"
@@ -663,7 +686,8 @@ static void torture_setup_create_sshd_config(void **state, bool pam)
              "\n"
              "StrictModes no\n"
              "\n"
-             "%s" /* UsePam */
+             "%s\n" /* Here comes UsePam */
+             "%s" /* The space for test-specific options */
              "\n"
              "Ciphers "
                 "aes256-gcm@openssh.com,aes256-ctr,aes256-cbc,"
@@ -692,8 +716,7 @@ static void torture_setup_create_sshd_config(void **state, bool pam)
              "AcceptEnv LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT\n"
              "AcceptEnv LC_IDENTIFICATION LC_ALL LC_LIBSSH\n"
              "\n"
-             "PidFile %s\n" /* PID file */
-             "%s\n"; /* The space for test-specific options */
+             "PidFile %s\n"; /* PID file */
     const char usepam_yes[] =
              "UsePAM yes\n"
              "KbdInteractiveAuthentication yes\n";
@@ -794,8 +817,8 @@ static void torture_setup_create_sshd_config(void **state, bool pam)
                 trusted_ca_pubkey,
                 sftp_server,
                 usepam,
-                s->srv_pidfile,
-                additional_config);
+                additional_config,
+                s->srv_pidfile);
     } else {
         snprintf(sshd_config, sizeof(sshd_config),
                 config_string,
@@ -808,8 +831,8 @@ static void torture_setup_create_sshd_config(void **state, bool pam)
                 trusted_ca_pubkey,
                 sftp_server,
                 usepam,
-                s->srv_pidfile,
-                additional_config);
+                additional_config,
+                s->srv_pidfile);
     }
 
     torture_write_file(s->srv_config, sshd_config);

@@ -796,7 +796,8 @@ static void torture_pki_ed25519_verify(void **state){
     assert_true(rc == SSH_OK);
     assert_non_null(pubkey);
 
-    ssh_string_fill(blob, ref_signature, ED25519_SIG_LEN);
+    rc = ssh_string_fill(blob, ref_signature, ED25519_SIG_LEN);
+    assert_int_equal(rc, 0);
     sig = pki_signature_from_blob(pubkey, blob, SSH_KEYTYPE_ED25519, SSH_DIGEST_AUTO);
     assert_non_null(sig);
 
@@ -853,7 +854,8 @@ static void torture_pki_ed25519_verify_bad(void **state){
     /* alter signature and expect false result */
 
     for (i=0; i < ED25519_SIG_LEN; ++i){
-        ssh_string_fill(blob, ref_signature, ED25519_SIG_LEN);
+        rc = ssh_string_fill(blob, ref_signature, ED25519_SIG_LEN);
+        assert_int_equal(rc, 0);
         ((uint8_t *)ssh_string_data(blob))[i] ^= 0xff;
         sig = pki_signature_from_blob(pubkey, blob, SSH_KEYTYPE_ED25519, SSH_DIGEST_AUTO);
         assert_non_null(sig);
