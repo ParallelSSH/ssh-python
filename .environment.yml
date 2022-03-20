@@ -4,4 +4,4 @@ dependencies:
   - python
   - setuptools
   - toolchain3
-  - cython
+  - cmake
