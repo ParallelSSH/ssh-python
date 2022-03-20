@@ -20,6 +20,7 @@ else:
 
 _PYTHON_MAJOR_VERSION = int(platform.python_version_tuple()[0])
 ON_WINDOWS = platform.system() == 'Windows'
+ON_RTD = os.environ.get('READTHEDOCS') == 'True'
 SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0)) or ON_WINDOWS
 
 if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
@@ -70,7 +71,12 @@ cython_args = {
 
 
 runtime_library_dirs = ["$ORIGIN/."] if not SYSTEM_LIBSSH else None
-_lib_dir = os.path.abspath("./local/lib") if not SYSTEM_LIBSSH else "/usr/local/lib"
+lib_dirs = [os.path.abspath("./local/lib")] if not SYSTEM_LIBSSH else ["/usr/local/lib"]
+if ON_RTD:
+    lib_path = "/home/docs/checkouts/readthedocs.org/user_builds/ssh-python/conda/rtd/lib"
+    lib_dirs.append(lib_path)
+    runtime_library_dirs.append(lib_path)
+
 include_dirs = ["./local/include", "./libssh/include"] \
     if ON_WINDOWS or not SYSTEM_LIBSSH else ["/usr/local/include"]
 
@@ -80,7 +86,7 @@ extensions = [
         sources=[sources[i]],
         include_dirs=include_dirs,
         libraries=_libs,
-        library_dirs=[_lib_dir],
+        library_dirs=lib_dirs,
         runtime_library_dirs=runtime_library_dirs,
         extra_compile_args=_comp_args,
         **cython_args

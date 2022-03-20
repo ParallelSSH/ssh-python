@@ -11,5 +11,6 @@ dependencies:
   - openssl=1.1.1g
   - krb5
   - gcc
+  - pynacl
   - pip:
       - abimap
