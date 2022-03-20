@@ -3,6 +3,5 @@ channels:
 dependencies:
   - python
   - setuptools
-  - libssh
   - toolchain3
   - cython
