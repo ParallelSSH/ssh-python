@@ -5,3 +5,4 @@ dependencies:
   - setuptools
   - toolchain3
   - cmake
+  - openssl
