@@ -26,6 +26,13 @@ if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
     raise ImportError(
         "ssh-python requires Python 3 or above on Windows platforms.")
 
+
+if not SYSTEM_LIBSSH:
+    sys.stdout.write("SYSTEM_LIBSSH is unset, building embedded libssh%s" % (os.linesep,))
+else:
+    sys.stdout.write("SYSTEM_LIBSSH is set, not building embedded libssh%s" % (os.linesep,))
+
+
 # Only build libssh if SYSTEM_LIBSSH is not set and running a build
 if not SYSTEM_LIBSSH and (len(sys.argv) >= 2 and not (
         '--help' in sys.argv[1:] or
@@ -33,6 +40,7 @@ if not SYSTEM_LIBSSH and (len(sys.argv) >= 2 and not (
             '--help-commands', 'egg_info', '--version', 'clean',
             'sdist', '--long-description')) and
                           __name__ == '__main__'):
+    sys.stdout.write("Starting embedded libssh build%s" % (os.linesep,))
     build_ssh()
 
 ext = 'pyx' if USING_CYTHON else 'c'
@@ -93,19 +101,7 @@ if USING_CYTHON:
     sys.stdout.write("Cython arguments: %s%s" % (cython_args, os.linesep))
 
 
-sys.stdout.write("Windows platform: %s, Python major version: %s.%s" % (ON_WINDOWS, _PYTHON_MAJOR_VERSION, os.sep))
-if ON_WINDOWS and _PYTHON_MAJOR_VERSION == 2:
-    # Python 2 on Windows builds are unsupported.
-    extensions = [
-        Extension(
-            'ssh',
-            sources=[os.sep.join(['ssh', '__init__.%s' % (ext,)])],
-            extra_compile_args=_comp_args,
-            **cython_args
-        )
-    ]
-    package_data = {}
-    sys.stdout.write("Windows Python 2 build - %s extensions: %s" % (len(extensions), os.sep))
+sys.stdout.write("Windows platform: %s, Python major version: %s.%s" % (ON_WINDOWS, _PYTHON_MAJOR_VERSION, os.linesep))
 
 setup(
     name='ssh-python',
@@ -131,12 +127,12 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: C',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: System :: Shells',
         'Topic :: System :: Networking',
         'Topic :: Software Development :: Libraries',
@@ -145,6 +141,7 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: POSIX :: BSD',
         'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows',
     ],
     ext_modules=extensions,
     package_data=package_data,
