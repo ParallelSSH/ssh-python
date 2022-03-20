@@ -65,7 +65,7 @@ cython_args = {
 
 runtime_library_dirs = ["$ORIGIN/."] if not SYSTEM_LIBSSH else None
 _lib_dir = os.path.abspath("./local/lib") if not SYSTEM_LIBSSH else "/usr/local/lib"
-include_dirs = ["./local/include"] if (ON_WINDOWS or ON_RTD) or \
+include_dirs = ["./local/include", "./libssh/include"] if (ON_WINDOWS or ON_RTD) or \
                not SYSTEM_LIBSSH else ["/usr/local/include"]
 
 extensions = [
