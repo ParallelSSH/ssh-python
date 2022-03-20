@@ -125,6 +125,8 @@ enum ssh_digest_e ssh_key_hash_from_name(const char *name);
 /* SSH Signature Functions */
 ssh_signature ssh_signature_new(void);
 void ssh_signature_free(ssh_signature sign);
+#define SSH_SIGNATURE_FREE(x) \
+    do { ssh_signature_free(x); x = NULL; } while(0)
 
 int ssh_pki_export_signature_blob(const ssh_signature sign,
                                   ssh_string *sign_blob);

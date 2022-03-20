@@ -392,7 +392,7 @@ int ssh_kdf(struct ssh_crypto_struct *crypto,
         goto out;
     }
     rc = EVP_KDF_ctrl(ctx, EVP_KDF_CTRL_SET_SSHKDF_SESSION_ID,
-                      crypto->session_id, crypto->digest_len);
+                      crypto->session_id, crypto->session_id_len);
     if (rc != 1) {
         goto out;
     }

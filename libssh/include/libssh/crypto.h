@@ -126,8 +126,9 @@ struct ssh_crypto_struct {
     ssh_curve25519_pubkey curve25519_server_pubkey;
 #endif
     ssh_string dh_server_signature; /* information used by dh_handshake. */
-    size_t digest_len; /* len of the two fields below */
+    size_t session_id_len;
     unsigned char *session_id;
+    size_t digest_len; /* len of the secret hash */
     unsigned char *secret_hash; /* Secret hash is same as session id until re-kex */
     unsigned char *encryptIV;
     unsigned char *decryptIV;
