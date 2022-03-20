@@ -19,7 +19,7 @@ RUN cd ${OPENSSL} && \
     make -j6 && make install_sw
 
 # Kerberos
-RUN cd krb5-1.18.4.tar.xz/krb5-1.18.4/src && \
+RUN cd krb5-${KRB}.tar.xz/krb5-${KRB}/src && \
     ./configure && \
     make -j6 && \
     make install
@@ -30,6 +30,6 @@ RUN mkdir -p build_libssh && cd build_libssh && \
           -DWITH_GSS_API=ON && \
     make -j6 install/strip
 
-RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-1.18.4.tar.xz
+RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-${KRB}.tar.xz
 
 VOLUME /var/cache
