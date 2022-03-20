@@ -80,6 +80,8 @@ if ON_RTD:
 include_dirs = ["./local/include", "./libssh/include"] \
     if ON_WINDOWS or not SYSTEM_LIBSSH else ["/usr/local/include"]
 
+sys.stdout.write("Library dirs: %s, runtime dirs: %s, include: %s%s" %
+                 (lib_dirs, runtime_library_dirs, include_dirs, os.linesep))
 extensions = [
     Extension(
         sources[i].split('.')[0].replace(os.path.sep, '.'),

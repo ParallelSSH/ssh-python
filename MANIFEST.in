@@ -8,5 +8,4 @@ include ssh/*.pyx
 include ssh/*.pxd
 include ssh/*.c
 recursive-include libssh *
-include ci/build_ssh.sh
 include _setup_libssh.py
