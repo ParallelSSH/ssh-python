@@ -88,7 +88,11 @@ cleanup_push(struct cleanup_node_struct** head_ref,
     // Allocate memory for node
     struct cleanup_node_struct *new_node = malloc(sizeof *new_node);
 
-    new_node->next = (*head_ref);
+    if (head_ref != NULL) {
+        new_node->next = *head_ref;
+    } else {
+        new_node->next = NULL;
+    }
 
     // Copy new_data
     new_node->data = new_data;
@@ -514,6 +518,12 @@ message_callback(UNUSED_PARAM(ssh_session session),
                 pFd = malloc(sizeof *pFd);
                 cb_chan = malloc(sizeof *cb_chan);
                 event_fd_data = malloc(sizeof *event_fd_data);
+                if (pFd == NULL || cb_chan == NULL || event_fd_data == NULL) {
+                    SAFE_FREE(pFd);
+                    SAFE_FREE(cb_chan);
+                    SAFE_FREE(event_fd_data);
+                    return 1;
+                }
 
                 (*pFd) = socket_fd;
                 event_fd_data->channel = channel;

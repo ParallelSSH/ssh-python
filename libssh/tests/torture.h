@@ -111,6 +111,7 @@ ssh_bind torture_ssh_bind(const char *addr,
                           const char *private_key_file);
 
 struct torture_sftp *torture_sftp_session(ssh_session session);
+struct torture_sftp *torture_sftp_session_channel(ssh_session session, ssh_channel channel);
 void torture_sftp_close(struct torture_sftp *t);
 
 void torture_write_file(const char *filename, const char *data);

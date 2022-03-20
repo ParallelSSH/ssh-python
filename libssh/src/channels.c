@@ -29,6 +29,9 @@
 #include <errno.h>
 #include <time.h>
 #include <stdbool.h>
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif /* HAVE_SYS_TIME_H */
 
 #ifndef _WIN32
 #include <netinet/in.h>
@@ -117,6 +120,13 @@ ssh_channel ssh_channel_new(ssh_session session)
 
     if (session->channels == NULL) {
         session->channels = ssh_list_new();
+        if (session->channels == NULL) {
+            ssh_set_error_oom(session);
+            SSH_BUFFER_FREE(channel->stdout_buffer);
+            SSH_BUFFER_FREE(channel->stderr_buffer);
+            SAFE_FREE(channel);
+            return NULL;
+        }
     }
 
     ssh_list_prepend(session->channels, channel);

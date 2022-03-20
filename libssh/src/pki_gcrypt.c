@@ -1765,6 +1765,7 @@ ssh_string pki_signature_to_blob(const ssh_signature sig)
     gcry_sexp_t sexp;
     size_t size = 0;
     ssh_string sig_blob = NULL;
+    int rc;
 
     switch(sig->type) {
         case SSH_KEYTYPE_DSS:
@@ -1812,7 +1813,11 @@ ssh_string pki_signature_to_blob(const ssh_signature sig)
                 return NULL;
             }
 
-            ssh_string_fill(sig_blob, buffer, 40);
+            rc = ssh_string_fill(sig_blob, buffer, 40);
+            if (rc < 0) {
+                SSH_STRING_FREE(sig_blob);
+                return NULL;
+            }
             break;
         case SSH_KEYTYPE_RSA:
             sexp = gcry_sexp_find_token(sig->rsa_sig, "s", 0);
@@ -1829,13 +1834,16 @@ ssh_string pki_signature_to_blob(const ssh_signature sig)
             if (sig_blob == NULL) {
                 return NULL;
             }
-            ssh_string_fill(sig_blob, discard_const_p(char, s), size);
-
+            rc = ssh_string_fill(sig_blob, discard_const_p(char, s), size);
             gcry_sexp_release(sexp);
+            if (rc < 0) {
+                SSH_STRING_FREE(sig_blob);
+                return NULL;
+            }
             break;
         case SSH_KEYTYPE_ED25519:
-		sig_blob = pki_ed25519_signature_to_blob(sig);
-		break;
+            sig_blob = pki_ed25519_signature_to_blob(sig);
+            break;
         case SSH_KEYTYPE_ECDSA_P256:
         case SSH_KEYTYPE_ECDSA_P384:
         case SSH_KEYTYPE_ECDSA_P521:
@@ -1844,7 +1852,6 @@ ssh_string pki_signature_to_blob(const ssh_signature sig)
                 ssh_string R;
                 ssh_string S;
                 ssh_buffer b;
-                int rc;
 
                 b = ssh_buffer_new();
                 if (b == NULL) {
@@ -1885,9 +1892,13 @@ ssh_string pki_signature_to_blob(const ssh_signature sig)
                     return NULL;
                 }
 
-                ssh_string_fill(sig_blob,
+                rc = ssh_string_fill(sig_blob,
                                 ssh_buffer_get(b), ssh_buffer_get_len(b));
                 SSH_BUFFER_FREE(b);
+                if (rc < 0) {
+                    SSH_STRING_FREE(sig_blob);
+                    return NULL;
+                }
                 break;
             }
 #endif

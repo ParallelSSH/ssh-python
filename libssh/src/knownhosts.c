@@ -372,6 +372,7 @@ struct ssh_list *ssh_known_hosts_get_algorithms(ssh_session session)
 
     list = ssh_list_new();
     if (list == NULL) {
+        ssh_set_error_oom(session);
         SAFE_FREE(host_port);
         return NULL;
     }

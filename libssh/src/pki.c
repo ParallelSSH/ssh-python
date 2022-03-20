@@ -1160,6 +1160,10 @@ int pki_import_privkey_buffer(enum ssh_keytypes_e type,
                 nid = pki_key_ecdsa_nid_from_name(ssh_string_get_char(i));
                 SSH_STRING_FREE(i);
                 if (nid == -1) {
+                    ssh_string_burn(e);
+                    SSH_STRING_FREE(e);
+                    ssh_string_burn(exp);
+                    SSH_STRING_FREE(exp);
                     goto fail;
                 }
 
@@ -2086,8 +2090,12 @@ int ssh_pki_export_signature_blob(const ssh_signature sig,
         return SSH_ERROR;
     }
 
-    ssh_string_fill(str, ssh_buffer_get(buf), ssh_buffer_get_len(buf));
+    rc = ssh_string_fill(str, ssh_buffer_get(buf), ssh_buffer_get_len(buf));
     SSH_BUFFER_FREE(buf);
+    if (rc < 0) {
+        SSH_STRING_FREE(str);
+        return SSH_ERROR;
+    }
 
     *sig_blob = str;
 
@@ -2328,11 +2336,14 @@ ssh_string ssh_pki_do_sign(ssh_session session,
     }
 
     /* Get the session ID */
-    session_id = ssh_string_new(crypto->digest_len);
+    session_id = ssh_string_new(crypto->session_id_len);
     if (session_id == NULL) {
         return NULL;
     }
-    ssh_string_fill(session_id, crypto->session_id, crypto->digest_len);
+    rc = ssh_string_fill(session_id, crypto->session_id, crypto->session_id_len);
+    if (rc < 0) {
+        goto end;
+    }
 
     /* Fill the input */
     sign_input = ssh_buffer_new();
@@ -2389,11 +2400,15 @@ ssh_string ssh_pki_do_sign_agent(ssh_session session,
     }
 
     /* prepend session identifier */
-    session_id = ssh_string_new(crypto->digest_len);
+    session_id = ssh_string_new(crypto->session_id_len);
     if (session_id == NULL) {
         return NULL;
     }
-    ssh_string_fill(session_id, crypto->session_id, crypto->digest_len);
+    rc = ssh_string_fill(session_id, crypto->session_id, crypto->session_id_len);
+    if (rc < 0) {
+        SSH_STRING_FREE(session_id);
+        return NULL;
+    }
 
     sig_buf = ssh_buffer_new();
     if (sig_buf == NULL) {

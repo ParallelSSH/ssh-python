@@ -45,6 +45,16 @@ static int sshd_teardown(void **state) {
     return 0;
 }
 
+static int sshd_setup_hmac(void **state)
+{
+    torture_setup_sshd_server(state, false);
+    /* Set MAC to be something other than what the client will offer */
+    torture_update_sshd_config(state, "MACs hmac-sha2-512");
+
+    return 0;
+}
+
+
 static int session_setup(void **state) {
     struct torture_state *s = *state;
     int verbosity = torture_libssh_verbosity();
@@ -412,6 +422,20 @@ static void torture_algorithms_aes256_gcm(void **state)
     test_algorithm(s->ssh.session, NULL/*kex*/, "aes256-gcm@openssh.com", NULL);
 }
 
+static void torture_algorithms_aes128_gcm_mac(void **state)
+{
+    struct torture_state *s = *state;
+
+    test_algorithm(s->ssh.session, NULL/*kex*/, "aes128-gcm@openssh.com", "hmac-sha1");
+}
+
+static void torture_algorithms_aes256_gcm_mac(void **state)
+{
+    struct torture_state *s = *state;
+
+    test_algorithm(s->ssh.session, NULL/*kex*/, "aes256-gcm@openssh.com", "hmac-sha1");
+}
+
 static void torture_algorithms_3des_cbc_hmac_sha1(void **state) {
     struct torture_state *s = *state;
 
@@ -547,6 +571,19 @@ static void torture_algorithms_chacha20_poly1305(void **state)
                    NULL, /*kex*/
                    "chacha20-poly1305@openssh.com",
                    NULL);
+}
+static void torture_algorithms_chacha20_poly1305_mac(void **state)
+{
+    struct torture_state *s = *state;
+
+    if (ssh_fips_mode()) {
+        skip();
+    }
+
+    test_algorithm(s->ssh.session,
+                   NULL, /*kex*/
+                   "chacha20-poly1305@openssh.com",
+                   "hmac-sha1"); /* different from the server */
 }
 #endif /* OPENSSH_CHACHA20_POLY1305_OPENSSH_COM */
 
@@ -951,10 +988,30 @@ int torture_run_tests(void) {
 #endif
     };
 
+    struct CMUnitTest tests_hmac[] = {
+        cmocka_unit_test_setup_teardown(torture_algorithms_aes128_gcm_mac,
+                                        session_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_algorithms_aes256_gcm_mac,
+                                        session_setup,
+                                        session_teardown),
+#ifdef OPENSSH_CHACHA20_POLY1305_OPENSSH_COM
+        cmocka_unit_test_setup_teardown(torture_algorithms_chacha20_poly1305_mac,
+                                        session_setup,
+                                        session_teardown),
+#endif /* OPENSSH_CHACHA20_POLY1305_OPENSSH_COM */
+    };
+
     ssh_init();
 
     torture_filter_tests(tests);
     rc = cmocka_run_group_tests(tests, sshd_setup, sshd_teardown);
+    if (rc != 0) {
+        return rc;
+    }
+
+    torture_filter_tests(tests);
+    rc = cmocka_run_group_tests(tests_hmac, sshd_setup_hmac, sshd_teardown);
 
     ssh_finalize();
 
