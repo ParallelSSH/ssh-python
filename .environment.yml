@@ -6,3 +6,4 @@ dependencies:
   - toolchain3
   - cmake
   - openssl
+  - gcc
