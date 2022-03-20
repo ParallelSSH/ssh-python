@@ -1,6 +1,24 @@
 Change Log
 =============
 
+0.10.0
+++++++
+
+Changes
+-------
+
+* Added missing options in ``ssh.options`` - #42, thank you @enkore
+
+Packaging
+----------
+
+* Updated embedded and manylinux libssh to ``0.9.6`` - thank you @enkore
+* Manylinux wheels are now smaller, disabled debug symbols - #43, thank you @enkore
+* Added manylinux-2014 wheels for AMD64 and ARM (AArch64), all supported Python versions
+* Added OSX 11.6, 11.5 and 11.4 wheels.
+* Removed OSX 10.x versions wheels.
+* Added Windows 3.10 wheel build
+
 0.9.0
 +++++
 
