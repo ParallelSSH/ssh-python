@@ -465,8 +465,8 @@ static ssh_buffer ssh_gssapi_build_mic(ssh_session session)
 
     rc = ssh_buffer_pack(mic_buffer,
                          "dPbsss",
-                         crypto->digest_len,
-                         (size_t)crypto->digest_len, crypto->session_id,
+                         crypto->session_id_len,
+                         crypto->session_id_len, crypto->session_id,
                          SSH2_MSG_USERAUTH_REQUEST,
                          session->gssapi->user,
                          "ssh-connection",

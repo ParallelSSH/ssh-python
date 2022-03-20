@@ -37,6 +37,7 @@ if (WITH_SFTP)
     endif()
     set(LIBSSH_CLIENT_TESTS
         ${LIBSSH_CLIENT_TESTS}
+        torture_sftp_init
         torture_sftp_ext
         torture_sftp_canonicalize_path
         torture_sftp_dir

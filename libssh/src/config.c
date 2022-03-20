@@ -425,6 +425,7 @@ ssh_config_parse_line(ssh_session session,
       opcode != SOC_HOST &&
       opcode != SOC_MATCH &&
       opcode != SOC_INCLUDE &&
+      opcode != SOC_IDENTITY &&
       opcode > SOC_UNSUPPORTED) { /* Ignore all unknown types here */
       /* Skip all the options that were already applied */
       if (seen[opcode] != 0) {

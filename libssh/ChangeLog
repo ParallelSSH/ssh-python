@@ -1,7 +1,23 @@
 ChangeLog
 ==========
 
-version 0.9.5 (released 2020-XX-XX)
+version 0.9.6 (released 2021-08-26)
+  * CVE-2021-3634: Fix possible heap-buffer overflow when rekeying with
+    different key exchange mechanism
+  * Fix several memory leaks on error paths
+  * Reset pending_call_state on disconnect
+  * Fix handshake bug with AEAD ciphers and no HMAC overlap
+  * Use OPENSSL_CRYPTO_LIBRARIES in CMake
+  * Ignore request success and failure message if they are not expected
+  * Support more identity files in configuration
+  * Avoid setting compiler flags directly in CMake
+  * Support build directories with special characters
+  * Include stdlib.h to avoid crash in Windows
+  * Fix sftp_new_channel constructs an invalid object
+  * Fix Ninja multiple rules error
+  * Several tests fixes
+
+version 0.9.5 (released 2020-09-10)
   * CVE-2020-16135: Avoid null pointer dereference in sftpserver (T232)
   * Improve handling of library initialization (T222)
   * Fix parsing of subsecond times in SFTP (T219)

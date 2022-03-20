@@ -209,7 +209,8 @@ static void torture_timeout_elapsed(void **state){
     struct ssh_timestamp ts;
     (void) state;
     ssh_timestamp_init(&ts);
-    usleep(50000);
+    usleep(30000);
+
     assert_true(ssh_timeout_elapsed(&ts,25));
     assert_false(ssh_timeout_elapsed(&ts,30000));
     assert_false(ssh_timeout_elapsed(&ts,75));
