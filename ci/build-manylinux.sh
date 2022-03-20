@@ -22,7 +22,7 @@ docker_files=("ci/docker/manylinux/Dockerfile" "ci/docker/manylinux/Dockerfile.2
 rm -rf local build ssh/libssh.* ssh/*.so
 python ci/appveyor/fix_version.py .
 
-if [[ `uname -m` == "aarch64" ]]; then
+if [[ $(uname -m) == "aarch64" ]]; then
     docker_tag=${docker_tag}:aarch64
     docker_files=("ci/docker/manylinux/Dockerfile.aarch64")
 fi
