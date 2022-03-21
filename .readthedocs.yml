@@ -1,11 +1,9 @@
 version: 2
-
 build:
-  os: "ubuntu-20.04"
-  tools:
-    python: "miniconda3-4.7"
-conda:
-  environment: .environment.yml
+  apt_packages:
+    - cmake
+    - openssl
+    - krb5
 python:
   install:
     - method: setuptools
