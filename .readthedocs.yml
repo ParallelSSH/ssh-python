@@ -5,6 +5,5 @@ build:
     - openssl
 python:
   install:
-    - requirements: doc/requirements.txt
-    - method: setuptools
+    - method: pip
       path: .

@@ -312,7 +312,7 @@ cdef class Session:
         return handle_error_codes(rc, self._session)
 
     def options_get(self, Option option):
-        """Get option value. This function can only be used for string optinos.
+        """Get option value. This function can only be used for string options.
         For numeric or other options use the individual functions.
         """
         cdef char *_value
