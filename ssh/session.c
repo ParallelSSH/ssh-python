@@ -5943,13 +5943,13 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_58options_set(struct __pyx_obj_
  *         return handle_error_codes(rc, self._session)
  * 
  *     def options_get(self, Option option):             # <<<<<<<<<<<<<<
- *         """Get option value. This function can only be used for string optinos.
+ *         """Get option value. This function can only be used for string options.
  *         For numeric or other options use the individual functions.
  */
 
 /* Python wrapper */
 static PyObject *__pyx_pw_3ssh_7session_7Session_61options_get(PyObject *__pyx_v_self, PyObject *__pyx_v_option); /*proto*/
-static char __pyx_doc_3ssh_7session_7Session_60options_get[] = "Session.options_get(self, Option option)\nGet option value. This function can only be used for string optinos.\n        For numeric or other options use the individual functions.\n        ";
+static char __pyx_doc_3ssh_7session_7Session_60options_get[] = "Session.options_get(self, Option option)\nGet option value. This function can only be used for string options.\n        For numeric or other options use the individual functions.\n        ";
 static PyObject *__pyx_pw_3ssh_7session_7Session_61options_get(PyObject *__pyx_v_self, PyObject *__pyx_v_option) {
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
@@ -6118,7 +6118,7 @@ static PyObject *__pyx_pf_3ssh_7session_7Session_60options_get(struct __pyx_obj_
  *         return handle_error_codes(rc, self._session)
  * 
  *     def options_get(self, Option option):             # <<<<<<<<<<<<<<
- *         """Get option value. This function can only be used for string optinos.
+ *         """Get option value. This function can only be used for string options.
  *         For numeric or other options use the individual functions.
  */
 

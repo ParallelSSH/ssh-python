@@ -20,13 +20,12 @@ else:
 
 _PYTHON_MAJOR_VERSION = int(platform.python_version_tuple()[0])
 ON_WINDOWS = platform.system() == 'Windows'
-ON_RTD = os.environ.get('READTHEDOCS') == 'True'
-SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0)) or \
-                ON_RTD or ON_WINDOWS
+SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0)) or ON_WINDOWS
 
 if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
     raise ImportError(
         "ssh-python requires Python 3 or above on Windows platforms.")
+
 
 # Only build libssh if SYSTEM_LIBSSH is not set and running a build
 if not SYSTEM_LIBSSH and (len(sys.argv) >= 2 and not (
@@ -35,6 +34,7 @@ if not SYSTEM_LIBSSH and (len(sys.argv) >= 2 and not (
             '--help-commands', 'egg_info', '--version', 'clean',
             'sdist', '--long-description')) and
                           __name__ == '__main__'):
+    sys.stdout.write("SYSTEM_LIBSSH is unset, starting embedded libssh build%s" % (os.linesep,))
     build_ssh()
 
 ext = 'pyx' if USING_CYTHON else 'c'
@@ -64,17 +64,20 @@ cython_args = {
 
 
 runtime_library_dirs = ["$ORIGIN/."] if not SYSTEM_LIBSSH else None
-_lib_dir = os.path.abspath("./local/lib") if not SYSTEM_LIBSSH else "/usr/local/lib"
-include_dirs = ["./local/include", "./libssh/include"] if (ON_WINDOWS or ON_RTD) or \
-               not SYSTEM_LIBSSH else ["/usr/local/include"]
+lib_dirs = [os.path.abspath("./local/lib")] if not SYSTEM_LIBSSH else ["/usr/local/lib"]
 
+include_dirs = ["./local/include", "./libssh/include"] \
+    if ON_WINDOWS or not SYSTEM_LIBSSH else ["/usr/local/include"]
+
+sys.stdout.write("Library dirs: %s, runtime dirs: %s, include: %s%s" %
+                 (lib_dirs, runtime_library_dirs, include_dirs, os.linesep))
 extensions = [
     Extension(
         sources[i].split('.')[0].replace(os.path.sep, '.'),
         sources=[sources[i]],
         include_dirs=include_dirs,
         libraries=_libs,
-        library_dirs=[_lib_dir],
+        library_dirs=lib_dirs,
         runtime_library_dirs=runtime_library_dirs,
         extra_compile_args=_comp_args,
         **cython_args
@@ -95,19 +98,7 @@ if USING_CYTHON:
     sys.stdout.write("Cython arguments: %s%s" % (cython_args, os.linesep))
 
 
-sys.stdout.write("Windows platform: %s, Python major version: %s.%s" % (ON_WINDOWS, _PYTHON_MAJOR_VERSION, os.sep))
-if ON_WINDOWS and _PYTHON_MAJOR_VERSION == 2:
-    # Python 2 on Windows builds are unsupported.
-    extensions = [
-        Extension(
-            'ssh',
-            sources=[os.sep.join(['ssh', '__init__.%s' % (ext,)])],
-            extra_compile_args=_comp_args,
-            **cython_args
-        )
-    ]
-    package_data = {}
-    sys.stdout.write("Windows Python 2 build - %s extensions: %s" % (len(extensions), os.sep))
+sys.stdout.write("Windows platform: %s, Python major version: %s.%s" % (ON_WINDOWS, _PYTHON_MAJOR_VERSION, os.linesep))
 
 setup(
     name='ssh-python',
@@ -117,7 +108,7 @@ setup(
     license='LGPLv2.1',
     author='Panos Kittenis',
     author_email='22e889d8@opayq.com',
-    description=('libssh C library bindings for Python.'),
+    description="libssh C library bindings for Python.",
     long_description=open('README.rst').read(),
     packages=find_packages(
         '.', exclude=('embedded_server', 'embedded_server.*',
@@ -133,12 +124,12 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: C',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Topic :: System :: Shells',
         'Topic :: System :: Networking',
         'Topic :: Software Development :: Libraries',
@@ -147,6 +138,7 @@ setup(
         'Operating System :: POSIX :: Linux',
         'Operating System :: POSIX :: BSD',
         'Operating System :: MacOS :: MacOS X',
+        'Operating System :: Microsoft :: Windows',
     ],
     ext_modules=extensions,
     package_data=package_data,
