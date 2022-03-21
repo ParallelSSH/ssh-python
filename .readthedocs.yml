@@ -3,7 +3,6 @@ build:
   apt_packages:
     - cmake
     - openssl
-    - krb5
 python:
   install:
     - method: setuptools
