@@ -20,18 +20,11 @@ else:
 
 _PYTHON_MAJOR_VERSION = int(platform.python_version_tuple()[0])
 ON_WINDOWS = platform.system() == 'Windows'
-ON_RTD = os.environ.get('READTHEDOCS') == 'True'
 SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0)) or ON_WINDOWS
 
 if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
     raise ImportError(
         "ssh-python requires Python 3 or above on Windows platforms.")
-
-
-if not SYSTEM_LIBSSH:
-    sys.stdout.write("SYSTEM_LIBSSH is unset, building embedded libssh%s" % (os.linesep,))
-else:
-    sys.stdout.write("SYSTEM_LIBSSH is set, not building embedded libssh%s" % (os.linesep,))
 
 
 # Only build libssh if SYSTEM_LIBSSH is not set and running a build
@@ -41,7 +34,7 @@ if not SYSTEM_LIBSSH and (len(sys.argv) >= 2 and not (
             '--help-commands', 'egg_info', '--version', 'clean',
             'sdist', '--long-description')) and
                           __name__ == '__main__'):
-    sys.stdout.write("Starting embedded libssh build%s" % (os.linesep,))
+    sys.stdout.write("SYSTEM_LIBSSH is unset, starting embedded libssh build%s" % (os.linesep,))
     build_ssh()
 
 ext = 'pyx' if USING_CYTHON else 'c'
@@ -72,10 +65,6 @@ cython_args = {
 
 runtime_library_dirs = ["$ORIGIN/."] if not SYSTEM_LIBSSH else None
 lib_dirs = [os.path.abspath("./local/lib")] if not SYSTEM_LIBSSH else ["/usr/local/lib"]
-if ON_RTD:
-    lib_path = "/home/docs/checkouts/readthedocs.org/user_builds/ssh-python/conda/rtd/lib"
-    lib_dirs.append(lib_path)
-    runtime_library_dirs.append(lib_path)
 
 include_dirs = ["./local/include", "./libssh/include"] \
     if ON_WINDOWS or not SYSTEM_LIBSSH else ["/usr/local/include"]
