@@ -220,7 +220,7 @@ cdef class Session:
         return rc
 
     def get_server_publickey(self):
-        cdef init rc
+        cdef int rc
         cdef c_ssh.ssh_key _key
         with nogil:
             _check_connected(self._session)
@@ -234,7 +234,6 @@ cdef class Session:
                 with gil:
                     return handle_error_codes(rc, self._session)
         return SSHKey.from_ptr(_key)
-            
 
     def get_version(self):
         cdef int rc
