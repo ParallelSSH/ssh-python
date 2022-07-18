@@ -207,6 +207,8 @@ cdef class Session:
         with nogil:
             _check_connected(self._session)
             _banner = c_ssh.ssh_get_issue_banner(self._session)
+        if _banner is NULL:
+            return
         banner = _banner
         return banner
 
