@@ -30,7 +30,7 @@ python ci/appveyor/fix_version.py .
 if [[ $(uname -m) == "aarch64" ]]; then
     docker_files=(
 #                  "ci/docker/manylinux/Dockerfile.aarch64"
-                  "ci/docker/manylinux/Dockerfile.aarch64_2_24"
+#                  "ci/docker/manylinux/Dockerfile.aarch64_2_24"
                   "ci/docker/manylinux/Dockerfile.aarch64_2_28"
                   )
 fi
