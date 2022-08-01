@@ -42,7 +42,7 @@ jobs:
           key: depsv3-{{ .Branch }}.{{ arch }}-PY<< parameters.python_ver >>
       - run:
           command: |
-            python setup.py build_ext --inplace
+            pip install .
             eval "$(ssh-agent -s)"
           name: Build
       - run:
