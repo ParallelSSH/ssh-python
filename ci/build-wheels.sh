@@ -15,7 +15,6 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-
 # Compile wheels
 rm -rf /io/build
 for PYBIN in $(ls -1d /opt/python/*/bin | grep -v cpython); do

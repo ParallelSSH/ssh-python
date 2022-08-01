@@ -47,7 +47,7 @@ _libs = ['ssh'] if not ON_WINDOWS else [
 ]
 
 # _comp_args = ["-ggdb"]
-_comp_args = ['-O3', '-g0', '-s'] if not ON_WINDOWS else None
+_comp_args = ['-Os', '-g0', '-s'] if not ON_WINDOWS else None
 cython_directives = {
     'embedsignature': True,
     'boundscheck': False,
