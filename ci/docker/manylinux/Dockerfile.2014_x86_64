@@ -27,7 +27,7 @@ RUN cd krb5-${KRB}.tar.xz/krb5-${KRB}/src && \
 # Libssh
 RUN mkdir -p build_libssh && cd build_libssh && \
     cmake3 ../libssh.tar.xz/libssh-${LIBSSH} -DCMAKE_BUILD_TYPE=Release \
-          -DWITH_GSSAPI=ON -DWITH_SERVER=OFF -DWITH_EXAMPLES=OFF && \
+          -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF && \
     make -j6 install/strip
 
 RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-${KRB}.tar.xz
