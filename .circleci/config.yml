@@ -160,7 +160,7 @@ workflows:
 #              only: /.*/
 #            branches:
 #              ignore: /.*/
-      - manylinux2014-aarch64: *manylinux-wf
+      - manylinux-aarch64: *manylinux-wf
       - osx:
           matrix:
             parameters:
