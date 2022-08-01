@@ -42,13 +42,14 @@ jobs:
           key: depsv3-{{ .Branch }}.{{ arch }}-PY<< parameters.python_ver >>
       - run:
           command: |
-            pip install .
+            pip install -e .
             eval "$(ssh-agent -s)"
           name: Build
       - run:
           command: |
             ls -lhtr ssh/
             pwd
+            ldd -r ssh/session*.so
             pytest tests
             flake8 ssh
             python setup.py sdist
