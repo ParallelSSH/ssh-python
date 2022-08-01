@@ -17,14 +17,15 @@
 
 
 docker_tag="parallelssh/ssh-manylinux"
-docker_files=("ci/docker/manylinux/Dockerfile" "ci/docker/manylinux/Dockerfile.2014_x86_64")
+docker_files=("ci/docker/manylinux/Dockerfile" "ci/docker/manylinux/Dockerfile.2014_x86_64"
+              "Dockerfile.manylinux_2_24_x86_64" "Dockerfile.manylinux_2_28_x86_64")
 
 rm -rf local build ssh/libssh.* ssh/*.so
 python ci/appveyor/fix_version.py .
 
 if [[ $(uname -m) == "aarch64" ]]; then
     docker_tag=${docker_tag}:aarch64
-    docker_files=("ci/docker/manylinux/Dockerfile.aarch64")
+    docker_files=("ci/docker/manylinux/Dockerfile.aarch64" "Dockerfile.aarch64_2_24" "Dockerfile.aarch64_2_28")
 fi
 
 for docker_file in "${docker_files[@]}"; do
