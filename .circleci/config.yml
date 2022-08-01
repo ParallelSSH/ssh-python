@@ -48,7 +48,6 @@ jobs:
       - run:
           command: |
             ls -lhtr ssh/
-            ldd ssh/session*.so
             pwd
             pytest tests
             flake8 ssh
