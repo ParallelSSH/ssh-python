@@ -20,8 +20,8 @@ docker_repo="parallelssh/ssh-manylinux"
 docker_files=(
 #              "ci/docker/manylinux/Dockerfile"
 #              "ci/docker/manylinux/Dockerfile.2014_x86_64"
-              "ci/docker/Dockerfile.manylinux_2_24_x86_64"
-              "ci/docker/Dockerfile.manylinux_2_28_x86_64"
+              "ci/docker/manylinux/Dockerfile.manylinux_2_24_x86_64"
+              "ci/docker/manylinux/Dockerfile.manylinux_2_28_x86_64"
               )
 
 rm -rf local build ssh/libssh.* ssh/*.so
@@ -30,8 +30,8 @@ python ci/appveyor/fix_version.py .
 if [[ $(uname -m) == "aarch64" ]]; then
     docker_files=(
 #                  "ci/docker/manylinux/Dockerfile.aarch64"
-                  "ci/docker/Dockerfile.aarch64_2_24"
-                  "ci/docker/Dockerfile.aarch64_2_28"
+                  "ci/docker/manylinux/Dockerfile.aarch64_2_24"
+                  "ci/docker/manylinux/Dockerfile.aarch64_2_28"
                   )
 fi
 
@@ -46,9 +46,9 @@ for docker_file in "${docker_files[@]}"; do
         docker_tag="${docker_repo}:2_28_x86_64"
     elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.aarch64" ]]; then
         docker_tag="${docker_repo}:2014_aarch64"
-    elif [[ ${docker_file} == "ci/docker/Dockerfile.aarch64_2_24" ]]; then
+    elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.aarch64_2_24" ]]; then
         docker_tag="${docker_repo}:2_24_aarch64"
-    elif [[ ${docker_file} == "ci/docker/Dockerfile.aarch64_2_28" ]]; then
+    elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.aarch64_2_28" ]]; then
         docker_tag="${docker_repo}:2_28_aarch64"
     fi
     echo "Docker tag is ${docker_tag}"
