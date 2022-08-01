@@ -43,7 +43,6 @@ def build_ssh():
     os.chdir('src')
     check_call("""cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../local \
     -DWITH_GSSAPI=ON \
-    -DWITH_SERVER=OFF \
     -DWITH_EXAMPLES=OFF \
     ../libssh""",
                shell=True, env=os.environ)
