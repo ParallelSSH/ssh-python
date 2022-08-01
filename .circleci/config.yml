@@ -62,7 +62,6 @@ jobs:
     parameters:
       xcode_ver:
         type: string
-        default: "11.6.0"
     macos:
       xcode: << parameters.xcode_ver >>
     environment:
@@ -133,7 +132,7 @@ jobs:
           command: |
             twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD dist/* wheelhouse/*
 
-  manylinux2014-aarch64:
+  manylinux-aarch64:
     machine:
       image: ubuntu-2004:202101-01
     resource_class: arm.medium
