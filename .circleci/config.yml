@@ -142,24 +142,24 @@ workflows:
   version: 2
   main:
     jobs:
-#      - python_test:
-#          matrix:
-#            parameters:
-#              python_ver:
-#                - "3.6"
-#                - "3.8"
-#                - "3.9"
-#                - "3.10"
-#          filters:
-#            tags:
-#              ignore: /.*/
+      - python_test:
+          matrix:
+            parameters:
+              python_ver:
+                - "3.6"
+                - "3.8"
+                - "3.9"
+                - "3.10"
+          filters:
+            tags:
+              ignore: /.*/
       - manylinux-x86_64: &manylinux-wf
           context: Docker
-#          filters:
-#            tags:
-#              only: /.*/
-#            branches:
-#              ignore: /.*/
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
       - manylinux-aarch64: *manylinux-wf
       - osx:
           matrix:
