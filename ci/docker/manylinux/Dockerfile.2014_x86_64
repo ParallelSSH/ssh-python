@@ -1,6 +1,6 @@
 FROM quay.io/pypa/manylinux2014_x86_64
 
-ENV OPENSSL openssl-1.1.1g
+ENV OPENSSL openssl-1.1.1q
 ENV LIBSSH 0.9.6
 ENV KRB 1.18.4
 ENV SYSTEM_LIBSSH 1

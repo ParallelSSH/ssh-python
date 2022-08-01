@@ -41,7 +41,11 @@ def build_ssh():
         os.symlink('lib', 'local/lib64')
 
     os.chdir('src')
-    check_call('cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../local -DWITH_GSSAPI=ON ../libssh',
+    check_call("""cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=../local \
+    -DWITH_GSSAPI=ON \
+    -DWITH_SERVER=OFF \
+    -DWITH_EXAMPLES=OFF \
+    ../libssh""",
                shell=True, env=os.environ)
     check_call(['make', '-j%s' % (cpu_count(),), 'all', 'install'])
     os.chdir('..')
