@@ -3,5 +3,5 @@ flake8
 jinja2
 sphinx
 sphinx_rtd_theme
-pytest<6.1.0
+pytest
 pytest-rerunfailures

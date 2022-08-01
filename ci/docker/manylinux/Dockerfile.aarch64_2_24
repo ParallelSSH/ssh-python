@@ -1,12 +1,13 @@
-FROM quay.io/pypa/manylinux2014_x86_64
+FROM quay.io/pypa/manylinux_2_24_aarch64
 
 ENV OPENSSL openssl-1.1.1q
 ENV LIBSSH 0.9.6
 ENV KRB 1.18.4
 ENV SYSTEM_LIBSSH 1
 ENV CFLAGS "-g0 -s"
+ENV OPENSSL_ROOT_DIR /usr/lib
 
-RUN yum install zlib-devel cmake3 -y
+RUN apt-get update -y && apt-get install zlib1g-dev cmake -y
 
 ADD libssh-${LIBSSH}.tar.xz libssh.tar.xz
 ADD https://www.openssl.org/source/${OPENSSL}.tar.gz ${OPENSSL}.tar.gz
@@ -26,7 +27,7 @@ RUN cd krb5-${KRB}.tar.xz/krb5-${KRB}/src && \
 
 # Libssh
 RUN mkdir -p build_libssh && cd build_libssh && \
-    cmake3 ../libssh.tar.xz/libssh-${LIBSSH} -DCMAKE_BUILD_TYPE=Release \
+    cmake ../libssh.tar.xz/libssh-${LIBSSH} -DCMAKE_BUILD_TYPE=Release \
           -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF && \
     make -j6 install/strip
 

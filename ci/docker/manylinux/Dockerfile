@@ -1,6 +1,6 @@
 FROM quay.io/pypa/manylinux2010_x86_64
 
-ENV OPENSSL openssl-1.1.1g
+ENV OPENSSL openssl-1.1.1q
 ENV LIBSSH 0.9.6
 ENV KRB 1.18.4
 ENV SYSTEM_LIBSSH 1
@@ -27,7 +27,7 @@ RUN cd krb5-${KRB}.tar.xz/krb5-${KRB}/src && \
 # Libssh
 RUN mkdir -p build_libssh && cd build_libssh && \
     cmake3 ../libssh.tar.xz/libssh-${LIBSSH} -DCMAKE_BUILD_TYPE=Release \
-          -DWITH_GSS_API=ON && \
+          -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF && \
     make -j6 install/strip
 
 RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-${KRB}.tar.xz
