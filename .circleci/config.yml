@@ -23,7 +23,7 @@ jobs:
     parameters:
       python_ver:
         type: string
-        default: "3.6"
+        default: "3.9"
     docker:
       - image: circleci/python:<< parameters.python_ver >>
     steps:
@@ -42,13 +42,14 @@ jobs:
           key: depsv3-{{ .Branch }}.{{ arch }}-PY<< parameters.python_ver >>
       - run:
           command: |
-            python setup.py build_ext --inplace
+            pip install -e .
             eval "$(ssh-agent -s)"
           name: Build
       - run:
           command: |
             ls -lhtr ssh/
             pwd
+            ldd -r ssh/session*.so
             pytest tests
             flake8 ssh
             python setup.py sdist
@@ -62,7 +63,6 @@ jobs:
     parameters:
       xcode_ver:
         type: string
-        default: "11.6.0"
     macos:
       xcode: << parameters.xcode_ver >>
     environment:
@@ -89,7 +89,7 @@ jobs:
 
   manylinux-x86_64:
     machine:
-      image: ubuntu-1604:201903-01
+      image: ubuntu-2004:202201-02
     steps: &manylinux-steps
       - checkout
       - run:
@@ -109,10 +109,10 @@ jobs:
           name: Deps
           command: |
             sudo apt-get install python3-pip
-            pyenv global 3.7.0 || pyenv global 3.9.1
             pip install -U pip
             pip install twine
             which twine
+            which python3
       - python/save-cache:
           key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
           dependency-file: requirements_dev.txt
@@ -124,18 +124,23 @@ jobs:
             fi
             ./ci/build-manylinux.sh
       - run:
+          name: sdist
+          command: |
+            sudo chown circleci -R *
+            python3 setup.py sdist
+      - run:
           name: Upload Wheels
           command: |
             twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD dist/* wheelhouse/*
 
-  manylinux2014-aarch64:
+  manylinux-aarch64:
     machine:
       image: ubuntu-2004:202101-01
     resource_class: arm.medium
     steps: *manylinux-steps
 
 workflows:
-  version: 2.1
+  version: 2
   main:
     jobs:
       - python_test:
@@ -143,8 +148,9 @@ workflows:
             parameters:
               python_ver:
                 - "3.6"
-                - "3.7"
                 - "3.8"
+                - "3.9"
+                - "3.10"
           filters:
             tags:
               ignore: /.*/
@@ -155,14 +161,13 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
-      - manylinux2014-aarch64: *manylinux-wf
+      - manylinux-aarch64: *manylinux-wf
       - osx:
           matrix:
             parameters:
               xcode_ver:
+                - "14.0.0"
                 - "13.1.0"
-                - "13.0.0"
-                - "12.5.1"
           context: Docker
           filters:
             tags:

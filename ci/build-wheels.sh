@@ -15,9 +15,10 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-
 # Compile wheels
 rm -rf /io/build
+# For testing
+#for PYBIN in $(ls -1d /opt/python/cp36-cp36m/bin | grep -v cpython); do
 for PYBIN in $(ls -1d /opt/python/*/bin | grep -v cpython); do
     "${PYBIN}/pip" wheel /io/ -w wheelhouse/
 done
@@ -28,6 +29,7 @@ for whl in wheelhouse/*.whl; do
 done
 
 # Install packages and test
+#for PYBIN in $(ls -1d /opt/python/cp36-cp36m/bin | grep -v cpython); do
 for PYBIN in $(ls -1d /opt/python/*/bin | grep -v cpython); do
     "${PYBIN}/pip" install ssh-python --no-index -f /io/wheelhouse
     (cd "$HOME"; "${PYBIN}/python" -c 'from ssh.session import Session; Session()')
