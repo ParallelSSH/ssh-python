@@ -202,3 +202,7 @@ class SessionTest(SSHTestCase):
         self.assertEqual(session.set_socket(sock), 0)
         self.assertEqual(session.options_set(options.TIMEOUT, "1000"), 0)
         self.assertEqual(session.options_set(options.TIMEOUT_USEC, "1000"), 0)
+
+    def test_get_server_publickey(self):
+        self.session.connect()
+        self.assertIsInstance(self.session.get_server_publickey(), SSHKey)
