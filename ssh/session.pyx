@@ -207,6 +207,8 @@ cdef class Session:
         with nogil:
             _check_connected(self._session)
             _banner = c_ssh.ssh_get_issue_banner(self._session)
+        if _banner is NULL:
+            return
         banner = _banner
         return banner
 
@@ -218,7 +220,20 @@ cdef class Session:
         return rc
 
     def get_server_publickey(self):
-        raise NotImplementedError
+        cdef int rc
+        cdef c_ssh.ssh_key _key
+        with nogil:
+            _check_connected(self._session)
+            _key = c_ssh.ssh_key_new()
+            if _key is NULL:
+                with gil:
+                    raise MemoryError
+            rc = c_ssh.ssh_get_server_publickey(self._session, &_key)
+            if rc != c_ssh.SSH_OK:
+                c_ssh.ssh_key_free(_key)
+                with gil:
+                    return handle_error_codes(rc, self._session)
+        return SSHKey.from_ptr(_key)
 
     def get_version(self):
         cdef int rc
