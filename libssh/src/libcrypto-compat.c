@@ -12,19 +12,6 @@
 #include <string.h>
 #include "libcrypto-compat.h"
 
-#ifndef OPENSSL_NO_ENGINE
-#include <openssl/engine.h>
-#endif
-
-static void *OPENSSL_zalloc(size_t num)
-{
-    void *ret = OPENSSL_malloc(num);
-
-    if (ret != NULL)
-        memset(ret, 0, num);
-    return ret;
-}
-
 int RSA_set0_key(RSA *r, BIGNUM *n, BIGNUM *e, BIGNUM *d)
 {
     /* If the fields n and e in r are NULL, the corresponding input
@@ -236,111 +223,18 @@ int ECDSA_SIG_set0(ECDSA_SIG *sig, BIGNUM *r, BIGNUM *s)
 
 EVP_MD_CTX *EVP_MD_CTX_new(void)
 {
-    return OPENSSL_zalloc(sizeof(EVP_MD_CTX));
-}
-
-static void OPENSSL_clear_free(void *str, size_t num)
-{
-    if (str == NULL)
-        return;
-    if (num)
-        OPENSSL_cleanse(str, num);
-    OPENSSL_free(str);
-}
-
-/* This call frees resources associated with the context */
-int EVP_MD_CTX_reset(EVP_MD_CTX *ctx)
-{
-    if (ctx == NULL)
-        return 1;
-
-    /*
-     * Don't assume ctx->md_data was cleaned in EVP_Digest_Final, because
-     * sometimes only copies of the context are ever finalised.
-     */
-    if (ctx->digest && ctx->digest->cleanup
-        && !EVP_MD_CTX_test_flags(ctx, EVP_MD_CTX_FLAG_CLEANED))
-        ctx->digest->cleanup(ctx);
-    if (ctx->digest && ctx->digest->ctx_size && ctx->md_data
-        && !EVP_MD_CTX_test_flags(ctx, EVP_MD_CTX_FLAG_REUSE)) {
-        OPENSSL_clear_free(ctx->md_data, ctx->digest->ctx_size);
-    }
-    EVP_PKEY_CTX_free(ctx->pctx);
-#ifndef OPENSSL_NO_ENGINE
-    ENGINE_finish(ctx->engine);
-#endif
-    OPENSSL_cleanse(ctx, sizeof(*ctx));
-
-    return 1;
-}
-
-void EVP_MD_CTX_free(EVP_MD_CTX *ctx)
-{
-    EVP_MD_CTX_reset(ctx);
-    OPENSSL_free(ctx);
-}
-
-int EVP_CIPHER_CTX_reset(EVP_CIPHER_CTX *ctx)
-{
-    EVP_CIPHER_CTX_init(ctx);
-    return 1;
-}
-
-HMAC_CTX *HMAC_CTX_new(void)
-{
-    HMAC_CTX *ctx = OPENSSL_zalloc(sizeof(HMAC_CTX));
-
+    EVP_MD_CTX *ctx = OPENSSL_malloc(sizeof(EVP_MD_CTX));
     if (ctx != NULL) {
-        if (!HMAC_CTX_reset(ctx)) {
-            HMAC_CTX_free(ctx);
-            return NULL;
-        }
+        EVP_MD_CTX_init(ctx);
     }
     return ctx;
 }
 
-static void hmac_ctx_cleanup(HMAC_CTX *ctx)
+void EVP_MD_CTX_free(EVP_MD_CTX *ctx)
 {
-    EVP_MD_CTX_reset(&ctx->i_ctx);
-    EVP_MD_CTX_reset(&ctx->o_ctx);
-    EVP_MD_CTX_reset(&ctx->md_ctx);
-    ctx->md = NULL;
-    ctx->key_length = 0;
-    OPENSSL_cleanse(ctx->key, sizeof(ctx->key));
-}
-
-void HMAC_CTX_free(HMAC_CTX *ctx)
-{
-    if (ctx != NULL) {
-        hmac_ctx_cleanup(ctx);
-#if OPENSSL_VERSION_NUMBER > 0x10100000L
-        EVP_MD_CTX_free(&ctx->i_ctx);
-        EVP_MD_CTX_free(&ctx->o_ctx);
-        EVP_MD_CTX_free(&ctx->md_ctx);
-#endif
-        OPENSSL_free(ctx);
-    }
-}
-
-int HMAC_CTX_reset(HMAC_CTX *ctx)
-{
-    HMAC_CTX_init(ctx);
-    return 1;
-}
-
-#ifndef HAVE_OPENSSL_EVP_CIPHER_CTX_NEW
-EVP_CIPHER_CTX *EVP_CIPHER_CTX_new(void)
-{
-    return OPENSSL_zalloc(sizeof(EVP_CIPHER_CTX));
-}
-
-void EVP_CIPHER_CTX_free(EVP_CIPHER_CTX *ctx)
-{
-    /* EVP_CIPHER_CTX_reset(ctx); alias */
-    EVP_CIPHER_CTX_init(ctx);
+    EVP_MD_CTX_cleanup(ctx);
     OPENSSL_free(ctx);
 }
-#endif
 
 void DH_get0_pqg(const DH *dh,
                  const BIGNUM **p, const BIGNUM **q, const BIGNUM **g)

@@ -56,7 +56,7 @@ typedef void (*ssh_callback_int) (int code, void *user);
  * @returns number of bytes processed by the callee. The remaining bytes will
  * be sent in the next callback message, when more data is available.
  */
-typedef int (*ssh_callback_data) (const void *data, size_t len, void *user);
+typedef size_t (*ssh_callback_data) (const void *data, size_t len, void *user);
 
 typedef void (*ssh_callback_int_int) (int code, int errno_code, void *user);
 
@@ -221,8 +221,8 @@ typedef int (*ssh_auth_gssapi_mic_callback) (ssh_session session, const char *us
  * @param user User that wants to authenticate
  * @param pubkey public key used for authentication
  * @param signature_state SSH_PUBLICKEY_STATE_NONE if the key is not signed (simple public key probe),
- * 							SSH_PUBLICKEY_STATE_VALID if the signature is valid. Others values should be
- * 							replied with a SSH_AUTH_DENIED.
+ *							SSH_PUBLICKEY_STATE_VALID if the signature is valid. Others values should be
+ *							replied with a SSH_AUTH_DENIED.
  * @param userdata Userdata to be passed to the callback function.
  * @returns SSH_AUTH_SUCCESS Authentication is accepted.
  * @returns SSH_AUTH_PARTIAL Partial authentication, more authentication means are needed.
@@ -272,7 +272,7 @@ typedef ssh_string (*ssh_gssapi_select_oid_callback) (ssh_session session, const
  * @param session current session handler
  * @param[in] input_token input token provided by client
  * @param[out] output_token output of the gssapi accept_sec_context method,
- * 				NULL after completion.
+ *				NULL after completion.
  * @returns SSH_OK if the token was generated correctly or accept_sec_context
  * returned GSS_S_COMPLETE
  * @returns SSH_ERROR in case of error
@@ -353,6 +353,9 @@ typedef struct ssh_server_callbacks_struct *ssh_server_callbacks;
  *
  * This functions sets the callback structure to use your own callback
  * functions for user authentication, new channels and requests.
+ *
+ * Note, that the structure is not copied to the session structure so it needs
+ * to be valid for the whole session lifetime.
  *
  * @code
  * struct ssh_server_callbacks_struct cb = {
@@ -547,6 +550,9 @@ typedef struct ssh_packet_callbacks_struct *ssh_packet_callbacks;
  *
  * This functions sets the callback structure to use your own callback
  * functions for auth, logging and status.
+ *
+ * Note, that the callback structure is not copied into the session so it needs
+ * to be valid for the whole session lifetime.
  *
  * @code
  * struct ssh_callbacks_struct cb = {
@@ -771,7 +777,7 @@ typedef int (*ssh_channel_subsystem_request_callback) (ssh_session session,
  */
 typedef int (*ssh_channel_write_wontblock_callback) (ssh_session session,
                                                      ssh_channel channel,
-                                                     size_t bytes,
+                                                     uint32_t bytes,
                                                      void *userdata);
 
 struct ssh_channel_callbacks_struct {
@@ -849,7 +855,11 @@ typedef struct ssh_channel_callbacks_struct *ssh_channel_callbacks;
  * @brief Set the channel callback functions.
  *
  * This functions sets the callback structure to use your own callback
- * functions for channel data and exceptions
+ * functions for channel data and exceptions.
+ *
+ * Note, that the structure is not copied to the channel structure so it needs
+ * to be valid as for the whole life of the channel or until it is removed with
+ * ssh_remove_channel_callbacks().
  *
  * @code
  * struct ssh_channel_callbacks_struct cb = {

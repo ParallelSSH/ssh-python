@@ -34,6 +34,11 @@ clients must be made or how a client should react.
 #include <fcntl.h>
 
 #include "examples_common.h"
+
+#ifndef BUF_SIZE
+#define BUF_SIZE 4096
+#endif
+
 char *host;
 const char *desthost="localhost";
 const char *port="22";
@@ -77,7 +82,7 @@ static int opts(int argc, char **argv){
 static void select_loop(ssh_session session,ssh_channel channel){
 	fd_set fds;
 	struct timeval timeout;
-	char buffer[4096];
+	char buffer[BUF_SIZE];
 	/* channels will be set to the channels to poll.
 	 * outchannels will contain the result of the poll
 	 */

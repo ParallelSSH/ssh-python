@@ -32,6 +32,8 @@
 #define SSHD_DEFAULT_ADDRESS "127.0.0.1"
 #define SSHD_DEFAULT_PCAP_FILE "debug.server.pcap"
 
+#define SSHD_BANNER_MESSAGE "Test Banner Message\nlibssh-send-banner\n"
+
 #ifndef KEYS_FOLDER
 #ifdef _WIN32
 #define KEYS_FOLDER

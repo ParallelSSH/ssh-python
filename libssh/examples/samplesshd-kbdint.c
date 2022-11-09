@@ -25,6 +25,10 @@ clients must be made or how a client should react.
 #include <stdio.h>
 #include <stdbool.h>
 
+#ifndef BUF_SIZE
+#define BUF_SIZE 2048
+#endif
+
 #define SSHD_USER "libssh"
 #define SSHD_PASSWORD "libssh"
 
@@ -293,7 +297,7 @@ int main(int argc, char **argv){
     ssh_bind sshbind;
     ssh_message message;
     ssh_channel chan=0;
-    char buf[2048];
+    char buf[BUF_SIZE];
     int auth=0;
     int shell=0;
     int i;
@@ -399,7 +403,7 @@ int main(int argc, char **argv){
 
     printf("it works !\n");
     do{
-        i=ssh_channel_read(chan,buf, 2048, 0);
+        i=ssh_channel_read(chan,buf, sizeof(buf), 0);
         if(i>0) {
             if(*buf == '' || *buf == '')
                     break;

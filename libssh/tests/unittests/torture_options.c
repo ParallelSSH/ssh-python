@@ -6,6 +6,7 @@
 #define _POSIX_PTHREAD_SEMANTICS
 # include <pwd.h>
 #endif
+#include <sys/stat.h>
 
 #include "torture.h"
 #include "torture_key.h"
@@ -65,6 +66,13 @@ static void torture_options_set_host(void **state) {
     assert_string_equal(session->opts.host, "meditation");
     assert_non_null(session->opts.username);
     assert_string_equal(session->opts.username, "guru");
+
+    rc = ssh_options_set(session, SSH_OPTIONS_HOST, "at@login@hostname");
+    assert_true(rc == 0);
+    assert_non_null(session->opts.host);
+    assert_string_equal(session->opts.host, "hostname");
+    assert_non_null(session->opts.username);
+    assert_string_equal(session->opts.username, "at@login");
 }
 
 static void torture_options_set_ciphers(void **state) {
@@ -691,11 +699,11 @@ static void torture_options_config_match(void **state)
 
     session->opts.port = 0;
 
-    /* The Match exec keyword is ignored */
+    /* The Match exec keyword */
     torture_reset_config(session);
     config = fopen("test_config", "w");
     assert_non_null(config);
-    fputs("Match exec /bin/true\n"
+    fputs("Match exec true\n"
           "\tPort 33\n"
           "Match all\n"
           "\tPort 34\n",
@@ -704,24 +712,12 @@ static void torture_options_config_match(void **state)
 
     rv = ssh_options_parse_config(session, "test_config");
     assert_ssh_return_code(session, rv);
+#ifdef _WIN32
+    /* The match exec is not supported on windows at this moment */
     assert_int_equal(session->opts.port, 34);
-
-    session->opts.port = 0;
-
-    /* The Match exec keyword can accept more arguments */
-    torture_reset_config(session);
-    config = fopen("test_config", "w");
-    assert_non_null(config);
-    fputs("Match exec /bin/true 1 \n"
-          "\tPort 33\n"
-          "Match all\n"
-          "\tPort 34\n",
-          config);
-    fclose(config);
-
-    rv = ssh_options_parse_config(session, "test_config");
-    assert_ssh_return_code(session, rv);
-    assert_int_equal(session->opts.port, 34);
+#else
+    assert_int_equal(session->opts.port, 33);
+#endif
 
     session->opts.port = 0;
 
@@ -729,7 +725,42 @@ static void torture_options_config_match(void **state)
     torture_reset_config(session);
     config = fopen("test_config", "w");
     assert_non_null(config);
-    fputs("Match exec \"/bin/true 1\"\n"
+    fputs("Match exec \"true 1\"\n"
+          "\tPort 33\n"
+          "Match all\n"
+          "\tPort 34\n",
+          config);
+    fclose(config);
+
+    rv = ssh_options_parse_config(session, "test_config");
+    assert_ssh_return_code(session, rv);
+#ifdef _WIN32
+    /* The match exec is not supported on windows at this moment */
+    assert_int_equal(session->opts.port, 34);
+#else
+    assert_int_equal(session->opts.port, 33);
+#endif
+
+    session->opts.port = 0;
+
+    unlink("test_config");
+}
+
+static void torture_options_config_match_multi(void **state)
+{
+    ssh_session session = *state;
+    FILE *config = NULL;
+    struct stat sb;
+    int rv;
+
+    /* Required for options_parse_config() */
+    ssh_options_set(session, SSH_OPTIONS_HOST, "testhost1");
+
+    /* Exec is not executed when it can not be matched */
+    torture_reset_config(session);
+    config = fopen("test_config", "w");
+    assert_non_null(config);
+    fputs("Match host wronghost exec \"touch test_config_wrong\"\n"
           "\tPort 33\n"
           "Match all\n"
           "\tPort 34\n",
@@ -739,8 +770,44 @@ static void torture_options_config_match(void **state)
     rv = ssh_options_parse_config(session, "test_config");
     assert_ssh_return_code(session, rv);
     assert_int_equal(session->opts.port, 34);
+    assert_int_equal(stat("test_config_wrong", &sb), -1);
 
     session->opts.port = 0;
+
+    /* After matching exec, other conditions can be used */
+    torture_reset_config(session);
+    config = fopen("test_config", "w");
+    assert_non_null(config);
+    fputs("Match exec true host testhost1\n"
+          "\tPort 33\n"
+          "Match all\n"
+          "\tPort 34\n",
+          config);
+    fclose(config);
+
+    rv = ssh_options_parse_config(session, "test_config");
+    assert_ssh_return_code(session, rv);
+#ifdef _WIN32
+    /* The match exec is not supported on windows at this moment */
+    assert_int_equal(session->opts.port, 34);
+#else
+    assert_int_equal(session->opts.port, 33);
+#endif
+
+    /* After matching exec, other conditions can be used */
+    torture_reset_config(session);
+    config = fopen("test_config", "w");
+    assert_non_null(config);
+    fputs("Match exec true host otherhost\n"
+          "\tPort 33\n"
+          "Match all\n"
+          "\tPort 34\n",
+          config);
+    fclose(config);
+
+    rv = ssh_options_parse_config(session, "test_config");
+    assert_ssh_return_code(session, rv);
+    assert_int_equal(session->opts.port, 34);
 
     unlink("test_config");
 }
@@ -777,7 +844,7 @@ static void torture_options_copy(void **state)
           "MACs hmac-sha2-256\n"
           "HostKeyAlgorithms ssh-ed25519,ecdsa-sha2-nistp521\n"
           "Compression yes\n"
-          "PubkeyAcceptedTypes ssh-ed25519,ecdsa-sha2-nistp521\n"
+          "PubkeyAcceptedAlgorithms ssh-ed25519,ecdsa-sha2-nistp521\n"
           "ProxyCommand nc 127.0.0.10 22\n"
           /* ops.custombanner */
           "ConnectTimeout 42\n"
@@ -851,6 +918,173 @@ static void torture_options_copy(void **state)
                         sizeof(session->opts.options_seen));
 
     ssh_free(new);
+}
+
+#define EXECUTABLE_NAME "test-exec"
+static void torture_options_getopt(void **state)
+{
+    ssh_session session = *state;
+    int rc;
+    int previous_level, new_level;
+    const char *argv[] = {EXECUTABLE_NAME, "-l", "username", "-p", "222",
+                    "-vv", "-v", "-r", "-c", "aes128-ctr",
+                    "-i", "id_rsa", "-C", "-2", "-1", NULL};
+    int argc = sizeof(argv)/sizeof(char *) - 1;
+    const char *argv_invalid[] = {EXECUTABLE_NAME, "-r", "-d", NULL};
+
+    previous_level = ssh_get_log_level();
+
+    /* Test with all the supported options */
+    rc = ssh_options_getopt(session, &argc, (char **)argv);
+#ifdef _MSC_VER
+    /* Not supported in windows */
+    assert_ssh_return_code_equal(session, rc, -1);
+#else
+    assert_ssh_return_code(session, rc);
+
+    /* Restore the log level to previous value first */
+    new_level = ssh_get_log_level();
+    assert_int_equal(new_level, 3); /* 2 + 1 -v's */
+    rc = ssh_set_log_level(previous_level);
+    assert_int_equal(rc, SSH_OK);
+
+    assert_ssh_return_code(session, rc);
+    assert_string_equal(session->opts.username, "username");
+    assert_int_equal(session->opts.port, 222);
+    /* The -r (usersa) is noop */
+    assert_string_equal(session->opts.wanted_methods[SSH_CRYPT_C_S],
+                        "aes128-ctr");
+    assert_string_equal(session->opts.wanted_methods[SSH_CRYPT_S_C],
+                        "aes128-ctr");
+    assert_string_equal(session->opts.identity->root->data, "id_rsa");
+#ifdef WITH_ZLIB
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_C_S],
+                        "zlib@openssh.com,zlib,none");
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_S_C],
+                        "zlib@openssh.com,zlib,none");
+#else
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_C_S],
+                        "none");
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_S_C],
+                        "none");
+#endif
+    /* -1 and -2 are noop */
+
+
+    /* It should ignore unknown arguments */
+    argv[1] = "-F";
+    argv[2] = "config_file";
+    argv[3] = NULL;
+    argc = 3;
+    rc = ssh_options_getopt(session, &argc, (char **)argv);
+    assert_ssh_return_code(session, rc);
+    assert_int_equal(argc, 3);
+    assert_string_equal(argv[0], EXECUTABLE_NAME);
+    assert_string_equal(argv[1], "-F");
+    assert_string_equal(argv[2], "config_file");
+
+
+    /* It should not mess with unknown arguments order */
+    argv[1] = "-F";
+    argv[2] = "config_file";
+    argv[3] = "-M";
+    argv[4] = "hmac-sha1";
+    argv[5] = "-X";
+    argv[6] = NULL;
+    argc = 6;
+    rc = ssh_options_getopt(session, &argc, (char **)argv);
+    assert_ssh_return_code(session, rc);
+    assert_int_equal(argc, 6);
+    assert_string_equal(argv[0], EXECUTABLE_NAME);
+    assert_string_equal(argv[1], "-F");
+    assert_string_equal(argv[2], "config_file");
+    assert_string_equal(argv[3], "-M");
+    assert_string_equal(argv[4], "hmac-sha1");
+    assert_string_equal(argv[5], "-X");
+
+
+    /* Trailing arguments should be passed as they are */
+    argv[1] = "-F";
+    argv[2] = "config_file";
+    argv[3] = "-M";
+    argv[4] = "hmac-sha1";
+    argv[5] = "example.com";
+    argv[6] = NULL;
+    argc = 6;
+    rc = ssh_options_getopt(session, &argc, (char **)argv);
+    assert_ssh_return_code(session, rc);
+    assert_int_equal(argc, 6);
+    assert_string_equal(argv[0], EXECUTABLE_NAME);
+    assert_string_equal(argv[1], "-F");
+    assert_string_equal(argv[2], "config_file");
+    assert_string_equal(argv[3], "-M");
+    assert_string_equal(argv[4], "hmac-sha1");
+    assert_string_equal(argv[5], "example.com");
+
+
+    /* Invalid configuration combination -d and -r (for some reason?) */
+    argc = 3;
+    rc = ssh_options_getopt(session, &argc, (char **)argv_invalid);
+    assert_ssh_return_code_equal(session, rc, SSH_ERROR);
+    assert_int_equal(argc, 3);
+    assert_string_equal(argv_invalid[0], EXECUTABLE_NAME);
+    assert_string_equal(argv_invalid[1], "-r");
+    assert_string_equal(argv_invalid[2], "-d");
+
+
+    /* Corner case: only one argument */
+    argv[1] = "-C";
+    argv[2] = NULL;
+    argc = 2;
+    rc = ssh_options_set(session, SSH_OPTIONS_COMPRESSION, "no");
+    assert_ssh_return_code(session, rc);
+#ifdef WITH_ZLIB
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_C_S],
+                        "none,zlib@openssh.com,zlib");
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_S_C],
+                        "none,zlib@openssh.com,zlib");
+#else
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_C_S],
+                        "none");
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_S_C],
+                        "none");
+#endif
+
+    rc = ssh_options_getopt(session, &argc, (char **)argv);
+    assert_ssh_return_code(session, rc);
+    assert_int_equal(argc, 1);
+    assert_string_equal(argv[0], EXECUTABLE_NAME);
+#ifdef WITH_ZLIB
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_C_S],
+                        "zlib@openssh.com,zlib,none");
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_S_C],
+                        "zlib@openssh.com,zlib,none");
+#else
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_C_S],
+                        "none");
+    assert_string_equal(session->opts.wanted_methods[SSH_COMP_S_C],
+                        "none");
+#endif
+
+    /* Corner case: only hostname is not parsed */
+    argv[1] = "example.com";
+    argv[2] = NULL;
+    argc = 2;
+    rc = ssh_options_getopt(session, &argc, (char **)argv);
+    assert_ssh_return_code(session, rc);
+    assert_int_equal(argc, 2);
+    assert_string_equal(argv[0], EXECUTABLE_NAME);
+    assert_string_equal(argv[1], "example.com");
+
+    /* Corner case: no arguments */
+    argv[1] = NULL;
+    argc = 1;
+    rc = ssh_options_getopt(session, &argc, (char **)argv);
+    assert_ssh_return_code(session, rc);
+    assert_int_equal(argc, 1);
+    assert_string_equal(argv[0], EXECUTABLE_NAME);
+
+#endif /* _NSC_VER */
 }
 
 #ifdef WITH_SERVER
@@ -1642,6 +1876,10 @@ int torture_run_tests(void) {
         cmocka_unit_test_setup_teardown(torture_options_copy, setup, teardown),
         cmocka_unit_test_setup_teardown(torture_options_config_host, setup, teardown),
         cmocka_unit_test_setup_teardown(torture_options_config_match,
+                                        setup, teardown),
+        cmocka_unit_test_setup_teardown(torture_options_config_match_multi,
+                                        setup, teardown),
+        cmocka_unit_test_setup_teardown(torture_options_getopt,
                                         setup, teardown),
     };
 

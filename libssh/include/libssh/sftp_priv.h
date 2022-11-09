@@ -22,7 +22,7 @@
 #define SFTP_PRIV_H
 
 sftp_packet sftp_packet_read(sftp_session sftp);
-ssize_t sftp_packet_write(sftp_session sftp, uint8_t type, ssh_buffer payload);
+int sftp_packet_write(sftp_session sftp, uint8_t type, ssh_buffer payload);
 void sftp_packet_free(sftp_packet packet);
 int buffer_add_attributes(ssh_buffer buffer, sftp_attributes attr);
 sftp_attributes sftp_parse_attr(sftp_session session,

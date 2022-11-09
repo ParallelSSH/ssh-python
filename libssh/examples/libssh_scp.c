@@ -22,6 +22,10 @@ program.
 #include <libssh/libssh.h>
 #include "examples_common.h"
 
+#ifndef BUF_SIZE
+#define BUF_SIZE 16384
+#endif
+
 static char **sources;
 static int nsources;
 static char *destination;
@@ -105,10 +109,6 @@ static void location_free(struct location *loc)
                 free(loc->user);
             }
             loc->user = NULL;
-            if (loc->host) {
-                free(loc->host);
-            }
-            loc->host = NULL;
         }
         free(loc);
     }
@@ -261,7 +261,7 @@ static int do_copy(struct location *src, struct location *dest, int recursive) {
     socket_t fd;
     struct stat s;
     int w, r;
-    char buffer[16384];
+    char buffer[BUF_SIZE];
     size_t total = 0;
     mode_t mode;
     char *filename = NULL;
@@ -404,9 +404,10 @@ int main(int argc, char **argv) {
     int i;
     int r;
     if (opts(argc, argv) < 0) {
-        r = EXIT_FAILURE;
-        goto end;
+        return EXIT_FAILURE;
     }
+
+    ssh_init();
 
     dest = parse_location(destination);
     if (dest == NULL) {
@@ -449,5 +450,7 @@ close_dest:
     close_location(dest);
     location_free(dest);
 end:
+    ssh_finalize();
+    free(sources);
     return r;
 }

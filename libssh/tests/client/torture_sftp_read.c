@@ -101,7 +101,7 @@ int torture_run_tests(void) {
     struct CMUnitTest tests[] = {
         /* This test is intentionally running twice to trigger a bug in OpenSSH
          * or in pam_wrapper, causing the second invocation to fail.
-         * See: https://bugs.libssh.org/T122
+         * See: https://gitlab.com/libssh/libssh-mirror/-/issues/23
          */
         cmocka_unit_test_setup_teardown(torture_sftp_read_blocking,
                                         session_setup,

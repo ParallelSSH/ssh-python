@@ -36,9 +36,9 @@ if (UNIX AND NOT WIN32)
         CACHE STRING "Flags used by the linker during MEMORYSANITIZER builds.")
 
     # Activate with: -DCMAKE_BUILD_TYPE=UndefinedSanitizer
-    set(CMAKE_C_FLAGS_UNDEFINEDSANITIZER "-g -O1 -fsanitize=undefined -fsanitize=null -fsanitize=alignment -fno-sanitize-recover"
+    set(CMAKE_C_FLAGS_UNDEFINEDSANITIZER "-g -O1 -fsanitize=undefined -fsanitize=null -fsanitize=alignment -fno-sanitize-recover=undefined,integer"
         CACHE STRING "Flags used by the C compiler during UNDEFINEDSANITIZER builds.")
-    set(CMAKE_CXX_FLAGS_UNDEFINEDSANITIZER "-g -O1 -fsanitize=undefined -fsanitize=null -fsanitize=alignment -fno-sanitize-recover"
+    set(CMAKE_CXX_FLAGS_UNDEFINEDSANITIZER "-g -O1 -fsanitize=undefined -fsanitize=null -fsanitize=alignment -fno-sanitize-recover=undefined,integer"
         CACHE STRING "Flags used by the CXX compiler during UNDEFINEDSANITIZER builds.")
     set(CMAKE_SHARED_LINKER_FLAGS_UNDEFINEDSANITIZER "-fsanitize=undefined"
         CACHE STRING "Flags used by the linker during the creation of shared libraries during UNDEFINEDSANITIZER builds.")

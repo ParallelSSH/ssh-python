@@ -61,6 +61,7 @@ struct arguments_st {
 
     char *config_file;
     bool with_global_config;
+    char *pid_file;
 };
 
 static void free_arguments(struct arguments_st *arguments)
@@ -85,6 +86,7 @@ static void free_arguments(struct arguments_st *arguments)
     SAFE_FREE(arguments->username);
     SAFE_FREE(arguments->password);
     SAFE_FREE(arguments->config_file);
+    SAFE_FREE(arguments->pid_file);
 
 end:
     return;
@@ -402,6 +404,14 @@ static struct argp_option options[] = {
         .group = 0
     },
     {
+        .name  = "pid_file",
+        .key   = 'i',
+        .arg   = "FILE",
+        .flags = 0,
+        .doc   = "The server will write its pid in this file, if provided.",
+        .group = 0
+    },
+    {
         .name  = "auth-methods",
         .key   = 'a',
         .arg   = "METHODS",
@@ -495,6 +505,14 @@ static error_t parse_opt (int key, char *arg, struct argp_state *state)
     case 'f':
         arguments->pcap_file = strdup(arg);
         if (arguments->pcap_file == NULL) {
+            fprintf(stderr, "Out of memory\n");
+            rc = ENOMEM;
+            goto end;
+        }
+        break;
+    case 'i':
+        arguments->pid_file = strdup(arg);
+        if (arguments->pid_file == NULL) {
             fprintf(stderr, "Out of memory\n");
             rc = ENOMEM;
             goto end;
@@ -598,6 +616,8 @@ static struct argp argp = {options, parse_opt, args_doc, doc, NULL, NULL, NULL};
 int main(UNUSED_PARAM(int argc), UNUSED_PARAM(char **argv))
 {
     int rc;
+    FILE *pid_file;
+    pid_t pid;
 
     struct arguments_st arguments = {
         .address = NULL,
@@ -610,6 +630,17 @@ int main(UNUSED_PARAM(int argc), UNUSED_PARAM(char **argv))
 #ifdef HAVE_ARGP_H
     argp_parse (&argp, argc, argv, 0, 0, &arguments);
 #endif
+
+    if (arguments.pid_file) {
+        pid_file = fopen(arguments.pid_file, "w");
+        if (pid_file == NULL) {
+            rc = -1;
+            goto free_arguments;
+        }
+        pid = getpid();
+        fprintf(pid_file, "%d\n", pid);
+        fclose(pid_file);
+    }
 
     /* Initialize the state using default or given parameters */
     rc = init_server_state(&state, &arguments);

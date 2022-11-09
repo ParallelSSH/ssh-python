@@ -200,7 +200,8 @@ static int agent_teardown(void **state)
     assert_non_null(ssh_agent_pidfile);
 
     /* kill agent pid */
-    torture_terminate_process(ssh_agent_pidfile);
+    rc = torture_terminate_process(ssh_agent_pidfile);
+    assert_return_code(rc, errno);
 
     unlink(ssh_agent_pidfile);
 
@@ -256,6 +257,100 @@ static void torture_auth_none_nonblocking(void **state) {
 
 }
 
+static void torture_auth_pubkey(void **state) {
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    char bob_ssh_key[1024];
+    ssh_key privkey = NULL;
+    struct passwd *pwd = NULL;
+    int rc;
+
+    pwd = getpwnam("bob");
+    assert_non_null(pwd);
+
+    snprintf(bob_ssh_key,
+             sizeof(bob_ssh_key),
+             "%s/.ssh/id_rsa",
+             pwd->pw_dir);
+
+    /* Authenticate as alice with bob his pubkey */
+    rc = ssh_options_set(session, SSH_OPTIONS_USER, TORTURE_SSH_USER_ALICE);
+    assert_int_equal(rc, SSH_OK);
+
+    rc = ssh_connect(session);
+    assert_int_equal(rc, SSH_OK);
+
+    rc = ssh_userauth_none(session, NULL);
+    /* This request should return a SSH_REQUEST_DENIED error */
+    if (rc == SSH_ERROR) {
+        assert_int_equal(ssh_get_error_code(session), SSH_REQUEST_DENIED);
+    }
+
+    rc = ssh_userauth_list(session, NULL);
+    assert_true(rc & SSH_AUTH_METHOD_PUBLICKEY);
+
+    rc = ssh_pki_import_privkey_file(bob_ssh_key, NULL, NULL, NULL, &privkey);
+    assert_int_equal(rc, SSH_OK);
+
+    rc = ssh_userauth_try_publickey(session, NULL, privkey);
+    assert_int_equal(rc, SSH_AUTH_SUCCESS);
+
+    rc = ssh_userauth_publickey(session, NULL, privkey);
+    assert_int_equal(rc, SSH_AUTH_SUCCESS);
+
+    SSH_KEY_FREE(privkey);
+}
+
+static void torture_auth_pubkey_nonblocking(void **state) {
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    char bob_ssh_key[1024];
+    ssh_key privkey = NULL;
+    struct passwd *pwd = NULL;
+    int rc;
+
+    pwd = getpwnam("bob");
+    assert_non_null(pwd);
+
+    snprintf(bob_ssh_key,
+             sizeof(bob_ssh_key),
+             "%s/.ssh/id_rsa",
+             pwd->pw_dir);
+
+    /* Authenticate as alice with bob his pubkey */
+    rc = ssh_options_set(session, SSH_OPTIONS_USER, TORTURE_SSH_USER_ALICE);
+    assert_int_equal(rc, SSH_OK);
+
+    rc = ssh_connect(session);
+    assert_int_equal(rc, SSH_OK);
+
+    ssh_set_blocking(session, 0);
+
+    do {
+        rc = ssh_userauth_none(session,NULL);
+    } while (rc == SSH_AUTH_AGAIN);
+    assert_int_equal(rc, SSH_AUTH_DENIED);
+    assert_int_equal(ssh_get_error_code(session), SSH_REQUEST_DENIED);
+
+    rc = ssh_userauth_list(session, NULL);
+    assert_true(rc & SSH_AUTH_METHOD_PUBLICKEY);
+
+    rc = ssh_pki_import_privkey_file(bob_ssh_key, NULL, NULL, NULL, &privkey);
+    assert_int_equal(rc, SSH_OK);
+
+    do {
+        rc = ssh_userauth_try_publickey(session, NULL, privkey);
+    } while (rc == SSH_AUTH_AGAIN);
+    assert_int_equal(rc, SSH_AUTH_SUCCESS);
+
+    do {
+        rc = ssh_userauth_publickey(session, NULL, privkey);
+    } while (rc == SSH_AUTH_AGAIN);
+    assert_int_equal(rc, SSH_AUTH_SUCCESS);
+
+    SSH_KEY_FREE(privkey);
+}
+
 static void torture_auth_autopubkey(void **state) {
     struct torture_state *s = *state;
     ssh_session session = s->ssh.session;
@@ -278,6 +373,96 @@ static void torture_auth_autopubkey(void **state) {
 
     rc = ssh_userauth_publickey_auto(session, NULL, NULL);
     assert_int_equal(rc, SSH_AUTH_SUCCESS);
+}
+
+struct torture_auth_autopubkey_protected_data {
+    ssh_session session;
+    int n_calls;
+};
+
+static int
+torture_auth_autopubkey_protected_auth_function (const char *prompt, char *buf, size_t len,
+                                                 int echo, int verify, void *userdata)
+{
+    int rc;
+    char *id, *expected_id;
+    struct torture_auth_autopubkey_protected_data *data = userdata;
+
+    assert_true(prompt != NULL);
+    assert_int_equal(echo, 0);
+    assert_int_equal(verify, 0);
+
+    expected_id = ssh_path_expand_escape(data->session, "%d/id_rsa_protected");
+    assert_true(expected_id != NULL);
+
+    rc = ssh_userauth_publickey_auto_get_current_identity(data->session, &id);
+    assert_int_equal(rc, SSH_OK);
+
+    assert_string_equal(expected_id, id);
+
+    ssh_string_free_char(id);
+    ssh_string_free_char(expected_id);
+
+    data->n_calls += 1;
+    strncpy(buf, "secret", len);
+    return 0;
+}
+
+static void torture_auth_autopubkey_protected(void **state) {
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    char *id;
+    int rc;
+
+    struct torture_auth_autopubkey_protected_data data = {
+        .session = session,
+        .n_calls = 0
+    };
+
+    struct ssh_callbacks_struct callbacks = {
+        .userdata = &data,
+        .auth_function = torture_auth_autopubkey_protected_auth_function
+    };
+
+    /* no session pointer */
+    rc = ssh_userauth_publickey_auto_get_current_identity(NULL, &id);
+    assert_int_equal(rc, SSH_ERROR);
+
+    /* no result pointer */
+    rc = ssh_userauth_publickey_auto_get_current_identity(session, NULL);
+    assert_int_equal(rc, SSH_ERROR);
+
+    /* no auto auth going on */
+    rc = ssh_userauth_publickey_auto_get_current_identity(session, &id);
+    assert_int_equal(rc, SSH_ERROR);
+
+    ssh_callbacks_init(&callbacks);
+    ssh_set_callbacks(session, &callbacks);
+
+    /* Authenticate as alice with bob his pubkey */
+    rc = ssh_options_set(session, SSH_OPTIONS_USER, TORTURE_SSH_USER_ALICE);
+    assert_int_equal(rc, SSH_OK);
+
+    /* Try id_rsa_protected first.
+     */
+    rc = ssh_options_set(session, SSH_OPTIONS_IDENTITY, "%d/id_rsa_protected");
+    assert_int_equal(rc, SSH_OK);
+
+    rc = ssh_connect(session);
+    assert_int_equal(rc, SSH_OK);
+
+    rc = ssh_userauth_none(session,NULL);
+    /* This request should return a SSH_REQUEST_DENIED error */
+    if (rc == SSH_ERROR) {
+        assert_int_equal(ssh_get_error_code(session), SSH_REQUEST_DENIED);
+    }
+    rc = ssh_userauth_list(session, NULL);
+    assert_true(rc & SSH_AUTH_METHOD_PUBLICKEY);
+
+    rc = ssh_userauth_publickey_auto(session, NULL, NULL);
+    assert_int_equal(rc, SSH_AUTH_SUCCESS);
+
+    assert_int_equal (data.n_calls, 1);
 }
 
 static void torture_auth_autopubkey_nonblocking(void **state) {
@@ -467,7 +652,7 @@ static void torture_auth_agent(void **state) {
     assert_true(rc & SSH_AUTH_METHOD_PUBLICKEY);
 
     rc = ssh_userauth_agent(session, NULL);
-    assert_int_equal(rc, SSH_AUTH_SUCCESS);
+    assert_ssh_return_code(session, rc);
 }
 
 static void torture_auth_agent_nonblocking(void **state) {
@@ -498,7 +683,7 @@ static void torture_auth_agent_nonblocking(void **state) {
     do {
       rc = ssh_userauth_agent(session, NULL);
     } while (rc == SSH_AUTH_AGAIN);
-    assert_int_equal(rc, SSH_AUTH_SUCCESS);
+    assert_ssh_return_code(session, rc);
 }
 
 static void torture_auth_cert(void **state) {
@@ -540,7 +725,7 @@ static void torture_auth_cert(void **state) {
     assert_int_equal(rc, SSH_OK);
 
     rc = ssh_userauth_try_publickey(session, NULL, cert);
-    assert_int_equal(rc, SSH_AUTH_SUCCESS);
+    assert_ssh_return_code(session, rc);
 
     rc = ssh_userauth_publickey(session, NULL, privkey);
     assert_int_equal(rc, SSH_AUTH_SUCCESS);
@@ -551,6 +736,7 @@ static void torture_auth_cert(void **state) {
 
 static void torture_auth_agent_cert(void **state)
 {
+#if OPENSSH_VERSION_MAJOR < 8
     struct torture_state *s = *state;
     ssh_session session = s->ssh.session;
     int rc;
@@ -570,6 +756,7 @@ static void torture_auth_agent_cert(void **state)
                              "ssh-rsa-cert-v01@openssh.com");
         assert_int_equal(rc, SSH_OK);
     }
+#endif /* OPENSSH_VERSION_MAJOR < 8 */
 
     /* Setup loads a different key, tests are exactly the same. */
     torture_auth_agent(state);
@@ -577,6 +764,7 @@ static void torture_auth_agent_cert(void **state)
 
 static void torture_auth_agent_cert_nonblocking(void **state)
 {
+#if OPENSSH_VERSION_MAJOR < 8
     struct torture_state *s = *state;
     ssh_session session = s->ssh.session;
     int rc;
@@ -596,6 +784,7 @@ static void torture_auth_agent_cert_nonblocking(void **state)
                              "ssh-rsa-cert-v01@openssh.com");
         assert_int_equal(rc, SSH_OK);
     }
+#endif /* OPENSSH_VERSION_MAJOR < 8 */
 
     torture_auth_agent_nonblocking(state);
 }
@@ -891,6 +1080,124 @@ static void torture_auth_pubkey_types_ed25519_nonblocking(void **state)
     } while (rc == SSH_AUTH_AGAIN);
     assert_int_equal(rc, SSH_AUTH_SUCCESS);
 
+    SSH_KEY_FREE(privkey);
+}
+
+static void torture_auth_pubkey_rsa_key_size(void **state)
+{
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    char bob_ssh_key[1024];
+    ssh_key privkey = NULL;
+    struct passwd *pwd;
+    int rc;
+    unsigned int limit = 4096;
+
+    pwd = getpwnam("bob");
+    assert_non_null(pwd);
+
+    snprintf(bob_ssh_key,
+             sizeof(bob_ssh_key),
+             "%s/.ssh/id_rsa",
+             pwd->pw_dir);
+
+    rc = ssh_options_set(session, SSH_OPTIONS_USER, TORTURE_SSH_USER_ALICE);
+    assert_ssh_return_code(session, rc);
+
+    rc = ssh_connect(session);
+    assert_ssh_return_code(session, rc);
+
+    rc = ssh_userauth_none(session, NULL);
+    /* This request should return a SSH_REQUEST_DENIED error */
+    if (rc == SSH_ERROR) {
+        assert_int_equal(ssh_get_error_code(session), SSH_REQUEST_DENIED);
+    }
+    rc = ssh_userauth_list(session, NULL);
+    assert_true(rc & SSH_AUTH_METHOD_PUBLICKEY);
+
+    /* set unreasonable large minimum key size to trigger the condition */
+    rc = ssh_options_set(session, SSH_OPTIONS_RSA_MIN_SIZE, &limit); /* larger than the test key */
+    assert_ssh_return_code(session, rc);
+
+    /* Import the RSA private key */
+    rc = ssh_pki_import_privkey_file(bob_ssh_key, NULL, NULL, NULL, &privkey);
+    assert_int_equal(rc, SSH_OK);
+
+    rc = ssh_userauth_publickey(session, NULL, privkey);
+    assert_int_equal(rc, SSH_AUTH_DENIED);
+
+    /* revert to default values which should work also in FIPS mode */
+    limit = 0;
+    rc = ssh_options_set(session, SSH_OPTIONS_RSA_MIN_SIZE, &limit);
+    assert_ssh_return_code(session, rc);
+
+    rc = ssh_userauth_publickey(session, NULL, privkey);
+    assert_int_equal(rc, SSH_AUTH_SUCCESS);
+
+    SSH_KEY_FREE(privkey);
+}
+
+static void torture_auth_pubkey_rsa_key_size_nonblocking(void **state)
+{
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    char bob_ssh_key[1024];
+    ssh_key privkey = NULL;
+    struct passwd *pwd;
+    int rc;
+    unsigned int limit = 4096;
+
+    pwd = getpwnam("bob");
+    assert_non_null(pwd);
+
+    snprintf(bob_ssh_key,
+             sizeof(bob_ssh_key),
+             "%s/.ssh/id_rsa",
+             pwd->pw_dir);
+
+    rc = ssh_options_set(session, SSH_OPTIONS_USER, TORTURE_SSH_USER_ALICE);
+    assert_ssh_return_code(session, rc);
+
+    rc = ssh_connect(session);
+    assert_ssh_return_code(session, rc);
+
+    ssh_set_blocking(session, 0);
+    do {
+      rc = ssh_userauth_none(session, NULL);
+    } while (rc == SSH_AUTH_AGAIN);
+
+    /* This request should return a SSH_REQUEST_DENIED error */
+    if (rc == SSH_ERROR) {
+        assert_int_equal(ssh_get_error_code(session), SSH_REQUEST_DENIED);
+    }
+
+    rc = ssh_userauth_list(session, NULL);
+    assert_true(rc & SSH_AUTH_METHOD_PUBLICKEY);
+
+    /* set unreasonable large minimum key size to trigger the condition */
+    rc = ssh_options_set(session, SSH_OPTIONS_RSA_MIN_SIZE, &limit); /* larger than the test key */
+    assert_ssh_return_code(session, rc);
+
+    /* Import the RSA private key */
+    rc = ssh_pki_import_privkey_file(bob_ssh_key, NULL, NULL, NULL, &privkey);
+    assert_int_equal(rc, SSH_OK);
+
+    do {
+        rc = ssh_userauth_publickey(session, NULL, privkey);
+    } while (rc == SSH_AUTH_AGAIN);
+    assert_int_equal(rc, SSH_AUTH_DENIED);
+
+    /* revert to default values which should work also in FIPS mode */
+    limit = 0;
+    rc = ssh_options_set(session, SSH_OPTIONS_RSA_MIN_SIZE, &limit);
+    assert_ssh_return_code(session, rc);
+
+    do {
+        rc = ssh_userauth_publickey(session, NULL, privkey);
+    } while (rc == SSH_AUTH_AGAIN);
+    assert_int_equal(rc, SSH_AUTH_SUCCESS);
+
+    SSH_KEY_FREE(privkey);
 }
 
 int torture_run_tests(void) {
@@ -914,7 +1221,16 @@ int torture_run_tests(void) {
         cmocka_unit_test_setup_teardown(torture_auth_kbdint_nonblocking,
                                         session_setup,
                                         session_teardown),
+        cmocka_unit_test_setup_teardown(torture_auth_pubkey,
+                                        pubkey_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_auth_pubkey_nonblocking,
+                                        pubkey_setup,
+                                        session_teardown),
         cmocka_unit_test_setup_teardown(torture_auth_autopubkey,
+                                        pubkey_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_auth_autopubkey_protected,
                                         pubkey_setup,
                                         session_teardown),
         cmocka_unit_test_setup_teardown(torture_auth_autopubkey_nonblocking,
@@ -951,6 +1267,12 @@ int torture_run_tests(void) {
                                         pubkey_setup,
                                         session_teardown),
         cmocka_unit_test_setup_teardown(torture_auth_pubkey_types_ed25519_nonblocking,
+                                        pubkey_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_auth_pubkey_rsa_key_size,
+                                        pubkey_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_auth_pubkey_rsa_key_size_nonblocking,
                                         pubkey_setup,
                                         session_teardown),
     };

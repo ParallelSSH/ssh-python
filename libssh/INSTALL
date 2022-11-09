@@ -7,8 +7,8 @@
 In order to build libssh, you need to install several components:
 
 - A C compiler
-- [CMake](https://www.cmake.org) >= 2.6.0.
-- [openssl](https://www.openssl.org) >= 0.9.8
+- [CMake](https://www.cmake.org) >= 3.3.0
+- [openssl](https://www.openssl.org) >= 1.0.1
 or
 - [gcrypt](https://www.gnu.org/directory/Security/libgcrypt.html) >= 1.4
 - [libz](https://www.zlib.net) >= 1.2

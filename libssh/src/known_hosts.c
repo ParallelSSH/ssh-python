@@ -45,6 +45,10 @@
 # include <arpa/inet.h>
 #endif
 
+#ifndef MAX_LINE_SIZE
+#define MAX_LINE_SIZE 4096
+#endif
+
 /**
  * @addtogroup libssh_session
  *
@@ -61,7 +65,7 @@
  * @param[out] file     A pointer to the known host file. Could be pointing to
  *                      NULL at start.
  *
- * @param[in]  filename The file name of the known host file.
+ * @param[in]  filename The filename of the known host file.
  *
  * @param[out] found_type A pointer to a string to be set with the found key
  *                        type.
@@ -74,7 +78,7 @@ static struct ssh_tokens_st *ssh_get_knownhost_line(FILE **file,
                                                     const char *filename,
                                                     const char **found_type)
 {
-    char buffer[4096] = {0};
+    char buffer[MAX_LINE_SIZE] = {0};
     char *ptr;
     struct ssh_tokens_st *tokens;
 
@@ -206,8 +210,8 @@ static int match_hashed_host(const char *host, const char *sourcehash)
   HMACCTX mac;
   char *source;
   char *b64hash;
-  int match;
-  unsigned int size;
+  int match, rc;
+  size_t size;
 
   if (strncmp(sourcehash, "|1|", 3) != 0) {
     return 0;
@@ -252,8 +256,20 @@ static int match_hashed_host(const char *host, const char *sourcehash)
     return 0;
   }
   size = sizeof(buffer);
-  hmac_update(mac, host, strlen(host));
-  hmac_final(mac, buffer, &size);
+  rc = hmac_update(mac, host, strlen(host));
+  if (rc != 1) {
+    ssh_buffer_free(salt);
+    ssh_buffer_free(hash);
+
+    return 0;
+  }
+  rc = hmac_final(mac, buffer, &size);
+  if (rc != 1) {
+    ssh_buffer_free(salt);
+    ssh_buffer_free(hash);
+
+    return 0;
+  }
 
   if (size == ssh_buffer_get_len(hash) &&
       memcmp(buffer, ssh_buffer_get(hash), size) == 0) {
@@ -431,7 +447,6 @@ char * ssh_dump_knownhost(ssh_session session) {
     ssh_key server_pubkey = NULL;
     char *host;
     char *hostport;
-    size_t len = 4096;
     char *buffer;
     char *b64_key;
     int rc;
@@ -467,7 +482,7 @@ char * ssh_dump_knownhost(ssh_session session) {
         return NULL;
     }
 
-    buffer = calloc (1, 4096);
+    buffer = calloc (1, MAX_LINE_SIZE);
     if (!buffer) {
         SAFE_FREE(host);
         return NULL;
@@ -480,7 +495,7 @@ char * ssh_dump_knownhost(ssh_session session) {
         return NULL;
     }
 
-    snprintf(buffer, len,
+    snprintf(buffer, MAX_LINE_SIZE,
             "%s %s %s\n",
             host,
             server_pubkey->type_c,
@@ -513,10 +528,12 @@ int ssh_write_knownhost(ssh_session session)
     errno = 0;
     file = fopen(session->opts.knownhosts, "a");
     if (file == NULL) {
+        char err_msg[SSH_ERRNO_MSG_MAX] = {0};
         if (errno == ENOENT) {
             dir = ssh_dirname(session->opts.knownhosts);
             if (dir == NULL) {
-                ssh_set_error(session, SSH_FATAL, "%s", strerror(errno));
+                ssh_set_error(session, SSH_FATAL,
+                        "%s", ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
                 return SSH_ERROR;
             }
 
@@ -524,7 +541,7 @@ int ssh_write_knownhost(ssh_session session)
             if (rc < 0) {
                 ssh_set_error(session, SSH_FATAL,
                               "Cannot create %s directory: %s",
-                              dir, strerror(errno));
+                              dir, ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
                 SAFE_FREE(dir);
                 return SSH_ERROR;
             }
@@ -536,13 +553,15 @@ int ssh_write_knownhost(ssh_session session)
                 ssh_set_error(session, SSH_FATAL,
                               "Couldn't open known_hosts file %s"
                               " for appending: %s",
-                              session->opts.knownhosts, strerror(errno));
+                              session->opts.knownhosts,
+                              ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
                 return SSH_ERROR;
             }
         } else {
             ssh_set_error(session, SSH_FATAL,
                           "Couldn't open known_hosts file %s for appending: %s",
-                          session->opts.knownhosts, strerror(errno));
+                          session->opts.knownhosts,
+                          ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
             return SSH_ERROR;
         }
     }

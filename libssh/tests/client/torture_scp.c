@@ -39,6 +39,9 @@
 #define TEMPLATE BINARYDIR "/tests/home/alice/temp_dir_XXXXXX"
 #define ALICE_HOME BINARYDIR "/tests/home/alice"
 
+/* store the original umask */
+mode_t old;
+
 struct scp_st {
     struct torture_state *s;
     char *tmp_dir;
@@ -99,6 +102,9 @@ static int session_setup(void **state)
 
     s = ts->s;
 
+    /* store the original umask and set a new one */
+    old = umask(0022);
+
     /* Create temporary directory for alice */
     tmp_dir = torture_make_temp_dir(TEMPLATE);
     assert_non_null(tmp_dir);
@@ -134,6 +140,9 @@ static int session_teardown(void **state)
 
     assert_non_null(ts->s);
     s = ts->s;
+
+    /* restore the umask */
+    umask(old);
 
     ssh_disconnect(s->ssh.session);
     ssh_free(s->ssh.session);
