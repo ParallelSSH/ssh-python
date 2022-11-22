@@ -320,18 +320,36 @@ int interactive_shell_session(ssh_session session, ssh_channel channel)
 If your remote application is graphical, you can forward the X11 protocol to
 your local computer.
 
-To do that, you first declare that you accept X11 connections with
-ssh_channel_accept_x11(). Then you create the forwarding tunnel for
-the X11 protocol with ssh_channel_request_x11().
+To do that, you first declare a callback to manage channel_open_request_x11_function.
+Then you create the forwarding tunnel for the X11 protocol with ssh_channel_request_x11().
 
 The following code performs channel initialization and shell session
 opening, and handles a parallel X11 connection:
 
 @code
+#include <libssh/callbacks.h>
+
+ssh_channel x11channel = NULL;
+
+ssh_channel x11_open_request_callback(ssh_session session, const char *shost, int sport, void *userdata)
+{
+  x11channel = ssh_channel_new(session);
+  return x11channel;
+}
+
 int interactive_shell_session(ssh_channel channel)
 {
   int rc;
-  ssh_channel x11channel;
+
+  struct ssh_callbacks_struct cb =
+  {
+    .channel_open_request_x11_function = x11_open_request_callback,
+    .userdata = NULL
+  };
+
+  ssh_callbacks_init(&cb);
+  rc = ssh_set_callbacks(session, &cb);
+  if (rc != SSH_OK) return rc;
 
   rc = ssh_channel_request_pty(channel);
   if (rc != SSH_OK) return rc;
@@ -350,12 +368,15 @@ int interactive_shell_session(ssh_channel channel)
 }
 @endcode
 
-Don't forget to set the $DISPLAY environment variable on the remote
+Don't forget to check the $DISPLAY environment variable on the remote
 side, or the remote applications won't try using the X11 tunnel:
 
 @code
-$ export DISPLAY=:0
+$ echo $DISPLAY
+localhost:10.0
 $ xclock &
 @endcode
+
+See an implementation example at https://gitlab.com/libssh/libssh-mirror/-/tree/master/examples/ssh_X11_client.c for details.
 
 */

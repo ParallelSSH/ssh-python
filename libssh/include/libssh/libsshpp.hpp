@@ -369,13 +369,11 @@ public:
     return state;
   }
   void log(int priority, const char *format, ...){
-    char buffer[1024];
     va_list va;
 
     va_start(va, format);
-    vsnprintf(buffer, sizeof(buffer), format, va);
+    ssh_vlog(priority, "libsshpp", format, &va);
     va_end(va);
-    _ssh_log(priority, "libsshpp", "%s", buffer);
   }
 
   /** @brief copies options from a session to another
@@ -525,7 +523,7 @@ public:
     return ssh_channel_is_open(channel) != 0;
   }
   int openForward(const char *remotehost, int remoteport,
-      const char *sourcehost=NULL, int localport=0){
+      const char *sourcehost, int localport=0){
     int err=ssh_channel_open_forward(channel,remotehost,remoteport,
         sourcehost, localport);
     ssh_throw(err);
@@ -632,8 +630,8 @@ public:
    * @param is_stderr write should be done on the stderr channel (server only)
    * @returns number of bytes written
    * @throws SshException in case of error
-   * @see channel_write
-   * @see channel_write_stderr
+   * @see ssh_channel_write
+   * @see ssh_channel_write_stderr
    */
   int write(const void *data, size_t len, bool is_stderr=false){
     int ret;
@@ -671,7 +669,7 @@ private:
 
 inline Channel *Session::acceptForward(int timeout_ms){
     ssh_channel forward =
-        ssh_channel_accept_forward(c_session, timeout_ms, NULL);
+        ssh_channel_open_forward_port(c_session, timeout_ms, NULL, NULL, NULL);
     ssh_throw_null(c_session,forward);
     Channel *newchan = new Channel(*this,forward);
     return newchan;

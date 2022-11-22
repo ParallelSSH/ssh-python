@@ -22,6 +22,7 @@
 #define _OPTIONS_H
 
 int ssh_config_parse_file(ssh_session session, const char *filename);
+int ssh_config_parse_string(ssh_session session, const char *input);
 int ssh_options_set_algo(ssh_session session,
                          enum ssh_kex_types_e algo,
                          const char *list);

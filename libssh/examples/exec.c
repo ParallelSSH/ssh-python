@@ -17,7 +17,7 @@ int main(void) {
         return 1;
     }
 
-    channel = ssh_channel_new(session);;
+    channel = ssh_channel_new(session);
     if (channel == NULL) {
         ssh_disconnect(session);
         ssh_free(session);

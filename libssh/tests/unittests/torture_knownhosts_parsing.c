@@ -4,10 +4,10 @@
 
 #define LIBSSH_STATIC
 #include <libssh/priv.h>
-#include "torture.h"
 
 #include "knownhosts.c"
 
+#include "torture.h"
 #if (defined _WIN32) || (defined _WIN64)
 #ifndef S_IRWXO
 #define S_IRWXO 0
@@ -17,6 +17,7 @@
 #endif
 #endif
 
+#define LOCALHOST_DSS_LINE "localhost,127.0.0.1 ssh-dss AAAAB3NzaC1kc3MAAACBAIK3RTEWBw+rAPcYUM2Qq4kEw59gXpUQ/WvkdeY7QDO64MHaaorySj8xsraNudmQFh4xb/i5Q1EMnNchOFxtilfU5bUJgdTvetyZEWFL+2HxqBs8GaWRyB1vtSFAw3GO8VUEnjF844N3dNyLoc0NX8IvzwNIaQho6KTsueQlG1X9AAAAFQCXUl4a5UvElL4thi/8QlxR5PtEewAAAIBqNpl5MTBxKQu5jT0+WASa7pAqwT53ofv7ZTDIEokYRb57/nwzDgkcs1fsBRrI6eczJ/VlXWwKbsgkx2Nh3ZiWYwC+HY5uqRpDaj3HERC6LMn4dzdcl29fYeziEibCbRjJX5lZF2vIaA1Ewv8yT0UlunyHZRiyw4WlEglkf/NITAAAAIBxLsdBBXn+8qEYwWK9KT+arRqNXC/lrl0Fp5YyxGNGCv82JcnuOShGGTzhYf8AtTCY1u5oixiW9kea6KXGAKgTjfJShr7n47SZVfOPOrBT3VLhRdGGO3GblDUppzfL8wsEdoqXjzrJuxSdrGnkFu8S9QjkPn9dCtScvWEcluHqMw=="
 #define LOCALHOST_RSA_LINE "localhost,127.0.0.1 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDD7g+vV5cvxxGN0Ldmda4WZCPgRaxV1tV+1KRZoGUNUI61h0X4bmmGaAPRQBCz4G1d9bawqDqEqnpFWazrxBU5cQtISSjzuDJKovLGliky/ShTszee1Thszg3qVNk9gGOWj7jn/HDaOxRlp003Bp47MOdnMnK/oftllFDfY2fF5IRpE6sSIGtg2ZDtF95TV5/9W2oMOIAy8u/83tuibYlNPa1X/von5LgdaPLn6Bk16bQKIhAhlMtFZH8MBYEWe4ZtOGaSWKOsK9MM/RTMlwPi6PkfoHNl4MCMupjx+CdLXwbQEt9Ww+bBIaCui2VWBEiruVbIgJh0W2Tal0e2BzYZ What a Wurst!"
 #define LOCALHOST_ECDSA_SHA1_NISTP256_LINE "localhost ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFWmI0n0Tn5+zR7pPGcKYszRbJ/T0T3QfzRBSMMiyebGKRY8tjkU5h2l/UMugzOrOyWqMGQDgQn+a0aMunhKMg0="
 #define LOCALHOST_DEFAULT_ED25519 "localhost ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA7M22fXD7OiS7kGMXP+OoIjCa+J+5sq8SgAZfIOmDgM"
@@ -143,6 +144,38 @@ close_fp:
 
     return rc;
 }
+
+#ifndef HAVE_DSA
+static int setup_knownhosts_file_unsupported_type(void **state)
+{
+    char *tmp_file = NULL;
+    size_t nwritten;
+    FILE *fp = NULL;
+    int rc = 0;
+
+    tmp_file = torture_create_temp_file(TMP_FILE_NAME);
+    assert_non_null(tmp_file);
+
+    *state = tmp_file;
+
+    fp = fopen(tmp_file, "w");
+    assert_non_null(fp);
+
+    nwritten = fwrite(LOCALHOST_DSS_LINE,
+                      sizeof(char),
+                      strlen(LOCALHOST_DSS_LINE),
+                      fp);
+    if (nwritten != strlen(LOCALHOST_DSS_LINE)) {
+        rc = -1;
+        goto close_fp;
+    }
+
+close_fp:
+    fclose(fp);
+
+    return rc;
+}
+#endif
 
 static int teardown_knownhosts_file(void **state)
 {
@@ -396,6 +429,31 @@ static void torture_knownhosts_get_algorithms_names(void **state)
     ssh_free(session);
 }
 
+#ifndef HAVE_DSA
+/* Do not remove this test if we completly remove DSA support! */
+static void torture_knownhosts_get_algorithms_names_unsupported(void **state)
+{
+    const char *knownhosts_file = *state;
+    ssh_session session;
+    char *names = NULL;
+    bool process_config = false;
+
+    session = ssh_new();
+    assert_non_null(session);
+
+    /* This makes sure the global configuration file is not processed */
+    ssh_options_set(session, SSH_OPTIONS_PROCESS_CONFIG, &process_config);
+
+    ssh_options_set(session, SSH_OPTIONS_HOST, "localhost");
+    ssh_options_set(session, SSH_OPTIONS_KNOWNHOSTS, knownhosts_file);
+
+    names = ssh_known_hosts_get_algorithms_names(session);
+    assert_null(names);
+
+    ssh_free(session);
+}
+#endif
+
 static void torture_knownhosts_algorithms_wanted(void **state)
 {
     const char *knownhosts_file = *state;
@@ -574,13 +632,9 @@ static void torture_knownhosts_algorithms(void **state)
     char *algo_list = NULL;
     ssh_session session;
     bool process_config = false;
-    const char *expect = "ssh-ed25519,rsa-sha2-512,rsa-sha2-256,ssh-rsa,"
+    const char *expect = "ssh-ed25519,rsa-sha2-512,rsa-sha2-256,"
                          "ecdsa-sha2-nistp521,ecdsa-sha2-nistp384,"
-                         "ecdsa-sha2-nistp256"
-#ifdef HAVE_DSA
-                         ",ssh-dss"
-#endif
-    ;
+                         "ecdsa-sha2-nistp256";
     const char *expect_fips = "rsa-sha2-512,rsa-sha2-256,ecdsa-sha2-nistp521,"
                               "ecdsa-sha2-nistp384,ecdsa-sha2-nistp256";
 
@@ -613,13 +667,9 @@ static void torture_knownhosts_algorithms_global(void **state)
     char *algo_list = NULL;
     ssh_session session;
     bool process_config = false;
-    const char *expect = "ssh-ed25519,rsa-sha2-512,rsa-sha2-256,ssh-rsa,"
+    const char *expect = "ssh-ed25519,rsa-sha2-512,rsa-sha2-256,"
                          "ecdsa-sha2-nistp521,ecdsa-sha2-nistp384,"
-                         "ecdsa-sha2-nistp256"
-#ifdef HAVE_DSA
-                         ",ssh-dss"
-#endif
-    ;
+                         "ecdsa-sha2-nistp256";
     const char *expect_fips = "rsa-sha2-512,rsa-sha2-256,ecdsa-sha2-nistp521,"
                               "ecdsa-sha2-nistp384,ecdsa-sha2-nistp256";
 
@@ -668,6 +718,11 @@ int torture_run_tests(void) {
         cmocka_unit_test_setup_teardown(torture_knownhosts_get_algorithms_names,
                                         setup_knownhosts_file,
                                         teardown_knownhosts_file),
+#ifndef HAVE_DSA
+        cmocka_unit_test_setup_teardown(torture_knownhosts_get_algorithms_names_unsupported,
+                                        setup_knownhosts_file_unsupported_type,
+                                        teardown_knownhosts_file),
+#endif
         cmocka_unit_test_setup_teardown(torture_knownhosts_algorithms_wanted,
                                         setup_knownhosts_file,
                                         teardown_knownhosts_file),

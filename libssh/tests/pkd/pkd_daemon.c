@@ -247,10 +247,9 @@ static int pkd_exec_hello(int fd, struct pkd_daemon_args *args)
     int level = args->opts.libssh_log_level;
     enum pkd_hostkey_type_e type = args->type;
     const char *hostkeypath = args->hostkeypath;
-    const char *default_kex = NULL;
-    char *all_kex = NULL;
-    size_t kex_len = 0;
+    const char *all_kex = NULL;
     const char *all_ciphers = NULL;
+    const char *all_macs = NULL;
     const uint64_t rekey_data_limit = args->rekey_data_limit;
     bool process_config = false;
 
@@ -300,18 +299,12 @@ static int pkd_exec_hello(int fd, struct pkd_daemon_args *args)
     }
 
     if (!ssh_fips_mode()) {
+        const char *all_hostkeys = NULL;
         /* Add methods not enabled by default */
-#define GEX_SHA1 "diffie-hellman-group-exchange-sha1"
-        default_kex = ssh_kex_get_default_methods(SSH_KEX);
-        kex_len = strlen(default_kex) + strlen(GEX_SHA1) + 2;
-        all_kex = malloc(kex_len);
-        if (all_kex == NULL) {
-            pkderr("Failed to alloc more memory.\n");
-            goto outclose;
-        }
-        snprintf(all_kex, kex_len, "%s," GEX_SHA1, default_kex);
+
+        /* Enable all supported key exchange methods */
+        all_kex = ssh_kex_get_supported_method(SSH_KEX);
         rc = ssh_bind_options_set(b, SSH_BIND_OPTIONS_KEY_EXCHANGE, all_kex);
-        free(all_kex);
         if (rc != 0) {
             pkderr("ssh_bind_options_set kex methods: %s\n", ssh_get_error(b));
             goto outclose;
@@ -331,6 +324,30 @@ static int pkd_exec_hello(int fd, struct pkd_daemon_args *args)
             pkderr("ssh_bind_options_set Ciphers S-C: %s\n", ssh_get_error(b));
             goto outclose;
         }
+
+        /* Enable all hostkey algorithms */
+        all_hostkeys = ssh_kex_get_supported_method(SSH_HOSTKEYS);
+        rc = ssh_bind_options_set(b, SSH_BIND_OPTIONS_HOSTKEY_ALGORITHMS, all_hostkeys);
+        if (rc != 0) {
+            pkderr("ssh_bind_options_set Hostkeys: %s\n", ssh_get_error(b));
+            goto outclose;
+        }
+
+        /* Enable all message authentication codes */
+        all_macs = ssh_kex_get_supported_method(SSH_MAC_C_S);
+        rc = ssh_bind_options_set(b, SSH_BIND_OPTIONS_HMAC_C_S, all_macs);
+        if (rc != 0) {
+            pkderr("ssh_bind_options_set MACs C-S: %s\n", ssh_get_error(b));
+            goto outclose;
+        }
+
+        all_macs = ssh_kex_get_supported_method(SSH_MAC_S_C);
+        rc = ssh_bind_options_set(b, SSH_BIND_OPTIONS_HMAC_S_C, all_macs);
+        if (rc != 0) {
+            pkderr("ssh_bind_options_set MACs S-C: %s\n", ssh_get_error(b));
+            goto outclose;
+        }
+
     }
 
     s = ssh_new();

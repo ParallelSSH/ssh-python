@@ -17,7 +17,6 @@ struct chacha_ctx {
 #define CHACHA_NONCELEN   8
 #define CHACHA_CTRLEN     8
 #define CHACHA_STATELEN   (CHACHA_NONCELEN+CHACHA_CTRLEN)
-#define CHACHA_BLOCKLEN   64
 
 void chacha_keysetup(struct chacha_ctx *x, const uint8_t *k, uint32_t kbits)
 #ifdef HAVE_GCC_BOUNDED_ATTRIBUTE

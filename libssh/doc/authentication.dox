@@ -33,6 +33,9 @@ The process of authenticating by public key to a server is the following:
    used to authenticate the user).
  - then, you retrieve the private key for this key and send a message
    proving that you know that private key.
+ - when several identity files are specified, then the order of processing of
+   these files is from the last-mentioned to the first one
+   (if specified in the ~/.ssh/config, then starting from the bottom to the top).
 
 The function ssh_userauth_autopubkey() does this using the available keys in
 "~/.ssh/".  The return values are the following:

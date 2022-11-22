@@ -2,10 +2,10 @@
 
 #define LIBSSH_STATIC
 
+#include "pki.c"
 #include "torture.h"
 #include "torture_key.h"
 #include "torture_pki.h"
-#include "pki.c"
 #include <sys/stat.h>
 #include <fcntl.h>
 

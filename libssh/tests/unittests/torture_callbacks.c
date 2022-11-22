@@ -43,7 +43,7 @@ static int teardown(void **state)
 }
 
 static void torture_callbacks_size(void **state) {
-    struct ssh_callbacks_struct *cb = *state;;
+    struct ssh_callbacks_struct *cb = *state;
 
     assert_int_not_equal(cb->size, 0);
 }

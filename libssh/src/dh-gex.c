@@ -108,7 +108,11 @@ SSH_PACKET_CALLBACK(ssh_packet_client_dhgex_group)
     bignum pmin1 = NULL, one = NULL;
     bignum_CTX ctx = bignum_ctx_new();
     bignum modulus = NULL, generator = NULL;
+#if !defined(HAVE_LIBCRYPTO) || OPENSSL_VERSION_NUMBER < 0x30000000L
     const_bignum pubkey;
+#else
+    bignum pubkey = NULL;
+#endif /* OPENSSL_VERSION_NUMBER */
     (void) type;
     (void) user;
 
@@ -212,6 +216,9 @@ SSH_PACKET_CALLBACK(ssh_packet_client_dhgex_group)
     if (rc != SSH_OK) {
         goto error;
     }
+#if defined(HAVE_LIBCRYPTO) && OPENSSL_VERSION_NUMBER >= 0x30000000L
+    bignum_safe_free(pubkey);
+#endif /* OPENSSL_VERSION_NUMBER */
 
     session->dh_handshake_state = DH_STATE_INIT_SENT;
 
@@ -229,6 +236,9 @@ error:
     bignum_safe_free(generator);
     bignum_safe_free(one);
     bignum_safe_free(pmin1);
+#if defined(HAVE_LIBCRYPTO) && OPENSSL_VERSION_NUMBER >= 0x30000000L
+    bignum_safe_free(pubkey);
+#endif /* OPENSSL_VERSION_NUMBER */
     if(!bignum_ctx_invalid(ctx)) {
         bignum_ctx_free(ctx);
     }
@@ -367,9 +377,9 @@ static bool dhgroup_better_size(uint32_t pmin,
  * @brief returns 1 with 1/n probability
  * @returns 1 on with P(1/n), 0 with P(n-1/n).
  */
-static bool invn_chance(int n)
+static bool invn_chance(size_t n)
 {
-    uint32_t nounce = 0;
+    size_t nounce = 0;
     int ok;
 
     ok = ssh_get_random(&nounce, sizeof(nounce), 0);
@@ -489,7 +499,8 @@ static int ssh_retrieve_dhgroup_file(FILE *moduli,
  * @param[out] g generator
  * @return SSH_OK on success, SSH_ERROR otherwise.
  */
-static int ssh_retrieve_dhgroup(uint32_t pmin,
+static int ssh_retrieve_dhgroup(char *moduli_file,
+                                uint32_t pmin,
                                 uint32_t pn,
                                 uint32_t pmax,
                                 size_t *size,
@@ -508,12 +519,17 @@ static int ssh_retrieve_dhgroup(uint32_t pmin,
         return ssh_fallback_group(pmax, p, g);
     }
 
-    moduli = fopen(MODULI_FILE, "r");
+    if (moduli_file != NULL)
+        moduli = fopen(moduli_file, "r");
+    else
+        moduli = fopen(MODULI_FILE, "r");
+
     if (moduli == NULL) {
+        char err_msg[SSH_ERRNO_MSG_MAX] = {0};
         SSH_LOG(SSH_LOG_WARNING,
                 "Unable to open moduli file: %s",
-                strerror(errno));
-        return ssh_fallback_group(pmax, p, g);
+                ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
+                return ssh_fallback_group(pmax, p, g);
     }
 
     *size = 0;
@@ -627,7 +643,8 @@ static SSH_PACKET_CALLBACK(ssh_packet_server_dhgex_request)
             pn = pmin;
         }
     }
-    rc = ssh_retrieve_dhgroup(pmin,
+    rc = ssh_retrieve_dhgroup(session->opts.moduli_file,
+                              pmin,
                               pn,
                               pmax,
                               &size,
