@@ -118,10 +118,307 @@ static void torture_channel_read_error(void **state) {
     ssh_channel_free(channel);
 }
 
+static void torture_channel_poll_timeout_valid(void **state) {
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    ssh_channel channel;
+    int rc;
+
+    channel = ssh_channel_new(session);
+    assert_non_null(channel);
+
+    rc = ssh_channel_open_session(channel);
+    assert_ssh_return_code(session, rc);
+
+    rc = ssh_channel_request_exec(channel, "echo -n ABCD");
+    assert_ssh_return_code(session, rc);
+
+    rc = ssh_channel_poll_timeout(channel, 500, 0);
+    assert_int_equal(rc, strlen("ABCD"));
+}
+
+static void torture_channel_poll_timeout(void **state) {
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    ssh_channel channel;
+    int rc;
+    int fd;
+
+    channel = ssh_channel_new(session);
+    assert_non_null(channel);
+
+    rc = ssh_channel_open_session(channel);
+    assert_ssh_return_code(session, rc);
+
+    fd = ssh_get_fd(session);
+    assert_true(fd > 2);
+
+    rc = ssh_channel_poll_timeout(channel, 500, 0);
+    assert_int_equal(rc, SSH_OK);
+
+    /* send crap and for server to send us a disconnect */
+    rc = write(fd, "AAAA", 4);
+    assert_int_equal(rc, 4);
+
+    rc = ssh_channel_poll_timeout(channel, 500, 0);
+    assert_int_equal(rc, SSH_ERROR);
+
+    ssh_channel_free(channel);
+}
+
+/*
+ * Check that the client can properly handle the error returned from the server
+ * when the maximum number of sessions is exceeded.
+ *
+ * Related: T75, T239
+ *
+ */
+static void torture_max_sessions(void **state)
+{
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    char max_session_config[32] = {0};
+#define MAX_CHANNELS 10
+    ssh_channel channels[MAX_CHANNELS + 1];
+    size_t i;
+    int rc;
+
+    snprintf(max_session_config,
+             sizeof(max_session_config),
+             "MaxSessions %u",
+             MAX_CHANNELS);
+
+    /* Update server configuration to limit number of sessions */
+    torture_update_sshd_config(state, max_session_config);
+
+    /* Open the maximum number of channel sessions */
+    for (i = 0; i < MAX_CHANNELS; i++) {
+        channels[i] = ssh_channel_new(session);
+        assert_non_null(channels[i]);
+
+        rc = ssh_channel_open_session(channels[i]);
+        assert_ssh_return_code(session, rc);
+    }
+
+    /* Try to open an extra session and expect failure */
+    channels[i] = ssh_channel_new(session);
+    assert_non_null(channels[i]);
+
+    rc = ssh_channel_open_session(channels[i]);
+    assert_int_equal(rc, SSH_ERROR);
+
+    /* Free the unused channel */
+    ssh_channel_free(channels[i]);
+
+    /* Close and free channels */
+    for (i = 0; i < MAX_CHANNELS; i++) {
+        ssh_channel_close(channels[i]);
+        ssh_channel_free(channels[i]);
+    }
+#undef MAX_CHANNELS
+}
+
+static void torture_channel_delayed_close(void **state)
+{
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    ssh_channel channel;
+
+    char request[256];
+    char buff[256] = {0};
+
+    int rc;
+    int fd;
+
+    snprintf(request, 256,
+             "dd if=/dev/urandom of=/tmp/file bs=64000 count=2; hexdump -C /tmp/file");
+
+    channel = ssh_channel_new(session);
+    assert_non_null(channel);
+
+    rc = ssh_channel_open_session(channel);
+    assert_ssh_return_code(session, rc);
+
+    fd = ssh_get_fd(session);
+    assert_true(fd > 2);
+
+    /* Make the request, read parts with close */
+    rc = ssh_channel_request_exec(channel, request);
+    assert_ssh_return_code(session, rc);
+
+    do {
+        rc = ssh_channel_read(channel, buff, 256, 0);
+    } while(rc > 0);
+    assert_ssh_return_code(session, rc);
+
+    rc = ssh_channel_poll_timeout(channel, 500, 0);
+    assert_int_equal(rc, SSH_EOF);
+
+    ssh_channel_free(channel);
+
+}
+
+/* Ensure that calling 'ssh_channel_poll' on a freed channel does not lead to
+ * segmentation faults. */
+static void torture_freed_channel_poll(void **state)
+{
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    ssh_channel channel;
+
+    char request[256];
+    int rc;
+
+    snprintf(request, 256,
+             "dd if=/dev/urandom of=/tmp/file bs=64000 count=2; hexdump -C /tmp/file");
+
+    channel = ssh_channel_new(session);
+    assert_non_null(channel);
+
+    rc = ssh_channel_open_session(channel);
+    assert_ssh_return_code(session, rc);
+
+    /* Make the request, read parts with close */
+    rc = ssh_channel_request_exec(channel, request);
+    assert_ssh_return_code(session, rc);
+
+    ssh_channel_free(channel);
+
+    rc = ssh_channel_poll(channel, 0);
+    assert_int_equal(rc, SSH_ERROR);
+}
+
+/* Ensure that calling 'ssh_channel_poll_timeout' on a freed channel does not
+ * lead to segmentation faults. */
+static void torture_freed_channel_poll_timeout(void **state)
+{
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    ssh_channel channel;
+
+    char request[256];
+    char buff[256] = {0};
+    int rc;
+
+    snprintf(request, 256,
+             "dd if=/dev/urandom of=/tmp/file bs=64000 count=2; hexdump -C /tmp/file");
+
+    channel = ssh_channel_new(session);
+    assert_non_null(channel);
+
+    rc = ssh_channel_open_session(channel);
+    assert_ssh_return_code(session, rc);
+
+    /* Make the request, read parts with close */
+    rc = ssh_channel_request_exec(channel, request);
+    assert_ssh_return_code(session, rc);
+
+    do {
+        rc = ssh_channel_read(channel, buff, 256, 0);
+    } while(rc > 0);
+    assert_ssh_return_code(session, rc);
+
+    ssh_channel_free(channel);
+
+    rc = ssh_channel_poll_timeout(channel, 500, 0);
+    assert_int_equal(rc, SSH_ERROR);
+}
+
+/* Ensure that calling 'ssh_channel_read_nonblocking' on a freed channel does
+ * not lead to segmentation faults. */
+static void torture_freed_channel_read_nonblocking(void **state)
+{
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    ssh_channel channel;
+
+    char request[256];
+    char buff[256] = {0};
+    int rc;
+
+    snprintf(request, 256,
+             "dd if=/dev/urandom of=/tmp/file bs=64000 count=2; hexdump -C /tmp/file");
+
+    channel = ssh_channel_new(session);
+    assert_non_null(channel);
+
+    rc = ssh_channel_open_session(channel);
+    assert_ssh_return_code(session, rc);
+
+    /* Make the request, read parts with close */
+    rc = ssh_channel_request_exec(channel, request);
+    assert_ssh_return_code(session, rc);
+
+    ssh_channel_free(channel);
+
+    rc = ssh_channel_read_nonblocking(channel, buff, 256, 0);
+    assert_ssh_return_code_equal(session, rc, SSH_ERROR);
+}
+
+/* Ensure that calling 'ssh_channel_get_exit_status' on a freed channel does not
+ * lead to segmentation faults. */
+static void torture_freed_channel_get_exit_status(void **state)
+{
+    struct torture_state *s = *state;
+    ssh_session session = s->ssh.session;
+    ssh_channel channel;
+
+    char request[256];
+    char buff[256] = {0};
+    int rc;
+
+    snprintf(request, 256,
+             "dd if=/dev/urandom of=/tmp/file bs=64000 count=2; hexdump -C /tmp/file");
+
+    channel = ssh_channel_new(session);
+    assert_non_null(channel);
+
+    rc = ssh_channel_open_session(channel);
+    assert_ssh_return_code(session, rc);
+
+    /* Make the request, read parts with close */
+    rc = ssh_channel_request_exec(channel, request);
+    assert_ssh_return_code(session, rc);
+
+    do {
+        rc = ssh_channel_read(channel, buff, 256, 0);
+    } while(rc > 0);
+    assert_ssh_return_code(session, rc);
+
+    ssh_channel_free(channel);
+
+    rc = ssh_channel_get_exit_status(channel);
+    assert_ssh_return_code_equal(session, rc, SSH_ERROR);
+}
+
 int torture_run_tests(void) {
     int rc;
     struct CMUnitTest tests[] = {
         cmocka_unit_test_setup_teardown(torture_channel_read_error,
+                                        session_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_channel_poll_timeout_valid,
+                                        session_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_channel_poll_timeout,
+                                        session_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_max_sessions,
+                                        session_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_channel_delayed_close,
+                                        session_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_freed_channel_poll,
+                                        session_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_freed_channel_poll_timeout,
+                                        session_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_freed_channel_read_nonblocking,
+                                        session_setup,
+                                        session_teardown),
+        cmocka_unit_test_setup_teardown(torture_freed_channel_get_exit_status,
                                         session_setup,
                                         session_teardown),
     };
@@ -130,6 +427,7 @@ int torture_run_tests(void) {
 
     torture_filter_tests(tests);
     rc = cmocka_run_group_tests(tests, sshd_setup, sshd_teardown);
+
     ssh_finalize();
 
     return rc;

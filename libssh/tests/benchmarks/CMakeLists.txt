@@ -1,7 +1,7 @@
 project(libssh-benchmarks C)
 
 set(benchmarks_SRCS
-  bench_scp.c bench_sftp bench_raw.c benchmarks.c latency.c
+  bench_scp.c bench_sftp.c bench_raw.c benchmarks.c latency.c
 )
 
 include_directories(${libssh_BINARY_DIR})

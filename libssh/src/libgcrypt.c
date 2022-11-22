@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "libssh/priv.h"
 #include "libssh/session.h"
@@ -32,9 +33,27 @@
 #include "libssh/wrapper.h"
 #include "libssh/string.h"
 #include "libssh/misc.h"
+#ifdef HAVE_GCRYPT_CHACHA_POLY
+#include "libssh/chacha20-poly1305-common.h"
+#endif
 
 #ifdef HAVE_LIBGCRYPT
 #include <gcrypt.h>
+
+#ifdef HAVE_GCRYPT_CHACHA_POLY
+
+struct chacha20_poly1305_keysched {
+    bool initialized;
+    /* cipher handle used for encrypting the packets */
+    gcry_cipher_hd_t main_hd;
+    /* cipher handle used for encrypting the length field */
+    gcry_cipher_hd_t header_hd;
+    /* mac handle used for authenticating the packets */
+    gcry_mac_hd_t mac_hd;
+};
+
+static const uint8_t zero_block[CHACHA20_BLOCKSIZE] = {0};
+#endif /* HAVE_GCRYPT_CHACHA_POLY */
 
 static int libgcrypt_initialized = 0;
 
@@ -48,38 +67,6 @@ static int alloc_key(struct ssh_cipher_struct *cipher) {
 }
 
 void ssh_reseed(void){
-}
-
-int ssh_get_random(void *where, int len, int strong)
-{
-    /* variable not used in gcrypt */
-    (void) strong;
-
-    /* not using GCRY_VERY_STRONG_RANDOM which is a bit overkill */
-    gcry_randomize(where,len,GCRY_STRONG_RANDOM);
-
-    return 1;
-}
-
-SHACTX sha1_init(void) {
-  SHACTX ctx = NULL;
-  gcry_md_open(&ctx, GCRY_MD_SHA1, 0);
-
-  return ctx;
-}
-
-void sha1_update(SHACTX c, const void *data, unsigned long len) {
-  gcry_md_write(c, data, len);
-}
-
-void sha1_final(unsigned char *md, SHACTX c) {
-  gcry_md_final(c);
-  memcpy(md, gcry_md_read(c, 0), SHA_DIGEST_LEN);
-  gcry_md_close(c);
-}
-
-void sha1(const unsigned char *digest, int len, unsigned char *hash) {
-  gcry_md_hash_buffer(GCRY_MD_SHA1, hash, digest, len);
 }
 
 #ifdef HAVE_GCRYPT_ECC
@@ -96,7 +83,7 @@ static int nid_to_md_algo(int nid)
     return GCRY_MD_NONE;
 }
 
-void evp(int nid, unsigned char *digest, int len,
+void evp(int nid, unsigned char *digest, size_t len,
          unsigned char *hash, unsigned int *hlen)
 {
     int algo = nid_to_md_algo(nid);
@@ -121,7 +108,7 @@ EVPCTX evp_init(int nid)
     return ctx;
 }
 
-void evp_update(EVPCTX ctx, const void *data, unsigned long len)
+void evp_update(EVPCTX ctx, const void *data, size_t len)
 {
     gcry_md_write(ctx, data, len);
 }
@@ -135,96 +122,16 @@ void evp_final(EVPCTX ctx, unsigned char *md, unsigned int *mdlen)
 }
 #endif
 
-SHA256CTX sha256_init(void) {
-  SHA256CTX ctx = NULL;
-  gcry_md_open(&ctx, GCRY_MD_SHA256, 0);
-
-  return ctx;
-}
-
-void sha256_update(SHACTX c, const void *data, unsigned long len) {
-  gcry_md_write(c, data, len);
-}
-
-void sha256_final(unsigned char *md, SHACTX c) {
-  gcry_md_final(c);
-  memcpy(md, gcry_md_read(c, 0), SHA256_DIGEST_LEN);
-  gcry_md_close(c);
-}
-
-void sha256(const unsigned char *digest, int len, unsigned char *hash){
-  gcry_md_hash_buffer(GCRY_MD_SHA256, hash, digest, len);
-}
-
-SHA384CTX sha384_init(void) {
-  SHA384CTX ctx = NULL;
-  gcry_md_open(&ctx, GCRY_MD_SHA384, 0);
-
-  return ctx;
-}
-
-void sha384_update(SHACTX c, const void *data, unsigned long len) {
-  gcry_md_write(c, data, len);
-}
-
-void sha384_final(unsigned char *md, SHACTX c) {
-  gcry_md_final(c);
-  memcpy(md, gcry_md_read(c, 0), SHA384_DIGEST_LEN);
-  gcry_md_close(c);
-}
-
-void sha384(const unsigned char *digest, int len, unsigned char *hash) {
-  gcry_md_hash_buffer(GCRY_MD_SHA384, hash, digest, len);
-}
-
-SHA512CTX sha512_init(void) {
-  SHA512CTX ctx = NULL;
-  gcry_md_open(&ctx, GCRY_MD_SHA512, 0);
-
-  return ctx;
-}
-
-void sha512_update(SHACTX c, const void *data, unsigned long len) {
-  gcry_md_write(c, data, len);
-}
-
-void sha512_final(unsigned char *md, SHACTX c) {
-  gcry_md_final(c);
-  memcpy(md, gcry_md_read(c, 0), SHA512_DIGEST_LEN);
-  gcry_md_close(c);
-}
-
-void sha512(const unsigned char *digest, int len, unsigned char *hash) {
-  gcry_md_hash_buffer(GCRY_MD_SHA512, hash, digest, len);
-}
-
-MD5CTX md5_init(void) {
-  MD5CTX c = NULL;
-  gcry_md_open(&c, GCRY_MD_MD5, 0);
-
-  return c;
-}
-
-void md5_update(MD5CTX c, const void *data, unsigned long len) {
-    gcry_md_write(c,data,len);
-}
-
-void md5_final(unsigned char *md, MD5CTX c) {
-  gcry_md_final(c);
-  memcpy(md, gcry_md_read(c, 0), MD5_DIGEST_LEN);
-  gcry_md_close(c);
-}
-
 int ssh_kdf(struct ssh_crypto_struct *crypto,
             unsigned char *key, size_t key_len,
-            int key_type, unsigned char *output,
+            uint8_t key_type, unsigned char *output,
             size_t requested_len)
 {
     return sshkdf_derive_key(crypto, key, key_len,
                              key_type, output, requested_len);
 }
 
-HMACCTX hmac_init(const void *key, int len, enum ssh_hmac_e type) {
+HMACCTX hmac_init(const void *key, size_t len, enum ssh_hmac_e type) {
   HMACCTX c = NULL;
 
   switch(type) {
@@ -249,14 +156,17 @@ HMACCTX hmac_init(const void *key, int len, enum ssh_hmac_e type) {
   return c;
 }
 
-void hmac_update(HMACCTX c, const void *data, unsigned long len) {
+int hmac_update(HMACCTX c, const void *data, size_t len) {
   gcry_md_write(c, data, len);
+  return 1;
 }
 
-void hmac_final(HMACCTX c, unsigned char *hashmacbuf, unsigned int *len) {
-  *len = gcry_md_get_algo_dlen(gcry_md_get_algo(c));
+int hmac_final(HMACCTX c, unsigned char *hashmacbuf, size_t *len) {
+  unsigned int tmp = gcry_md_get_algo_dlen(gcry_md_get_algo(c));
+  *len = (size_t)tmp;
   memcpy(hashmacbuf, gcry_md_read(c, 0), *len);
   gcry_md_close(c);
+  return 1;
 }
 
 #ifdef WITH_BLOWFISH_CIPHER
@@ -273,10 +183,12 @@ static int blowfish_set_key(struct ssh_cipher_struct *cipher, void *key, void *I
       return -1;
     }
     if (gcry_cipher_setkey(cipher->key[0], key, 16)) {
+      gcry_cipher_close(cipher->key[0]);
       SAFE_FREE(cipher->key);
       return -1;
     }
     if (gcry_cipher_setiv(cipher->key[0], IV, 8)) {
+      gcry_cipher_close(cipher->key[0]);
       SAFE_FREE(cipher->key);
       return -1;
     }
@@ -334,12 +246,13 @@ static int aes_set_key(struct ssh_cipher_struct *cipher, void *key, void *IV) {
         return -1;
     }
     if (gcry_cipher_setkey(cipher->key[0], key, cipher->keysize / 8)) {
+      gcry_cipher_close(cipher->key[0]);
       SAFE_FREE(cipher->key);
       return -1;
     }
     if(mode == GCRY_CIPHER_MODE_CBC){
       if (gcry_cipher_setiv(cipher->key[0], IV, 16)) {
-
+        gcry_cipher_close(cipher->key[0]);
         SAFE_FREE(cipher->key);
         return -1;
       }
@@ -350,6 +263,7 @@ static int aes_set_key(struct ssh_cipher_struct *cipher, void *key, void *IV) {
       memcpy(cipher->last_iv, IV, AES_GCM_IVLEN);
     } else {
       if(gcry_cipher_setctr(cipher->key[0],IV,16)){
+        gcry_cipher_close(cipher->key[0]);
         SAFE_FREE(cipher->key);
         return -1;
       }
@@ -411,7 +325,7 @@ aes_gcm_encrypt(struct ssh_cipher_struct *cipher,
     err = gcry_cipher_setiv(cipher->key[0],
                             cipher->last_iv,
                             AES_GCM_IVLEN);
-    /* This actualy does not increment the packet counter for the
+    /* This actually does not increment the packet counter for the
      * current encryption operation, but for the next one. The first
      * operation needs to be completed with the derived IV.
      *
@@ -540,10 +454,12 @@ static int des3_set_key(struct ssh_cipher_struct *cipher, void *key, void *IV) {
       return -1;
     }
     if (gcry_cipher_setkey(cipher->key[0], key, 24)) {
+      gcry_cipher_close(cipher->key[0]);
       SAFE_FREE(cipher->key);
       return -1;
     }
     if (gcry_cipher_setiv(cipher->key[0], IV, 8)) {
+      gcry_cipher_close(cipher->key[0]);
       SAFE_FREE(cipher->key);
       return -1;
     }
@@ -561,6 +477,311 @@ static void des3_decrypt(struct ssh_cipher_struct *cipher, void *in,
     void *out, unsigned long len) {
   gcry_cipher_decrypt(cipher->key[0], out, len, in, len);
 }
+
+#ifdef HAVE_GCRYPT_CHACHA_POLY
+static void chacha20_cleanup(struct ssh_cipher_struct *cipher)
+{
+    struct chacha20_poly1305_keysched *ctx = NULL;
+
+    if (cipher->chacha20_schedule == NULL) {
+        return;
+    }
+
+    ctx = cipher->chacha20_schedule;
+
+    if (ctx->initialized) {
+        gcry_cipher_close(ctx->main_hd);
+        gcry_cipher_close(ctx->header_hd);
+        gcry_mac_close(ctx->mac_hd);
+        ctx->initialized = false;
+    }
+
+    SAFE_FREE(cipher->chacha20_schedule);
+}
+
+static int chacha20_set_encrypt_key(struct ssh_cipher_struct *cipher,
+                                    void *key,
+                                    UNUSED_PARAM(void *IV))
+{
+    struct chacha20_poly1305_keysched *ctx = NULL;
+    uint8_t *u8key = key;
+    gpg_error_t err;
+
+    if (cipher->chacha20_schedule == NULL) {
+        ctx = calloc(1, sizeof(*ctx));
+        if (ctx == NULL) {
+            return -1;
+        }
+        cipher->chacha20_schedule = ctx;
+    } else {
+        ctx = cipher->chacha20_schedule;
+    }
+
+    if (!ctx->initialized) {
+        /* Open cipher/mac handles. */
+        err = gcry_cipher_open(&ctx->main_hd, GCRY_CIPHER_CHACHA20,
+                               GCRY_CIPHER_MODE_STREAM, 0);
+        if (err != 0) {
+            SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_open failed: %s",
+                    gpg_strerror(err));
+            SAFE_FREE(cipher->chacha20_schedule);
+            return -1;
+        }
+        err = gcry_cipher_open(&ctx->header_hd, GCRY_CIPHER_CHACHA20,
+                               GCRY_CIPHER_MODE_STREAM, 0);
+        if (err != 0) {
+            SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_open failed: %s",
+                    gpg_strerror(err));
+            gcry_cipher_close(ctx->main_hd);
+            SAFE_FREE(cipher->chacha20_schedule);
+            return -1;
+        }
+        err = gcry_mac_open(&ctx->mac_hd, GCRY_MAC_POLY1305, 0, NULL);
+        if (err != 0) {
+            SSH_LOG(SSH_LOG_WARNING, "gcry_mac_open failed: %s",
+                    gpg_strerror(err));
+            gcry_cipher_close(ctx->main_hd);
+            gcry_cipher_close(ctx->header_hd);
+            SAFE_FREE(cipher->chacha20_schedule);
+            return -1;
+        }
+
+        ctx->initialized = true;
+    }
+
+    err = gcry_cipher_setkey(ctx->main_hd, u8key, CHACHA20_KEYLEN);
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_setkey failed: %s",
+                gpg_strerror(err));
+        chacha20_cleanup(cipher);
+        return -1;
+    }
+
+    err = gcry_cipher_setkey(ctx->header_hd, u8key + CHACHA20_KEYLEN,
+                             CHACHA20_KEYLEN);
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_setkey failed: %s",
+                gpg_strerror(err));
+        chacha20_cleanup(cipher);
+        return -1;
+    }
+
+    return 0;
+}
+
+static void chacha20_poly1305_aead_encrypt(struct ssh_cipher_struct *cipher,
+                                           void *in,
+                                           void *out,
+                                           size_t len,
+                                           uint8_t *tag,
+                                           uint64_t seq)
+{
+    struct ssh_packet_header *in_packet = in, *out_packet = out;
+    struct chacha20_poly1305_keysched *ctx = cipher->chacha20_schedule;
+    uint8_t poly_key[CHACHA20_BLOCKSIZE];
+    size_t taglen = POLY1305_TAGLEN;
+    gpg_error_t err;
+
+    seq = htonll(seq);
+
+    /* step 1, prepare the poly1305 key */
+    err = gcry_cipher_setiv(ctx->main_hd, (uint8_t *)&seq, sizeof(seq));
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_setiv failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+    /* Output full ChaCha block so that counter increases by one for
+     * payload encryption step. */
+    err = gcry_cipher_encrypt(ctx->main_hd,
+                              poly_key,
+                              sizeof(poly_key),
+                              zero_block,
+                              sizeof(zero_block));
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_encrypt failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+    err = gcry_mac_setkey(ctx->mac_hd, poly_key, POLY1305_KEYLEN);
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_mac_setkey failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+
+    /* step 2, encrypt length field */
+    err = gcry_cipher_setiv(ctx->header_hd, (uint8_t *)&seq, sizeof(seq));
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_setiv failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+    err = gcry_cipher_encrypt(ctx->header_hd,
+                              (uint8_t *)&out_packet->length,
+                              sizeof(uint32_t),
+                              (uint8_t *)&in_packet->length,
+                              sizeof(uint32_t));
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_encrypt failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+
+    /* step 3, encrypt packet payload (main_hd counter == 1) */
+    err = gcry_cipher_encrypt(ctx->main_hd,
+                              out_packet->payload,
+                              len - sizeof(uint32_t),
+                              in_packet->payload,
+                              len - sizeof(uint32_t));
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_encrypt failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+
+    /* step 4, compute the MAC */
+    err = gcry_mac_write(ctx->mac_hd, (uint8_t *)out_packet, len);
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_mac_write failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+    err = gcry_mac_read(ctx->mac_hd, tag, &taglen);
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_mac_read failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+
+out:
+    explicit_bzero(poly_key, sizeof(poly_key));
+}
+
+static int chacha20_poly1305_aead_decrypt_length(
+        struct ssh_cipher_struct *cipher,
+        void *in,
+        uint8_t *out,
+        size_t len,
+        uint64_t seq)
+{
+    struct chacha20_poly1305_keysched *ctx = cipher->chacha20_schedule;
+    gpg_error_t err;
+
+    if (len < sizeof(uint32_t)) {
+        return SSH_ERROR;
+    }
+    seq = htonll(seq);
+
+    err = gcry_cipher_setiv(ctx->header_hd, (uint8_t *)&seq, sizeof(seq));
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_setiv failed: %s",
+                gpg_strerror(err));
+        return SSH_ERROR;
+    }
+    err = gcry_cipher_decrypt(ctx->header_hd,
+                              out,
+                              sizeof(uint32_t),
+                              in,
+                              sizeof(uint32_t));
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_decrypt failed: %s",
+                gpg_strerror(err));
+        return SSH_ERROR;
+    }
+
+    return SSH_OK;
+}
+
+static int chacha20_poly1305_aead_decrypt(struct ssh_cipher_struct *cipher,
+                                          void *complete_packet,
+                                          uint8_t *out,
+                                          size_t encrypted_size,
+                                          uint64_t seq)
+{
+    struct chacha20_poly1305_keysched *ctx = cipher->chacha20_schedule;
+    uint8_t *mac = (uint8_t *)complete_packet + sizeof(uint32_t) +
+                   encrypted_size;
+    uint8_t poly_key[CHACHA20_BLOCKSIZE];
+    int ret = SSH_ERROR;
+    gpg_error_t err;
+
+    seq = htonll(seq);
+
+    /* step 1, prepare the poly1305 key */
+    err = gcry_cipher_setiv(ctx->main_hd, (uint8_t *)&seq, sizeof(seq));
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_setiv failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+    /* Output full ChaCha block so that counter increases by one for
+     * decryption step. */
+    err = gcry_cipher_encrypt(ctx->main_hd,
+                              poly_key,
+                              sizeof(poly_key),
+                              zero_block,
+                              sizeof(zero_block));
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_encrypt failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+    err = gcry_mac_setkey(ctx->mac_hd, poly_key, POLY1305_KEYLEN);
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_mac_setkey failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+
+    /* step 2, check MAC */
+    err = gcry_mac_write(ctx->mac_hd, (uint8_t *)complete_packet,
+                         encrypted_size + sizeof(uint32_t));
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_mac_write failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+    err = gcry_mac_verify(ctx->mac_hd, mac, POLY1305_TAGLEN);
+    if (gpg_err_code(err) == GPG_ERR_CHECKSUM) {
+        SSH_LOG(SSH_LOG_PACKET, "poly1305 verify error");
+        goto out;
+    } else if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_mac_verify failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+
+    /* step 3, decrypt packet payload (main_hd counter == 1) */
+    err = gcry_cipher_decrypt(ctx->main_hd,
+                              out,
+                              encrypted_size,
+                              (uint8_t *)complete_packet + sizeof(uint32_t),
+                              encrypted_size);
+    if (err != 0) {
+        SSH_LOG(SSH_LOG_WARNING, "gcry_cipher_decrypt failed: %s",
+                gpg_strerror(err));
+        goto out;
+    }
+
+    ret = SSH_OK;
+
+out:
+    explicit_bzero(poly_key, sizeof(poly_key));
+    return ret;
+}
+#endif /* HAVE_GCRYPT_CHACHA_POLY */
+
+#ifdef WITH_INSECURE_NONE
+static void
+none_crypt(UNUSED_PARAM(struct ssh_cipher_struct *cipher),
+           void *in,
+           void *out,
+           size_t len)
+{
+    memcpy(out, in, len);
+}
+#endif /* WITH_INSECURE_NONE */
 
 /* the table of supported ciphers */
 static struct ssh_cipher_struct ssh_ciphertab[] = {
@@ -683,8 +904,33 @@ static struct ssh_cipher_struct ssh_ciphertab[] = {
     .decrypt     = des3_decrypt
   },
   {
+#ifdef HAVE_GCRYPT_CHACHA_POLY
+    .ciphertype      = SSH_AEAD_CHACHA20_POLY1305,
+    .name            = "chacha20-poly1305@openssh.com",
+    .blocksize       = 8,
+    .lenfield_blocksize = 4,
+    .keylen          = sizeof(struct chacha20_poly1305_keysched),
+    .keysize         = 2 * CHACHA20_KEYLEN * 8,
+    .tag_size        = POLY1305_TAGLEN,
+    .set_encrypt_key = chacha20_set_encrypt_key,
+    .set_decrypt_key = chacha20_set_encrypt_key,
+    .aead_encrypt    = chacha20_poly1305_aead_encrypt,
+    .aead_decrypt_length = chacha20_poly1305_aead_decrypt_length,
+    .aead_decrypt    = chacha20_poly1305_aead_decrypt,
+    .cleanup         = chacha20_cleanup
+#else
     .name = "chacha20-poly1305@openssh.com"
+#endif
   },
+#ifdef WITH_INSECURE_NONE
+  {
+    .name            = "none",
+    .blocksize       = 8,
+    .keysize         = 0,
+    .encrypt         = none_crypt,
+    .decrypt         = none_crypt
+  },
+#endif /* WITH_INSECURE_NONE */
   {
     .name            = NULL,
     .blocksize       = 0,
@@ -761,7 +1007,7 @@ fail:
  */
 int ssh_crypto_init(void)
 {
-    size_t i;
+    UNUSED_VAR(size_t i);
 
     if (libgcrypt_initialized) {
         return SSH_OK;
@@ -780,6 +1026,7 @@ int ssh_crypto_init(void)
     /* Re-enable warning */
     gcry_control (GCRYCTL_RESUME_SECMEM_WARN);
 
+#ifndef HAVE_GCRYPT_CHACHA_POLY
     for (i = 0; ssh_ciphertab[i].name != NULL; i++) {
         int cmp;
         cmp = strcmp(ssh_ciphertab[i].name, "chacha20-poly1305@openssh.com");
@@ -790,6 +1037,7 @@ int ssh_crypto_init(void)
             break;
         }
     }
+#endif
 
     libgcrypt_initialized = 1;
 

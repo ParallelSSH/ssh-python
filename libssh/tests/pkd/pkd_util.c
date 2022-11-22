@@ -81,6 +81,7 @@ static int is_openssh_client_new_enough(void) {
         ((major < 1) || (major > 100))) {
         fprintf(stderr, "failed to parse OpenSSH client version, "
                         "errno %d\n", errno);
+        errno = 0;
         goto errversion;
     }
 

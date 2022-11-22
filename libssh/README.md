@@ -1,4 +1,5 @@
 [![pipeline status](https://gitlab.com/libssh/libssh-mirror/badges/master/pipeline.svg)](https://gitlab.com/libssh/libssh-mirror/commits/master)
+[![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/libssh.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:libssh)
 
 ```
   _   _   _                          _
@@ -36,7 +37,7 @@ https://www.libssh.org
 
 # Contributing
 
-Please read the file 'SubmittingPatches' next to this README file. It explains
+Please read the file 'CONTRIBUTING.md' next to this README file. It explains
 our copyright policy and how you should send patches for upstream inclusion.
 
 Have fun and happy libssh hacking!

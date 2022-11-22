@@ -26,10 +26,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "pki.c"
 #include "torture.h"
 #include "torture_pki.h"
 #include "torture_key.h"
-#include "pki.c"
 
 #include <pthread.h>
 

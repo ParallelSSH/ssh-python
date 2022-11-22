@@ -93,17 +93,21 @@ torture_packet(const char *cipher, const char *mac_type,
     crypto->decryptMAC = copy_data(mac, sizeof(mac));
 
     in_cipher = session->current_crypto->in_cipher;
-    rc = in_cipher->set_decrypt_key(in_cipher,
-                                    session->current_crypto->decryptkey,
-                                    session->current_crypto->decryptIV);
-    assert_int_equal(rc, SSH_OK);
+    if (in_cipher->set_decrypt_key != NULL) {
+        rc = in_cipher->set_decrypt_key(in_cipher,
+                                        session->current_crypto->decryptkey,
+                                        session->current_crypto->decryptIV);
+        assert_int_equal(rc, SSH_OK);
+    }
 
     out_cipher = session->current_crypto->out_cipher;
-    rc = out_cipher->set_encrypt_key(out_cipher,
-                                     session->current_crypto->encryptkey,
-                                     session->current_crypto->encryptIV);
+    if (out_cipher->set_decrypt_key != NULL) {
+        rc = out_cipher->set_encrypt_key(out_cipher,
+                                         session->current_crypto->encryptkey,
+                                         session->current_crypto->encryptIV);
+        assert_int_equal(rc, SSH_OK);
+    }
     session->current_crypto->used = SSH_DIRECTION_BOTH;
-    assert_int_equal(rc, SSH_OK);
 
     assert_non_null(session->out_buffer);
     ssh_buffer_add_data(session->out_buffer, test_data, payload_len);
@@ -160,6 +164,35 @@ static void torture_packet_aes256_ctr_etm(UNUSED_PARAM(void **state))
         torture_packet("aes256-ctr", "hmac-sha1-etm@openssh.com", "none", i);
     }
 }
+
+#ifdef WITH_INSECURE_NONE
+static void torture_packet_none_sha1(UNUSED_PARAM(void **state))
+{
+    int i;
+
+    for (i = 1; i < 256; ++i) {
+        torture_packet("none", "hmac-sha1", "none", i);
+    }
+}
+
+static void torture_packet_aes128_ctr_none(UNUSED_PARAM(void **state))
+{
+    int i;
+
+    for (i = 1; i < 256; ++i) {
+        torture_packet("aes128-ctr", "none", "none", i);
+    }
+}
+
+static void torture_packet_none_none(UNUSED_PARAM(void **state))
+{
+    int i;
+
+    for (i = 1; i < 256; ++i) {
+        torture_packet("none", "none", "none", i);
+    }
+}
+#endif /* WITH_INSECURE_NONE */
 
 static void torture_packet_aes128_ctr(void **state)
 {
@@ -260,6 +293,12 @@ static void torture_packet_chacha20(void **state)
 {
     int i;
     (void)state; /* unused */
+
+    /* Chacha20-poly1305 is not FIPS-allowed cipher */
+    if (ssh_fips_mode()) {
+        skip();
+    }
+
     for (i=1;i<256;++i){
         torture_packet("chacha20-poly1305@openssh.com", "none", "none", i);
     }
@@ -323,6 +362,11 @@ int torture_run_tests(void) {
         cmocka_unit_test(torture_packet_aes256_gcm),
         cmocka_unit_test(torture_packet_compress_zlib),
         cmocka_unit_test(torture_packet_compress_zlib_openssh),
+#ifdef WITH_INSECURE_NONE
+        cmocka_unit_test(torture_packet_none_sha1),
+        cmocka_unit_test(torture_packet_aes128_ctr_none),
+        cmocka_unit_test(torture_packet_none_none),
+#endif
     };
 
     ssh_init();

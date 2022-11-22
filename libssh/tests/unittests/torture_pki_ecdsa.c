@@ -5,10 +5,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "pki.c"
 #include "torture.h"
 #include "torture_key.h"
 #include "torture_pki.h"
-#include "pki.c"
 
 #define LIBSSH_ECDSA_TESTKEY "libssh_testkey.id_ecdsa"
 #define LIBSSH_ECDSA_TESTKEY_PASSPHRASE "libssh_testkey_passphrase.id_ecdsa"

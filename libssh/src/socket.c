@@ -28,6 +28,15 @@
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
+#ifndef UNIX_PATH_MAX
+ /* Inlining the key portions of afunix.h in Windows 10 SDK;
+  * that header isn't available in the mingw environment. */
+#define UNIX_PATH_MAX 108
+struct sockaddr_un {
+  ADDRESS_FAMILY sun_family;
+  char sun_path[UNIX_PATH_MAX];
+};
+#endif
 #if _MSC_VER >= 1400
 #include <io.h>
 #undef open
@@ -233,8 +242,8 @@ int ssh_socket_pollcallback(struct ssh_poll_handle_struct *p,
                             void *v_s)
 {
     ssh_socket s = (ssh_socket)v_s;
-    char buffer[MAX_BUF_SIZE];
-    ssize_t nread;
+    void *buffer = NULL;
+    ssize_t nread = 0;
     int rc;
     int err = 0;
     socklen_t errlen = sizeof(err);
@@ -275,8 +284,12 @@ int ssh_socket_pollcallback(struct ssh_poll_handle_struct *p,
     }
     if ((revents & POLLIN) && s->state == SSH_SOCKET_CONNECTED) {
         s->read_wontblock = 1;
-        nread = ssh_socket_unbuffered_read(s, buffer, sizeof(buffer));
+        buffer = ssh_buffer_allocate(s->in_buffer, MAX_BUF_SIZE);
+        if (buffer) {
+            nread = ssh_socket_unbuffered_read(s, buffer, MAX_BUF_SIZE);
+        }
         if (nread < 0) {
+            ssh_buffer_pass_bytes_end(s->in_buffer, MAX_BUF_SIZE);
             if (p != NULL) {
                 ssh_poll_remove_events(p, POLLIN);
             }
@@ -288,6 +301,10 @@ int ssh_socket_pollcallback(struct ssh_poll_handle_struct *p,
             }
             return -2;
         }
+
+        /* Rollback the unused space */
+        ssh_buffer_pass_bytes_end(s->in_buffer, MAX_BUF_SIZE - nread);
+
         if (nread == 0) {
             if (p != NULL) {
                 ssh_poll_remove_events(p, POLLIN);
@@ -304,11 +321,7 @@ int ssh_socket_pollcallback(struct ssh_poll_handle_struct *p,
             s->session->socket_counter->in_bytes += nread;
         }
 
-        /* Bufferize the data and then call the callback */
-        rc = ssh_buffer_add_data(s->in_buffer, buffer, nread);
-        if (rc < 0) {
-            return -1;
-        }
+        /* Call the callback */
         if (s->callbacks != NULL && s->callbacks->data != NULL) {
             do {
                 nread = s->callbacks->data(ssh_buffer_get(s->in_buffer),
@@ -406,10 +419,10 @@ void ssh_socket_free(ssh_socket s)
     SAFE_FREE(s);
 }
 
-#ifndef _WIN32
 int ssh_socket_unix(ssh_socket s, const char *path)
 {
     struct sockaddr_un sunaddr;
+    char err_msg[SSH_ERRNO_MSG_MAX] = {0};
     socket_t fd;
     sunaddr.sun_family = AF_UNIX;
     snprintf(sunaddr.sun_path, sizeof(sunaddr.sun_path), "%s", path);
@@ -418,28 +431,30 @@ int ssh_socket_unix(ssh_socket s, const char *path)
     if (fd == SSH_INVALID_SOCKET) {
         ssh_set_error(s->session, SSH_FATAL,
                       "Error from socket(AF_UNIX, SOCK_STREAM, 0): %s",
-                      strerror(errno));
+                      ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
         return -1;
     }
 
+#ifndef _WIN32
     if (fcntl(fd, F_SETFD, 1) == -1) {
         ssh_set_error(s->session, SSH_FATAL,
                       "Error from fcntl(fd, F_SETFD, 1): %s",
-                      strerror(errno));
-        close(fd);
+                      ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
+        CLOSE_SOCKET(fd);
         return -1;
     }
+#endif
 
     if (connect(fd, (struct sockaddr *) &sunaddr, sizeof(sunaddr)) < 0) {
-        ssh_set_error(s->session, SSH_FATAL, "Error from connect(): %s",
-                      strerror(errno));
-        close(fd);
+        ssh_set_error(s->session, SSH_FATAL, "Error from connect(%s): %s",
+                      path,
+                      ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
+        CLOSE_SOCKET(fd);
         return -1;
     }
     ssh_socket_set_fd(s,fd);
     return 0;
 }
-#endif
 
 /** \internal
  * \brief closes a socket
@@ -473,12 +488,14 @@ void ssh_socket_close(ssh_socket s)
         kill(pid, SIGTERM);
         while (waitpid(pid, &status, 0) == -1) {
             if (errno != EINTR) {
-                SSH_LOG(SSH_LOG_WARN, "waitpid failed: %s", strerror(errno));
+                char err_msg[SSH_ERRNO_MSG_MAX] = {0};
+                SSH_LOG(SSH_LOG_WARN, "waitpid failed: %s",
+                        ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
                 return;
             }
         }
         if (!WIFEXITED(status)) {
-            SSH_LOG(SSH_LOG_WARN, "Proxy command exitted abnormally");
+            SSH_LOG(SSH_LOG_WARN, "Proxy command exited abnormally");
             return;
         }
         SSH_LOG(SSH_LOG_TRACE, "Proxy command returned %d", WEXITSTATUS(status));
@@ -491,7 +508,7 @@ void ssh_socket_close(ssh_socket s)
  * @brief sets the file descriptor of the socket.
  * @param[out] s ssh_socket to update
  * @param[in] fd file descriptor to set
- * @warning this function updates boths the input and output
+ * @warning this function updates both the input and output
  * file descriptors
  */
 void ssh_socket_set_fd(ssh_socket s, socket_t fd)
@@ -634,7 +651,7 @@ void ssh_socket_fd_set(ssh_socket s, fd_set *set, socket_t *max_fd)
  * \returns SSH_OK, or SSH_ERROR
  * \warning has no effect on socket before a flush
  */
-int ssh_socket_write(ssh_socket s, const void *buffer, int len)
+int ssh_socket_write(ssh_socket s, const void *buffer, uint32_t len)
 {
     if (len > 0) {
         if (ssh_buffer_add_data(s->out_buffer, buffer, len) < 0) {
@@ -664,11 +681,12 @@ int ssh_socket_nonblocking_flush(ssh_socket s)
                                     s->last_errno,
                                     s->callbacks->userdata);
         } else {
+            char err_msg[SSH_ERRNO_MSG_MAX] = {0};
             ssh_set_error(session,
                           SSH_FATAL,
                           "Writing packet: error on socket (or connection "
                           "closed): %s",
-                          strerror(s->last_errno));
+                          ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
         }
 
         return SSH_ERROR;
@@ -697,11 +715,12 @@ int ssh_socket_nonblocking_flush(ssh_socket s)
                                         s->last_errno,
                                         s->callbacks->userdata);
             } else {
+                char err_msg[SSH_ERRNO_MSG_MAX] = {0};
                 ssh_set_error(session,
                               SSH_FATAL,
                               "Writing packet: error on socket (or connection "
                               "closed): %s",
-                              strerror(s->last_errno));
+                              ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
             }
 
             return SSH_ERROR;
@@ -825,7 +844,7 @@ int ssh_socket_set_blocking(socket_t fd)
 /**
  * @internal
  * @brief Launches a socket connection
- * If a the socket connected callback has been defined and
+ * If the socket connected callback has been defined and
  * a poll object exists, this call will be non blocking.
  * @param s    socket to connect.
  * @param host hostname or ip address to connect to.
@@ -842,7 +861,7 @@ int ssh_socket_connect(ssh_socket s,
                        const char *bind_addr)
 {
     socket_t fd;
-    
+
     if (s->state != SSH_SOCKET_NONE) {
         ssh_set_error(s->session, SSH_FATAL,
                       "ssh_socket_connect called on socket not unconnected");
@@ -854,7 +873,7 @@ int ssh_socket_connect(ssh_socket s,
         return SSH_ERROR;
     }
     ssh_socket_set_fd(s,fd);
-    
+
     return SSH_OK;
 }
 
@@ -869,13 +888,29 @@ int ssh_socket_connect(ssh_socket s,
 void
 ssh_execute_command(const char *command, socket_t in, socket_t out)
 {
-    const char *args[] = {"/bin/sh", "-c", command, NULL};
+    const char *shell = NULL;
+    const char *args[] = {NULL/*shell*/, "-c", command, NULL};
+    int devnull;
+    int rc;
+
     /* Prepare /dev/null socket for the stderr redirection */
-    int devnull = open("/dev/null", O_WRONLY);
+    devnull = open("/dev/null", O_WRONLY);
     if (devnull == -1) {
         SSH_LOG(SSH_LOG_WARNING, "Failed to open /dev/null");
         exit(1);
     }
+
+    /*
+     * By default, use the current users shell. This could fail with some
+     * shells like zsh or dash ...
+     */
+    shell = getenv("SHELL");
+    if (shell == NULL || shell[0] == '\0') {
+        /* Fall back to bash. There are issues with dash or
+         * whatever people tend to link to /bin/sh */
+        shell = "/bin/bash";
+    }
+    args[0] = shell;
 
     /* redirect in and out to stdin, stdout */
     dup2(in, 0);
@@ -884,7 +919,13 @@ ssh_execute_command(const char *command, socket_t in, socket_t out)
     dup2(devnull, STDERR_FILENO);
     close(in);
     close(out);
-    execv(args[0], (char * const *)args);
+    rc = execv(args[0], (char * const *)args);
+    if (rc < 0) {
+        char err_msg[SSH_ERRNO_MSG_MAX] = {0};
+
+        SSH_LOG(SSH_LOG_WARN, "Failed to execute command %s: %s",
+                command, ssh_strerror(errno, err_msg, SSH_ERRNO_MSG_MAX));
+    }
     exit(1);
 }
 

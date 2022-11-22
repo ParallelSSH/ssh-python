@@ -5,9 +5,7 @@
 
 #ifndef POLY1305_H
 #define POLY1305_H
-
-#define POLY1305_KEYLEN    32
-#define POLY1305_TAGLEN    16
+#include "libssh/chacha20-poly1305-common.h"
 
 void poly1305_auth(uint8_t out[POLY1305_TAGLEN], const uint8_t *m, size_t inlen,
     const uint8_t key[POLY1305_KEYLEN])

@@ -14,20 +14,29 @@ The goal is to show the API in action. It's not a reference on how terminal
 clients must be made or how a client should react.
 */
 
+#include "config.h"
+
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <libssh/libssh.h>
+#include <libssh/kex.h>
 
 int main(int argc, char **argv)
 {
     const char *banner = NULL;
     ssh_session session = NULL;
+    const char *hostkeys = NULL;
     int rc = 1;
+
+    bool process_config = false;
 
     if (argc < 1 || argv[1] == NULL) {
         fprintf(stderr, "Error: Need an argument (hostname)\n");
         goto out;
     }
+
+    ssh_init();
 
     session = ssh_new();
     if (session == NULL) {
@@ -41,6 +50,19 @@ int main(int argc, char **argv)
 
     /* The automatic username is not available under uid wrapper */
     rc = ssh_options_set(session, SSH_OPTIONS_USER, "ping");
+    if (rc < 0) {
+        goto out;
+    }
+
+    /* Ignore system-wide configurations when simply trying to reach host */
+    rc = ssh_options_set(session, SSH_OPTIONS_PROCESS_CONFIG, &process_config);
+    if (rc < 0) {
+        goto out;
+    }
+
+    /* Enable all supported algorithms (including DSA) */
+    hostkeys = ssh_kex_get_supported_method(SSH_HOSTKEYS);
+    rc = ssh_options_set(session, SSH_OPTIONS_HOSTKEYS, hostkeys);
     if (rc < 0) {
         goto out;
     }
@@ -62,6 +84,7 @@ int main(int argc, char **argv)
 
 out:
     ssh_free(session);
+    ssh_finalize();
     return rc;
 }
 

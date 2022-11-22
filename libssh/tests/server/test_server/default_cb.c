@@ -51,6 +51,40 @@
 #include <util.h>
 #endif
 
+int auth_none_cb(UNUSED_PARAM(ssh_session session),
+                 const char *user,
+                 void *userdata)
+{
+    struct session_data_st *sdata = NULL;
+    ssh_string banner = NULL;
+
+    sdata = (struct session_data_st *)userdata;
+    if (sdata == NULL) {
+        fprintf(stderr, "Error: NULL userdata\n");
+        goto denied;
+    }
+
+    if (sdata->username == NULL) {
+        fprintf(stderr, "Error: expected username not set\n");
+        goto denied;
+    }
+
+    printf("None authentication of user %s\n", user);
+
+    /* Send the banner */
+    banner = ssh_string_from_char(SSHD_BANNER_MESSAGE);
+    if (banner == NULL) {
+        goto denied;
+    }
+    if (ssh_send_issue_banner(session, banner) == SSH_ERROR) {
+        fprintf(stderr, "Error: Failed to send the banner.\n");
+        goto denied;
+    }
+denied:
+    ssh_string_free(banner);
+    return SSH_AUTH_DENIED;
+}
+
 int auth_pubkey_cb(UNUSED_PARAM(ssh_session session),
                    const char *user,
                    UNUSED_PARAM(struct ssh_key_struct *pubkey),
@@ -743,6 +777,7 @@ struct ssh_server_callbacks_struct *get_default_server_cb(void)
         goto end;
     }
 
+    cb->auth_none_function = auth_none_cb;
     cb->auth_password_function = auth_password_cb;
     cb->auth_pubkey_function = auth_pubkey_cb;
     cb->channel_open_request_session_function = channel_new_session_cb;
