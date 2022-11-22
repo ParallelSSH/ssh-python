@@ -16,7 +16,7 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@0.3.2
+  python: circleci/python@2.1.1
 
 jobs:
   python_test:
@@ -25,21 +25,17 @@ jobs:
         type: string
         default: "3.9"
     docker:
-      - image: circleci/python:<< parameters.python_ver >>
+      - image: cimg/python:<< parameters.python_ver >>
     steps:
       - checkout
-      - python/load-cache:
-          dependency-file: requirements_dev.txt
-          key: depsv3-{{ .Branch }}.{{ arch }}-PY<< parameters.python_ver >>
+      - python/install-packages:
+          pip-dependency-file: requirements_dev.txt
+          pkg-manager: pip
       - run:
           name: Deps
           command: |
             sudo apt-get update
             sudo apt-get install cmake openssh-server
-            pip install -r requirements_dev.txt
-      - python/save-cache:
-          dependency-file: requirements_dev.txt
-          key: depsv3-{{ .Branch }}.{{ arch }}-PY<< parameters.python_ver >>
       - run:
           command: |
             pip install -e .
@@ -95,9 +91,9 @@ jobs:
       - run:
           name: sdist
           command: python setup.py sdist
-      - python/load-cache:
-          key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
-          dependency-file: requirements_dev.txt
+      - python/install-packages:
+          pip-dependency-file: requirements_dev.txt
+          pkg-manager: pip
       - run:
           name: Git LFS
           command: |
@@ -113,9 +109,6 @@ jobs:
             pip install twine
             which twine
             which python3
-      - python/save-cache:
-          key: manylinuxdepsv6-{{ .Branch }}.{{ arch }}
-          dependency-file: requirements_dev.txt
       - run:
           name: Build Wheels
           command: |
@@ -150,7 +143,7 @@ workflows:
                 - "3.6"
                 - "3.8"
                 - "3.9"
-                - "3.10"
+                - "3.11"
           filters:
             tags:
               ignore: /.*/
