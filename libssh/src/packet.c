@@ -113,7 +113,7 @@ static ssh_packet_callback default_packet_handlers[]= {
   ssh_packet_global_request,               // SSH2_MSG_GLOBAL_REQUEST             80
 #else /* WITH_SERVER */
   NULL,
-#endif /* WITH_SERVER */ 
+#endif /* WITH_SERVER */
   ssh_request_success,                     // SSH2_MSG_REQUEST_SUCCESS            81
   ssh_request_denied,                      // SSH2_MSG_REQUEST_FAILURE            82
   NULL, NULL, NULL, NULL, NULL, NULL, NULL,//                                     83-89
@@ -363,7 +363,7 @@ static enum ssh_packet_filter_result_e ssh_packet_incoming_filter(ssh_session se
          * Transitions:
          * - session->dh_handshake_state = DH_STATE_INIT_SENT
          * then calls dh_handshake_server which triggers:
-         * - session->dh_handhsake_state = DH_STATE_NEWKEYS_SENT
+         * - session->dh_handshake_state = DH_STATE_NEWKEYS_SENT
          * */
 
         if (session->session_state != SSH_SESSION_STATE_DH) {
@@ -391,7 +391,7 @@ static enum ssh_packet_filter_result_e ssh_packet_incoming_filter(ssh_session se
          *   or dh_handshake_state == DH_STATE_REQUEST_SENT (dh-gex)
          *
          * Transitions:
-         * - session->dh_handhsake_state = DH_STATE_NEWKEYS_SENT
+         * - session->dh_handshake_state = DH_STATE_NEWKEYS_SENT
          * */
 
         if (session->session_state != SSH_SESSION_STATE_DH) {
@@ -425,7 +425,7 @@ static enum ssh_packet_filter_result_e ssh_packet_incoming_filter(ssh_session se
         /*
          * States required:
          * - session_state == SSH_SESSION_STATE_AUTHENTICATING
-         * - dh_hanshake_state == DH_STATE_FINISHED
+         * - dh_handshake_state == DH_STATE_FINISHED
          *
          * Transitions:
          * - if authentication was successful:
@@ -454,7 +454,7 @@ static enum ssh_packet_filter_result_e ssh_packet_incoming_filter(ssh_session se
         /*
          * States required:
          * - session_state == SSH_SESSION_STATE_AUTHENTICATING
-         * - dh_hanshake_state == DH_STATE_FINISHED
+         * - dh_handshake_state == DH_STATE_FINISHED
          * - session->auth.state == SSH_AUTH_STATE_KBDINT_SENT
          *   or session->auth.state == SSH_AUTH_STATE_PUBKEY_OFFER_SENT
          *   or session->auth.state == SSH_AUTH_STATE_PUBKEY_AUTH_SENT
@@ -492,7 +492,7 @@ static enum ssh_packet_filter_result_e ssh_packet_incoming_filter(ssh_session se
         /*
          * States required:
          * - session_state == SSH_SESSION_STATE_AUTHENTICATING
-         * - dh_hanshake_state == DH_STATE_FINISHED
+         * - dh_handshake_state == DH_STATE_FINISHED
          * - session->auth.state == SSH_AUTH_STATE_KBDINT_SENT
          *   or session->auth.state == SSH_AUTH_STATE_PUBKEY_AUTH_SENT
          *   or session->auth.state == SSH_AUTH_STATE_PASSWORD_AUTH_SENT
@@ -1034,7 +1034,7 @@ static bool ssh_packet_need_rekey(ssh_session session,
                          in_cipher->blocks + next_blocks > in_cipher->max_blocks);
 
     SSH_LOG(SSH_LOG_PACKET,
-            "packet: [data_rekey_needed=%d, out_blocks=%" PRIu64 ", in_blocks=%" PRIu64,
+            "rekey: [data_rekey_needed=%d, out_blocks=%" PRIu64 ", in_blocks=%" PRIu64 "]",
             data_rekey_needed,
             out_cipher->blocks + next_blocks,
             in_cipher->blocks + next_blocks);
@@ -1054,14 +1054,14 @@ static bool ssh_packet_need_rekey(ssh_session session,
  * @len length of data received. It might not be enough for a complete packet
  * @returns number of bytes read and processed.
  */
-int ssh_packet_socket_callback(const void *data, size_t receivedlen, void *user)
+size_t ssh_packet_socket_callback(const void *data, size_t receivedlen, void *user)
 {
     ssh_session session = (ssh_session)user;
     uint32_t blocksize = 8;
     uint32_t lenfield_blocksize = 8;
     size_t current_macsize = 0;
     uint8_t *ptr = NULL;
-    int to_be_read;
+    long to_be_read;
     int rc;
     uint8_t *cleartext_packet = NULL;
     uint8_t *packet_second_block = NULL;
@@ -1069,7 +1069,7 @@ int ssh_packet_socket_callback(const void *data, size_t receivedlen, void *user)
     size_t packet_remaining;
     uint32_t packet_len, compsize, payloadsize;
     uint8_t padding;
-    size_t processed = 0; /* number of byte processed from the callback */
+    size_t processed = 0; /* number of bytes processed from the callback */
     enum ssh_packet_filter_result_e filter_result;
     struct ssh_crypto_struct *crypto = NULL;
     bool etm = false;
@@ -1169,7 +1169,7 @@ int ssh_packet_socket_callback(const void *data, size_t receivedlen, void *user)
                 /* remote sshd sends invalid sizes? */
                 ssh_set_error(session,
                               SSH_FATAL,
-                              "Given numbers of bytes left to be read < 0 (%d)!",
+                              "Given numbers of bytes left to be read < 0 (%ld)!",
                               to_be_read);
                 goto error;
             }
@@ -1183,11 +1183,11 @@ int ssh_packet_socket_callback(const void *data, size_t receivedlen, void *user)
             to_be_read = packet_len + sizeof(uint32_t) + current_macsize;
             /* if to_be_read is zero, the whole packet was blocksize bytes. */
             if (to_be_read != 0) {
-                if (receivedlen  < (unsigned int)to_be_read) {
+                if (receivedlen  < (unsigned long)to_be_read) {
                     /* give up, not enough data in buffer */
                     SSH_LOG(SSH_LOG_PACKET,
                             "packet: partial packet (read len) "
-                            "[len=%d, receivedlen=%d, to_be_read=%d]",
+                            "[len=%d, receivedlen=%d, to_be_read=%ld]",
                             packet_len,
                             (int)receivedlen,
                             to_be_read);
@@ -1211,7 +1211,7 @@ int ssh_packet_socket_callback(const void *data, size_t receivedlen, void *user)
                 if (crypto != NULL) {
                     mac = packet_second_block + packet_remaining;
 
-                    if (etm) {
+                    if (crypto->in_hmac != SSH_HMAC_NONE && etm) {
                         rc = ssh_packet_hmac_verify(session,
                                                     data,
                                                     processed,
@@ -1241,7 +1241,7 @@ int ssh_packet_socket_callback(const void *data, size_t receivedlen, void *user)
                         }
                     }
 
-                    if (!etm) {
+                    if (crypto->in_hmac != SSH_HMAC_NONE && !etm) {
                         rc = ssh_packet_hmac_verify(session,
                                                     ssh_buffer_get(session->in_buffer),
                                                     ssh_buffer_get_len(session->in_buffer),
@@ -1350,7 +1350,7 @@ int ssh_packet_socket_callback(const void *data, size_t receivedlen, void *user)
             if (processed < receivedlen) {
                 /* Handle a potential packet left in socket buffer */
                 SSH_LOG(SSH_LOG_PACKET,
-                        "Processing %" PRIdS " bytes left in socket buffer",
+                        "Processing %zu bytes left in socket buffer",
                         receivedlen-processed);
 
                 ptr = ((uint8_t*)data) + processed;
@@ -1382,7 +1382,7 @@ int ssh_packet_socket_callback(const void *data, size_t receivedlen, void *user)
 
 error:
     session->session_state= SSH_SESSION_STATE_ERROR;
-    SSH_LOG(SSH_LOG_PACKET,"Packet: processed %" PRIdS " bytes", processed);
+    SSH_LOG(SSH_LOG_PACKET,"Packet: processed %zu bytes", processed);
     return processed;
 }
 
@@ -1684,6 +1684,9 @@ static int packet_send2(ssh_session session)
     hmac = ssh_packet_encrypt(session,
                               ssh_buffer_get(session->out_buffer),
                               ssh_buffer_get_len(session->out_buffer));
+    /* XXX This returns null before switching on crypto, with none MAC
+     * and on various errors.
+     * We should distinguish between these cases to avoid hiding errors. */
     if (hmac != NULL) {
         rc = ssh_buffer_add_data(session->out_buffer,
                                  hmac,
@@ -1877,6 +1880,7 @@ int
 ssh_packet_set_newkeys(ssh_session session,
                        enum ssh_crypto_direction_e direction)
 {
+    struct ssh_cipher_struct *in_cipher = NULL, *out_cipher = NULL;
     int rc;
 
     SSH_LOG(SSH_LOG_TRACE,
@@ -1954,41 +1958,42 @@ ssh_packet_set_newkeys(ssh_session session,
         return SSH_ERROR;
     }
 
-    if (session->next_crypto->in_cipher == NULL ||
-        session->next_crypto->out_cipher == NULL) {
+    in_cipher = session->next_crypto->in_cipher;
+    out_cipher = session->next_crypto->out_cipher;
+    if (in_cipher == NULL || out_cipher == NULL) {
         return SSH_ERROR;
     }
 
     /* Initialize rekeying states */
-    ssh_init_rekey_state(session,
-                         session->next_crypto->out_cipher);
-    ssh_init_rekey_state(session,
-                         session->next_crypto->in_cipher);
+    ssh_init_rekey_state(session, out_cipher);
+    ssh_init_rekey_state(session, in_cipher);
     if (session->opts.rekey_time != 0) {
         ssh_timestamp_init(&session->last_rekey_time);
         SSH_LOG(SSH_LOG_PROTOCOL, "Set rekey after %" PRIu32 " seconds",
                 session->opts.rekey_time/1000);
     }
 
-    /* Initialize the encryption and decryption keys in next_crypto */
-    rc = session->next_crypto->in_cipher->set_decrypt_key(
-        session->next_crypto->in_cipher,
-        session->next_crypto->decryptkey,
-        session->next_crypto->decryptIV);
-    if (rc < 0) {
-        /* On error, make sure it is not used */
-        session->next_crypto->used = 0;
-        return SSH_ERROR;
+    if (in_cipher->set_decrypt_key) {
+        /* Initialize the encryption and decryption keys in next_crypto */
+        rc = in_cipher->set_decrypt_key(in_cipher,
+                                        session->next_crypto->decryptkey,
+                                        session->next_crypto->decryptIV);
+        if (rc < 0) {
+            /* On error, make sure it is not used */
+            session->next_crypto->used = 0;
+            return SSH_ERROR;
+        }
     }
 
-    rc = session->next_crypto->out_cipher->set_encrypt_key(
-        session->next_crypto->out_cipher,
-        session->next_crypto->encryptkey,
-        session->next_crypto->encryptIV);
-    if (rc < 0) {
-        /* On error, make sure it is not used */
-        session->next_crypto->used = 0;
-        return SSH_ERROR;
+    if (out_cipher->set_encrypt_key) {
+        rc = out_cipher->set_encrypt_key(out_cipher,
+                                         session->next_crypto->encryptkey,
+                                         session->next_crypto->encryptIV);
+        if (rc < 0) {
+            /* On error, make sure it is not used */
+            session->next_crypto->used = 0;
+            return SSH_ERROR;
+        }
     }
 
     return SSH_OK;

@@ -38,6 +38,8 @@
 #include <fcntl.h>
 #include <pwd.h>
 
+#define KEX_RETRY 32
+
 static uint64_t bytes = 2048; /* 2KB (more than the authentication phase) */
 
 static int sshd_setup(void **state)
@@ -268,6 +270,7 @@ static void torture_rekey_recv(void **state)
     int fd;
     sftp_file file;
     mode_t mask;
+    int rc;
 
     /* The blocks limit is set correctly */
     c = s->ssh.session->current_crypto;
@@ -301,6 +304,8 @@ static void torture_rekey_recv(void **state)
         assert_int_equal(byteswritten, bytesread);
     }
 
+    rc = sftp_close(file);
+    assert_int_equal(rc, SSH_NO_ERROR);
     close(fd);
 
     /* The rekey limit was restored in the new crypto to the same value */
@@ -496,9 +501,15 @@ static void torture_rekey_different_kex(void **state)
      * to make sure the rekey it completes with all different ciphers (paddings */
     memset(data, 0, sizeof(data));
     memset(data, 'A', 128);
-    for (i = 0; i < 20; i++) {
+    for (i = 0; i < KEX_RETRY; i++) {
         ssh_send_ignore(s->ssh.session, data);
-        ssh_handle_packets(s->ssh.session, 50);
+        ssh_handle_packets(s->ssh.session, 100);
+
+        c = s->ssh.session->current_crypto;
+        /* SHA256 len */
+        if (c->digest_len != 32) {
+            break;
+        }
     }
 
     /* The rekey limit was restored in the new crypto to the same value */
@@ -568,9 +579,15 @@ static void torture_rekey_server_different_kex(void **state)
      * to make sure the rekey it completes with all different ciphers (paddings */
     memset(data, 0, sizeof(data));
     memset(data, 'A', 128);
-    for (i = 0; i < 25; i++) {
+    for (i = 0; i < KEX_RETRY; i++) {
         ssh_send_ignore(s->ssh.session, data);
-        ssh_handle_packets(s->ssh.session, 50);
+        ssh_handle_packets(s->ssh.session, 100);
+
+        c = s->ssh.session->current_crypto;
+        /* SHA256 len */
+        if (c->digest_len != 32) {
+            break;
+        }
     }
 
     /* Check that the secret hash is different than initially */
@@ -611,6 +628,7 @@ static void torture_rekey_server_recv(void **state)
     int fd;
     sftp_file file;
     mode_t mask;
+    int rc;
 
     /* Copy the initial secret hash = session_id so we know we changed keys later */
     c = s->ssh.session->current_crypto;
@@ -638,6 +656,8 @@ static void torture_rekey_server_recv(void **state)
         assert_int_equal(byteswritten, bytesread);
     }
 
+    rc = sftp_close(file);
+    assert_int_equal(rc, SSH_NO_ERROR);
     close(fd);
 
     /* Check that the secret hash is different than initially */

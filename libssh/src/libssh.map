@@ -1,4 +1,4 @@
-# This map file was updated with abimap-0.3.1
+# This map file was updated with abimap-0.3.2
 
 LIBSSH_4_5_0    # Released
 {
@@ -447,3 +447,15 @@ LIBSSH_4_8_1    # Released
         ssh_session_get_known_hosts_entry;
         ssh_threads_get_default;
 } LIBSSH_4_8_0;
+
+LIBSSH_4_9_0    # Released
+{
+    global:
+        ssh_channel_open_forward_port;
+        ssh_key_dup;
+        ssh_send_issue_banner;
+        ssh_session_set_disconnect_message;
+        ssh_userauth_publickey_auto_get_current_identity;
+        ssh_vlog;
+} LIBSSH_4_8_1;
+

@@ -2,6 +2,11 @@
 #define LIBCRYPTO_COMPAT_H
 
 #include <openssl/opensslv.h>
+
+#define NISTP256 "P-256"
+#define NISTP384 "P-384"
+#define NISTP521 "P-521"
+
 #if OPENSSL_VERSION_NUMBER < 0x10100000L
 
 #include <openssl/rsa.h>
@@ -30,15 +35,8 @@ int DSA_SIG_set0(DSA_SIG *sig, BIGNUM *r, BIGNUM *s);
 void ECDSA_SIG_get0(const ECDSA_SIG *sig, const BIGNUM **pr, const BIGNUM **ps);
 int ECDSA_SIG_set0(ECDSA_SIG *sig, BIGNUM *r, BIGNUM *s);
 
-int EVP_MD_CTX_reset(EVP_MD_CTX *ctx);
 EVP_MD_CTX *EVP_MD_CTX_new(void);
 void EVP_MD_CTX_free(EVP_MD_CTX *ctx);
-
-int EVP_CIPHER_CTX_reset(EVP_CIPHER_CTX *ctx);
-
-HMAC_CTX *HMAC_CTX_new(void);
-int HMAC_CTX_reset(HMAC_CTX *ctx);
-void HMAC_CTX_free(HMAC_CTX *ctx);
 
 void DH_get0_pqg(const DH *dh,
                  const BIGNUM **p, const BIGNUM **q, const BIGNUM **g);

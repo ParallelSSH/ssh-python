@@ -38,7 +38,7 @@ typedef EVP_MD_CTX* SHA256CTX;
 typedef EVP_MD_CTX* SHA384CTX;
 typedef EVP_MD_CTX* SHA512CTX;
 typedef EVP_MD_CTX* MD5CTX;
-typedef HMAC_CTX* HMACCTX;
+typedef EVP_MD_CTX* HMACCTX;
 #ifdef HAVE_ECC
 typedef EVP_MD_CTX *EVPCTX;
 #else
@@ -60,10 +60,6 @@ typedef void *EVPCTX;
 
 #include <openssl/bn.h>
 #include <openssl/opensslv.h>
-#define OPENSSL_0_9_7b 0x0090702fL
-#if (OPENSSL_VERSION_NUMBER <= OPENSSL_0_9_7b)
-#define BROKEN_AES_CTR
-#endif
 typedef BIGNUM*  bignum;
 typedef const BIGNUM* const_bignum;
 typedef BN_CTX* bignum_CTX;
@@ -114,6 +110,8 @@ typedef BN_CTX* bignum_CTX;
 /* Returns true if the OpenSSL is operating in FIPS mode */
 #ifdef HAVE_OPENSSL_FIPS_MODE
 #define ssh_fips_mode() (FIPS_mode() != 0)
+#elif OPENSSL_VERSION_NUMBER >= 0x30000000L
+#define ssh_fips_mode() EVP_default_properties_is_fips_enabled(NULL)
 #else
 #define ssh_fips_mode() false
 #endif

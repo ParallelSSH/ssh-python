@@ -5,10 +5,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "pki.c"
 #include "torture.h"
 #include "torture_pki.h"
 #include "torture_key.h"
-#include "pki.c"
 
 const unsigned char INPUT[] = "1234567890123456789012345678901234567890"
                               "123456789012345678901234";
@@ -164,11 +164,11 @@ struct key_attrs key_attrs_list[][5] = {
         {0, 1, "", 521, 0, "", 0}, /* ECDSA, SHA512 */
     },
     {
-        {1, 1, "ssh-ed25519", 0, 33, "ssh-ed25519", 1}, /* ED25519, AUTO */
-        {1, 1, "ssh-ed25519", 0, 0, "", 0},             /* ED25519, SHA1 */
-        {1, 1, "ssh-ed25519", 0, 0, "", 0},             /* ED25519, SHA256 */
-        {1, 1, "ssh-ed25519", 0, 0, "", 0},             /* ED25519, SHA384 */
-        {1, 1, "ssh-ed25519", 0, 0, "", 0},             /* ED25519, SHA512 */
+        {1, 1, "ssh-ed25519", 255, 33, "ssh-ed25519", 1}, /* ED25519, AUTO */
+        {1, 1, "ssh-ed25519", 255, 0, "", 0},             /* ED25519, SHA1 */
+        {1, 1, "ssh-ed25519", 255, 0, "", 0},             /* ED25519, SHA256 */
+        {1, 1, "ssh-ed25519", 255, 0, "", 0},             /* ED25519, SHA384 */
+        {1, 1, "ssh-ed25519", 255, 0, "", 0},             /* ED25519, SHA512 */
     },
 #ifdef HAVE_DSA
     {
@@ -260,6 +260,7 @@ static void torture_pki_verify_mismatch(void **state)
     enum ssh_digest_e hash;
     size_t input_length = sizeof(INPUT);
     struct key_attrs skey_attrs, vkey_attrs;
+    int bits;
 
     (void) state;
 
@@ -294,6 +295,8 @@ static void torture_pki_verify_mismatch(void **state)
             assert_non_null(key);
             assert_int_equal(key->type, sig_type);
             assert_string_equal(key->type_c, skey_attrs.type_c);
+            bits = ssh_key_size(key);
+            assert_int_equal(bits, skey_attrs.size_arg);
 
             SSH_LOG(SSH_LOG_TRACE, "Creating signature %d with hash %d",
                     sig_type, hash);

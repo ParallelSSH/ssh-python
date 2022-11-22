@@ -33,7 +33,9 @@
 #include "libssh/crypto.h"
 #include "libssh/session.h"
 
+#ifndef BLOCKSIZE
 #define BLOCKSIZE 4092
+#endif
 
 static z_stream *initcompress(ssh_session session, int level) {
   z_stream *stream = NULL;
@@ -60,10 +62,10 @@ static ssh_buffer gzip_compress(ssh_session session, ssh_buffer source, int leve
   struct ssh_crypto_struct *crypto = NULL;
   z_stream *zout = NULL;
   void *in_ptr = ssh_buffer_get(source);
-  unsigned long in_size = ssh_buffer_get_len(source);
+  uint32_t in_size = ssh_buffer_get_len(source);
   ssh_buffer dest = NULL;
   unsigned char out_buf[BLOCKSIZE] = {0};
-  unsigned long len;
+  uint32_t len;
   int status;
 
   crypto = ssh_packet_get_current_crypto(session, SSH_DIRECTION_OUT);
@@ -155,10 +157,10 @@ static ssh_buffer gzip_decompress(ssh_session session, ssh_buffer source, size_t
   struct ssh_crypto_struct *crypto = NULL;
   z_stream *zin = NULL;
   void *in_ptr = ssh_buffer_get(source);
-  unsigned long in_size = ssh_buffer_get_len(source);
+  uint32_t in_size = ssh_buffer_get_len(source);
   unsigned char out_buf[BLOCKSIZE] = {0};
   ssh_buffer dest = NULL;
-  unsigned long len;
+  uint32_t len;
   int status;
 
   crypto = ssh_packet_get_current_crypto(session, SSH_DIRECTION_IN);

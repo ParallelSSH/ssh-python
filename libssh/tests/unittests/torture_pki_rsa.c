@@ -6,10 +6,10 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
+#include "pki.c"
 #include "torture.h"
 #include "torture_pki.h"
 #include "torture_key.h"
-#include "pki.c"
 
 #define LIBSSH_RSA_TESTKEY "libssh_testkey.id_rsa"
 #define LIBSSH_RSA_TESTKEY_PASSPHRASE "libssh_testkey_passphrase.id_rsa"
@@ -541,8 +541,12 @@ static void torture_pki_rsa_generate_key(void **state)
     int rc;
     ssh_key key = NULL, pubkey = NULL;
     ssh_signature sign = NULL;
-    ssh_session session=ssh_new();
+    ssh_session session = ssh_new();
+    int verbosity = torture_libssh_verbosity();
+
     (void) state;
+
+    ssh_options_set(session, SSH_OPTIONS_LOG_VERBOSITY, &verbosity);
 
     if (!ssh_fips_mode()) {
         rc = ssh_pki_generate(SSH_KEYTYPE_RSA, 1024, &key);
@@ -662,6 +666,44 @@ static void torture_pki_rsa_sha2(void **state)
     SSH_KEY_FREE(key);
     SSH_KEY_FREE(pubkey);
     SSH_KEY_FREE(cert);
+    ssh_free(session);
+}
+
+static void torture_pki_rsa_key_size(void **state)
+{
+    int rc;
+    ssh_key key = NULL, pubkey = NULL;
+    ssh_signature sign = NULL;
+    ssh_session session=ssh_new();
+    unsigned int length = 4096;
+
+    (void) state;
+
+    rc = ssh_pki_generate(SSH_KEYTYPE_RSA, 2048, &key);
+    assert_true(rc == SSH_OK);
+    assert_non_null(key);
+    rc = ssh_pki_export_privkey_to_pubkey(key, &pubkey);
+    assert_int_equal(rc, SSH_OK);
+    assert_non_null(pubkey);
+    sign = pki_do_sign(key, INPUT, sizeof(INPUT), SSH_DIGEST_SHA256);
+    assert_non_null(sign);
+    rc = ssh_pki_signature_verify(session, sign, pubkey, INPUT, sizeof(INPUT));
+    assert_ssh_return_code(session, rc);
+
+    /* Set the minumum RSA key size to 4k */
+    rc = ssh_options_set(session, SSH_OPTIONS_RSA_MIN_SIZE, &length);
+    assert_ssh_return_code(session, rc);
+
+    /* the verification should fail now */
+    rc = ssh_pki_signature_verify(session, sign, pubkey, INPUT, sizeof(INPUT));
+    assert_true(rc == SSH_ERROR);
+
+    ssh_signature_free(sign);
+    SSH_KEY_FREE(key);
+    SSH_KEY_FREE(pubkey);
+    key = NULL;
+    pubkey = NULL;
+
     ssh_free(session);
 }
 
@@ -985,6 +1027,7 @@ int torture_run_tests(void) {
                                         setup_rsa_key,
                                         teardown),
         cmocka_unit_test(torture_pki_rsa_generate_key),
+        cmocka_unit_test(torture_pki_rsa_key_size),
 #if defined(HAVE_LIBCRYPTO)
         cmocka_unit_test_setup_teardown(torture_pki_rsa_write_privkey,
                                         setup_rsa_key,

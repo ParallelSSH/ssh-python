@@ -21,9 +21,9 @@ The libssh library provides:
 
  - <strong>Key Exchange Methods</strong>: <i>curve25519-sha256, curve25519-sha256@libssh.org, ecdh-sha2-nistp256, ecdh-sha2-nistp384, ecdh-sha2-nistp521</i>, diffie-hellman-group1-sha1, diffie-hellman-group14-sha1
  - <strong>Public Key Algorithms</strong>: ssh-ed25519, ecdsa-sha2-nistp256, ecdsa-sha2-nistp384, ecdsa-sha2-nistp521, ssh-rsa, rsa-sha2-512, rsa-sha2-256,ssh-dss
- - <strong>Ciphers</strong>: <i>aes256-ctr, aes192-ctr, aes128-ctr</i>, aes256-cbc (rijndael-cbc@lysator.liu.se), aes192-cbc, aes128-cbc, 3des-cbc, blowfish-cbc, none
+ - <strong>Ciphers</strong>: <i>aes256-ctr, aes192-ctr, aes128-ctr</i>, aes256-cbc (rijndael-cbc@lysator.liu.se), aes192-cbc, aes128-cbc, 3des-cbc, blowfish-cbc
  - <strong>Compression Schemes</strong>: zlib, <i>zlib@openssh.com</i>, none
- - <strong>MAC hashes</strong>: hmac-sha1, hmac-sha2-256, hmac-sha2-512, hmac-md5, none
+ - <strong>MAC hashes</strong>: hmac-sha1, hmac-sha2-256, hmac-sha2-512, hmac-md5
  - <strong>Authentication</strong>: none, password, public-key, keyboard-interactive, <i>gssapi-with-mic</i>
  - <strong>Channels</strong>: shell, exec (incl. SCP wrapper), direct-tcpip, subsystem, <i>auth-agent-req@openssh.com</i>
  - <strong>Global Requests</strong>: tcpip-forward, forwarded-tcpip
@@ -38,7 +38,7 @@ The libssh library provides:
 @section main-additional-features Additional Features
 
  - Client <b>and</b> server support
- - SSHv2 and SSHv1 protocol support
+ - SSHv2 protocol support
  - Supports <a href="https://test.libssh.org/" target="_blank">Linux, UNIX, BSD, Solaris, OS/2 and Windows</a>
  - Automated test cases with nightly <a href="https://test.libssh.org/" target="_blank">tests</a>
  - Event model based on poll(2), or a poll(2)-emulation.
@@ -211,6 +211,8 @@ It was later modified and expanded by the following RFCs.
     (only the "server-sig-algs" extension implemented)
  - <a href="https://tools.ietf.org/html/rfc8332" target="_blank">RFC 8332</a>,
     Use of RSA Keys with SHA-256 and SHA-512 in the Secure Shell (SSH) Protocol
+ - <a href="https://tools.ietf.org/html/rfc8709" target="_blank">RFC 8709</a>,
+    Ed25519 and Ed448 Public Key Algorithms for the Secure Shell (SSH) Protocol
 
 There are also drafts that are being currently developed and followed.
 
