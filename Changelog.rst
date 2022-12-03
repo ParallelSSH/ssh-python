@@ -14,6 +14,7 @@ Packaging
 
 * Upgraded wheel OpenSSL to 1.1.1q.
 * Added testing for Python 3.11, removed 3.10.
+* Added manylinux 2.24 wheel builds for x86_64 and AARCH64 (ARM64).
 * Added Windows wheel build for Python 3.11.
 * Added OSX 12.0 wheels.
 * Removed OSX <= 10.0 wheels.
