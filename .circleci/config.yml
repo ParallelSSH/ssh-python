@@ -43,6 +43,7 @@ jobs:
           name: Build
       - run:
           command: |
+            set -x
             ls -lhtr ssh/
             pwd
             ldd -r ssh/session*.so
@@ -149,11 +150,11 @@ workflows:
               ignore: /.*/
       - manylinux-x86_64: &manylinux-wf
           context: Docker
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
+#          filters:
+#            tags:
+#              only: /.*/
+#            branches:
+#              ignore: /.*/
       - manylinux-aarch64: *manylinux-wf
       - osx:
           matrix:
@@ -162,8 +163,8 @@ workflows:
                 - "14.0.0"
                 - "13.1.0"
           context: Docker
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
+#          filters:
+#            tags:
+#              only: /.*/
+#            branches:
+#              ignore: /.*/

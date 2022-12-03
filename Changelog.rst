@@ -1,6 +1,23 @@
 Change Log
 =============
 
+1.0.0
+++++++
+
+Changes
+--------
+
+* Updated embedded and manylinux libssh to ``0.10.4`` - thank you @enkore
+
+Packaging
+----------
+
+* Upgraded wheel OpenSSL to 1.1.1q.
+* Added testing for Python 3.11, removed 3.10.
+* Added Windows wheel build for Python 3.11.
+* Added OSX 12.0 wheels.
+* Removed OSX <= 10.0 wheels.
+
 0.10.0
 ++++++
 
@@ -99,7 +116,8 @@ Fixes
 Changes
 --------
 
-* Updated error handling code to check for SSH status codes and correctly raise exceptions or return error code with no exception in non-blocking mode.
+* Updated error handling code to check for SSH status codes and correctly raise exceptions or return error code with no
+  exception in non-blocking mode.
 * Updated embedded libssh to ``0.9.4``.
 * Added known host session API method implementations.
 
