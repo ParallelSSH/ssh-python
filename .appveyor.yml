@@ -47,9 +47,8 @@ install:
           throw "There are newer queued builds for this pull request, failing early." }
   - set OPENSSL_DIR="C:\OpenSSL-v11-Win%PYTHON_ARCH%"
   - set VCLIBDIR=%WINDIR%\System32
-  - cp %VCLIBDIR%/vcruntime*.dll ssh/
-  - cp %VCLIBDIR%/msvcp*.dll ssh/
-  - cp %VCLIBDIR%/msvcr*.dll ssh/
+  - cp %VCLIBDIR%/vcruntime140.dll ssh/
+  - cp %VCLIBDIR%/msvcr120.dll ssh/
   - cp %OPENSSL_DIR%/bin/*.dll ssh/
 
   - for %%I in (%PYTHONVERS%) do %%I\python.exe -V
