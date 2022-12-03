@@ -43,6 +43,7 @@ jobs:
           name: Build
       - run:
           command: |
+            set -x
             ls -lhtr ssh/
             pwd
             ldd -r ssh/session*.so
