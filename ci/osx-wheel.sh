@@ -26,7 +26,7 @@ set -x
 python -V
 pip3 install -U setuptools pip
 pip3 install -U delocate wheel
-python3 setup.py bdist_wheel
+SYSTEM_LIBSSH=1 python3 setup.py bdist_wheel
 ls -lhtr /usr/local/lib/
 delocate-listdeps dist/*.whl
 delocate-wheel -v -w wheels dist/*.whl
