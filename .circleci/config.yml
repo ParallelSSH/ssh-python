@@ -70,7 +70,7 @@ jobs:
       - run:
           name: deps
           command: |
-            brew install cmake git-lfs krb5 python libssh
+            brew install cmake git-lfs krb5 python
             pip3 install twine
             which twine
       - run:
@@ -150,18 +150,18 @@ workflows:
               ignore: /.*/
       - manylinux-x86_64: &manylinux-wf
           context: Docker
-#          filters:
-#            tags:
-#              only: /.*/
-#            branches:
-#              ignore: /.*/
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
       - manylinux-aarch64: *manylinux-wf
       - osx:
           matrix:
             parameters:
               xcode_ver:
                 - "14.0.0"
-                - "13.1.0"
+#                - "13.1.0"
           context: Docker
 #          filters:
 #            tags:
