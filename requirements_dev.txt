@@ -1,4 +1,4 @@
-cython
+cython<1
 flake8
 jinja2
 sphinx
