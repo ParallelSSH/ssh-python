@@ -17,9 +17,12 @@
 
 # Compile wheels
 rm -rf /io/build
-# For testing
-#for PYBIN in $(ls -1d /opt/python/cp310-cp310/bin | grep -v cpython); do
-for PYBIN in $(ls -1d /opt/python/*/bin | grep -v cpython); do
+
+PYVERS=$(ls -1d /opt/python/*/bin | grep -v cpython | grep -v cp36- | sort -V)
+# For testing:
+#PYVERS=/opt/python/cp311-cp311/bin
+
+for PYBIN in $PYVERS; do
     "${PYBIN}/pip" wheel /io/ -w wheelhouse/
 done
 
@@ -29,8 +32,7 @@ for whl in wheelhouse/*.whl; do
 done
 
 # Install packages and test
-#for PYBIN in $(ls -1d /opt/python/cp310-cp310/bin | grep -v cpython); do
-for PYBIN in $(ls -1d /opt/python/*/bin | grep -v cpython); do
+for PYBIN in $PYVERS; do
     "${PYBIN}/pip" install ssh-python --no-index -f /io/wheelhouse
     (cd "$HOME"; "${PYBIN}/python" -c 'from ssh.session import Session; Session()')
 done

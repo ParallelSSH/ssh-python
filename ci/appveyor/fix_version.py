@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 import subprocess
 import json
+import re
 import sys
 
 def get_describe_tag():
@@ -12,11 +13,12 @@ def make_version_file(basedir):
                          subprocess.check_output(['git', 'rev-list', '--max-count=1', 'HEAD']).strip().decode('utf-8'))
     basedir = os.path.abspath(basedir)
     git_desc = get_describe_tag()
+    pep440ish = re.sub('^([0-9.]+)-(\\d+)-([0-9a-fg]+)', '\\1.dev\\2+\\3', git_desc)
     version_json = {'date': datetime.now().isoformat(),
                     'dirty': False,
                     'error': None,
                     'full-revisionid': rev,
-                    'version': git_desc}
+                    'version': pep440ish}
     data = """
 import json
 
