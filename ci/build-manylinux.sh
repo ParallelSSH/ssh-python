@@ -15,10 +15,8 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-
 docker_repo="parallelssh/ssh-manylinux"
 docker_files=(
-              "ci/docker/manylinux/Dockerfile"
               "ci/docker/manylinux/Dockerfile.2014_x86_64"
 #              "ci/docker/manylinux/Dockerfile.manylinux_2_24_x86_64"
 #              "ci/docker/manylinux/Dockerfile.manylinux_2_28_x86_64"
@@ -36,10 +34,8 @@ if [[ $(uname -m) == "aarch64" ]]; then
 fi
 
 for docker_file in "${docker_files[@]}"; do
-    if [[ ${docker_file} == "ci/docker/manylinux/Dockerfile_2014_x86_64" ]]; then
+    if [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.2014_x86_64" ]]; then
         docker_tag="${docker_repo}:2014_x86_64"
-    elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile" ]]; then
-        docker_tag="${docker_repo}:2010_x86_64"
     elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.manylinux_2_24_x86_64" ]]; then
         docker_tag="${docker_repo}:2_24_x86_64"
     elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.manylinux_2_28_x86_64" ]]; then
