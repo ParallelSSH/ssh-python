@@ -4,7 +4,7 @@ ENV OPENSSL openssl-3.1.1
 ENV LIBSSH 0.10.5
 ENV KRB 1.21.1
 ENV SYSTEM_LIBSSH 1
-ENV CFLAGS "-g0 -s"
+ENV CFLAGS "-g0 -s -flto -fpic -fno-semantic-interposition"
 
 RUN yum install -y zlib-devel cmake3 perl-core
 
@@ -15,19 +15,23 @@ ADD krb5-${KRB}.tar.xz krb5-${KRB}.tar.xz
 RUN tar -xzf ${OPENSSL}.tar.gz
 # Openssl
 RUN cd ${OPENSSL} && \
-    ./config --prefix=/usr --openssldir=/usr/openssl threads shared && \
+    ./config --prefix=/usr --openssldir=/usr/openssl threads no-shared no-stdio \
+	no-autoerrinit no-autoload-config no-autoalginit no-cmp no-cms no-comp no-ct no-dgram no-dso no-filenames no-gost no-ocsp \
+	no-psk no-rfc3779 no-sock no-srp no-srtp no-ts \
+	no-aria no-bf no-blake2 no-camellia no-cast no-cmac no-idea no-md4 no-mdc2 no-ocb no-rc2 no-rc4 no-rmd160 no-siphash no-siv no-sm2 no-sm3 no-sm4 no-whirlpool \
+	&& \
     make -j6 && make install_sw
 
 # Kerberos
-RUN cd krb5-${KRB}.tar.xz/krb5-${KRB}/src && \
-    ./configure && \
-    make -j6 && \
-    make install
+#RUN cd krb5-${KRB}.tar.xz/krb5-${KRB}/src && \
+#    ./configure && \
+#    make -j6 && \
+#    make install
 
 # Libssh
 RUN mkdir -p build_libssh && cd build_libssh && \
     cmake3 ../libssh.tar.xz/libssh-${LIBSSH} -DCMAKE_BUILD_TYPE=Release \
-          -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF && \
+        -DWITH_EXAMPLES=OFF && \
     make -j6 install/strip
 
 RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-${KRB}.tar.xz

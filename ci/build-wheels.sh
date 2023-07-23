@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -x
 # This file is part of ssh-python.
 # Copyright (C) 2017-2022 Panos Kittenis and contributors.
 #
