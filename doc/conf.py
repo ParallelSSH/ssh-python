@@ -121,7 +121,7 @@ html_sidebars = {
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'ssh-pythondoc'
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {'python': ('https://docs.python.org/', None)}
 autoclass_content = "both"
 
 # A list of files that should not be packed into the epub file.
