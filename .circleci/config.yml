@@ -145,6 +145,7 @@ workflows:
                 - "3.8"
                 - "3.9"
                 - "3.11"
+                - "3.12"
           filters:
             tags:
               ignore: /.*/
