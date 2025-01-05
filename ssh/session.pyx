@@ -18,18 +18,18 @@ from cpython cimport PyObject_AsFileDescriptor
 from libc.stdlib cimport malloc, free
 from libc.string cimport const_char
 
-from channel cimport Channel
-from connector cimport Connector
-from utils cimport to_bytes, to_str, handle_error_codes, handle_auth_error_codes
-from options cimport Option
-from key cimport SSHKey
-from sftp cimport SFTP
-from scp cimport SCP
+from .channel cimport Channel
+from .connector cimport Connector
+from .utils cimport to_bytes, to_str, handle_error_codes, handle_auth_error_codes
+from .options cimport Option
+from .key cimport SSHKey
+from .sftp cimport SFTP
+from .scp cimport SCP
 
-from exceptions import OptionError, InvalidAPIUse, ChannelOpenFailure
+from .exceptions import OptionError, InvalidAPIUse, ChannelOpenFailure
 
-from c_sftp cimport sftp_session, sftp_new, sftp_init
-cimport c_ssh
+from .c_sftp cimport sftp_session, sftp_new, sftp_init
+from . cimport c_ssh
 
 
 # SSH status flags

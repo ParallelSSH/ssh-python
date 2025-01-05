@@ -18,12 +18,12 @@ from select import select
 
 from cpython.version cimport PY_MAJOR_VERSION
 
-from c_ssh cimport ssh_error_types_e, ssh_get_error, ssh_auth_e, \
+from .c_ssh cimport ssh_error_types_e, ssh_get_error, ssh_auth_e, \
     SSH_OK, SSH_ERROR, SSH_AGAIN, SSH_EOF, ssh_session, ssh_string, \
     ssh_string_get_char, ssh_string_free, ssh_string_len, SSH_READ_PENDING, \
     SSH_WRITE_PENDING
 
-from exceptions import OtherError, \
+from .exceptions import OtherError, \
     AuthenticationPartial, AuthenticationDenied, AuthenticationError, \
     SSHError, EOF
 

@@ -16,12 +16,12 @@
 
 from cpython cimport PyObject_AsFileDescriptor
 
-from utils cimport handle_error_codes
+from .utils cimport handle_error_codes
 
-from connector cimport Connector
-from session cimport Session
+from .connector cimport Connector
+from .session cimport Session
 
-cimport c_ssh
+from . cimport c_ssh
 
 
 cdef class Event:

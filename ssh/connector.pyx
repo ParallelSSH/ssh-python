@@ -16,11 +16,11 @@
 
 from cpython cimport PyObject_AsFileDescriptor
 
-from channel cimport Channel
-from session cimport Session
+from .channel cimport Channel
+from .session cimport Session
 
-from utils cimport handle_error_codes
-cimport c_ssh
+from .utils cimport handle_error_codes
+from . cimport c_ssh
 
 
 cdef class Flag:

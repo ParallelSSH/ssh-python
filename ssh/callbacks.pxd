@@ -14,7 +14,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-cimport c_callbacks
+from . cimport c_callbacks
 
 
 cdef class Callbacks:

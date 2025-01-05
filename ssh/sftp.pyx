@@ -16,15 +16,15 @@
 
 from libc.stdlib cimport malloc, free
 
-from session cimport Session
-from sftp_handles cimport SFTPFile, SFTPDir
-from sftp_attributes cimport SFTPAttributes
-from sftp_statvfs cimport SFTPStatVFS
-from utils cimport handle_error_codes, to_bytes, to_str
+from .session cimport Session
+from .sftp_handles cimport SFTPFile, SFTPDir
+from .sftp_attributes cimport SFTPAttributes
+from .sftp_statvfs cimport SFTPStatVFS
+from .utils cimport handle_error_codes, to_bytes, to_str
 from .exceptions import SFTPError, SFTPHandleError
 
-from c_ssh cimport ssh_get_error, ssh_get_error_code, timeval
-cimport c_sftp
+from .c_ssh cimport ssh_get_error, ssh_get_error_code, timeval
+from . cimport c_sftp
 
 
 cdef class SFTP:

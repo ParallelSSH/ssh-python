@@ -16,11 +16,11 @@
 
 from libc.stdlib cimport malloc, free
 
-from sftp cimport SFTP
-from utils cimport ssh_string_to_bytes
+from .sftp cimport SFTP
+from .utils cimport ssh_string_to_bytes
 
-from c_ssh cimport ssh_string, uint8_t, uint32_t, uint64_t
-cimport c_sftp
+from .c_ssh cimport ssh_string, uint8_t, uint32_t, uint64_t
+from . cimport c_sftp
 
 
 cdef class SFTPAttributes:
