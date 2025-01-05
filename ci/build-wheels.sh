@@ -32,5 +32,6 @@ done
 #for PYBIN in $(ls -1d /opt/python/cp310-cp310/bin | grep -v cpython); do
 for PYBIN in $(ls -1d /opt/python/*/bin | grep -v cpython); do
     "${PYBIN}/pip" install ssh-python --no-index -f /io/wheelhouse
-    (cd "$HOME"; "${PYBIN}/python" -c 'from ssh.session import Session; Session()')
+    (cd "$HOME"; "${PYBIN}/python" -c 'from ssh.session import Session; Session()' &&
+    echo "Import sanity check succeeded.")
 done
