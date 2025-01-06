@@ -2,7 +2,8 @@ FROM quay.io/pypa/manylinux2010_x86_64
 
 ENV OPENSSL openssl-3.4.0
 ENV LIBSSH 0.11.1
-ENV KRB 1.18.4
+ENV KRB 1.21.3
+ENV CMAKE 3.31.3
 ENV SYSTEM_LIBSSH 1
 ENV CFLAGS "-g0 -s"
 
@@ -11,12 +12,24 @@ RUN yum install zlib-devel cmake3 perl-IPC-Cmd -y
 ADD libssh-${LIBSSH}.tar.xz libssh.tar.xz
 ADD https://www.openssl.org/source/${OPENSSL}.tar.gz ${OPENSSL}.tar.gz
 ADD krb5-${KRB}.tar.xz krb5-${KRB}.tar.xz
+ADD cmake-${CMAKE}.tar.xz cmake-${CMAKE}.tar.xz
 
 RUN tar -xzf ${OPENSSL}.tar.gz
+
 # Openssl
 RUN cd ${OPENSSL} && \
     ./config --prefix=/usr --openssldir=/usr/openssl threads shared && \
     make -j6 && make install_sw
+
+
+# CMake - Krb dependency
+RUN cd cmake-${CMAKE}.tar.xz/cmake-${CMAKE} && \
+    ./bootstrap --prefix=/usr && \
+    make && \
+    make install
+
+
+RUN yum remove cmake3 -y
 
 # Kerberos
 RUN cd krb5-${KRB}.tar.xz/krb5-${KRB}/src && \
@@ -26,10 +39,10 @@ RUN cd krb5-${KRB}.tar.xz/krb5-${KRB}/src && \
 
 # Libssh
 RUN mkdir -p build_libssh && cd build_libssh && \
-    cmake3 ../libssh.tar.xz/libssh-${LIBSSH} -DCMAKE_BUILD_TYPE=Release \
+    cmake ../libssh.tar.xz/libssh-${LIBSSH} -DCMAKE_BUILD_TYPE=Release \
           -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF && \
     make -j6 install/strip
 
-RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-${KRB}.tar.xz
+RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-${KRB}.tar.xz cmake-${CMAKE}.tar.xz
 
 VOLUME /var/cache
