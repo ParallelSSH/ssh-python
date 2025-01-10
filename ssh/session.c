@@ -1529,10 +1529,10 @@ static const char *__pyx_filename;
 static const char *__pyx_f[] = {
   "ssh/session.pyx",
   "<stringsource>",
-  "env/lib/python3.9/site-packages/Cython/Includes/cpython/contextvars.pxd",
-  "env/lib/python3.9/site-packages/Cython/Includes/cpython/type.pxd",
-  "env/lib/python3.9/site-packages/Cython/Includes/cpython/bool.pxd",
-  "env/lib/python3.9/site-packages/Cython/Includes/cpython/complex.pxd",
+  "env/lib/python3.12/site-packages/Cython/Includes/cpython/contextvars.pxd",
+  "env/lib/python3.12/site-packages/Cython/Includes/cpython/type.pxd",
+  "env/lib/python3.12/site-packages/Cython/Includes/cpython/bool.pxd",
+  "env/lib/python3.12/site-packages/Cython/Includes/cpython/complex.pxd",
   "ssh/channel.pxd",
   "ssh/connector.pxd",
   "ssh/options.pxd",
@@ -5195,7 +5195,7 @@ static CYTHON_INLINE PyObject *__pyx_f_7cpython_11contextvars_get_value_no_defau
 /* "ssh/session.pyx":51
  * 
  * 
- * cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:             # <<<<<<<<<<<<<<
+ * cdef bint _check_connected(c_ssh.ssh_session session) except -1 nogil:             # <<<<<<<<<<<<<<
  *     if not c_ssh.ssh_is_connected(session):
  *         with gil:
  */
@@ -5218,7 +5218,7 @@ static int __pyx_f_3ssh_7session__check_connected(ssh_session __pyx_v_session) {
 
   /* "ssh/session.pyx":52
  * 
- * cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
+ * cdef bint _check_connected(c_ssh.ssh_session session) except -1 nogil:
  *     if not c_ssh.ssh_is_connected(session):             # <<<<<<<<<<<<<<
  *         with gil:
  *             raise InvalidAPIUse("Session is not connected")
@@ -5227,7 +5227,7 @@ static int __pyx_f_3ssh_7session__check_connected(ssh_session __pyx_v_session) {
   if (unlikely(__pyx_t_1)) {
 
     /* "ssh/session.pyx":53
- * cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
+ * cdef bint _check_connected(c_ssh.ssh_session session) except -1 nogil:
  *     if not c_ssh.ssh_is_connected(session):
  *         with gil:             # <<<<<<<<<<<<<<
  *             raise InvalidAPIUse("Session is not connected")
@@ -5276,7 +5276,7 @@ static int __pyx_f_3ssh_7session__check_connected(ssh_session __pyx_v_session) {
         }
 
         /* "ssh/session.pyx":53
- * cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
+ * cdef bint _check_connected(c_ssh.ssh_session session) except -1 nogil:
  *     if not c_ssh.ssh_is_connected(session):
  *         with gil:             # <<<<<<<<<<<<<<
  *             raise InvalidAPIUse("Session is not connected")
@@ -5294,7 +5294,7 @@ static int __pyx_f_3ssh_7session__check_connected(ssh_session __pyx_v_session) {
 
     /* "ssh/session.pyx":52
  * 
- * cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
+ * cdef bint _check_connected(c_ssh.ssh_session session) except -1 nogil:
  *     if not c_ssh.ssh_is_connected(session):             # <<<<<<<<<<<<<<
  *         with gil:
  *             raise InvalidAPIUse("Session is not connected")
@@ -5314,7 +5314,7 @@ static int __pyx_f_3ssh_7session__check_connected(ssh_session __pyx_v_session) {
   /* "ssh/session.pyx":51
  * 
  * 
- * cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:             # <<<<<<<<<<<<<<
+ * cdef bint _check_connected(c_ssh.ssh_session session) except -1 nogil:             # <<<<<<<<<<<<<<
  *     if not c_ssh.ssh_is_connected(session):
  *         with gil:
  */

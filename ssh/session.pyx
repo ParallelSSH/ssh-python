@@ -48,7 +48,7 @@ SSH_AUTH_AGAIN = c_ssh.ssh_auth_e.SSH_AUTH_AGAIN
 SSH_AUTH_ERROR = c_ssh.ssh_auth_e.SSH_AUTH_ERROR
 
 
-cdef bint _check_connected(c_ssh.ssh_session session) nogil except -1:
+cdef bint _check_connected(c_ssh.ssh_session session) except -1 nogil:
     if not c_ssh.ssh_is_connected(session):
         with gil:
             raise InvalidAPIUse("Session is not connected")

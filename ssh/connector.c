@@ -1525,12 +1525,12 @@ static const char *__pyx_filename;
 
 static const char *__pyx_f[] = {
   "<stringsource>",
-  "env/lib/python3.9/site-packages/Cython/Includes/cpython/contextvars.pxd",
+  "env/lib/python3.12/site-packages/Cython/Includes/cpython/contextvars.pxd",
   "ssh/connector.pyx",
   "ssh/session.pxd",
-  "env/lib/python3.9/site-packages/Cython/Includes/cpython/type.pxd",
-  "env/lib/python3.9/site-packages/Cython/Includes/cpython/bool.pxd",
-  "env/lib/python3.9/site-packages/Cython/Includes/cpython/complex.pxd",
+  "env/lib/python3.12/site-packages/Cython/Includes/cpython/type.pxd",
+  "env/lib/python3.12/site-packages/Cython/Includes/cpython/bool.pxd",
+  "env/lib/python3.12/site-packages/Cython/Includes/cpython/complex.pxd",
   "ssh/channel.pxd",
 };
 /* #### Code section: utility_code_proto_before_types ### */
