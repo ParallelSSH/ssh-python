@@ -1,4 +1,5 @@
 recursive-exclude docker *
+recursive-exclude ci *
 include versioneer.py
 include ssh/_version.py
 exclude .travis.yml
