@@ -43,6 +43,8 @@ cdef class SFTP:
 
     def init(self):
         cdef int rc
+        if self._sftp is NULL or not self.session:
+            return 0
         with nogil:
             rc = c_sftp.sftp_init(self._sftp)
         return handle_error_codes(rc, self.session._session)

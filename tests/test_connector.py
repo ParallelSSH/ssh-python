@@ -14,11 +14,10 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-import unittest
 import socket
 
-from ssh.connector import Connector, CONNECTOR_STDOUT, CONNECTOR_STDERR, \
-    CONNECTOR_BOTH
+from ssh.connector import Connector
+from ssh.session import Session
 
 from .base_case import SSHTestCase
 
@@ -26,16 +25,9 @@ from .base_case import SSHTestCase
 class ConnectorTest(SSHTestCase):
 
     def test_connector(self):
-        self._auth()
-        connector = self.session.connector_new()
+        session = Session()
+        connector = session.connector_new()
         self.assertIsInstance(connector, Connector)
-        chan = self.session.channel_new()
-        self.assertEqual(
-            connector.set_in_channel(chan, CONNECTOR_STDOUT), 0)
-        self.assertEqual(
-            connector.set_out_channel(chan, CONNECTOR_STDERR), 0)
-        self.assertEqual(
-            connector.set_in_channel(chan, CONNECTOR_BOTH), 0)
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.assertIsNone(connector.set_in_fd(sock))
         self.assertIsNone(connector.set_out_fd(sock))

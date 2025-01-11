@@ -2741,6 +2741,7 @@ typedef struct {
   PyObject *__pyx_n_s_utimes;
   PyObject *__pyx_n_s_val;
   PyObject *__pyx_n_s_vfs;
+  PyObject *__pyx_int_0;
   PyObject *__pyx_tuple__2;
   PyObject *__pyx_tuple__6;
   PyObject *__pyx_tuple__9;
@@ -2957,6 +2958,7 @@ static int __pyx_m_clear(PyObject *m) {
   Py_CLEAR(clear_module_state->__pyx_n_s_utimes);
   Py_CLEAR(clear_module_state->__pyx_n_s_val);
   Py_CLEAR(clear_module_state->__pyx_n_s_vfs);
+  Py_CLEAR(clear_module_state->__pyx_int_0);
   Py_CLEAR(clear_module_state->__pyx_tuple__2);
   Py_CLEAR(clear_module_state->__pyx_tuple__6);
   Py_CLEAR(clear_module_state->__pyx_tuple__9);
@@ -3151,6 +3153,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
   Py_VISIT(traverse_module_state->__pyx_n_s_utimes);
   Py_VISIT(traverse_module_state->__pyx_n_s_val);
   Py_VISIT(traverse_module_state->__pyx_n_s_vfs);
+  Py_VISIT(traverse_module_state->__pyx_int_0);
   Py_VISIT(traverse_module_state->__pyx_tuple__2);
   Py_VISIT(traverse_module_state->__pyx_tuple__6);
   Py_VISIT(traverse_module_state->__pyx_tuple__9);
@@ -3381,6 +3384,7 @@ static int __pyx_m_traverse(PyObject *m, visitproc visit, void *arg) {
 #define __pyx_n_s_utimes __pyx_mstate_global->__pyx_n_s_utimes
 #define __pyx_n_s_val __pyx_mstate_global->__pyx_n_s_val
 #define __pyx_n_s_vfs __pyx_mstate_global->__pyx_n_s_vfs
+#define __pyx_int_0 __pyx_mstate_global->__pyx_int_0
 #define __pyx_tuple__2 __pyx_mstate_global->__pyx_tuple__2
 #define __pyx_tuple__6 __pyx_mstate_global->__pyx_tuple__6
 #define __pyx_tuple__9 __pyx_mstate_global->__pyx_tuple__9
@@ -3587,7 +3591,7 @@ static void __pyx_pf_3ssh_4sftp_4SFTP___dealloc__(struct __pyx_obj_3ssh_4sftp_SF
  * 
  *     def init(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
- *         with nogil:
+ *         if self._sftp is NULL or not self.session:
  */
 
 /* Python wrapper */
@@ -3637,7 +3641,10 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_2init(struct __pyx_obj_3ssh_4sftp_SFT
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
-  PyObject *__pyx_t_2 = NULL;
+  int __pyx_t_2;
+  int __pyx_t_3;
+  int __pyx_t_4;
+  PyObject *__pyx_t_5 = NULL;
   int __pyx_lineno = 0;
   const char *__pyx_filename = NULL;
   int __pyx_clineno = 0;
@@ -3646,6 +3653,46 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_2init(struct __pyx_obj_3ssh_4sftp_SFT
   /* "ssh/sftp.pyx":46
  *     def init(self):
  *         cdef int rc
+ *         if self._sftp is NULL or not self.session:             # <<<<<<<<<<<<<<
+ *             return 0
+ *         with nogil:
+ */
+  __pyx_t_2 = (__pyx_v_self->_sftp == NULL);
+  if (!__pyx_t_2) {
+  } else {
+    __pyx_t_1 = __pyx_t_2;
+    goto __pyx_L4_bool_binop_done;
+  }
+  __pyx_t_2 = __Pyx_PyObject_IsTrue(((PyObject *)__pyx_v_self->session)); if (unlikely((__pyx_t_2 < 0))) __PYX_ERR(0, 46, __pyx_L1_error)
+  __pyx_t_3 = (!__pyx_t_2);
+  __pyx_t_1 = __pyx_t_3;
+  __pyx_L4_bool_binop_done:;
+  if (__pyx_t_1) {
+
+    /* "ssh/sftp.pyx":47
+ *         cdef int rc
+ *         if self._sftp is NULL or not self.session:
+ *             return 0             # <<<<<<<<<<<<<<
+ *         with nogil:
+ *             rc = c_sftp.sftp_init(self._sftp)
+ */
+    __Pyx_XDECREF(__pyx_r);
+    __Pyx_INCREF(__pyx_int_0);
+    __pyx_r = __pyx_int_0;
+    goto __pyx_L0;
+
+    /* "ssh/sftp.pyx":46
+ *     def init(self):
+ *         cdef int rc
+ *         if self._sftp is NULL or not self.session:             # <<<<<<<<<<<<<<
+ *             return 0
+ *         with nogil:
+ */
+  }
+
+  /* "ssh/sftp.pyx":48
+ *         if self._sftp is NULL or not self.session:
+ *             return 0
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_sftp.sftp_init(self._sftp)
  *         return handle_error_codes(rc, self.session._session)
@@ -3659,8 +3706,8 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_2init(struct __pyx_obj_3ssh_4sftp_SFT
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":47
- *         cdef int rc
+        /* "ssh/sftp.pyx":49
+ *             return 0
  *         with nogil:
  *             rc = c_sftp.sftp_init(self._sftp)             # <<<<<<<<<<<<<<
  *         return handle_error_codes(rc, self.session._session)
@@ -3669,9 +3716,9 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_2init(struct __pyx_obj_3ssh_4sftp_SFT
         __pyx_v_rc = sftp_init(__pyx_v_self->_sftp);
       }
 
-      /* "ssh/sftp.pyx":46
- *     def init(self):
- *         cdef int rc
+      /* "ssh/sftp.pyx":48
+ *         if self._sftp is NULL or not self.session:
+ *             return 0
  *         with nogil:             # <<<<<<<<<<<<<<
  *             rc = c_sftp.sftp_init(self._sftp)
  *         return handle_error_codes(rc, self.session._session)
@@ -3682,13 +3729,13 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_2init(struct __pyx_obj_3ssh_4sftp_SFT
           __Pyx_FastGIL_Forget();
           Py_BLOCK_THREADS
           #endif
-          goto __pyx_L5;
+          goto __pyx_L8;
         }
-        __pyx_L5:;
+        __pyx_L8:;
       }
   }
 
-  /* "ssh/sftp.pyx":48
+  /* "ssh/sftp.pyx":50
  *         with nogil:
  *             rc = c_sftp.sftp_init(self._sftp)
  *         return handle_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
@@ -3696,11 +3743,11 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_2init(struct __pyx_obj_3ssh_4sftp_SFT
  *     def get_error(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 48, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 48, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
+  __pyx_t_4 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_r = __pyx_t_5;
+  __pyx_t_5 = 0;
   goto __pyx_L0;
 
   /* "ssh/sftp.pyx":44
@@ -3708,12 +3755,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_2init(struct __pyx_obj_3ssh_4sftp_SFT
  * 
  *     def init(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
- *         with nogil:
+ *         if self._sftp is NULL or not self.session:
  */
 
   /* function exit code */
   __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_5);
   __Pyx_AddTraceback("ssh.sftp.SFTP.init", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
@@ -3722,7 +3769,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_2init(struct __pyx_obj_3ssh_4sftp_SFT
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":50
+/* "ssh/sftp.pyx":52
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def get_error(self):             # <<<<<<<<<<<<<<
@@ -3782,7 +3829,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_4get_error(struct __pyx_obj_3ssh_4sft
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("get_error", 1);
 
-  /* "ssh/sftp.pyx":52
+  /* "ssh/sftp.pyx":54
  *     def get_error(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -3798,7 +3845,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_4get_error(struct __pyx_obj_3ssh_4sft
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":53
+        /* "ssh/sftp.pyx":55
  *         cdef int rc
  *         with nogil:
  *             rc = c_sftp.sftp_get_error(self._sftp)             # <<<<<<<<<<<<<<
@@ -3808,7 +3855,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_4get_error(struct __pyx_obj_3ssh_4sft
         __pyx_v_rc = sftp_get_error(__pyx_v_self->_sftp);
       }
 
-      /* "ssh/sftp.pyx":52
+      /* "ssh/sftp.pyx":54
  *     def get_error(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -3827,7 +3874,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_4get_error(struct __pyx_obj_3ssh_4sft
       }
   }
 
-  /* "ssh/sftp.pyx":54
+  /* "ssh/sftp.pyx":56
  *         with nogil:
  *             rc = c_sftp.sftp_get_error(self._sftp)
  *         return rc             # <<<<<<<<<<<<<<
@@ -3835,13 +3882,13 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_4get_error(struct __pyx_obj_3ssh_4sft
  *     def extensions_get_count(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 54, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 56, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":50
+  /* "ssh/sftp.pyx":52
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def get_error(self):             # <<<<<<<<<<<<<<
@@ -3860,7 +3907,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_4get_error(struct __pyx_obj_3ssh_4sft
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":56
+/* "ssh/sftp.pyx":58
  *         return rc
  * 
  *     def extensions_get_count(self):             # <<<<<<<<<<<<<<
@@ -3920,7 +3967,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_6extensions_get_count(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("extensions_get_count", 1);
 
-  /* "ssh/sftp.pyx":58
+  /* "ssh/sftp.pyx":60
  *     def extensions_get_count(self):
  *         cdef unsigned int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -3936,7 +3983,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_6extensions_get_count(struct __pyx_ob
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":59
+        /* "ssh/sftp.pyx":61
  *         cdef unsigned int rc
  *         with nogil:
  *             rc = c_sftp.sftp_extensions_get_count(self._sftp)             # <<<<<<<<<<<<<<
@@ -3946,7 +3993,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_6extensions_get_count(struct __pyx_ob
         __pyx_v_rc = sftp_extensions_get_count(__pyx_v_self->_sftp);
       }
 
-      /* "ssh/sftp.pyx":58
+      /* "ssh/sftp.pyx":60
  *     def extensions_get_count(self):
  *         cdef unsigned int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -3965,7 +4012,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_6extensions_get_count(struct __pyx_ob
       }
   }
 
-  /* "ssh/sftp.pyx":60
+  /* "ssh/sftp.pyx":62
  *         with nogil:
  *             rc = c_sftp.sftp_extensions_get_count(self._sftp)
  *         return rc             # <<<<<<<<<<<<<<
@@ -3973,13 +4020,13 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_6extensions_get_count(struct __pyx_ob
  *     def extensions_get_name(self, unsigned int indexn):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_unsigned_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_unsigned_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":56
+  /* "ssh/sftp.pyx":58
  *         return rc
  * 
  *     def extensions_get_count(self):             # <<<<<<<<<<<<<<
@@ -3998,7 +4045,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_6extensions_get_count(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":62
+/* "ssh/sftp.pyx":64
  *         return rc
  * 
  *     def extensions_get_name(self, unsigned int indexn):             # <<<<<<<<<<<<<<
@@ -4060,23 +4107,23 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 64, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "extensions_get_name") < 0)) __PYX_ERR(0, 62, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "extensions_get_name") < 0)) __PYX_ERR(0, 64, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
     }
-    __pyx_v_indexn = __Pyx_PyInt_As_unsigned_int(values[0]); if (unlikely((__pyx_v_indexn == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 62, __pyx_L3_error)
+    __pyx_v_indexn = __Pyx_PyInt_As_unsigned_int(values[0]); if (unlikely((__pyx_v_indexn == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 64, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("extensions_get_name", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 62, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("extensions_get_name", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 64, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4115,7 +4162,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_8extensions_get_name(struct __pyx_obj
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("extensions_get_name", 1);
 
-  /* "ssh/sftp.pyx":64
+  /* "ssh/sftp.pyx":66
  *     def extensions_get_name(self, unsigned int indexn):
  *         cdef const char *_name
  *         cdef bytes name = None             # <<<<<<<<<<<<<<
@@ -4125,7 +4172,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_8extensions_get_name(struct __pyx_obj
   __Pyx_INCREF(Py_None);
   __pyx_v_name = ((PyObject*)Py_None);
 
-  /* "ssh/sftp.pyx":65
+  /* "ssh/sftp.pyx":67
  *         cdef const char *_name
  *         cdef bytes name = None
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -4141,7 +4188,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_8extensions_get_name(struct __pyx_obj
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":66
+        /* "ssh/sftp.pyx":68
  *         cdef bytes name = None
  *         with nogil:
  *             _name = c_sftp.sftp_extensions_get_name(self._sftp, indexn)             # <<<<<<<<<<<<<<
@@ -4151,7 +4198,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_8extensions_get_name(struct __pyx_obj
         __pyx_v__name = sftp_extensions_get_name(__pyx_v_self->_sftp, __pyx_v_indexn);
       }
 
-      /* "ssh/sftp.pyx":65
+      /* "ssh/sftp.pyx":67
  *         cdef const char *_name
  *         cdef bytes name = None
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -4170,7 +4217,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_8extensions_get_name(struct __pyx_obj
       }
   }
 
-  /* "ssh/sftp.pyx":67
+  /* "ssh/sftp.pyx":69
  *         with nogil:
  *             _name = c_sftp.sftp_extensions_get_name(self._sftp, indexn)
  *         if _name is not NULL:             # <<<<<<<<<<<<<<
@@ -4180,19 +4227,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_8extensions_get_name(struct __pyx_obj
   __pyx_t_1 = (__pyx_v__name != NULL);
   if (__pyx_t_1) {
 
-    /* "ssh/sftp.pyx":68
+    /* "ssh/sftp.pyx":70
  *             _name = c_sftp.sftp_extensions_get_name(self._sftp, indexn)
  *         if _name is not NULL:
  *             name = _name             # <<<<<<<<<<<<<<
  *         return name
  * 
  */
-    __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF_SET(__pyx_v_name, ((PyObject*)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "ssh/sftp.pyx":67
+    /* "ssh/sftp.pyx":69
  *         with nogil:
  *             _name = c_sftp.sftp_extensions_get_name(self._sftp, indexn)
  *         if _name is not NULL:             # <<<<<<<<<<<<<<
@@ -4201,7 +4248,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_8extensions_get_name(struct __pyx_obj
  */
   }
 
-  /* "ssh/sftp.pyx":69
+  /* "ssh/sftp.pyx":71
  *         if _name is not NULL:
  *             name = _name
  *         return name             # <<<<<<<<<<<<<<
@@ -4213,7 +4260,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_8extensions_get_name(struct __pyx_obj
   __pyx_r = __pyx_v_name;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":62
+  /* "ssh/sftp.pyx":64
  *         return rc
  * 
  *     def extensions_get_name(self, unsigned int indexn):             # <<<<<<<<<<<<<<
@@ -4233,7 +4280,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_8extensions_get_name(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":71
+/* "ssh/sftp.pyx":73
  *         return name
  * 
  *     def extensions_get_data(self, unsigned int indexn):             # <<<<<<<<<<<<<<
@@ -4295,23 +4342,23 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 71, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 73, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "extensions_get_data") < 0)) __PYX_ERR(0, 71, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "extensions_get_data") < 0)) __PYX_ERR(0, 73, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
     } else {
       values[0] = __Pyx_Arg_FASTCALL(__pyx_args, 0);
     }
-    __pyx_v_indexn = __Pyx_PyInt_As_unsigned_int(values[0]); if (unlikely((__pyx_v_indexn == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 71, __pyx_L3_error)
+    __pyx_v_indexn = __Pyx_PyInt_As_unsigned_int(values[0]); if (unlikely((__pyx_v_indexn == (unsigned int)-1) && PyErr_Occurred())) __PYX_ERR(0, 73, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("extensions_get_data", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 71, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("extensions_get_data", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 73, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4350,7 +4397,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_10extensions_get_data(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("extensions_get_data", 1);
 
-  /* "ssh/sftp.pyx":73
+  /* "ssh/sftp.pyx":75
  *     def extensions_get_data(self, unsigned int indexn):
  *         cdef const char *_name
  *         cdef bytes name = None             # <<<<<<<<<<<<<<
@@ -4360,7 +4407,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_10extensions_get_data(struct __pyx_ob
   __Pyx_INCREF(Py_None);
   __pyx_v_name = ((PyObject*)Py_None);
 
-  /* "ssh/sftp.pyx":74
+  /* "ssh/sftp.pyx":76
  *         cdef const char *_name
  *         cdef bytes name = None
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -4376,7 +4423,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_10extensions_get_data(struct __pyx_ob
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":75
+        /* "ssh/sftp.pyx":77
  *         cdef bytes name = None
  *         with nogil:
  *             _name = c_sftp.sftp_extensions_get_data(self._sftp, indexn)             # <<<<<<<<<<<<<<
@@ -4386,7 +4433,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_10extensions_get_data(struct __pyx_ob
         __pyx_v__name = sftp_extensions_get_data(__pyx_v_self->_sftp, __pyx_v_indexn);
       }
 
-      /* "ssh/sftp.pyx":74
+      /* "ssh/sftp.pyx":76
  *         cdef const char *_name
  *         cdef bytes name = None
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -4405,7 +4452,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_10extensions_get_data(struct __pyx_ob
       }
   }
 
-  /* "ssh/sftp.pyx":76
+  /* "ssh/sftp.pyx":78
  *         with nogil:
  *             _name = c_sftp.sftp_extensions_get_data(self._sftp, indexn)
  *         if _name is not NULL:             # <<<<<<<<<<<<<<
@@ -4415,19 +4462,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_10extensions_get_data(struct __pyx_ob
   __pyx_t_1 = (__pyx_v__name != NULL);
   if (__pyx_t_1) {
 
-    /* "ssh/sftp.pyx":77
+    /* "ssh/sftp.pyx":79
  *             _name = c_sftp.sftp_extensions_get_data(self._sftp, indexn)
  *         if _name is not NULL:
  *             name = _name             # <<<<<<<<<<<<<<
  *         return name
  * 
  */
-    __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyBytes_FromString(__pyx_v__name); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 79, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF_SET(__pyx_v_name, ((PyObject*)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "ssh/sftp.pyx":76
+    /* "ssh/sftp.pyx":78
  *         with nogil:
  *             _name = c_sftp.sftp_extensions_get_data(self._sftp, indexn)
  *         if _name is not NULL:             # <<<<<<<<<<<<<<
@@ -4436,7 +4483,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_10extensions_get_data(struct __pyx_ob
  */
   }
 
-  /* "ssh/sftp.pyx":78
+  /* "ssh/sftp.pyx":80
  *         if _name is not NULL:
  *             name = _name
  *         return name             # <<<<<<<<<<<<<<
@@ -4448,7 +4495,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_10extensions_get_data(struct __pyx_ob
   __pyx_r = __pyx_v_name;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":71
+  /* "ssh/sftp.pyx":73
  *         return name
  * 
  *     def extensions_get_data(self, unsigned int indexn):             # <<<<<<<<<<<<<<
@@ -4468,7 +4515,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_10extensions_get_data(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":80
+/* "ssh/sftp.pyx":82
  *         return name
  * 
  *     def extension_supported(self, name not None, data not None):             # <<<<<<<<<<<<<<
@@ -4533,7 +4580,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 82, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -4541,14 +4588,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 80, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 82, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("extension_supported", 1, 2, 2, 1); __PYX_ERR(0, 80, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("extension_supported", 1, 2, 2, 1); __PYX_ERR(0, 82, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "extension_supported") < 0)) __PYX_ERR(0, 80, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "extension_supported") < 0)) __PYX_ERR(0, 82, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -4561,7 +4608,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("extension_supported", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 80, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("extension_supported", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 82, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4576,10 +4623,10 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_name) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "name"); __PYX_ERR(0, 80, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "name"); __PYX_ERR(0, 82, __pyx_L1_error)
   }
   if (unlikely(((PyObject *)__pyx_v_data) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "data"); __PYX_ERR(0, 80, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "data"); __PYX_ERR(0, 82, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_12extension_supported(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_name, __pyx_v_data);
 
@@ -4615,19 +4662,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_12extension_supported(struct __pyx_ob
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("extension_supported", 1);
 
-  /* "ssh/sftp.pyx":82
+  /* "ssh/sftp.pyx":84
  *     def extension_supported(self, name not None, data not None):
  *         cdef bint rc
  *         cdef bytes b_name = to_bytes(name)             # <<<<<<<<<<<<<<
  *         cdef const char *c_name = b_name
  *         cdef bytes b_data = to_bytes(data)
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_name); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_name = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":83
+  /* "ssh/sftp.pyx":85
  *         cdef bint rc
  *         cdef bytes b_name = to_bytes(name)
  *         cdef const char *c_name = b_name             # <<<<<<<<<<<<<<
@@ -4636,24 +4683,24 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_12extension_supported(struct __pyx_ob
  */
   if (unlikely(__pyx_v_b_name == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 83, __pyx_L1_error)
+    __PYX_ERR(0, 85, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_name); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_name); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 85, __pyx_L1_error)
   __pyx_v_c_name = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":84
+  /* "ssh/sftp.pyx":86
  *         cdef bytes b_name = to_bytes(name)
  *         cdef const char *c_name = b_name
  *         cdef bytes b_data = to_bytes(data)             # <<<<<<<<<<<<<<
  *         cdef const char *c_data = b_data
  *         with nogil:
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_data); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_data = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":85
+  /* "ssh/sftp.pyx":87
  *         cdef const char *c_name = b_name
  *         cdef bytes b_data = to_bytes(data)
  *         cdef const char *c_data = b_data             # <<<<<<<<<<<<<<
@@ -4662,12 +4709,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_12extension_supported(struct __pyx_ob
  */
   if (unlikely(__pyx_v_b_data == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 85, __pyx_L1_error)
+    __PYX_ERR(0, 87, __pyx_L1_error)
   }
-  __pyx_t_3 = __Pyx_PyBytes_AsString(__pyx_v_b_data); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 85, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyBytes_AsString(__pyx_v_b_data); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 87, __pyx_L1_error)
   __pyx_v_c_data = __pyx_t_3;
 
-  /* "ssh/sftp.pyx":86
+  /* "ssh/sftp.pyx":88
  *         cdef bytes b_data = to_bytes(data)
  *         cdef const char *c_data = b_data
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -4683,7 +4730,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_12extension_supported(struct __pyx_ob
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":87
+        /* "ssh/sftp.pyx":89
  *         cdef const char *c_data = b_data
  *         with nogil:
  *             rc = c_sftp.sftp_extension_supported(             # <<<<<<<<<<<<<<
@@ -4693,7 +4740,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_12extension_supported(struct __pyx_ob
         __pyx_v_rc = sftp_extension_supported(__pyx_v_self->_sftp, __pyx_v_c_name, __pyx_v_c_data);
       }
 
-      /* "ssh/sftp.pyx":86
+      /* "ssh/sftp.pyx":88
  *         cdef bytes b_data = to_bytes(data)
  *         cdef const char *c_data = b_data
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -4712,7 +4759,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_12extension_supported(struct __pyx_ob
       }
   }
 
-  /* "ssh/sftp.pyx":89
+  /* "ssh/sftp.pyx":91
  *             rc = c_sftp.sftp_extension_supported(
  *                 self._sftp, c_name, c_data)
  *         return bool(rc)             # <<<<<<<<<<<<<<
@@ -4721,13 +4768,13 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_12extension_supported(struct __pyx_ob
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_4 = __pyx_v_rc;
-  __pyx_t_1 = __Pyx_PyBool_FromLong((!(!__pyx_t_4))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 89, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBool_FromLong((!(!__pyx_t_4))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":80
+  /* "ssh/sftp.pyx":82
  *         return name
  * 
  *     def extension_supported(self, name not None, data not None):             # <<<<<<<<<<<<<<
@@ -4748,7 +4795,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_12extension_supported(struct __pyx_ob
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":91
+/* "ssh/sftp.pyx":93
  *         return bool(rc)
  * 
  *     def opendir(self, path not None):             # <<<<<<<<<<<<<<
@@ -4810,12 +4857,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 91, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 93, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "opendir") < 0)) __PYX_ERR(0, 91, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "opendir") < 0)) __PYX_ERR(0, 93, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -4826,7 +4873,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("opendir", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 91, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("opendir", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 93, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -4841,7 +4888,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 91, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 93, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_14opendir(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path);
 
@@ -4879,19 +4926,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_14opendir(struct __pyx_obj_3ssh_4sftp
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("opendir", 1);
 
-  /* "ssh/sftp.pyx":94
+  /* "ssh/sftp.pyx":96
  *         cdef SFTPDir _dir
  *         cdef c_sftp.sftp_dir c_dir
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         with nogil:
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 94, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":95
+  /* "ssh/sftp.pyx":97
  *         cdef c_sftp.sftp_dir c_dir
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -4900,12 +4947,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_14opendir(struct __pyx_obj_3ssh_4sftp
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 95, __pyx_L1_error)
+    __PYX_ERR(0, 97, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 95, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 97, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":96
+  /* "ssh/sftp.pyx":98
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -4921,7 +4968,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_14opendir(struct __pyx_obj_3ssh_4sftp
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":97
+        /* "ssh/sftp.pyx":99
  *         cdef const char *c_path = b_path
  *         with nogil:
  *             c_dir = c_sftp.sftp_opendir(self._sftp, c_path)             # <<<<<<<<<<<<<<
@@ -4931,7 +4978,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_14opendir(struct __pyx_obj_3ssh_4sftp
         __pyx_v_c_dir = sftp_opendir(__pyx_v_self->_sftp, __pyx_v_c_path);
       }
 
-      /* "ssh/sftp.pyx":96
+      /* "ssh/sftp.pyx":98
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -4950,7 +4997,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_14opendir(struct __pyx_obj_3ssh_4sftp
       }
   }
 
-  /* "ssh/sftp.pyx":98
+  /* "ssh/sftp.pyx":100
  *         with nogil:
  *             c_dir = c_sftp.sftp_opendir(self._sftp, c_path)
  *         if c_dir is NULL:             # <<<<<<<<<<<<<<
@@ -4960,16 +5007,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_14opendir(struct __pyx_obj_3ssh_4sftp
   __pyx_t_3 = (__pyx_v_c_dir == NULL);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":99
+    /* "ssh/sftp.pyx":101
  *             c_dir = c_sftp.sftp_opendir(self._sftp, c_path)
  *         if c_dir is NULL:
  *             raise SFTPHandleError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         _dir = SFTPDir.from_ptr(c_dir, self)
  *         return _dir
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPHandleError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPHandleError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 101, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 99, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 101, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -4990,15 +5037,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_14opendir(struct __pyx_obj_3ssh_4sftp
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 99, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 101, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 99, __pyx_L1_error)
+    __PYX_ERR(0, 101, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":98
+    /* "ssh/sftp.pyx":100
  *         with nogil:
  *             c_dir = c_sftp.sftp_opendir(self._sftp, c_path)
  *         if c_dir is NULL:             # <<<<<<<<<<<<<<
@@ -5007,19 +5054,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_14opendir(struct __pyx_obj_3ssh_4sftp
  */
   }
 
-  /* "ssh/sftp.pyx":100
+  /* "ssh/sftp.pyx":102
  *         if c_dir is NULL:
  *             raise SFTPHandleError(ssh_get_error(self.session._session))
  *         _dir = SFTPDir.from_ptr(c_dir, self)             # <<<<<<<<<<<<<<
  *         return _dir
  * 
  */
-  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_12sftp_handles_SFTPDir->from_ptr(__pyx_v_c_dir, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 100, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_12sftp_handles_SFTPDir->from_ptr(__pyx_v_c_dir, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 102, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v__dir = ((struct __pyx_obj_3ssh_12sftp_handles_SFTPDir *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":101
+  /* "ssh/sftp.pyx":103
  *             raise SFTPHandleError(ssh_get_error(self.session._session))
  *         _dir = SFTPDir.from_ptr(c_dir, self)
  *         return _dir             # <<<<<<<<<<<<<<
@@ -5031,7 +5078,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_14opendir(struct __pyx_obj_3ssh_4sftp
   __pyx_r = ((PyObject *)__pyx_v__dir);
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":91
+  /* "ssh/sftp.pyx":93
  *         return bool(rc)
  * 
  *     def opendir(self, path not None):             # <<<<<<<<<<<<<<
@@ -5055,7 +5102,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_14opendir(struct __pyx_obj_3ssh_4sftp
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":103
+/* "ssh/sftp.pyx":105
  *         return _dir
  * 
  *     def stat(self, path not None):             # <<<<<<<<<<<<<<
@@ -5117,12 +5164,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 103, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 105, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "stat") < 0)) __PYX_ERR(0, 103, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "stat") < 0)) __PYX_ERR(0, 105, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -5133,7 +5180,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("stat", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 103, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("stat", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 105, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5148,7 +5195,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 103, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 105, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_16stat(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path);
 
@@ -5186,19 +5233,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_16stat(struct __pyx_obj_3ssh_4sftp_SF
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("stat", 1);
 
-  /* "ssh/sftp.pyx":106
+  /* "ssh/sftp.pyx":108
  *         cdef SFTPAttributes _attrs
  *         cdef c_sftp.sftp_attributes c_attrs
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         with nogil:
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 108, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":107
+  /* "ssh/sftp.pyx":109
  *         cdef c_sftp.sftp_attributes c_attrs
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -5207,12 +5254,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_16stat(struct __pyx_obj_3ssh_4sftp_SF
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 107, __pyx_L1_error)
+    __PYX_ERR(0, 109, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 107, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 109, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":108
+  /* "ssh/sftp.pyx":110
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -5228,7 +5275,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_16stat(struct __pyx_obj_3ssh_4sftp_SF
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":109
+        /* "ssh/sftp.pyx":111
  *         cdef const char *c_path = b_path
  *         with nogil:
  *             c_attrs = c_sftp.sftp_stat(self._sftp, c_path)             # <<<<<<<<<<<<<<
@@ -5238,7 +5285,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_16stat(struct __pyx_obj_3ssh_4sftp_SF
         __pyx_v_c_attrs = sftp_stat(__pyx_v_self->_sftp, __pyx_v_c_path);
       }
 
-      /* "ssh/sftp.pyx":108
+      /* "ssh/sftp.pyx":110
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -5257,7 +5304,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_16stat(struct __pyx_obj_3ssh_4sftp_SF
       }
   }
 
-  /* "ssh/sftp.pyx":110
+  /* "ssh/sftp.pyx":112
  *         with nogil:
  *             c_attrs = c_sftp.sftp_stat(self._sftp, c_path)
  *         if c_attrs is NULL:             # <<<<<<<<<<<<<<
@@ -5267,16 +5314,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_16stat(struct __pyx_obj_3ssh_4sftp_SF
   __pyx_t_3 = (__pyx_v_c_attrs == NULL);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":111
+    /* "ssh/sftp.pyx":113
  *             c_attrs = c_sftp.sftp_stat(self._sftp, c_path)
  *         if c_attrs is NULL:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         _attrs = SFTPAttributes.from_ptr(c_attrs, self)
  *         return _attrs
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 111, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 111, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -5297,15 +5344,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_16stat(struct __pyx_obj_3ssh_4sftp_SF
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 111, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 111, __pyx_L1_error)
+    __PYX_ERR(0, 113, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":110
+    /* "ssh/sftp.pyx":112
  *         with nogil:
  *             c_attrs = c_sftp.sftp_stat(self._sftp, c_path)
  *         if c_attrs is NULL:             # <<<<<<<<<<<<<<
@@ -5314,19 +5361,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_16stat(struct __pyx_obj_3ssh_4sftp_SF
  */
   }
 
-  /* "ssh/sftp.pyx":112
+  /* "ssh/sftp.pyx":114
  *         if c_attrs is NULL:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         _attrs = SFTPAttributes.from_ptr(c_attrs, self)             # <<<<<<<<<<<<<<
  *         return _attrs
  * 
  */
-  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_15sftp_attributes_SFTPAttributes->from_ptr(__pyx_v_c_attrs, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 112, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_15sftp_attributes_SFTPAttributes->from_ptr(__pyx_v_c_attrs, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 114, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v__attrs = ((struct __pyx_obj_3ssh_15sftp_attributes_SFTPAttributes *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":113
+  /* "ssh/sftp.pyx":115
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         _attrs = SFTPAttributes.from_ptr(c_attrs, self)
  *         return _attrs             # <<<<<<<<<<<<<<
@@ -5338,7 +5385,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_16stat(struct __pyx_obj_3ssh_4sftp_SF
   __pyx_r = ((PyObject *)__pyx_v__attrs);
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":103
+  /* "ssh/sftp.pyx":105
  *         return _dir
  * 
  *     def stat(self, path not None):             # <<<<<<<<<<<<<<
@@ -5362,7 +5409,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_16stat(struct __pyx_obj_3ssh_4sftp_SF
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":115
+/* "ssh/sftp.pyx":117
  *         return _attrs
  * 
  *     def lstat(self, path not None):             # <<<<<<<<<<<<<<
@@ -5424,12 +5471,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 115, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 117, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "lstat") < 0)) __PYX_ERR(0, 115, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "lstat") < 0)) __PYX_ERR(0, 117, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -5440,7 +5487,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("lstat", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 115, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("lstat", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 117, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5455,7 +5502,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 115, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 117, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_18lstat(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path);
 
@@ -5493,19 +5540,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_18lstat(struct __pyx_obj_3ssh_4sftp_S
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("lstat", 1);
 
-  /* "ssh/sftp.pyx":118
+  /* "ssh/sftp.pyx":120
  *         cdef SFTPAttributes _attrs
  *         cdef c_sftp.sftp_attributes c_attrs
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         with nogil:
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 118, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 120, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":119
+  /* "ssh/sftp.pyx":121
  *         cdef c_sftp.sftp_attributes c_attrs
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -5514,12 +5561,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_18lstat(struct __pyx_obj_3ssh_4sftp_S
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 119, __pyx_L1_error)
+    __PYX_ERR(0, 121, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 121, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":120
+  /* "ssh/sftp.pyx":122
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -5535,7 +5582,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_18lstat(struct __pyx_obj_3ssh_4sftp_S
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":121
+        /* "ssh/sftp.pyx":123
  *         cdef const char *c_path = b_path
  *         with nogil:
  *             c_attrs = c_sftp.sftp_lstat(self._sftp, c_path)             # <<<<<<<<<<<<<<
@@ -5545,7 +5592,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_18lstat(struct __pyx_obj_3ssh_4sftp_S
         __pyx_v_c_attrs = sftp_lstat(__pyx_v_self->_sftp, __pyx_v_c_path);
       }
 
-      /* "ssh/sftp.pyx":120
+      /* "ssh/sftp.pyx":122
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -5564,7 +5611,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_18lstat(struct __pyx_obj_3ssh_4sftp_S
       }
   }
 
-  /* "ssh/sftp.pyx":122
+  /* "ssh/sftp.pyx":124
  *         with nogil:
  *             c_attrs = c_sftp.sftp_lstat(self._sftp, c_path)
  *         if c_attrs is NULL:             # <<<<<<<<<<<<<<
@@ -5574,16 +5621,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_18lstat(struct __pyx_obj_3ssh_4sftp_S
   __pyx_t_3 = (__pyx_v_c_attrs == NULL);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":123
+    /* "ssh/sftp.pyx":125
  *             c_attrs = c_sftp.sftp_lstat(self._sftp, c_path)
  *         if c_attrs is NULL:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         _attrs = SFTPAttributes.from_ptr(c_attrs, self)
  *         return _attrs
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 123, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 125, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 123, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 125, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -5604,15 +5651,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_18lstat(struct __pyx_obj_3ssh_4sftp_S
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 123, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 125, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 123, __pyx_L1_error)
+    __PYX_ERR(0, 125, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":122
+    /* "ssh/sftp.pyx":124
  *         with nogil:
  *             c_attrs = c_sftp.sftp_lstat(self._sftp, c_path)
  *         if c_attrs is NULL:             # <<<<<<<<<<<<<<
@@ -5621,19 +5668,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_18lstat(struct __pyx_obj_3ssh_4sftp_S
  */
   }
 
-  /* "ssh/sftp.pyx":124
+  /* "ssh/sftp.pyx":126
  *         if c_attrs is NULL:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         _attrs = SFTPAttributes.from_ptr(c_attrs, self)             # <<<<<<<<<<<<<<
  *         return _attrs
  * 
  */
-  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_15sftp_attributes_SFTPAttributes->from_ptr(__pyx_v_c_attrs, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 124, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_15sftp_attributes_SFTPAttributes->from_ptr(__pyx_v_c_attrs, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 126, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v__attrs = ((struct __pyx_obj_3ssh_15sftp_attributes_SFTPAttributes *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":125
+  /* "ssh/sftp.pyx":127
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         _attrs = SFTPAttributes.from_ptr(c_attrs, self)
  *         return _attrs             # <<<<<<<<<<<<<<
@@ -5645,7 +5692,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_18lstat(struct __pyx_obj_3ssh_4sftp_S
   __pyx_r = ((PyObject *)__pyx_v__attrs);
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":115
+  /* "ssh/sftp.pyx":117
  *         return _attrs
  * 
  *     def lstat(self, path not None):             # <<<<<<<<<<<<<<
@@ -5669,7 +5716,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_18lstat(struct __pyx_obj_3ssh_4sftp_S
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":127
+/* "ssh/sftp.pyx":129
  *         return _attrs
  * 
  *     def open(self, path not None, int accesstype, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
@@ -5737,7 +5784,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 127, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 129, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -5745,9 +5792,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 127, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 129, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("open", 1, 3, 3, 1); __PYX_ERR(0, 127, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("open", 1, 3, 3, 1); __PYX_ERR(0, 129, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -5755,14 +5802,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 127, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 129, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("open", 1, 3, 3, 2); __PYX_ERR(0, 127, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("open", 1, 3, 3, 2); __PYX_ERR(0, 129, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "open") < 0)) __PYX_ERR(0, 127, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "open") < 0)) __PYX_ERR(0, 129, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -5772,12 +5819,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
     }
     __pyx_v_path = values[0];
-    __pyx_v_accesstype = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_accesstype == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 127, __pyx_L3_error)
-    __pyx_v_mode = __Pyx_PyInt_As_mode_t(values[2]); if (unlikely((__pyx_v_mode == ((mode_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 127, __pyx_L3_error)
+    __pyx_v_accesstype = __Pyx_PyInt_As_int(values[1]); if (unlikely((__pyx_v_accesstype == (int)-1) && PyErr_Occurred())) __PYX_ERR(0, 129, __pyx_L3_error)
+    __pyx_v_mode = __Pyx_PyInt_As_mode_t(values[2]); if (unlikely((__pyx_v_mode == ((mode_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 129, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("open", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 127, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("open", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 129, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -5792,7 +5839,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 127, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 129, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_20open(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path, __pyx_v_accesstype, __pyx_v_mode);
 
@@ -5830,19 +5877,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_20open(struct __pyx_obj_3ssh_4sftp_SF
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("open", 1);
 
-  /* "ssh/sftp.pyx":128
+  /* "ssh/sftp.pyx":130
  * 
  *     def open(self, path not None, int accesstype, c_sftp.mode_t mode):
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         cdef SFTPFile _file
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 128, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 130, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":129
+  /* "ssh/sftp.pyx":131
  *     def open(self, path not None, int accesstype, c_sftp.mode_t mode):
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -5851,12 +5898,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_20open(struct __pyx_obj_3ssh_4sftp_SF
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 129, __pyx_L1_error)
+    __PYX_ERR(0, 131, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 129, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 131, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":132
+  /* "ssh/sftp.pyx":134
  *         cdef SFTPFile _file
  *         cdef c_sftp.sftp_file c_file
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -5872,7 +5919,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_20open(struct __pyx_obj_3ssh_4sftp_SF
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":133
+        /* "ssh/sftp.pyx":135
  *         cdef c_sftp.sftp_file c_file
  *         with nogil:
  *             c_file = c_sftp.sftp_open(self._sftp, c_path, accesstype, mode)             # <<<<<<<<<<<<<<
@@ -5882,7 +5929,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_20open(struct __pyx_obj_3ssh_4sftp_SF
         __pyx_v_c_file = sftp_open(__pyx_v_self->_sftp, __pyx_v_c_path, __pyx_v_accesstype, __pyx_v_mode);
       }
 
-      /* "ssh/sftp.pyx":132
+      /* "ssh/sftp.pyx":134
  *         cdef SFTPFile _file
  *         cdef c_sftp.sftp_file c_file
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -5901,7 +5948,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_20open(struct __pyx_obj_3ssh_4sftp_SF
       }
   }
 
-  /* "ssh/sftp.pyx":134
+  /* "ssh/sftp.pyx":136
  *         with nogil:
  *             c_file = c_sftp.sftp_open(self._sftp, c_path, accesstype, mode)
  *         if c_file is NULL:             # <<<<<<<<<<<<<<
@@ -5911,16 +5958,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_20open(struct __pyx_obj_3ssh_4sftp_SF
   __pyx_t_3 = (__pyx_v_c_file == NULL);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":135
+    /* "ssh/sftp.pyx":137
  *             c_file = c_sftp.sftp_open(self._sftp, c_path, accesstype, mode)
  *         if c_file is NULL:
  *             raise SFTPHandleError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         _file = SFTPFile.from_ptr(c_file, self)
  *         return _file
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPHandleError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPHandleError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 137, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 135, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 137, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -5941,15 +5988,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_20open(struct __pyx_obj_3ssh_4sftp_SF
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 135, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 137, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 135, __pyx_L1_error)
+    __PYX_ERR(0, 137, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":134
+    /* "ssh/sftp.pyx":136
  *         with nogil:
  *             c_file = c_sftp.sftp_open(self._sftp, c_path, accesstype, mode)
  *         if c_file is NULL:             # <<<<<<<<<<<<<<
@@ -5958,19 +6005,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_20open(struct __pyx_obj_3ssh_4sftp_SF
  */
   }
 
-  /* "ssh/sftp.pyx":136
+  /* "ssh/sftp.pyx":138
  *         if c_file is NULL:
  *             raise SFTPHandleError(ssh_get_error(self.session._session))
  *         _file = SFTPFile.from_ptr(c_file, self)             # <<<<<<<<<<<<<<
  *         return _file
  * 
  */
-  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_12sftp_handles_SFTPFile->from_ptr(__pyx_v_c_file, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 136, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_12sftp_handles_SFTPFile->from_ptr(__pyx_v_c_file, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 138, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v__file = ((struct __pyx_obj_3ssh_12sftp_handles_SFTPFile *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":137
+  /* "ssh/sftp.pyx":139
  *             raise SFTPHandleError(ssh_get_error(self.session._session))
  *         _file = SFTPFile.from_ptr(c_file, self)
  *         return _file             # <<<<<<<<<<<<<<
@@ -5982,7 +6029,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_20open(struct __pyx_obj_3ssh_4sftp_SF
   __pyx_r = ((PyObject *)__pyx_v__file);
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":127
+  /* "ssh/sftp.pyx":129
  *         return _attrs
  * 
  *     def open(self, path not None, int accesstype, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
@@ -6006,7 +6053,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_20open(struct __pyx_obj_3ssh_4sftp_SF
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":139
+/* "ssh/sftp.pyx":141
  *         return _file
  * 
  *     def unlink(self, path not None):             # <<<<<<<<<<<<<<
@@ -6068,12 +6115,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 139, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 141, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "unlink") < 0)) __PYX_ERR(0, 139, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "unlink") < 0)) __PYX_ERR(0, 141, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -6084,7 +6131,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("unlink", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 139, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("unlink", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 141, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6099,7 +6146,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 139, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 141, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_22unlink(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path);
 
@@ -6136,19 +6183,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_22unlink(struct __pyx_obj_3ssh_4sftp_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("unlink", 1);
 
-  /* "ssh/sftp.pyx":140
+  /* "ssh/sftp.pyx":142
  * 
  *     def unlink(self, path not None):
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         cdef int rc
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 140, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 142, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":141
+  /* "ssh/sftp.pyx":143
  *     def unlink(self, path not None):
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -6157,12 +6204,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_22unlink(struct __pyx_obj_3ssh_4sftp_
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 141, __pyx_L1_error)
+    __PYX_ERR(0, 143, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 141, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 143, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":143
+  /* "ssh/sftp.pyx":145
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -6178,7 +6225,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_22unlink(struct __pyx_obj_3ssh_4sftp_
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":144
+        /* "ssh/sftp.pyx":146
  *         cdef int rc
  *         with nogil:
  *             rc = c_sftp.sftp_unlink(self._sftp, c_path)             # <<<<<<<<<<<<<<
@@ -6188,7 +6235,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_22unlink(struct __pyx_obj_3ssh_4sftp_
         __pyx_v_rc = sftp_unlink(__pyx_v_self->_sftp, __pyx_v_c_path);
       }
 
-      /* "ssh/sftp.pyx":143
+      /* "ssh/sftp.pyx":145
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -6207,7 +6254,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_22unlink(struct __pyx_obj_3ssh_4sftp_
       }
   }
 
-  /* "ssh/sftp.pyx":145
+  /* "ssh/sftp.pyx":147
  *         with nogil:
  *             rc = c_sftp.sftp_unlink(self._sftp, c_path)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -6217,16 +6264,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_22unlink(struct __pyx_obj_3ssh_4sftp_
   __pyx_t_3 = (__pyx_v_rc < 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":146
+    /* "ssh/sftp.pyx":148
  *             rc = c_sftp.sftp_unlink(self._sftp, c_path)
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         return rc
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 146, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 146, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -6247,15 +6294,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_22unlink(struct __pyx_obj_3ssh_4sftp_
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 146, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 148, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 146, __pyx_L1_error)
+    __PYX_ERR(0, 148, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":145
+    /* "ssh/sftp.pyx":147
  *         with nogil:
  *             rc = c_sftp.sftp_unlink(self._sftp, c_path)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -6264,7 +6311,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_22unlink(struct __pyx_obj_3ssh_4sftp_
  */
   }
 
-  /* "ssh/sftp.pyx":147
+  /* "ssh/sftp.pyx":149
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         return rc             # <<<<<<<<<<<<<<
@@ -6272,13 +6319,13 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_22unlink(struct __pyx_obj_3ssh_4sftp_
  *     def rmdir(self, path not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 147, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 149, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":139
+  /* "ssh/sftp.pyx":141
  *         return _file
  * 
  *     def unlink(self, path not None):             # <<<<<<<<<<<<<<
@@ -6301,7 +6348,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_22unlink(struct __pyx_obj_3ssh_4sftp_
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":149
+/* "ssh/sftp.pyx":151
  *         return rc
  * 
  *     def rmdir(self, path not None):             # <<<<<<<<<<<<<<
@@ -6363,12 +6410,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 149, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 151, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "rmdir") < 0)) __PYX_ERR(0, 149, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "rmdir") < 0)) __PYX_ERR(0, 151, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -6379,7 +6426,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("rmdir", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 149, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("rmdir", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 151, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6394,7 +6441,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 149, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 151, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_24rmdir(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path);
 
@@ -6431,19 +6478,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_24rmdir(struct __pyx_obj_3ssh_4sftp_S
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("rmdir", 1);
 
-  /* "ssh/sftp.pyx":150
+  /* "ssh/sftp.pyx":152
  * 
  *     def rmdir(self, path not None):
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         cdef int rc
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 150, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 152, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":151
+  /* "ssh/sftp.pyx":153
  *     def rmdir(self, path not None):
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -6452,12 +6499,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_24rmdir(struct __pyx_obj_3ssh_4sftp_S
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 151, __pyx_L1_error)
+    __PYX_ERR(0, 153, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 151, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 153, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":153
+  /* "ssh/sftp.pyx":155
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -6473,7 +6520,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_24rmdir(struct __pyx_obj_3ssh_4sftp_S
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":154
+        /* "ssh/sftp.pyx":156
  *         cdef int rc
  *         with nogil:
  *             rc = c_sftp.sftp_rmdir(self._sftp, c_path)             # <<<<<<<<<<<<<<
@@ -6483,7 +6530,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_24rmdir(struct __pyx_obj_3ssh_4sftp_S
         __pyx_v_rc = sftp_rmdir(__pyx_v_self->_sftp, __pyx_v_c_path);
       }
 
-      /* "ssh/sftp.pyx":153
+      /* "ssh/sftp.pyx":155
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -6502,7 +6549,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_24rmdir(struct __pyx_obj_3ssh_4sftp_S
       }
   }
 
-  /* "ssh/sftp.pyx":155
+  /* "ssh/sftp.pyx":157
  *         with nogil:
  *             rc = c_sftp.sftp_rmdir(self._sftp, c_path)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -6512,16 +6559,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_24rmdir(struct __pyx_obj_3ssh_4sftp_S
   __pyx_t_3 = (__pyx_v_rc < 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":156
+    /* "ssh/sftp.pyx":158
  *             rc = c_sftp.sftp_rmdir(self._sftp, c_path)
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         return rc
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 156, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 156, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 158, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -6542,15 +6589,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_24rmdir(struct __pyx_obj_3ssh_4sftp_S
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 156, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 158, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 156, __pyx_L1_error)
+    __PYX_ERR(0, 158, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":155
+    /* "ssh/sftp.pyx":157
  *         with nogil:
  *             rc = c_sftp.sftp_rmdir(self._sftp, c_path)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -6559,7 +6606,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_24rmdir(struct __pyx_obj_3ssh_4sftp_S
  */
   }
 
-  /* "ssh/sftp.pyx":157
+  /* "ssh/sftp.pyx":159
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         return rc             # <<<<<<<<<<<<<<
@@ -6567,13 +6614,13 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_24rmdir(struct __pyx_obj_3ssh_4sftp_S
  *     def mkdir(self, path not None, c_sftp.mode_t mode):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 157, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":149
+  /* "ssh/sftp.pyx":151
  *         return rc
  * 
  *     def rmdir(self, path not None):             # <<<<<<<<<<<<<<
@@ -6596,7 +6643,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_24rmdir(struct __pyx_obj_3ssh_4sftp_S
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":159
+/* "ssh/sftp.pyx":161
  *         return rc
  * 
  *     def mkdir(self, path not None, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
@@ -6661,7 +6708,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 159, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -6669,14 +6716,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 159, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("mkdir", 1, 2, 2, 1); __PYX_ERR(0, 159, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("mkdir", 1, 2, 2, 1); __PYX_ERR(0, 161, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "mkdir") < 0)) __PYX_ERR(0, 159, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "mkdir") < 0)) __PYX_ERR(0, 161, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -6685,11 +6732,11 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
     }
     __pyx_v_path = values[0];
-    __pyx_v_mode = __Pyx_PyInt_As_mode_t(values[1]); if (unlikely((__pyx_v_mode == ((mode_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 159, __pyx_L3_error)
+    __pyx_v_mode = __Pyx_PyInt_As_mode_t(values[1]); if (unlikely((__pyx_v_mode == ((mode_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("mkdir", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 159, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("mkdir", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 161, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6704,7 +6751,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 159, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 161, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_26mkdir(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path, __pyx_v_mode);
 
@@ -6737,19 +6784,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_26mkdir(struct __pyx_obj_3ssh_4sftp_S
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("mkdir", 1);
 
-  /* "ssh/sftp.pyx":160
+  /* "ssh/sftp.pyx":162
  * 
  *     def mkdir(self, path not None, c_sftp.mode_t mode):
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         cdef int rc
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 160, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 162, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":161
+  /* "ssh/sftp.pyx":163
  *     def mkdir(self, path not None, c_sftp.mode_t mode):
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -6758,12 +6805,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_26mkdir(struct __pyx_obj_3ssh_4sftp_S
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 161, __pyx_L1_error)
+    __PYX_ERR(0, 163, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 161, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 163, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":163
+  /* "ssh/sftp.pyx":165
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -6779,7 +6826,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_26mkdir(struct __pyx_obj_3ssh_4sftp_S
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":164
+        /* "ssh/sftp.pyx":166
  *         cdef int rc
  *         with nogil:
  *             rc = c_sftp.sftp_mkdir(self._sftp, c_path, mode)             # <<<<<<<<<<<<<<
@@ -6789,7 +6836,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_26mkdir(struct __pyx_obj_3ssh_4sftp_S
         __pyx_v_rc = sftp_mkdir(__pyx_v_self->_sftp, __pyx_v_c_path, __pyx_v_mode);
       }
 
-      /* "ssh/sftp.pyx":163
+      /* "ssh/sftp.pyx":165
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -6808,7 +6855,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_26mkdir(struct __pyx_obj_3ssh_4sftp_S
       }
   }
 
-  /* "ssh/sftp.pyx":165
+  /* "ssh/sftp.pyx":167
  *         with nogil:
  *             rc = c_sftp.sftp_mkdir(self._sftp, c_path, mode)
  *         return handle_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
@@ -6816,14 +6863,14 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_26mkdir(struct __pyx_obj_3ssh_4sftp_S
  *     def rename(self, original not None, newname not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 165, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 165, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 167, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 167, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":159
+  /* "ssh/sftp.pyx":161
  *         return rc
  * 
  *     def mkdir(self, path not None, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
@@ -6843,7 +6890,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_26mkdir(struct __pyx_obj_3ssh_4sftp_S
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":167
+/* "ssh/sftp.pyx":169
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def rename(self, original not None, newname not None):             # <<<<<<<<<<<<<<
@@ -6908,7 +6955,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 167, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -6916,14 +6963,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 167, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("rename", 1, 2, 2, 1); __PYX_ERR(0, 167, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("rename", 1, 2, 2, 1); __PYX_ERR(0, 169, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "rename") < 0)) __PYX_ERR(0, 167, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "rename") < 0)) __PYX_ERR(0, 169, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -6936,7 +6983,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("rename", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 167, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("rename", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 169, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -6951,10 +6998,10 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_original) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "original"); __PYX_ERR(0, 167, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "original"); __PYX_ERR(0, 169, __pyx_L1_error)
   }
   if (unlikely(((PyObject *)__pyx_v_newname) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "newname"); __PYX_ERR(0, 167, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "newname"); __PYX_ERR(0, 169, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_28rename(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_original, __pyx_v_newname);
 
@@ -6994,19 +7041,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_28rename(struct __pyx_obj_3ssh_4sftp_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("rename", 1);
 
-  /* "ssh/sftp.pyx":168
+  /* "ssh/sftp.pyx":170
  * 
  *     def rename(self, original not None, newname not None):
  *         cdef bytes b_orig = to_bytes(original)             # <<<<<<<<<<<<<<
  *         cdef const char *c_orig = b_orig
  *         cdef bytes b_newname = to_bytes(newname)
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_original); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 168, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_original); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 170, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_orig = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":169
+  /* "ssh/sftp.pyx":171
  *     def rename(self, original not None, newname not None):
  *         cdef bytes b_orig = to_bytes(original)
  *         cdef const char *c_orig = b_orig             # <<<<<<<<<<<<<<
@@ -7015,24 +7062,24 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_28rename(struct __pyx_obj_3ssh_4sftp_
  */
   if (unlikely(__pyx_v_b_orig == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 169, __pyx_L1_error)
+    __PYX_ERR(0, 171, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_orig); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 169, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_orig); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 171, __pyx_L1_error)
   __pyx_v_c_orig = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":170
+  /* "ssh/sftp.pyx":172
  *         cdef bytes b_orig = to_bytes(original)
  *         cdef const char *c_orig = b_orig
  *         cdef bytes b_newname = to_bytes(newname)             # <<<<<<<<<<<<<<
  *         cdef const char *c_newname = b_newname
  *         cdef int rc
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_newname); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 170, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_newname); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 172, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_newname = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":171
+  /* "ssh/sftp.pyx":173
  *         cdef const char *c_orig = b_orig
  *         cdef bytes b_newname = to_bytes(newname)
  *         cdef const char *c_newname = b_newname             # <<<<<<<<<<<<<<
@@ -7041,12 +7088,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_28rename(struct __pyx_obj_3ssh_4sftp_
  */
   if (unlikely(__pyx_v_b_newname == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 171, __pyx_L1_error)
+    __PYX_ERR(0, 173, __pyx_L1_error)
   }
-  __pyx_t_3 = __Pyx_PyBytes_AsString(__pyx_v_b_newname); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 171, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyBytes_AsString(__pyx_v_b_newname); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 173, __pyx_L1_error)
   __pyx_v_c_newname = __pyx_t_3;
 
-  /* "ssh/sftp.pyx":173
+  /* "ssh/sftp.pyx":175
  *         cdef const char *c_newname = b_newname
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7062,7 +7109,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_28rename(struct __pyx_obj_3ssh_4sftp_
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":174
+        /* "ssh/sftp.pyx":176
  *         cdef int rc
  *         with nogil:
  *             rc = c_sftp.sftp_rename(self._sftp, c_orig, c_newname)             # <<<<<<<<<<<<<<
@@ -7072,7 +7119,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_28rename(struct __pyx_obj_3ssh_4sftp_
         __pyx_v_rc = sftp_rename(__pyx_v_self->_sftp, __pyx_v_c_orig, __pyx_v_c_newname);
       }
 
-      /* "ssh/sftp.pyx":173
+      /* "ssh/sftp.pyx":175
  *         cdef const char *c_newname = b_newname
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7091,7 +7138,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_28rename(struct __pyx_obj_3ssh_4sftp_
       }
   }
 
-  /* "ssh/sftp.pyx":175
+  /* "ssh/sftp.pyx":177
  *         with nogil:
  *             rc = c_sftp.sftp_rename(self._sftp, c_orig, c_newname)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -7101,16 +7148,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_28rename(struct __pyx_obj_3ssh_4sftp_
   __pyx_t_4 = (__pyx_v_rc < 0);
   if (unlikely(__pyx_t_4)) {
 
-    /* "ssh/sftp.pyx":176
+    /* "ssh/sftp.pyx":178
  *             rc = c_sftp.sftp_rename(self._sftp, c_orig, c_newname)
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         return rc
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 176, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 178, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 176, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 178, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = NULL;
     __pyx_t_8 = 0;
@@ -7131,15 +7178,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_28rename(struct __pyx_obj_3ssh_4sftp_
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_8, 1+__pyx_t_8);
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 176, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 178, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 176, __pyx_L1_error)
+    __PYX_ERR(0, 178, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":175
+    /* "ssh/sftp.pyx":177
  *         with nogil:
  *             rc = c_sftp.sftp_rename(self._sftp, c_orig, c_newname)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -7148,7 +7195,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_28rename(struct __pyx_obj_3ssh_4sftp_
  */
   }
 
-  /* "ssh/sftp.pyx":177
+  /* "ssh/sftp.pyx":179
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         return rc             # <<<<<<<<<<<<<<
@@ -7156,13 +7203,13 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_28rename(struct __pyx_obj_3ssh_4sftp_
  *     def setstat(self, path not None, SFTPAttributes attr):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 177, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 179, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":167
+  /* "ssh/sftp.pyx":169
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def rename(self, original not None, newname not None):             # <<<<<<<<<<<<<<
@@ -7186,7 +7233,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_28rename(struct __pyx_obj_3ssh_4sftp_
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":179
+/* "ssh/sftp.pyx":181
  *         return rc
  * 
  *     def setstat(self, path not None, SFTPAttributes attr):             # <<<<<<<<<<<<<<
@@ -7251,7 +7298,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 181, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -7259,14 +7306,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 179, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 181, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("setstat", 1, 2, 2, 1); __PYX_ERR(0, 179, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("setstat", 1, 2, 2, 1); __PYX_ERR(0, 181, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "setstat") < 0)) __PYX_ERR(0, 179, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "setstat") < 0)) __PYX_ERR(0, 181, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -7279,7 +7326,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("setstat", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 179, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("setstat", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 181, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -7294,9 +7341,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 179, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 181, __pyx_L1_error)
   }
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_attr), __pyx_ptype_3ssh_15sftp_attributes_SFTPAttributes, 1, "attr", 0))) __PYX_ERR(0, 179, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_attr), __pyx_ptype_3ssh_15sftp_attributes_SFTPAttributes, 1, "attr", 0))) __PYX_ERR(0, 181, __pyx_L1_error)
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_30setstat(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path, __pyx_v_attr);
 
   /* function exit code */
@@ -7328,19 +7375,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_30setstat(struct __pyx_obj_3ssh_4sftp
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("setstat", 1);
 
-  /* "ssh/sftp.pyx":180
+  /* "ssh/sftp.pyx":182
  * 
  *     def setstat(self, path not None, SFTPAttributes attr):
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         cdef int rc
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 180, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 182, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":181
+  /* "ssh/sftp.pyx":183
  *     def setstat(self, path not None, SFTPAttributes attr):
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -7349,12 +7396,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_30setstat(struct __pyx_obj_3ssh_4sftp
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 181, __pyx_L1_error)
+    __PYX_ERR(0, 183, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 181, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 183, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":183
+  /* "ssh/sftp.pyx":185
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7370,7 +7417,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_30setstat(struct __pyx_obj_3ssh_4sftp
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":184
+        /* "ssh/sftp.pyx":186
  *         cdef int rc
  *         with nogil:
  *             rc = c_sftp.sftp_setstat(self._sftp, c_path, attr._attrs)             # <<<<<<<<<<<<<<
@@ -7380,7 +7427,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_30setstat(struct __pyx_obj_3ssh_4sftp
         __pyx_v_rc = sftp_setstat(__pyx_v_self->_sftp, __pyx_v_c_path, __pyx_v_attr->_attrs);
       }
 
-      /* "ssh/sftp.pyx":183
+      /* "ssh/sftp.pyx":185
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7399,7 +7446,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_30setstat(struct __pyx_obj_3ssh_4sftp
       }
   }
 
-  /* "ssh/sftp.pyx":185
+  /* "ssh/sftp.pyx":187
  *         with nogil:
  *             rc = c_sftp.sftp_setstat(self._sftp, c_path, attr._attrs)
  *         return handle_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
@@ -7407,14 +7454,14 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_30setstat(struct __pyx_obj_3ssh_4sftp
  *     def chown(self, path not None,
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 185, __pyx_L1_error)
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 185, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 187, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":179
+  /* "ssh/sftp.pyx":181
  *         return rc
  * 
  *     def setstat(self, path not None, SFTPAttributes attr):             # <<<<<<<<<<<<<<
@@ -7434,7 +7481,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_30setstat(struct __pyx_obj_3ssh_4sftp
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":187
+/* "ssh/sftp.pyx":189
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def chown(self, path not None,             # <<<<<<<<<<<<<<
@@ -7502,7 +7549,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -7510,9 +7557,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("chown", 1, 3, 3, 1); __PYX_ERR(0, 187, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("chown", 1, 3, 3, 1); __PYX_ERR(0, 189, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -7520,14 +7567,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 187, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 189, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("chown", 1, 3, 3, 2); __PYX_ERR(0, 187, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("chown", 1, 3, 3, 2); __PYX_ERR(0, 189, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "chown") < 0)) __PYX_ERR(0, 187, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "chown") < 0)) __PYX_ERR(0, 189, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -7537,12 +7584,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
     }
     __pyx_v_path = values[0];
-    __pyx_v_owner = __Pyx_PyInt_As_uid_t(values[1]); if (unlikely((__pyx_v_owner == ((uid_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 188, __pyx_L3_error)
-    __pyx_v_group = __Pyx_PyInt_As_gid_t(values[2]); if (unlikely((__pyx_v_group == ((gid_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 188, __pyx_L3_error)
+    __pyx_v_owner = __Pyx_PyInt_As_uid_t(values[1]); if (unlikely((__pyx_v_owner == ((uid_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L3_error)
+    __pyx_v_group = __Pyx_PyInt_As_gid_t(values[2]); if (unlikely((__pyx_v_group == ((gid_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("chown", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 187, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("chown", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 189, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -7557,7 +7604,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 187, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 189, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_32chown(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path, __pyx_v_owner, __pyx_v_group);
 
@@ -7594,19 +7641,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_32chown(struct __pyx_obj_3ssh_4sftp_S
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("chown", 1);
 
-  /* "ssh/sftp.pyx":189
+  /* "ssh/sftp.pyx":191
  *     def chown(self, path not None,
  *               c_sftp.uid_t owner, c_sftp.gid_t group):
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         cdef int rc
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 189, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 191, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":190
+  /* "ssh/sftp.pyx":192
  *               c_sftp.uid_t owner, c_sftp.gid_t group):
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -7615,12 +7662,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_32chown(struct __pyx_obj_3ssh_4sftp_S
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 190, __pyx_L1_error)
+    __PYX_ERR(0, 192, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 190, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 192, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":192
+  /* "ssh/sftp.pyx":194
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7636,7 +7683,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_32chown(struct __pyx_obj_3ssh_4sftp_S
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":193
+        /* "ssh/sftp.pyx":195
  *         cdef int rc
  *         with nogil:
  *             rc = c_sftp.sftp_chown(self._sftp, c_path, owner, group)             # <<<<<<<<<<<<<<
@@ -7646,7 +7693,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_32chown(struct __pyx_obj_3ssh_4sftp_S
         __pyx_v_rc = sftp_chown(__pyx_v_self->_sftp, __pyx_v_c_path, __pyx_v_owner, __pyx_v_group);
       }
 
-      /* "ssh/sftp.pyx":192
+      /* "ssh/sftp.pyx":194
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7665,7 +7712,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_32chown(struct __pyx_obj_3ssh_4sftp_S
       }
   }
 
-  /* "ssh/sftp.pyx":194
+  /* "ssh/sftp.pyx":196
  *         with nogil:
  *             rc = c_sftp.sftp_chown(self._sftp, c_path, owner, group)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -7675,16 +7722,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_32chown(struct __pyx_obj_3ssh_4sftp_S
   __pyx_t_3 = (__pyx_v_rc < 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":195
+    /* "ssh/sftp.pyx":197
  *             rc = c_sftp.sftp_chown(self._sftp, c_path, owner, group)
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         return rc
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 195, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 195, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 197, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -7705,15 +7752,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_32chown(struct __pyx_obj_3ssh_4sftp_S
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 195, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 197, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 195, __pyx_L1_error)
+    __PYX_ERR(0, 197, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":194
+    /* "ssh/sftp.pyx":196
  *         with nogil:
  *             rc = c_sftp.sftp_chown(self._sftp, c_path, owner, group)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -7722,7 +7769,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_32chown(struct __pyx_obj_3ssh_4sftp_S
  */
   }
 
-  /* "ssh/sftp.pyx":196
+  /* "ssh/sftp.pyx":198
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         return rc             # <<<<<<<<<<<<<<
@@ -7730,13 +7777,13 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_32chown(struct __pyx_obj_3ssh_4sftp_S
  *     def chmod(self, path not None, c_sftp.mode_t mode):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 196, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 198, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":187
+  /* "ssh/sftp.pyx":189
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def chown(self, path not None,             # <<<<<<<<<<<<<<
@@ -7759,7 +7806,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_32chown(struct __pyx_obj_3ssh_4sftp_S
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":198
+/* "ssh/sftp.pyx":200
  *         return rc
  * 
  *     def chmod(self, path not None, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
@@ -7824,7 +7871,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 198, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -7832,14 +7879,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 198, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("chmod", 1, 2, 2, 1); __PYX_ERR(0, 198, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("chmod", 1, 2, 2, 1); __PYX_ERR(0, 200, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "chmod") < 0)) __PYX_ERR(0, 198, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "chmod") < 0)) __PYX_ERR(0, 200, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -7848,11 +7895,11 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[1] = __Pyx_Arg_FASTCALL(__pyx_args, 1);
     }
     __pyx_v_path = values[0];
-    __pyx_v_mode = __Pyx_PyInt_As_mode_t(values[1]); if (unlikely((__pyx_v_mode == ((mode_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 198, __pyx_L3_error)
+    __pyx_v_mode = __Pyx_PyInt_As_mode_t(values[1]); if (unlikely((__pyx_v_mode == ((mode_t)-1)) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("chmod", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 198, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("chmod", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 200, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -7867,7 +7914,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 198, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 200, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_34chmod(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path, __pyx_v_mode);
 
@@ -7904,19 +7951,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_34chmod(struct __pyx_obj_3ssh_4sftp_S
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("chmod", 1);
 
-  /* "ssh/sftp.pyx":199
+  /* "ssh/sftp.pyx":201
  * 
  *     def chmod(self, path not None, c_sftp.mode_t mode):
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         cdef int rc
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 199, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 201, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":200
+  /* "ssh/sftp.pyx":202
  *     def chmod(self, path not None, c_sftp.mode_t mode):
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -7925,12 +7972,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_34chmod(struct __pyx_obj_3ssh_4sftp_S
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 200, __pyx_L1_error)
+    __PYX_ERR(0, 202, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 200, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 202, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":202
+  /* "ssh/sftp.pyx":204
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7946,7 +7993,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_34chmod(struct __pyx_obj_3ssh_4sftp_S
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":203
+        /* "ssh/sftp.pyx":205
  *         cdef int rc
  *         with nogil:
  *             rc = c_sftp.sftp_chmod(self._sftp, c_path, mode)             # <<<<<<<<<<<<<<
@@ -7956,7 +8003,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_34chmod(struct __pyx_obj_3ssh_4sftp_S
         __pyx_v_rc = sftp_chmod(__pyx_v_self->_sftp, __pyx_v_c_path, __pyx_v_mode);
       }
 
-      /* "ssh/sftp.pyx":202
+      /* "ssh/sftp.pyx":204
  *         cdef const char *c_path = b_path
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -7975,7 +8022,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_34chmod(struct __pyx_obj_3ssh_4sftp_S
       }
   }
 
-  /* "ssh/sftp.pyx":204
+  /* "ssh/sftp.pyx":206
  *         with nogil:
  *             rc = c_sftp.sftp_chmod(self._sftp, c_path, mode)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -7985,16 +8032,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_34chmod(struct __pyx_obj_3ssh_4sftp_S
   __pyx_t_3 = (__pyx_v_rc < 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":205
+    /* "ssh/sftp.pyx":207
  *             rc = c_sftp.sftp_chmod(self._sftp, c_path, mode)
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         return rc
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 205, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 207, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 205, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 207, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -8015,15 +8062,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_34chmod(struct __pyx_obj_3ssh_4sftp_S
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 205, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 207, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 205, __pyx_L1_error)
+    __PYX_ERR(0, 207, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":204
+    /* "ssh/sftp.pyx":206
  *         with nogil:
  *             rc = c_sftp.sftp_chmod(self._sftp, c_path, mode)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -8032,7 +8079,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_34chmod(struct __pyx_obj_3ssh_4sftp_S
  */
   }
 
-  /* "ssh/sftp.pyx":206
+  /* "ssh/sftp.pyx":208
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         return rc             # <<<<<<<<<<<<<<
@@ -8040,13 +8087,13 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_34chmod(struct __pyx_obj_3ssh_4sftp_S
  *     def utimes(self, path not None, long seconds, long microseconds):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 206, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 208, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":198
+  /* "ssh/sftp.pyx":200
  *         return rc
  * 
  *     def chmod(self, path not None, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
@@ -8069,7 +8116,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_34chmod(struct __pyx_obj_3ssh_4sftp_S
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":208
+/* "ssh/sftp.pyx":210
  *         return rc
  * 
  *     def utimes(self, path not None, long seconds, long microseconds):             # <<<<<<<<<<<<<<
@@ -8137,7 +8184,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 208, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 210, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -8145,9 +8192,9 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 208, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 210, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("utimes", 1, 3, 3, 1); __PYX_ERR(0, 208, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("utimes", 1, 3, 3, 1); __PYX_ERR(0, 210, __pyx_L3_error)
         }
         CYTHON_FALLTHROUGH;
         case  2:
@@ -8155,14 +8202,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[2]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 208, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 210, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("utimes", 1, 3, 3, 2); __PYX_ERR(0, 208, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("utimes", 1, 3, 3, 2); __PYX_ERR(0, 210, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "utimes") < 0)) __PYX_ERR(0, 208, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "utimes") < 0)) __PYX_ERR(0, 210, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 3)) {
       goto __pyx_L5_argtuple_error;
@@ -8172,12 +8219,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
       values[2] = __Pyx_Arg_FASTCALL(__pyx_args, 2);
     }
     __pyx_v_path = values[0];
-    __pyx_v_seconds = __Pyx_PyInt_As_long(values[1]); if (unlikely((__pyx_v_seconds == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 208, __pyx_L3_error)
-    __pyx_v_microseconds = __Pyx_PyInt_As_long(values[2]); if (unlikely((__pyx_v_microseconds == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 208, __pyx_L3_error)
+    __pyx_v_seconds = __Pyx_PyInt_As_long(values[1]); if (unlikely((__pyx_v_seconds == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 210, __pyx_L3_error)
+    __pyx_v_microseconds = __Pyx_PyInt_As_long(values[2]); if (unlikely((__pyx_v_microseconds == (long)-1) && PyErr_Occurred())) __PYX_ERR(0, 210, __pyx_L3_error)
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("utimes", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 208, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("utimes", 1, 3, 3, __pyx_nargs); __PYX_ERR(0, 210, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -8192,7 +8239,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 208, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 210, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_36utimes(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path, __pyx_v_seconds, __pyx_v_microseconds);
 
@@ -8230,19 +8277,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("utimes", 1);
 
-  /* "ssh/sftp.pyx":209
+  /* "ssh/sftp.pyx":211
  * 
  *     def utimes(self, path not None, long seconds, long microseconds):
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         cdef int rc
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 209, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 211, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":210
+  /* "ssh/sftp.pyx":212
  *     def utimes(self, path not None, long seconds, long microseconds):
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -8251,12 +8298,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 210, __pyx_L1_error)
+    __PYX_ERR(0, 212, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 210, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 212, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":213
+  /* "ssh/sftp.pyx":215
  *         cdef int rc
  *         cdef timeval *_val
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8272,7 +8319,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":214
+        /* "ssh/sftp.pyx":216
  *         cdef timeval *_val
  *         with nogil:
  *             _val = <timeval *>malloc(sizeof(timeval))             # <<<<<<<<<<<<<<
@@ -8281,7 +8328,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
  */
         __pyx_v__val = ((struct timeval *)malloc((sizeof(struct timeval))));
 
-        /* "ssh/sftp.pyx":215
+        /* "ssh/sftp.pyx":217
  *         with nogil:
  *             _val = <timeval *>malloc(sizeof(timeval))
  *             if _val is NULL:             # <<<<<<<<<<<<<<
@@ -8291,7 +8338,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
         __pyx_t_3 = (__pyx_v__val == NULL);
         if (unlikely(__pyx_t_3)) {
 
-          /* "ssh/sftp.pyx":216
+          /* "ssh/sftp.pyx":218
  *             _val = <timeval *>malloc(sizeof(timeval))
  *             if _val is NULL:
  *                 with gil:             # <<<<<<<<<<<<<<
@@ -8304,17 +8351,17 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
               #endif
               /*try:*/ {
 
-                /* "ssh/sftp.pyx":217
+                /* "ssh/sftp.pyx":219
  *             if _val is NULL:
  *                 with gil:
  *                     raise MemoryError             # <<<<<<<<<<<<<<
  *             _val.tv_sec = seconds
  *             _val.tv_usec = microseconds
  */
-                PyErr_NoMemory(); __PYX_ERR(0, 217, __pyx_L8_error)
+                PyErr_NoMemory(); __PYX_ERR(0, 219, __pyx_L8_error)
               }
 
-              /* "ssh/sftp.pyx":216
+              /* "ssh/sftp.pyx":218
  *             _val = <timeval *>malloc(sizeof(timeval))
  *             if _val is NULL:
  *                 with gil:             # <<<<<<<<<<<<<<
@@ -8331,7 +8378,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
               }
           }
 
-          /* "ssh/sftp.pyx":215
+          /* "ssh/sftp.pyx":217
  *         with nogil:
  *             _val = <timeval *>malloc(sizeof(timeval))
  *             if _val is NULL:             # <<<<<<<<<<<<<<
@@ -8340,7 +8387,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
  */
         }
 
-        /* "ssh/sftp.pyx":218
+        /* "ssh/sftp.pyx":220
  *                 with gil:
  *                     raise MemoryError
  *             _val.tv_sec = seconds             # <<<<<<<<<<<<<<
@@ -8349,7 +8396,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
  */
         __pyx_v__val->tv_sec = __pyx_v_seconds;
 
-        /* "ssh/sftp.pyx":219
+        /* "ssh/sftp.pyx":221
  *                     raise MemoryError
  *             _val.tv_sec = seconds
  *             _val.tv_usec = microseconds             # <<<<<<<<<<<<<<
@@ -8358,7 +8405,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
  */
         __pyx_v__val->tv_usec = __pyx_v_microseconds;
 
-        /* "ssh/sftp.pyx":220
+        /* "ssh/sftp.pyx":222
  *             _val.tv_sec = seconds
  *             _val.tv_usec = microseconds
  *             rc = c_sftp.sftp_utimes(self._sftp, c_path, _val)             # <<<<<<<<<<<<<<
@@ -8367,7 +8414,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
  */
         __pyx_v_rc = sftp_utimes(__pyx_v_self->_sftp, __pyx_v_c_path, __pyx_v__val);
 
-        /* "ssh/sftp.pyx":221
+        /* "ssh/sftp.pyx":223
  *             _val.tv_usec = microseconds
  *             rc = c_sftp.sftp_utimes(self._sftp, c_path, _val)
  *             free(_val)             # <<<<<<<<<<<<<<
@@ -8377,7 +8424,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
         free(__pyx_v__val);
       }
 
-      /* "ssh/sftp.pyx":213
+      /* "ssh/sftp.pyx":215
  *         cdef int rc
  *         cdef timeval *_val
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8403,7 +8450,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
       }
   }
 
-  /* "ssh/sftp.pyx":222
+  /* "ssh/sftp.pyx":224
  *             rc = c_sftp.sftp_utimes(self._sftp, c_path, _val)
  *             free(_val)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -8413,16 +8460,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
   __pyx_t_3 = (__pyx_v_rc < 0);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":223
+    /* "ssh/sftp.pyx":225
  *             free(_val)
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         return rc
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 223, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 225, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 223, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 225, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -8443,15 +8490,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 223, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 225, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 223, __pyx_L1_error)
+    __PYX_ERR(0, 225, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":222
+    /* "ssh/sftp.pyx":224
  *             rc = c_sftp.sftp_utimes(self._sftp, c_path, _val)
  *             free(_val)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -8460,7 +8507,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
  */
   }
 
-  /* "ssh/sftp.pyx":224
+  /* "ssh/sftp.pyx":226
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         return rc             # <<<<<<<<<<<<<<
@@ -8468,13 +8515,13 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
  *     def symlink(self, source not None, dest not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 224, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":208
+  /* "ssh/sftp.pyx":210
  *         return rc
  * 
  *     def utimes(self, path not None, long seconds, long microseconds):             # <<<<<<<<<<<<<<
@@ -8497,7 +8544,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_36utimes(struct __pyx_obj_3ssh_4sftp_
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":226
+/* "ssh/sftp.pyx":228
  *         return rc
  * 
  *     def symlink(self, source not None, dest not None):             # <<<<<<<<<<<<<<
@@ -8562,7 +8609,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 226, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 228, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
         CYTHON_FALLTHROUGH;
         case  1:
@@ -8570,14 +8617,14 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[1]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 226, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 228, __pyx_L3_error)
         else {
-          __Pyx_RaiseArgtupleInvalid("symlink", 1, 2, 2, 1); __PYX_ERR(0, 226, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("symlink", 1, 2, 2, 1); __PYX_ERR(0, 228, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "symlink") < 0)) __PYX_ERR(0, 226, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "symlink") < 0)) __PYX_ERR(0, 228, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 2)) {
       goto __pyx_L5_argtuple_error;
@@ -8590,7 +8637,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("symlink", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 226, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("symlink", 1, 2, 2, __pyx_nargs); __PYX_ERR(0, 228, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -8605,10 +8652,10 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_source) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "source"); __PYX_ERR(0, 226, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "source"); __PYX_ERR(0, 228, __pyx_L1_error)
   }
   if (unlikely(((PyObject *)__pyx_v_dest) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "dest"); __PYX_ERR(0, 226, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "dest"); __PYX_ERR(0, 228, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_38symlink(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_source, __pyx_v_dest);
 
@@ -8648,19 +8695,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_38symlink(struct __pyx_obj_3ssh_4sftp
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("symlink", 1);
 
-  /* "ssh/sftp.pyx":227
+  /* "ssh/sftp.pyx":229
  * 
  *     def symlink(self, source not None, dest not None):
  *         cdef bytes b_source = to_bytes(source)             # <<<<<<<<<<<<<<
  *         cdef const char *c_source = b_source
  *         cdef bytes b_dest = to_bytes(dest)
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_source); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 227, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_source); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_source = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":228
+  /* "ssh/sftp.pyx":230
  *     def symlink(self, source not None, dest not None):
  *         cdef bytes b_source = to_bytes(source)
  *         cdef const char *c_source = b_source             # <<<<<<<<<<<<<<
@@ -8669,24 +8716,24 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_38symlink(struct __pyx_obj_3ssh_4sftp
  */
   if (unlikely(__pyx_v_b_source == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 228, __pyx_L1_error)
+    __PYX_ERR(0, 230, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_source); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 228, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_source); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 230, __pyx_L1_error)
   __pyx_v_c_source = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":229
+  /* "ssh/sftp.pyx":231
  *         cdef bytes b_source = to_bytes(source)
  *         cdef const char *c_source = b_source
  *         cdef bytes b_dest = to_bytes(dest)             # <<<<<<<<<<<<<<
  *         cdef const char *c_dest = b_dest
  *         cdef int rc
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_dest); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 229, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_dest); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 231, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_dest = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":230
+  /* "ssh/sftp.pyx":232
  *         cdef const char *c_source = b_source
  *         cdef bytes b_dest = to_bytes(dest)
  *         cdef const char *c_dest = b_dest             # <<<<<<<<<<<<<<
@@ -8695,12 +8742,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_38symlink(struct __pyx_obj_3ssh_4sftp
  */
   if (unlikely(__pyx_v_b_dest == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 230, __pyx_L1_error)
+    __PYX_ERR(0, 232, __pyx_L1_error)
   }
-  __pyx_t_3 = __Pyx_PyBytes_AsString(__pyx_v_b_dest); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 230, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyBytes_AsString(__pyx_v_b_dest); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(0, 232, __pyx_L1_error)
   __pyx_v_c_dest = __pyx_t_3;
 
-  /* "ssh/sftp.pyx":232
+  /* "ssh/sftp.pyx":234
  *         cdef const char *c_dest = b_dest
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8716,7 +8763,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_38symlink(struct __pyx_obj_3ssh_4sftp
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":233
+        /* "ssh/sftp.pyx":235
  *         cdef int rc
  *         with nogil:
  *             rc = c_sftp.sftp_symlink(self._sftp, c_source, c_dest)             # <<<<<<<<<<<<<<
@@ -8726,7 +8773,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_38symlink(struct __pyx_obj_3ssh_4sftp
         __pyx_v_rc = sftp_symlink(__pyx_v_self->_sftp, __pyx_v_c_source, __pyx_v_c_dest);
       }
 
-      /* "ssh/sftp.pyx":232
+      /* "ssh/sftp.pyx":234
  *         cdef const char *c_dest = b_dest
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -8745,7 +8792,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_38symlink(struct __pyx_obj_3ssh_4sftp
       }
   }
 
-  /* "ssh/sftp.pyx":234
+  /* "ssh/sftp.pyx":236
  *         with nogil:
  *             rc = c_sftp.sftp_symlink(self._sftp, c_source, c_dest)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -8755,16 +8802,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_38symlink(struct __pyx_obj_3ssh_4sftp
   __pyx_t_4 = (__pyx_v_rc < 0);
   if (unlikely(__pyx_t_4)) {
 
-    /* "ssh/sftp.pyx":235
+    /* "ssh/sftp.pyx":237
  *             rc = c_sftp.sftp_symlink(self._sftp, c_source, c_dest)
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         return rc
  * 
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 235, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 237, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 235, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 237, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_7 = NULL;
     __pyx_t_8 = 0;
@@ -8785,15 +8832,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_38symlink(struct __pyx_obj_3ssh_4sftp
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_5, __pyx_callargs+1-__pyx_t_8, 1+__pyx_t_8);
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 235, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 237, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 235, __pyx_L1_error)
+    __PYX_ERR(0, 237, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":234
+    /* "ssh/sftp.pyx":236
  *         with nogil:
  *             rc = c_sftp.sftp_symlink(self._sftp, c_source, c_dest)
  *         if rc < 0:             # <<<<<<<<<<<<<<
@@ -8802,7 +8849,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_38symlink(struct __pyx_obj_3ssh_4sftp
  */
   }
 
-  /* "ssh/sftp.pyx":236
+  /* "ssh/sftp.pyx":238
  *         if rc < 0:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         return rc             # <<<<<<<<<<<<<<
@@ -8810,13 +8857,13 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_38symlink(struct __pyx_obj_3ssh_4sftp
  *     def readlink(self, path not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 236, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_rc); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 238, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":226
+  /* "ssh/sftp.pyx":228
  *         return rc
  * 
  *     def symlink(self, source not None, dest not None):             # <<<<<<<<<<<<<<
@@ -8840,7 +8887,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_38symlink(struct __pyx_obj_3ssh_4sftp
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":238
+/* "ssh/sftp.pyx":240
  *         return rc
  * 
  *     def readlink(self, path not None):             # <<<<<<<<<<<<<<
@@ -8902,12 +8949,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 238, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 240, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "readlink") < 0)) __PYX_ERR(0, 238, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "readlink") < 0)) __PYX_ERR(0, 240, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -8918,7 +8965,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("readlink", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 238, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("readlink", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 240, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -8933,7 +8980,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 238, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 240, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_40readlink(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path);
 
@@ -8972,19 +9019,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_40readlink(struct __pyx_obj_3ssh_4sft
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("readlink", 1);
 
-  /* "ssh/sftp.pyx":239
+  /* "ssh/sftp.pyx":241
  * 
  *     def readlink(self, path not None):
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         cdef char *_link
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 239, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 241, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":240
+  /* "ssh/sftp.pyx":242
  *     def readlink(self, path not None):
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -8993,12 +9040,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_40readlink(struct __pyx_obj_3ssh_4sft
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 240, __pyx_L1_error)
+    __PYX_ERR(0, 242, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 240, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 242, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":243
+  /* "ssh/sftp.pyx":245
  *         cdef char *_link
  *         cdef bytes b_link
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9014,7 +9061,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_40readlink(struct __pyx_obj_3ssh_4sft
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":244
+        /* "ssh/sftp.pyx":246
  *         cdef bytes b_link
  *         with nogil:
  *             _link = c_sftp.sftp_readlink(self._sftp, c_path)             # <<<<<<<<<<<<<<
@@ -9024,7 +9071,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_40readlink(struct __pyx_obj_3ssh_4sft
         __pyx_v__link = sftp_readlink(__pyx_v_self->_sftp, __pyx_v_c_path);
       }
 
-      /* "ssh/sftp.pyx":243
+      /* "ssh/sftp.pyx":245
  *         cdef char *_link
  *         cdef bytes b_link
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9043,7 +9090,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_40readlink(struct __pyx_obj_3ssh_4sft
       }
   }
 
-  /* "ssh/sftp.pyx":245
+  /* "ssh/sftp.pyx":247
  *         with nogil:
  *             _link = c_sftp.sftp_readlink(self._sftp, c_path)
  *         if _link is NULL:             # <<<<<<<<<<<<<<
@@ -9053,16 +9100,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_40readlink(struct __pyx_obj_3ssh_4sft
   __pyx_t_3 = (__pyx_v__link == NULL);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":246
+    /* "ssh/sftp.pyx":248
  *             _link = c_sftp.sftp_readlink(self._sftp, c_path)
  *         if _link is NULL:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         b_link = _link
  *         return to_str(b_link)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 246, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 248, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 246, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 248, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -9083,15 +9130,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_40readlink(struct __pyx_obj_3ssh_4sft
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 246, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 246, __pyx_L1_error)
+    __PYX_ERR(0, 248, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":245
+    /* "ssh/sftp.pyx":247
  *         with nogil:
  *             _link = c_sftp.sftp_readlink(self._sftp, c_path)
  *         if _link is NULL:             # <<<<<<<<<<<<<<
@@ -9100,19 +9147,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_40readlink(struct __pyx_obj_3ssh_4sft
  */
   }
 
-  /* "ssh/sftp.pyx":247
+  /* "ssh/sftp.pyx":249
  *         if _link is NULL:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         b_link = _link             # <<<<<<<<<<<<<<
  *         return to_str(b_link)
  * 
  */
-  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v__link); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 247, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v__link); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 249, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_link = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":248
+  /* "ssh/sftp.pyx":250
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         b_link = _link
  *         return to_str(b_link)             # <<<<<<<<<<<<<<
@@ -9120,14 +9167,14 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_40readlink(struct __pyx_obj_3ssh_4sft
  *     def statvfs(self, path not None):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_8 = __Pyx_PyBytes_AsString(__pyx_v_b_link); if (unlikely((!__pyx_t_8) && PyErr_Occurred())) __PYX_ERR(0, 248, __pyx_L1_error)
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_str(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 248, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyBytes_AsString(__pyx_v_b_link); if (unlikely((!__pyx_t_8) && PyErr_Occurred())) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_str(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 250, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":238
+  /* "ssh/sftp.pyx":240
  *         return rc
  * 
  *     def readlink(self, path not None):             # <<<<<<<<<<<<<<
@@ -9151,7 +9198,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_40readlink(struct __pyx_obj_3ssh_4sft
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":250
+/* "ssh/sftp.pyx":252
  *         return to_str(b_link)
  * 
  *     def statvfs(self, path not None):             # <<<<<<<<<<<<<<
@@ -9213,12 +9260,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 250, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 252, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "statvfs") < 0)) __PYX_ERR(0, 250, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "statvfs") < 0)) __PYX_ERR(0, 252, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -9229,7 +9276,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("statvfs", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 250, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("statvfs", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 252, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9244,7 +9291,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 250, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 252, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_42statvfs(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path);
 
@@ -9282,19 +9329,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_42statvfs(struct __pyx_obj_3ssh_4sftp
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("statvfs", 1);
 
-  /* "ssh/sftp.pyx":251
+  /* "ssh/sftp.pyx":253
  * 
  *     def statvfs(self, path not None):
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         cdef SFTPStatVFS vfs
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 251, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 253, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":252
+  /* "ssh/sftp.pyx":254
  *     def statvfs(self, path not None):
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -9303,12 +9350,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_42statvfs(struct __pyx_obj_3ssh_4sftp
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 252, __pyx_L1_error)
+    __PYX_ERR(0, 254, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 252, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 254, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":255
+  /* "ssh/sftp.pyx":257
  *         cdef SFTPStatVFS vfs
  *         cdef c_sftp.sftp_statvfs_t c_vfs
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9324,7 +9371,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_42statvfs(struct __pyx_obj_3ssh_4sftp
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":256
+        /* "ssh/sftp.pyx":258
  *         cdef c_sftp.sftp_statvfs_t c_vfs
  *         with nogil:
  *             c_vfs = c_sftp.sftp_statvfs(self._sftp, c_path)             # <<<<<<<<<<<<<<
@@ -9334,7 +9381,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_42statvfs(struct __pyx_obj_3ssh_4sftp
         __pyx_v_c_vfs = sftp_statvfs(__pyx_v_self->_sftp, __pyx_v_c_path);
       }
 
-      /* "ssh/sftp.pyx":255
+      /* "ssh/sftp.pyx":257
  *         cdef SFTPStatVFS vfs
  *         cdef c_sftp.sftp_statvfs_t c_vfs
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9353,7 +9400,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_42statvfs(struct __pyx_obj_3ssh_4sftp
       }
   }
 
-  /* "ssh/sftp.pyx":257
+  /* "ssh/sftp.pyx":259
  *         with nogil:
  *             c_vfs = c_sftp.sftp_statvfs(self._sftp, c_path)
  *         if c_vfs is NULL:             # <<<<<<<<<<<<<<
@@ -9363,16 +9410,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_42statvfs(struct __pyx_obj_3ssh_4sftp
   __pyx_t_3 = (__pyx_v_c_vfs == NULL);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":258
+    /* "ssh/sftp.pyx":260
  *             c_vfs = c_sftp.sftp_statvfs(self._sftp, c_path)
  *         if c_vfs is NULL:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         vfs = SFTPStatVFS.from_ptr(c_vfs, self)
  *         return vfs
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 258, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 260, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 258, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 260, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -9393,15 +9440,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_42statvfs(struct __pyx_obj_3ssh_4sftp
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 258, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 260, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 258, __pyx_L1_error)
+    __PYX_ERR(0, 260, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":257
+    /* "ssh/sftp.pyx":259
  *         with nogil:
  *             c_vfs = c_sftp.sftp_statvfs(self._sftp, c_path)
  *         if c_vfs is NULL:             # <<<<<<<<<<<<<<
@@ -9410,19 +9457,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_42statvfs(struct __pyx_obj_3ssh_4sftp
  */
   }
 
-  /* "ssh/sftp.pyx":259
+  /* "ssh/sftp.pyx":261
  *         if c_vfs is NULL:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         vfs = SFTPStatVFS.from_ptr(c_vfs, self)             # <<<<<<<<<<<<<<
  *         return vfs
  * 
  */
-  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_12sftp_statvfs_SFTPStatVFS->from_ptr(__pyx_v_c_vfs, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 259, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_vtabptr_3ssh_12sftp_statvfs_SFTPStatVFS->from_ptr(__pyx_v_c_vfs, __pyx_v_self)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 261, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_vfs = ((struct __pyx_obj_3ssh_12sftp_statvfs_SFTPStatVFS *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":260
+  /* "ssh/sftp.pyx":262
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         vfs = SFTPStatVFS.from_ptr(c_vfs, self)
  *         return vfs             # <<<<<<<<<<<<<<
@@ -9434,7 +9481,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_42statvfs(struct __pyx_obj_3ssh_4sftp
   __pyx_r = ((PyObject *)__pyx_v_vfs);
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":250
+  /* "ssh/sftp.pyx":252
  *         return to_str(b_link)
  * 
  *     def statvfs(self, path not None):             # <<<<<<<<<<<<<<
@@ -9458,7 +9505,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_42statvfs(struct __pyx_obj_3ssh_4sftp
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":262
+/* "ssh/sftp.pyx":264
  *         return vfs
  * 
  *     def canonicalize_path(self, path not None):             # <<<<<<<<<<<<<<
@@ -9520,12 +9567,12 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
           (void)__Pyx_Arg_NewRef_FASTCALL(values[0]);
           kw_args--;
         }
-        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 262, __pyx_L3_error)
+        else if (unlikely(PyErr_Occurred())) __PYX_ERR(0, 264, __pyx_L3_error)
         else goto __pyx_L5_argtuple_error;
       }
       if (unlikely(kw_args > 0)) {
         const Py_ssize_t kwd_pos_args = __pyx_nargs;
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "canonicalize_path") < 0)) __PYX_ERR(0, 262, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_kwvalues, __pyx_pyargnames, 0, values + 0, kwd_pos_args, "canonicalize_path") < 0)) __PYX_ERR(0, 264, __pyx_L3_error)
       }
     } else if (unlikely(__pyx_nargs != 1)) {
       goto __pyx_L5_argtuple_error;
@@ -9536,7 +9583,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   }
   goto __pyx_L6_skip;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("canonicalize_path", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 262, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("canonicalize_path", 1, 1, 1, __pyx_nargs); __PYX_ERR(0, 264, __pyx_L3_error)
   __pyx_L6_skip:;
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L3_error:;
@@ -9551,7 +9598,7 @@ PyObject *__pyx_args, PyObject *__pyx_kwds
   return NULL;
   __pyx_L4_argument_unpacking_done:;
   if (unlikely(((PyObject *)__pyx_v_path) == Py_None)) {
-    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 262, __pyx_L1_error)
+    PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "path"); __PYX_ERR(0, 264, __pyx_L1_error)
   }
   __pyx_r = __pyx_pf_3ssh_4sftp_4SFTP_44canonicalize_path(((struct __pyx_obj_3ssh_4sftp_SFTP *)__pyx_v_self), __pyx_v_path);
 
@@ -9590,19 +9637,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_44canonicalize_path(struct __pyx_obj_
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("canonicalize_path", 1);
 
-  /* "ssh/sftp.pyx":263
+  /* "ssh/sftp.pyx":265
  * 
  *     def canonicalize_path(self, path not None):
  *         cdef bytes b_path = to_bytes(path)             # <<<<<<<<<<<<<<
  *         cdef const char *c_path = b_path
  *         cdef char *_rpath
  */
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 263, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_bytes(__pyx_v_path); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 265, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_path = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":264
+  /* "ssh/sftp.pyx":266
  *     def canonicalize_path(self, path not None):
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path             # <<<<<<<<<<<<<<
@@ -9611,12 +9658,12 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_44canonicalize_path(struct __pyx_obj_
  */
   if (unlikely(__pyx_v_b_path == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
-    __PYX_ERR(0, 264, __pyx_L1_error)
+    __PYX_ERR(0, 266, __pyx_L1_error)
   }
-  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 264, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyBytes_AsString(__pyx_v_b_path); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 266, __pyx_L1_error)
   __pyx_v_c_path = __pyx_t_2;
 
-  /* "ssh/sftp.pyx":267
+  /* "ssh/sftp.pyx":269
  *         cdef char *_rpath
  *         cdef bytes b_rpath
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9632,7 +9679,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_44canonicalize_path(struct __pyx_obj_
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":268
+        /* "ssh/sftp.pyx":270
  *         cdef bytes b_rpath
  *         with nogil:
  *             _rpath = c_sftp.sftp_canonicalize_path(self._sftp, c_path)             # <<<<<<<<<<<<<<
@@ -9642,7 +9689,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_44canonicalize_path(struct __pyx_obj_
         __pyx_v__rpath = sftp_canonicalize_path(__pyx_v_self->_sftp, __pyx_v_c_path);
       }
 
-      /* "ssh/sftp.pyx":267
+      /* "ssh/sftp.pyx":269
  *         cdef char *_rpath
  *         cdef bytes b_rpath
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9661,7 +9708,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_44canonicalize_path(struct __pyx_obj_
       }
   }
 
-  /* "ssh/sftp.pyx":269
+  /* "ssh/sftp.pyx":271
  *         with nogil:
  *             _rpath = c_sftp.sftp_canonicalize_path(self._sftp, c_path)
  *         if _rpath is NULL:             # <<<<<<<<<<<<<<
@@ -9671,16 +9718,16 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_44canonicalize_path(struct __pyx_obj_
   __pyx_t_3 = (__pyx_v__rpath == NULL);
   if (unlikely(__pyx_t_3)) {
 
-    /* "ssh/sftp.pyx":270
+    /* "ssh/sftp.pyx":272
  *             _rpath = c_sftp.sftp_canonicalize_path(self._sftp, c_path)
  *         if _rpath is NULL:
  *             raise SFTPError(ssh_get_error(self.session._session))             # <<<<<<<<<<<<<<
  *         b_rpath = _rpath
  *         return to_str(b_rpath)
  */
-    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 270, __pyx_L1_error)
+    __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_SFTPError); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 272, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 270, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyBytes_FromString(ssh_get_error(__pyx_v_self->session->_session)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 272, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
     __pyx_t_7 = 0;
@@ -9701,15 +9748,15 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_44canonicalize_path(struct __pyx_obj_
       __pyx_t_1 = __Pyx_PyObject_FastCall(__pyx_t_4, __pyx_callargs+1-__pyx_t_7, 1+__pyx_t_7);
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 270, __pyx_L1_error)
+      if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 272, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(0, 270, __pyx_L1_error)
+    __PYX_ERR(0, 272, __pyx_L1_error)
 
-    /* "ssh/sftp.pyx":269
+    /* "ssh/sftp.pyx":271
  *         with nogil:
  *             _rpath = c_sftp.sftp_canonicalize_path(self._sftp, c_path)
  *         if _rpath is NULL:             # <<<<<<<<<<<<<<
@@ -9718,19 +9765,19 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_44canonicalize_path(struct __pyx_obj_
  */
   }
 
-  /* "ssh/sftp.pyx":271
+  /* "ssh/sftp.pyx":273
  *         if _rpath is NULL:
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         b_rpath = _rpath             # <<<<<<<<<<<<<<
  *         return to_str(b_rpath)
  * 
  */
-  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v__rpath); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 271, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v__rpath); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 273, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_b_rpath = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ssh/sftp.pyx":272
+  /* "ssh/sftp.pyx":274
  *             raise SFTPError(ssh_get_error(self.session._session))
  *         b_rpath = _rpath
  *         return to_str(b_rpath)             # <<<<<<<<<<<<<<
@@ -9738,14 +9785,14 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_44canonicalize_path(struct __pyx_obj_
  *     def server_version(self):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_8 = __Pyx_PyBytes_AsString(__pyx_v_b_rpath); if (unlikely((!__pyx_t_8) && PyErr_Occurred())) __PYX_ERR(0, 272, __pyx_L1_error)
-  __pyx_t_1 = __pyx_f_3ssh_5utils_to_str(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 272, __pyx_L1_error)
+  __pyx_t_8 = __Pyx_PyBytes_AsString(__pyx_v_b_rpath); if (unlikely((!__pyx_t_8) && PyErr_Occurred())) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_to_str(__pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 274, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":262
+  /* "ssh/sftp.pyx":264
  *         return vfs
  * 
  *     def canonicalize_path(self, path not None):             # <<<<<<<<<<<<<<
@@ -9769,7 +9816,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_44canonicalize_path(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "ssh/sftp.pyx":274
+/* "ssh/sftp.pyx":276
  *         return to_str(b_rpath)
  * 
  *     def server_version(self):             # <<<<<<<<<<<<<<
@@ -9830,7 +9877,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_46server_version(struct __pyx_obj_3ss
   int __pyx_clineno = 0;
   __Pyx_RefNannySetupContext("server_version", 1);
 
-  /* "ssh/sftp.pyx":276
+  /* "ssh/sftp.pyx":278
  *     def server_version(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9846,7 +9893,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_46server_version(struct __pyx_obj_3ss
       #endif
       /*try:*/ {
 
-        /* "ssh/sftp.pyx":277
+        /* "ssh/sftp.pyx":279
  *         cdef int rc
  *         with nogil:
  *             rc = c_sftp.sftp_server_version(self._sftp)             # <<<<<<<<<<<<<<
@@ -9855,7 +9902,7 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_46server_version(struct __pyx_obj_3ss
         __pyx_v_rc = sftp_server_version(__pyx_v_self->_sftp);
       }
 
-      /* "ssh/sftp.pyx":276
+      /* "ssh/sftp.pyx":278
  *     def server_version(self):
  *         cdef int rc
  *         with nogil:             # <<<<<<<<<<<<<<
@@ -9874,20 +9921,20 @@ static PyObject *__pyx_pf_3ssh_4sftp_4SFTP_46server_version(struct __pyx_obj_3ss
       }
   }
 
-  /* "ssh/sftp.pyx":278
+  /* "ssh/sftp.pyx":280
  *         with nogil:
  *             rc = c_sftp.sftp_server_version(self._sftp)
  *         return handle_error_codes(rc, self.session._session)             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 278, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 278, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_3ssh_5utils_handle_error_codes(__pyx_v_rc, __pyx_v_self->session->_session); if (unlikely(__pyx_t_1 == ((int)-1))) __PYX_ERR(0, 280, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 280, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "ssh/sftp.pyx":274
+  /* "ssh/sftp.pyx":276
  *         return to_str(b_rpath)
  * 
  *     def server_version(self):             # <<<<<<<<<<<<<<
@@ -10516,7 +10563,7 @@ static int __Pyx_CreateStringTabAndInitStrings(void) {
 }
 /* #### Code section: cached_builtins ### */
 static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 217, __pyx_L1_error)
+  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 219, __pyx_L1_error)
   __pyx_builtin_TypeError = __Pyx_GetBuiltinName(__pyx_n_s_TypeError); if (!__pyx_builtin_TypeError) __PYX_ERR(1, 2, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
@@ -10533,255 +10580,255 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
  * 
  *     def init(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
- *         with nogil:
+ *         if self._sftp is NULL or not self.session:
  */
   __pyx_tuple__2 = PyTuple_Pack(2, __pyx_n_s_self, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
   __pyx_codeobj__3 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_init, 44, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__3)) __PYX_ERR(0, 44, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":50
+  /* "ssh/sftp.pyx":52
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def get_error(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
  *         with nogil:
  */
-  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_get_error, 50, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_codeobj__4 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_get_error, 52, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__4)) __PYX_ERR(0, 52, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":56
+  /* "ssh/sftp.pyx":58
  *         return rc
  * 
  *     def extensions_get_count(self):             # <<<<<<<<<<<<<<
  *         cdef unsigned int rc
  *         with nogil:
  */
-  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_extensions_get_count, 56, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_codeobj__5 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_extensions_get_count, 58, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__5)) __PYX_ERR(0, 58, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":62
+  /* "ssh/sftp.pyx":64
  *         return rc
  * 
  *     def extensions_get_name(self, unsigned int indexn):             # <<<<<<<<<<<<<<
  *         cdef const char *_name
  *         cdef bytes name = None
  */
-  __pyx_tuple__6 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_indexn, __pyx_n_s_name_3, __pyx_n_s_name); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_tuple__6 = PyTuple_Pack(4, __pyx_n_s_self, __pyx_n_s_indexn, __pyx_n_s_name_3, __pyx_n_s_name); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
-  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_extensions_get_name, 62, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_codeobj__7 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_extensions_get_name, 64, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__7)) __PYX_ERR(0, 64, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":71
+  /* "ssh/sftp.pyx":73
  *         return name
  * 
  *     def extensions_get_data(self, unsigned int indexn):             # <<<<<<<<<<<<<<
  *         cdef const char *_name
  *         cdef bytes name = None
  */
-  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_extensions_get_data, 71, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_codeobj__8 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 4, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__6, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_extensions_get_data, 73, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__8)) __PYX_ERR(0, 73, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":80
+  /* "ssh/sftp.pyx":82
  *         return name
  * 
  *     def extension_supported(self, name not None, data not None):             # <<<<<<<<<<<<<<
  *         cdef bint rc
  *         cdef bytes b_name = to_bytes(name)
  */
-  __pyx_tuple__9 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_name, __pyx_n_s_data, __pyx_n_s_rc, __pyx_n_s_b_name, __pyx_n_s_c_name, __pyx_n_s_b_data, __pyx_n_s_c_data); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_tuple__9 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_name, __pyx_n_s_data, __pyx_n_s_rc, __pyx_n_s_b_name, __pyx_n_s_c_name, __pyx_n_s_b_data, __pyx_n_s_c_data); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_extension_supported, 80, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_codeobj__10 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__9, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_extension_supported, 82, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__10)) __PYX_ERR(0, 82, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":91
+  /* "ssh/sftp.pyx":93
  *         return bool(rc)
  * 
  *     def opendir(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef SFTPDir _dir
  *         cdef c_sftp.sftp_dir c_dir
  */
-  __pyx_tuple__11 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_dir, __pyx_n_s_c_dir, __pyx_n_s_b_path, __pyx_n_s_c_path); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_dir, __pyx_n_s_c_dir, __pyx_n_s_b_path, __pyx_n_s_c_path); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_opendir, 91, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_opendir, 93, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 93, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":103
+  /* "ssh/sftp.pyx":105
  *         return _dir
  * 
  *     def stat(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef SFTPAttributes _attrs
  *         cdef c_sftp.sftp_attributes c_attrs
  */
-  __pyx_tuple__13 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_attrs, __pyx_n_s_c_attrs, __pyx_n_s_b_path, __pyx_n_s_c_path); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_tuple__13 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_attrs, __pyx_n_s_c_attrs, __pyx_n_s_b_path, __pyx_n_s_c_path); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_stat, 103, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_codeobj__14 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_stat, 105, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__14)) __PYX_ERR(0, 105, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":115
+  /* "ssh/sftp.pyx":117
  *         return _attrs
  * 
  *     def lstat(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef SFTPAttributes _attrs
  *         cdef c_sftp.sftp_attributes c_attrs
  */
-  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_lstat, 115, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __pyx_codeobj__15 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__13, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_lstat, 117, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__15)) __PYX_ERR(0, 117, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":127
+  /* "ssh/sftp.pyx":129
  *         return _attrs
  * 
  *     def open(self, path not None, int accesstype, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_tuple__16 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_accesstype, __pyx_n_s_mode, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_file, __pyx_n_s_c_file); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_tuple__16 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_accesstype, __pyx_n_s_mode, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_file, __pyx_n_s_c_file); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(0, 129, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
-  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_open, 127, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_codeobj__17 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__16, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_open, 129, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__17)) __PYX_ERR(0, 129, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":139
+  /* "ssh/sftp.pyx":141
  *         return _file
  * 
  *     def unlink(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_tuple__18 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 139, __pyx_L1_error)
+  __pyx_tuple__18 = PyTuple_Pack(5, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__18);
   __Pyx_GIVEREF(__pyx_tuple__18);
-  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_unlink, 139, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 139, __pyx_L1_error)
+  __pyx_codeobj__19 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_unlink, 141, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__19)) __PYX_ERR(0, 141, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":149
+  /* "ssh/sftp.pyx":151
  *         return rc
  * 
  *     def rmdir(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_rmdir, 149, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_codeobj__20 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 5, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__18, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_rmdir, 151, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__20)) __PYX_ERR(0, 151, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":159
+  /* "ssh/sftp.pyx":161
  *         return rc
  * 
  *     def mkdir(self, path not None, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_tuple__21 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_mode, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_tuple__21 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_mode, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_GIVEREF(__pyx_tuple__21);
-  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_mkdir, 159, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_codeobj__22 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_mkdir, 161, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__22)) __PYX_ERR(0, 161, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":167
+  /* "ssh/sftp.pyx":169
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def rename(self, original not None, newname not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_orig = to_bytes(original)
  *         cdef const char *c_orig = b_orig
  */
-  __pyx_tuple__23 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_original, __pyx_n_s_newname, __pyx_n_s_b_orig, __pyx_n_s_c_orig, __pyx_n_s_b_newname, __pyx_n_s_c_newname, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 167, __pyx_L1_error)
+  __pyx_tuple__23 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_original, __pyx_n_s_newname, __pyx_n_s_b_orig, __pyx_n_s_c_orig, __pyx_n_s_b_newname, __pyx_n_s_c_newname, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(0, 169, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
-  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_rename, 167, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 167, __pyx_L1_error)
+  __pyx_codeobj__24 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__23, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_rename, 169, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__24)) __PYX_ERR(0, 169, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":179
+  /* "ssh/sftp.pyx":181
  *         return rc
  * 
  *     def setstat(self, path not None, SFTPAttributes attr):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_tuple__25 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_attr, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_tuple__25 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_attr, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(0, 181, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
-  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_setstat, 179, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_codeobj__26 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__25, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_setstat, 181, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__26)) __PYX_ERR(0, 181, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":187
+  /* "ssh/sftp.pyx":189
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def chown(self, path not None,             # <<<<<<<<<<<<<<
  *               c_sftp.uid_t owner, c_sftp.gid_t group):
  *         cdef bytes b_path = to_bytes(path)
  */
-  __pyx_tuple__27 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_owner, __pyx_n_s_group, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_tuple__27 = PyTuple_Pack(7, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_owner, __pyx_n_s_group, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__27);
   __Pyx_GIVEREF(__pyx_tuple__27);
-  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_chown, 187, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_codeobj__28 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 7, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__27, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_chown, 189, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__28)) __PYX_ERR(0, 189, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":198
+  /* "ssh/sftp.pyx":200
  *         return rc
  * 
  *     def chmod(self, path not None, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_chmod, 198, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__21, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_chmod, 200, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 200, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":208
+  /* "ssh/sftp.pyx":210
  *         return rc
  * 
  *     def utimes(self, path not None, long seconds, long microseconds):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_tuple__30 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_seconds, __pyx_n_s_microseconds, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rc, __pyx_n_s_val); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_tuple__30 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_seconds, __pyx_n_s_microseconds, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rc, __pyx_n_s_val); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__30);
   __Pyx_GIVEREF(__pyx_tuple__30);
-  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_utimes, 208, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(4, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_utimes, 210, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 210, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":226
+  /* "ssh/sftp.pyx":228
  *         return rc
  * 
  *     def symlink(self, source not None, dest not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_source = to_bytes(source)
  *         cdef const char *c_source = b_source
  */
-  __pyx_tuple__32 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_source, __pyx_n_s_dest, __pyx_n_s_b_source, __pyx_n_s_c_source, __pyx_n_s_b_dest, __pyx_n_s_c_dest, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_tuple__32 = PyTuple_Pack(8, __pyx_n_s_self, __pyx_n_s_source, __pyx_n_s_dest, __pyx_n_s_b_source, __pyx_n_s_c_source, __pyx_n_s_b_dest, __pyx_n_s_c_dest, __pyx_n_s_rc); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
-  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_symlink, 226, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(3, 0, 0, 8, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_symlink, 228, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 228, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":238
+  /* "ssh/sftp.pyx":240
  *         return rc
  * 
  *     def readlink(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_tuple__34 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_link, __pyx_n_s_b_link); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_tuple__34 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_link, __pyx_n_s_b_link); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 240, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__34);
   __Pyx_GIVEREF(__pyx_tuple__34);
-  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_readlink, 238, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_readlink, 240, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 240, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":250
+  /* "ssh/sftp.pyx":252
  *         return to_str(b_link)
  * 
  *     def statvfs(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_tuple__36 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_vfs, __pyx_n_s_c_vfs); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_tuple__36 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_vfs, __pyx_n_s_c_vfs); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__36);
   __Pyx_GIVEREF(__pyx_tuple__36);
-  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_statvfs, 250, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_statvfs, 252, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 252, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":262
+  /* "ssh/sftp.pyx":264
  *         return vfs
  * 
  *     def canonicalize_path(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_tuple__38 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rpath, __pyx_n_s_b_rpath); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __pyx_tuple__38 = PyTuple_Pack(6, __pyx_n_s_self, __pyx_n_s_path, __pyx_n_s_b_path, __pyx_n_s_c_path, __pyx_n_s_rpath, __pyx_n_s_b_rpath); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 264, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__38);
   __Pyx_GIVEREF(__pyx_tuple__38);
-  __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_canonicalize_path, 262, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(2, 0, 0, 6, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_canonicalize_path, 264, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(0, 264, __pyx_L1_error)
 
-  /* "ssh/sftp.pyx":274
+  /* "ssh/sftp.pyx":276
  *         return to_str(b_rpath)
  * 
  *     def server_version(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
  *         with nogil:
  */
-  __pyx_codeobj__40 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_server_version, 274, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__40)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_codeobj__40 = (PyObject*)__Pyx_PyCode_New(1, 0, 0, 2, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__2, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_ssh_sftp_pyx, __pyx_n_s_server_version, 276, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__40)) __PYX_ERR(0, 276, __pyx_L1_error)
 
   /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
@@ -10813,6 +10860,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
 
 static CYTHON_SMALL_CODE int __Pyx_InitConstants(void) {
   if (__Pyx_CreateStringTabAndInitStrings() < 0) __PYX_ERR(0, 1, __pyx_L1_error);
+  __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(0, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -11278,7 +11326,7 @@ if (!__Pyx_RefNanny) {
  * 
  *     def init(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
- *         with nogil:
+ *         if self._sftp is NULL or not self.session:
  */
   __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_3init, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_init, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__3)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -11286,289 +11334,289 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":50
+  /* "ssh/sftp.pyx":52
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def get_error(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
  *         with nogil:
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_5get_error, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_get_error, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__4)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_5get_error, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_get_error, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__4)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_get_error, __pyx_t_3) < 0) __PYX_ERR(0, 50, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_get_error, __pyx_t_3) < 0) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":56
+  /* "ssh/sftp.pyx":58
  *         return rc
  * 
  *     def extensions_get_count(self):             # <<<<<<<<<<<<<<
  *         cdef unsigned int rc
  *         with nogil:
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_7extensions_get_count, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_extensions_get_count, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__5)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 56, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_7extensions_get_count, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_extensions_get_count, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__5)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_extensions_get_count, __pyx_t_3) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_extensions_get_count, __pyx_t_3) < 0) __PYX_ERR(0, 58, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":62
+  /* "ssh/sftp.pyx":64
  *         return rc
  * 
  *     def extensions_get_name(self, unsigned int indexn):             # <<<<<<<<<<<<<<
  *         cdef const char *_name
  *         cdef bytes name = None
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_9extensions_get_name, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_extensions_get_name, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 62, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_9extensions_get_name, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_extensions_get_name, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__7)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_extensions_get_name, __pyx_t_3) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_extensions_get_name, __pyx_t_3) < 0) __PYX_ERR(0, 64, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":71
+  /* "ssh/sftp.pyx":73
  *         return name
  * 
  *     def extensions_get_data(self, unsigned int indexn):             # <<<<<<<<<<<<<<
  *         cdef const char *_name
  *         cdef bytes name = None
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_11extensions_get_data, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_extensions_get_data, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 71, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_11extensions_get_data, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_extensions_get_data, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__8)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_extensions_get_data, __pyx_t_3) < 0) __PYX_ERR(0, 71, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_extensions_get_data, __pyx_t_3) < 0) __PYX_ERR(0, 73, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":80
+  /* "ssh/sftp.pyx":82
  *         return name
  * 
  *     def extension_supported(self, name not None, data not None):             # <<<<<<<<<<<<<<
  *         cdef bint rc
  *         cdef bytes b_name = to_bytes(name)
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_13extension_supported, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_extension_supported, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 80, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_13extension_supported, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_extension_supported, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__10)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_extension_supported, __pyx_t_3) < 0) __PYX_ERR(0, 80, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_extension_supported, __pyx_t_3) < 0) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":91
+  /* "ssh/sftp.pyx":93
  *         return bool(rc)
  * 
  *     def opendir(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef SFTPDir _dir
  *         cdef c_sftp.sftp_dir c_dir
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_15opendir, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_opendir, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_15opendir, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_opendir, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__12)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_opendir, __pyx_t_3) < 0) __PYX_ERR(0, 91, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_opendir, __pyx_t_3) < 0) __PYX_ERR(0, 93, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":103
+  /* "ssh/sftp.pyx":105
  *         return _dir
  * 
  *     def stat(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef SFTPAttributes _attrs
  *         cdef c_sftp.sftp_attributes c_attrs
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_17stat, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_stat, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 103, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_17stat, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_stat, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__14)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_stat, __pyx_t_3) < 0) __PYX_ERR(0, 103, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_stat, __pyx_t_3) < 0) __PYX_ERR(0, 105, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":115
+  /* "ssh/sftp.pyx":117
  *         return _attrs
  * 
  *     def lstat(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef SFTPAttributes _attrs
  *         cdef c_sftp.sftp_attributes c_attrs
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_19lstat, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_lstat, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 115, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_19lstat, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_lstat, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__15)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_lstat, __pyx_t_3) < 0) __PYX_ERR(0, 115, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_lstat, __pyx_t_3) < 0) __PYX_ERR(0, 117, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":127
+  /* "ssh/sftp.pyx":129
  *         return _attrs
  * 
  *     def open(self, path not None, int accesstype, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_21open, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_open, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 127, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_21open, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_open, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__17)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 129, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_open, __pyx_t_3) < 0) __PYX_ERR(0, 127, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_open, __pyx_t_3) < 0) __PYX_ERR(0, 129, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":139
+  /* "ssh/sftp.pyx":141
  *         return _file
  * 
  *     def unlink(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_23unlink, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_unlink, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 139, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_23unlink, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_unlink, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__19)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_unlink, __pyx_t_3) < 0) __PYX_ERR(0, 139, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_unlink, __pyx_t_3) < 0) __PYX_ERR(0, 141, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":149
+  /* "ssh/sftp.pyx":151
  *         return rc
  * 
  *     def rmdir(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_25rmdir, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_rmdir, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 149, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_25rmdir, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_rmdir, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__20)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_rmdir, __pyx_t_3) < 0) __PYX_ERR(0, 149, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_rmdir, __pyx_t_3) < 0) __PYX_ERR(0, 151, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":159
+  /* "ssh/sftp.pyx":161
  *         return rc
  * 
  *     def mkdir(self, path not None, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_27mkdir, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_mkdir, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 159, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_27mkdir, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_mkdir, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__22)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_mkdir, __pyx_t_3) < 0) __PYX_ERR(0, 159, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_mkdir, __pyx_t_3) < 0) __PYX_ERR(0, 161, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":167
+  /* "ssh/sftp.pyx":169
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def rename(self, original not None, newname not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_orig = to_bytes(original)
  *         cdef const char *c_orig = b_orig
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_29rename, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_rename, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 167, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_29rename, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_rename, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__24)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 169, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_rename, __pyx_t_3) < 0) __PYX_ERR(0, 167, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_rename, __pyx_t_3) < 0) __PYX_ERR(0, 169, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":179
+  /* "ssh/sftp.pyx":181
  *         return rc
  * 
  *     def setstat(self, path not None, SFTPAttributes attr):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_31setstat, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_setstat, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 179, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_31setstat, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_setstat, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__26)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 181, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_setstat, __pyx_t_3) < 0) __PYX_ERR(0, 179, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_setstat, __pyx_t_3) < 0) __PYX_ERR(0, 181, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":187
+  /* "ssh/sftp.pyx":189
  *         return handle_error_codes(rc, self.session._session)
  * 
  *     def chown(self, path not None,             # <<<<<<<<<<<<<<
  *               c_sftp.uid_t owner, c_sftp.gid_t group):
  *         cdef bytes b_path = to_bytes(path)
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_33chown, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_chown, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 187, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_33chown, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_chown, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__28)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_chown, __pyx_t_3) < 0) __PYX_ERR(0, 187, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_chown, __pyx_t_3) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":198
+  /* "ssh/sftp.pyx":200
  *         return rc
  * 
  *     def chmod(self, path not None, c_sftp.mode_t mode):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_35chmod, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_chmod, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 198, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_35chmod, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_chmod, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__29)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_chmod, __pyx_t_3) < 0) __PYX_ERR(0, 198, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_chmod, __pyx_t_3) < 0) __PYX_ERR(0, 200, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":208
+  /* "ssh/sftp.pyx":210
  *         return rc
  * 
  *     def utimes(self, path not None, long seconds, long microseconds):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_37utimes, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_utimes, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 208, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_37utimes, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_utimes, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_utimes, __pyx_t_3) < 0) __PYX_ERR(0, 208, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_utimes, __pyx_t_3) < 0) __PYX_ERR(0, 210, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":226
+  /* "ssh/sftp.pyx":228
  *         return rc
  * 
  *     def symlink(self, source not None, dest not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_source = to_bytes(source)
  *         cdef const char *c_source = b_source
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_39symlink, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_symlink, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 226, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_39symlink, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_symlink, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_symlink, __pyx_t_3) < 0) __PYX_ERR(0, 226, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_symlink, __pyx_t_3) < 0) __PYX_ERR(0, 228, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":238
+  /* "ssh/sftp.pyx":240
  *         return rc
  * 
  *     def readlink(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_41readlink, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_readlink, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 238, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_41readlink, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_readlink, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 240, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_readlink, __pyx_t_3) < 0) __PYX_ERR(0, 238, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_readlink, __pyx_t_3) < 0) __PYX_ERR(0, 240, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":250
+  /* "ssh/sftp.pyx":252
  *         return to_str(b_link)
  * 
  *     def statvfs(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_43statvfs, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_statvfs, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 250, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_43statvfs, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_statvfs, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_statvfs, __pyx_t_3) < 0) __PYX_ERR(0, 250, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_statvfs, __pyx_t_3) < 0) __PYX_ERR(0, 252, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":262
+  /* "ssh/sftp.pyx":264
  *         return vfs
  * 
  *     def canonicalize_path(self, path not None):             # <<<<<<<<<<<<<<
  *         cdef bytes b_path = to_bytes(path)
  *         cdef const char *c_path = b_path
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_45canonicalize_path, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_canonicalize_path, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__39)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 262, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_45canonicalize_path, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_canonicalize_path, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__39)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 264, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_canonicalize_path, __pyx_t_3) < 0) __PYX_ERR(0, 262, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_canonicalize_path, __pyx_t_3) < 0) __PYX_ERR(0, 264, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
-  /* "ssh/sftp.pyx":274
+  /* "ssh/sftp.pyx":276
  *         return to_str(b_rpath)
  * 
  *     def server_version(self):             # <<<<<<<<<<<<<<
  *         cdef int rc
  *         with nogil:
  */
-  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_47server_version, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_server_version, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__40)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 274, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_CyFunction_New(&__pyx_mdef_3ssh_4sftp_4SFTP_47server_version, __Pyx_CYFUNCTION_CCLASS, __pyx_n_s_SFTP_server_version, NULL, __pyx_n_s_ssh_sftp, __pyx_d, ((PyObject *)__pyx_codeobj__40)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_server_version, __pyx_t_3) < 0) __PYX_ERR(0, 274, __pyx_L1_error)
+  if (__Pyx_SetItemOnTypeDict((PyObject *)__pyx_ptype_3ssh_4sftp_SFTP, __pyx_n_s_server_version, __pyx_t_3) < 0) __PYX_ERR(0, 276, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   PyType_Modified(__pyx_ptype_3ssh_4sftp_SFTP);
 
