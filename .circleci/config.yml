@@ -48,6 +48,7 @@ jobs:
             pwd
             ldd -r ssh/session*.so
             pytest tests
+            pytest ci/integration_tests
             flake8 ssh
             python setup.py sdist
             cd dist; pip install *; cd ..
