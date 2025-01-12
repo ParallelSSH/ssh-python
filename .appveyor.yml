@@ -65,7 +65,7 @@ install:
   # - msiexec /i kfw-4.1-amd64.msi /passive /qn
   # - ps: ls "C:\Program Files\MIT\Kerberos\"
   # - cp "C:\Program Files\MIT\Kerberos\*.dll" ssh/
-  - ps: ls ssh2/*.dll
+  - ps: ls ssh/*.dll
   - ps: ls ssh
   - ps: ls
 

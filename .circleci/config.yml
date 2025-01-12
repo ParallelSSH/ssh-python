@@ -35,7 +35,7 @@ jobs:
       - run:
           command: |
             pip uninstall -y cython
-            python setup.py build_ext --inplace
+            pip install .
             eval "$(ssh-agent -s)"
           name: Build
       - run:
