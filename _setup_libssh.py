@@ -27,6 +27,8 @@ def build_ssh():
         return
     if os.path.exists('/usr/local/opt/openssl'):
         os.environ['OPENSSL_ROOT_DIR'] = '/usr/local/opt/openssl'
+    if os.path.exists('/opt/homebrew/opt/openssl'):
+        os.environ['OPENSSL_ROOT_DIR'] = '/opt/homebrew/opt/openssl'
 
     if not os.path.exists('src'):
         os.mkdir('src')

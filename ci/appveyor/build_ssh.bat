@@ -13,8 +13,9 @@ cmake ..\libssh                                    ^
       -DOPENSSL_ROOT_DIR=%OPENSSL_DIR%
 
 
-cp %OPENSSL_DIR%\lib\VC\libcrypto%PYTHON_ARCH%MD.lib %APPVEYOR_BUILD_FOLDER%
-cp %OPENSSL_DIR%\lib\VC\libssl%PYTHON_ARCH%MD.lib %APPVEYOR_BUILD_FOLDER%
+dir %OPENSSL_DIR%\lib\VC\x64\MD\
+cp %OPENSSL_DIR%\lib\VC\x64\MD\libcrypto.lib %APPVEYOR_BUILD_FOLDER%\libcrypto64MD.lib
+cp %OPENSSL_DIR%\lib\VC\x64\MD\libssl.lib %APPVEYOR_BUILD_FOLDER%\libssl64MD.lib
 
 cmake --build . --config Release
 cmake --install . --prefix ../local
