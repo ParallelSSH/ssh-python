@@ -82,7 +82,7 @@ jobs:
           command: |
             brew install cmake git-lfs krb5 python libssh
             brew link --force openssl
-            brew link --force libssh2
+            brew link --force libssh
             pip3 install twine
             which twine
       - run:
