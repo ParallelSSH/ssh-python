@@ -14,7 +14,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from c_ssh cimport uint64_t, uint32_t, uint8_t, ssh_string, ssh_buffer, \
+from .c_ssh cimport uint64_t, uint32_t, uint8_t, ssh_string, ssh_buffer, \
     ssh_channel, ssh_session, timeval
 
 

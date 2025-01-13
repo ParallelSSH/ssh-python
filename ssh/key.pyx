@@ -16,12 +16,12 @@
 
 from libc.string cimport const_char
 
-from keytypes cimport from_keytype, KeyType
-from utils cimport to_str, to_bytes
+from .keytypes cimport from_keytype, KeyType
+from .utils cimport to_str, to_bytes
 
 from .exceptions import KeyExportError, KeyImportError, KeyGenerationError
 
-cimport c_ssh
+from . cimport c_ssh
 
 
 cdef class SSHKey:

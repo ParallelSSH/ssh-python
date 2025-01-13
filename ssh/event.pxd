@@ -14,10 +14,10 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from session cimport Session
-from connector cimport Connector
+from .session cimport Session
+from .connector cimport Connector
 
-cimport c_ssh
+from . cimport c_ssh
 
 
 cdef class Event:

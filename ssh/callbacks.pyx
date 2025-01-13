@@ -17,11 +17,11 @@
 from libc.stdlib cimport malloc, free
 from libc.string cimport memset
 
-from session cimport Session
-from utils cimport handle_error_codes
+from .session cimport Session
+from .utils cimport handle_error_codes
 
-from c_ssh cimport ssh_auth_callback
-cimport c_callbacks
+from .c_ssh cimport ssh_auth_callback
+from . cimport c_callbacks
 
 
 cdef int auth_callback(const char *prompt, char *buf, size_t len,

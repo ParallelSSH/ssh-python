@@ -14,10 +14,10 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from sftp cimport SFTP
-from sftp_attributes cimport SFTPAttributes
+from .sftp cimport SFTP
+from .sftp_attributes cimport SFTPAttributes
 
-cimport c_sftp
+from . cimport c_sftp
 
 
 cdef class SFTPFile:

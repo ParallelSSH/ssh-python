@@ -14,9 +14,9 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from c_ssh cimport ssh_session, ssh_string, ssh_message, uint32_t, \
+from .c_ssh cimport ssh_session, ssh_string, ssh_message, uint32_t, \
     ssh_keytypes_e
-from c_keys cimport ssh_private_key_struct, ssh_public_key_struct
+from .c_keys cimport ssh_private_key_struct, ssh_public_key_struct
 
 cdef extern from "libssh/legacy.h" nogil:
     ctypedef ssh_private_key_struct* ssh_private_key

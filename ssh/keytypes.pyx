@@ -16,9 +16,9 @@
 
 from libc.string cimport const_char
 
-from utils cimport to_str, to_bytes
+from .utils cimport to_str, to_bytes
 
-from c_ssh cimport ssh_keytypes_e, ssh_key_type_to_char, ssh_key_type_from_name
+from .c_ssh cimport ssh_keytypes_e, ssh_key_type_to_char, ssh_key_type_from_name
 
 
 cdef class KeyType:

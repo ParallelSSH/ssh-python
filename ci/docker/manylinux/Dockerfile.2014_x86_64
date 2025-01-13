@@ -1,12 +1,12 @@
 FROM quay.io/pypa/manylinux2014_x86_64
 
-ENV OPENSSL openssl-1.1.1q
-ENV LIBSSH 0.10.4
-ENV KRB 1.18.4
+ENV OPENSSL openssl-3.4.0
+ENV LIBSSH 0.11.1
+ENV KRB 1.21.3
 ENV SYSTEM_LIBSSH 1
 ENV CFLAGS "-g0 -s"
 
-RUN yum install zlib-devel cmake3 -y
+RUN yum install zlib-devel cmake3 perl-IPC-Cmd -y
 
 ADD libssh-${LIBSSH}.tar.xz libssh.tar.xz
 ADD https://www.openssl.org/source/${OPENSSL}.tar.gz ${OPENSSL}.tar.gz

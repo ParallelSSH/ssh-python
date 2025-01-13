@@ -17,11 +17,11 @@
 from libc.stdlib cimport malloc, free
 from libc.string cimport const_char
 
-from session cimport Session
-from utils cimport to_bytes, to_str, handle_error_codes
+from .session cimport Session
+from .utils cimport to_bytes, to_str, handle_error_codes
 
 
-cimport c_ssh
+from . cimport c_ssh
 
 
 cdef class Channel:

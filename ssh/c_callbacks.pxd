@@ -14,7 +14,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
 
-from c_ssh cimport ssh_session, ssh_channel, ssh_buffer, ssh_string, \
+from .c_ssh cimport ssh_session, ssh_channel, ssh_buffer, ssh_string, \
     uint32_t, uint8_t, ssh_key_struct, ssh_auth_callback, ssh_message
 
 cdef extern from "libssh/callbacks.h" nogil:
