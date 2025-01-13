@@ -1,6 +1,27 @@
 Change Log
 =============
 
+1.1.0
++++++
+
+Changes
+--------
+
+* Updated embedded and manylinux libssh to `0.11.1`.
+* Support for Python >=3.12.
+* Upgraded wheel OpenSSL to 3.4.0.
+* Removed testing for Python versions <3.8.
+
+Packaging
+----------
+
+* Added binary wheels for Python versions 3.11, 3.12 and 3.13 on support manylinux wheel builds.
+* Added OSX 12.0, 13.0 and 14.0 wheels, Apple Silicon.
+* Support OSX brew OpenSSL from source builds.
+* Top level tests directory is now cross platform and can be run by vendors.
+* Moved CI specific integration tests to their own space.
+
+
 1.0.0
 ++++++
 
