@@ -80,7 +80,7 @@ jobs:
       - run:
           name: deps
           command: |
-            brew install cmake git-lfs krb5 python libssh
+            brew install cmake python libssh
             brew link --force openssl
             brew link --force libssh
             pip3 install twine
@@ -101,13 +101,6 @@ jobs:
       image: ubuntu-2004:current
     steps: &manylinux-steps
       - checkout
-      - run:
-          name: Git LFS
-          command: |
-            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-            sudo apt-get install git-lfs
-            git lfs install
-            git lfs pull
       - run:
           name: Deps
           command: |
