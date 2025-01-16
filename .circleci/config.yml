@@ -119,6 +119,7 @@ jobs:
       - run:
           name: Build Wheels
           command: |
+            export LIBSSH_VERSION=0.11.1
             if [[ -z "${CIRCLE_PR_NUMBER}" ]]; then
               echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
             fi

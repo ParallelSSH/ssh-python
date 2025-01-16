@@ -10,6 +10,7 @@ cmake ..\libssh                                    ^
       -DZLIB_INCLUDE_DIR=C:/zlib/include           ^
       -DWITH_GSSAPI=ON                             ^
       -DWITH_EXAMPLES=OFF                          ^
+      -DUNIT_TESTING=OFF                           ^
       -DOPENSSL_ROOT_DIR=%OPENSSL_DIR%
 
 
