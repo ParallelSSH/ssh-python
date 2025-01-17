@@ -19,11 +19,6 @@ RUN cd ${OPENSSL} && \
     ./config --prefix=/usr --openssldir=/usr/openssl threads shared && \
     make -j6 && make install_sw
 
-# Kerberos
-RUN cd krb5-${KRB}.tar.xz/krb5-${KRB}/src && \
-    ./configure && \
-    make -j6 && \
-    make install
 
 # Libssh
 RUN mkdir -p build_libssh && cd build_libssh && \
