@@ -150,7 +150,7 @@ workflows:
               ignore: /.*/
       - manylinux-x86_64: &manylinux-wf
           context: Docker
-          filters:
+#          filters:
 #            tags:
 #              only: /.*/
 #            branches:
