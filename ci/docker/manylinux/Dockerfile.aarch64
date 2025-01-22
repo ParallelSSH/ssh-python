@@ -27,7 +27,8 @@ RUN cd ${OPENSSL} && \
     make -j6 && make install_sw
 
 
-RUN cp -a /usr/lib/libssl* /usr/lib64/ && cp -a /usr/lib/libcrypto* /usr/lib64/
+RUN cp -a /usr/lib/libssl* /usr/lib64/ && cp -a /usr/lib/libcrypto* /usr/lib64/ && \
+    cp -a /usr/lib/pkgconfig/* /usr/lib64/pkgconfig/ && cp -a /usr/lib/cmake /usr/lib64/
 
 
 # Libssh
