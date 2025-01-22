@@ -33,6 +33,6 @@ RUN cc --version; openssl version -a; mkdir -p build_libssh && cd build_libssh &
           -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF -DUNIT_TESTING=OFF && \
     make -j6 install/strip
 
-RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-${KRB}.tar.xz
+RUN rm -rf ${OPENSSL}* libssh.tar.gz build_libssh krb5.tar.gz
 
 VOLUME /var/cache

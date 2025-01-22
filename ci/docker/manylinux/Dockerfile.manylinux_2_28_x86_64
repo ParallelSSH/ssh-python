@@ -1,15 +1,15 @@
 FROM quay.io/pypa/manylinux_2_28_x86_64
 
 ENV OPENSSL=openssl-3.4.0
-ENV LIBSSH_VERSION=0.11.1
+ENV LIBSSH=0.11.1
 ENV SYSTEM_LIBSSH=1
 ENV KRB=1.21.3
 ENV CFLAGS="-g0 -s"
-ENV OPENSSL_ROOT_DIR=/usr/lib
 
 RUN yum install zlib-devel cmake3 -y
 
-ADD libssh-${LIBSSH_VERSION}.tar.gz libssh.tar.gz
+ADD libssh-${LIBSSH}.tar.gz libssh.tar.gz
+ADD krb5-${KRB}.tar.gz krb5.tar.gz
 ADD https://www.openssl.org/source/${OPENSSL}.tar.gz ${OPENSSL}.tar.gz
 
 
@@ -30,9 +30,9 @@ RUN cd ${OPENSSL} && \
 # Libssh
 RUN mkdir -p build_libssh && cd build_libssh && \
     cmake3 ../libssh.tar.gz/libssh -DCMAKE_BUILD_TYPE=Release \
-          -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF -DWITH_SERVER=OFF && \
+          -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF -DUNIT_TESTING=OFF && \
     make -j6 install/strip
 
-RUN rm -rf ${OPENSSL}* libssh build_libssh
+RUN rm -rf ${OPENSSL}* libssh.tar.gz build_libssh krb5.tar.gz
 
 VOLUME /var/cache

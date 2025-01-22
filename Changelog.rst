@@ -14,6 +14,7 @@ Packaging
 ----------
 
 * Wheel builds now use embedded libssh.
+* Source distribution now uses embedded libssh.
 * Dockerfiles and scripts updates.
 
 
