@@ -3,6 +3,7 @@ FROM quay.io/pypa/manylinux_2_24_x86_64
 ENV OPENSSL=openssl-3.4.0
 ENV LIBSSH_VERSION=0.11.1
 ENV SYSTEM_LIBSSH=1
+ENV KRB=1.21.3
 ENV CFLAGS="-g0 -s"
 ENV OPENSSL_ROOT_DIR=/usr/lib
 
@@ -10,6 +11,14 @@ RUN apt-get update -y && apt-get install zlib1g-dev cmake -y
 
 ADD libssh-${LIBSSH_VERSION}.tar.gz libssh.tar.gz
 ADD https://www.openssl.org/source/${OPENSSL}.tar.gz ${OPENSSL}.tar.gz
+
+
+# Kerberos
+RUN cd krb5-${KRB}/src && \
+    ./configure && \
+    make -j6 && \
+    make install
+
 
 RUN tar -xzf ${OPENSSL}.tar.gz
 # Openssl

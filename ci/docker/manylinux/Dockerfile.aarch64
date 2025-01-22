@@ -3,6 +3,7 @@ FROM quay.io/pypa/manylinux2014_aarch64
 ENV OPENSSL=openssl-3.4.0
 ENV LIBSSH_VERSION=0.11.1
 ENV SYSTEM_LIBSSH=1
+ENV KRB=1.21.3
 ENV CFLAGS="-g0 -s"
 ENV OPENSSL_ROOT_DIR=/usr/lib
 
@@ -10,6 +11,13 @@ RUN yum install epel-release -y && yum install zlib-devel cmake3 perl-IPC-Cmd -y
 
 ADD libssh-${LIBSSH_VERSION}.tar.gz libssh.tar.gz
 ADD https://www.openssl.org/source/${OPENSSL}.tar.gz ${OPENSSL}.tar.gz
+
+
+RUN cd krb5-${KRB}/src && \
+    ./configure && \
+    make -j6 && \
+    make install
+
 
 RUN tar -xzf ${OPENSSL}.tar.gz
 # Openssl
@@ -19,7 +27,7 @@ RUN cd ${OPENSSL} && \
 
 
 # Libssh
-RUN mkdir -p build_libssh && cd build_libssh && \
+RUN which gcc; mkdir -p build_libssh && cd build_libssh && \
     cmake3 ../libssh.tar.gz/libssh -DCMAKE_BUILD_TYPE=Release \
           -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF -DWITH_SERVER=OFF && \
     make -j6 install/strip
