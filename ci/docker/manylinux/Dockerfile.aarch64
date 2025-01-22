@@ -1,16 +1,24 @@
 FROM quay.io/pypa/manylinux2014_aarch64
 
-ENV OPENSSL openssl-3.4.0
-ENV LIBSSH 0.11.1
-ENV KRB 1.21.3
-ENV SYSTEM_LIBSSH 1
-ENV CFLAGS "-g0 -s"
+ENV OPENSSL=openssl-3.4.0
+ENV LIBSSH=0.11.1
+ENV SYSTEM_LIBSSH=1
+ENV KRB=1.21.3
+ENV CFLAGS="-g0 -s"
 
-RUN yum install epel-release -y && yum install zlib-devel cmake3 perl-IPC-Cmd -y
+RUN yum install epel-release -y && yum install zlib-devel cmake3 perl-IPC-Cmd -y && yum remove -y openssl
 
-ADD libssh-${LIBSSH}.tar.xz libssh.tar.xz
+ADD libssh-${LIBSSH}.tar.gz libssh.tar.gz
+ADD krb5-${KRB}.tar.gz krb5.tar.gz
 ADD https://www.openssl.org/source/${OPENSSL}.tar.gz ${OPENSSL}.tar.gz
-ADD krb5-${KRB}.tar.xz krb5-${KRB}.tar.xz
+
+
+# Kerberos
+RUN cd krb5.tar.gz/krb5-${KRB}/src && \
+    ./configure && \
+    make -j6 && \
+    make install
+
 
 RUN tar -xzf ${OPENSSL}.tar.gz
 # Openssl
@@ -18,18 +26,13 @@ RUN cd ${OPENSSL} && \
     ./config --prefix=/usr --openssldir=/usr/openssl threads shared && \
     make -j6 && make install_sw
 
-# Kerberos
-RUN cd krb5-${KRB}.tar.xz/krb5-${KRB}/src && \
-    ./configure && \
-    make -j6 && \
-    make install
 
 # Libssh
-RUN mkdir -p build_libssh && cd build_libssh && \
-    cmake3 ../libssh.tar.xz/libssh-${LIBSSH} -DCMAKE_BUILD_TYPE=Release \
-          -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF && \
+RUN cc --version; openssl version -a; mkdir -p build_libssh && cd build_libssh && \
+    cmake3 ../libssh.tar.gz/libssh -DCMAKE_BUILD_TYPE=Release \
+          -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF -DUNIT_TESTING=OFF && \
     make -j6 install/strip
 
-RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-${KRB}.tar.xz
+RUN rm -rf ${OPENSSL}* libssh.tar.gz build_libssh krb5.tar.gz
 
 VOLUME /var/cache

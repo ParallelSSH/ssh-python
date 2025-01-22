@@ -11,3 +11,5 @@ libssh/compile_commands.json
 /.idea
 /ci/integration_tests/unit_test_cert_key-cert.pub
 /doc/_build
+ci/docker/manylinux/*.tar.gz
+ci/appveyor/zlib-1.2.11.zip

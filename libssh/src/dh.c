@@ -25,6 +25,8 @@
 
 #include "config.h"
 
+#include <stdio.h>
+
 #include "libssh/priv.h"
 #include "libssh/crypto.h"
 #include "libssh/buffer.h"
@@ -352,6 +354,11 @@ error:
   return SSH_ERROR;
 }
 
+void ssh_client_dh_remove_callbacks(ssh_session session)
+{
+    ssh_packet_remove_callbacks(session, &ssh_dh_client_callbacks);
+}
+
 SSH_PACKET_CALLBACK(ssh_packet_client_dh_reply){
   struct ssh_crypto_struct *crypto=session->next_crypto;
   ssh_string pubkey_blob = NULL;
@@ -361,7 +368,7 @@ SSH_PACKET_CALLBACK(ssh_packet_client_dh_reply){
   (void)type;
   (void)user;
 
-  ssh_packet_remove_callbacks(session, &ssh_dh_client_callbacks);
+  ssh_client_dh_remove_callbacks(session);
 
   rc = ssh_buffer_unpack(packet, "SBS", &pubkey_blob, &server_pubkey,
           &crypto->dh_server_signature);
@@ -391,16 +398,10 @@ SSH_PACKET_CALLBACK(ssh_packet_client_dh_reply){
   }
 
   /* Send the MSG_NEWKEYS */
-  if (ssh_buffer_add_u8(session->out_buffer, SSH2_MSG_NEWKEYS) < 0) {
-    goto error;
-  }
-
-  rc=ssh_packet_send(session);
+  rc = ssh_packet_send_newkeys(session);
   if (rc == SSH_ERROR) {
     goto error;
   }
-
-  SSH_LOG(SSH_LOG_PROTOCOL, "SSH_MSG_NEWKEYS sent");
   session->dh_handshake_state = DH_STATE_NEWKEYS_SENT;
   return SSH_PACKET_USED;
 error:
@@ -544,15 +545,12 @@ int ssh_server_dh_process_init(ssh_session session, ssh_buffer packet)
     }
     SSH_LOG(SSH_LOG_DEBUG, "Sent KEX_DH_[GEX]_REPLY");
 
-    if (ssh_buffer_add_u8(session->out_buffer, SSH2_MSG_NEWKEYS) < 0) {
-        ssh_buffer_reinit(session->out_buffer);
-        goto error;
-    }
     session->dh_handshake_state=DH_STATE_NEWKEYS_SENT;
-    if (ssh_packet_send(session) == SSH_ERROR) {
+    /* Send the MSG_NEWKEYS */
+    rc = ssh_packet_send_newkeys(session);
+    if (rc == SSH_ERROR) {
         goto error;
     }
-    SSH_LOG(SSH_LOG_PACKET, "SSH_MSG_NEWKEYS sent");
 
     return SSH_OK;
 error:

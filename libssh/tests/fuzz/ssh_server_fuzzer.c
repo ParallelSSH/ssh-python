@@ -139,6 +139,14 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         .channel_open_request_session_function = channel_open,
     };
 
+    /* This is the maximum that can be handled by the socket buffer before the
+     * other side will read some data. Other option would be feeding the socket
+     * from different thread which would not mind if it would be blocked, but I
+     * believe all the important inputs should fit into this size */
+    if (size > 219264) {
+        return -1;
+    }
+
     /* Write SSH RSA host key to disk */
     rc = write_rsa_hostkey("/tmp/libssh_fuzzer_private_key");
     assert(rc == 0);
@@ -169,8 +177,8 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         assert(rc == 0);
     }
     rc = ssh_bind_options_set(sshbind,
-                         SSH_BIND_OPTIONS_RSAKEY,
-                         "/tmp/libssh_fuzzer_private_key");
+                              SSH_BIND_OPTIONS_HOSTKEY,
+                              "/tmp/libssh_fuzzer_private_key");
     assert(rc == 0);
     rc = ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_CIPHERS_C_S, "none");
     assert(rc == 0);
@@ -186,6 +194,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
     ssh_set_auth_methods(session, SSH_AUTH_METHOD_NONE);
 
     ssh_callbacks_init(&server_cb);
+    ssh_set_server_callbacks(session, &server_cb);
 
     rc = ssh_bind_accept_fd(sshbind, session, socket_fds[0]);
     assert(rc == SSH_OK);
@@ -197,7 +206,7 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size)
         ssh_event_add_session(event, session);
 
         size_t n = 0;
-        while(sdata.authenticated == false || sdata.channel == NULL) {
+        while (sdata.authenticated == false || sdata.channel == NULL) {
             if (sdata.auth_attempts >= 3 || n >= 100) {
                 break;
             }

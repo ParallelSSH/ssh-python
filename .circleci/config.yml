@@ -36,6 +36,7 @@ jobs:
           command: |
             pip uninstall -y cython
             pip install -e .
+            python -c 'from ssh.session import Session; Session()'
             eval "$(ssh-agent -s)"
           name: Build
       - run:
@@ -80,7 +81,7 @@ jobs:
       - run:
           name: deps
           command: |
-            brew install cmake git-lfs krb5 python libssh
+            brew install cmake python libssh
             brew link --force openssl
             brew link --force libssh
             pip3 install twine
@@ -94,20 +95,15 @@ jobs:
       - run:
           name: Upload Wheel
           command: |
-            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheels/*
+            if [[ ! -z "$CIRCLE_TAG" ]]; then
+              twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD wheels/*
+            fi
 
   manylinux-x86_64:
     machine:
       image: ubuntu-2004:current
     steps: &manylinux-steps
       - checkout
-      - run:
-          name: Git LFS
-          command: |
-            curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | sudo bash
-            sudo apt-get install git-lfs
-            git lfs install
-            git lfs pull
       - run:
           name: Deps
           command: |
@@ -119,6 +115,8 @@ jobs:
       - run:
           name: Build Wheels
           command: |
+            export LIBSSH=0.11.1
+            export KRB=1.21.3
             if [[ -z "${CIRCLE_PR_NUMBER}" ]]; then
               echo "$DOCKER_PASSWORD" | docker login -u="$DOCKER_USERNAME" --password-stdin;
             fi
@@ -131,7 +129,9 @@ jobs:
       - run:
           name: Upload Wheels
           command: |
-            twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD dist/* wheelhouse/*
+            if [[ ! -z "$CIRCLE_TAG" ]]; then
+              twine upload --skip-existing -u $PYPI_USER -p $PYPI_PASSWORD dist/* wheelhouse/*
+            fi
 
   manylinux-aarch64:
     machine:

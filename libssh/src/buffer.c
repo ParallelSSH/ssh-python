@@ -26,6 +26,7 @@
 #include <limits.h>
 #include <stdarg.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #ifndef _WIN32
 #include <netinet/in.h>
@@ -56,7 +57,7 @@ struct ssh_buffer_struct {
 #define BUFFER_SIZE_MAX 0x10000000
 
 /**
- * @defgroup libssh_buffer The SSH buffer functions.
+ * @defgroup libssh_buffer The SSH buffer functions
  * @ingroup libssh
  *
  * Functions to handle SSH buffers.
@@ -747,7 +748,8 @@ uint32_t ssh_buffer_get_u64(struct ssh_buffer_struct *buffer, uint64_t *data){
  */
 int ssh_buffer_validate_length(struct ssh_buffer_struct *buffer, size_t len)
 {
-    if (buffer->pos + len < len || buffer->pos + len > buffer->used) {
+    if (buffer == NULL || buffer->pos + len < len ||
+        buffer->pos + len > buffer->used) {
         return SSH_ERROR;
     }
 
@@ -878,7 +880,7 @@ static int ssh_buffer_pack_allocate_va(struct ssh_buffer_struct *buffer,
             cstring = NULL;
             break;
         default:
-            SSH_LOG(SSH_LOG_WARN, "Invalid buffer format %c", *p);
+            SSH_LOG(SSH_LOG_TRACE, "Invalid buffer format %c", *p);
             rc = SSH_ERROR;
         }
         if (rc != SSH_OK){
@@ -917,10 +919,11 @@ static int ssh_buffer_pack_allocate_va(struct ssh_buffer_struct *buffer,
  *                      SSH_ERROR on error
  * @see ssh_buffer_add_format() for format list values.
  */
-int ssh_buffer_pack_va(struct ssh_buffer_struct *buffer,
-                       const char *format,
-                       size_t argc,
-                       va_list ap)
+static int
+ssh_buffer_pack_va(struct ssh_buffer_struct *buffer,
+                   const char *format,
+                   size_t argc,
+                   va_list ap)
 {
     int rc = SSH_ERROR;
     const char *p;
@@ -1007,7 +1010,7 @@ int ssh_buffer_pack_va(struct ssh_buffer_struct *buffer,
             cstring = NULL;
             break;
         default:
-            SSH_LOG(SSH_LOG_WARN, "Invalid buffer format %c", *p);
+            SSH_LOG(SSH_LOG_TRACE, "Invalid buffer format %c", *p);
             rc = SSH_ERROR;
         }
         if (rc != SSH_OK){
@@ -1239,7 +1242,7 @@ int ssh_buffer_unpack_va(struct ssh_buffer_struct *buffer,
             rc = SSH_OK;
             break;
         default:
-            SSH_LOG(SSH_LOG_WARN, "Invalid buffer format %c", *p);
+            SSH_LOG(SSH_LOG_TRACE, "Invalid buffer format %c", *p);
         }
         if (rc != SSH_OK) {
             break;

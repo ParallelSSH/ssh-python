@@ -47,7 +47,7 @@ static LIBSSH_THREAD ssh_logging_callback ssh_log_cb;
 static LIBSSH_THREAD void *ssh_log_userdata;
 
 /**
- * @defgroup libssh_log The SSH logging functions.
+ * @defgroup libssh_log The SSH logging functions
  * @ingroup libssh
  *
  * Logging functions for debugging and problem resolving.
@@ -219,6 +219,12 @@ int ssh_set_log_callback(ssh_logging_callback cb) {
   ssh_log_cb = cb;
 
   return SSH_OK;
+}
+
+void
+_ssh_reset_log_cb(void)
+{
+    ssh_log_cb = NULL;
 }
 
 ssh_logging_callback ssh_get_log_callback(void) {

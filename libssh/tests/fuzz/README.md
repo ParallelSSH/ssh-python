@@ -10,6 +10,8 @@ but they are suitable for debugging.
 
 ## Background
 
+### Turn off encryption
+
 Fuzzing ssh protocol is complicated by the way that all the communication
 between client and server is encrypted and authenticated using keys based
 on random data, making it impossible to fuzz the actual underlying protocol
@@ -17,6 +19,17 @@ as every change in the encrypted data causes integrity errors. For that reason,
 libssh needs to implement "none" cipher and MAC as described in RFC 4253
 and these need to be used during fuzzing to be able to accomplish
 reproducibility and for fuzzers to be able to progress behind key exchange.
+This is enabled with the `WITH_INSECURE_NONE` CMake option.
+
+### Do not allow filesystem modification
+
+The OpenSSH configuration files are quite rich and expects users to know what
+they do when they write their configuration files. The fuzzer driver is not an
+average user so it is very happy to try whatever commands come to its "mind",
+including `rm -rf /` and libssh would be very happy to run it by default. This
+might remove some parts of the system that are mandatory for fuzzing.
+To avoid executing dangerous commands like this, the `WITH_EXEC=OFF` CMake
+option prevents invoking any external command through `exec()` syscall.
 
 ## Corpus creation
 
@@ -31,7 +44,7 @@ to use none cipher for the key exchange to be plausible.
 
  * Compile libssh with support for none cipher and pcap:
 
-    cmake -DWITH_INSECURE_NONE=ON -DWITH_PCAP=ON ../
+    cmake -DWITH_INSECURE_NONE=ON -DWITH_EXEC=OFF -DWITH_PCAP=ON ../
 
  * Create a configuration file enabling none cipher and mac:
 
@@ -95,7 +108,7 @@ You can either pick up my branch or workaround them locally:
 ### Reproduce locally
 
 Clone the above repository from https://github.com/google/oss-fuzz/, apply
-changes from previous secion if needed, setup local clone of libssh repository
+changes from previous section if needed, setup local clone of libssh repository
 and build the fuzzers locally (where `~/devel/libssh` is path to local libssh
 checkout):
 
@@ -111,7 +124,7 @@ This should give you the same error/leak/crash as you see on the testcase
 detail in oss-fuzz.com.
 
 I find it very useful to run libssh in debug mode, to see what happened and
-what exit path was taken to get to the error. Fortunatelly, we can simply
+what exit path was taken to get to the error. Fortunately, we can simply
 pass environment variables to the container:
 
     python infra/helper.py reproduce -eLIBSSH_VERBOSITY=9 libssh ssh_client_fuzzer ~/Downloads/clusterfuzz-testcase-ssh_client_fuzzer-4637376441483264

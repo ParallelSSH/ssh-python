@@ -145,7 +145,6 @@ close_fp:
     return rc;
 }
 
-#ifndef HAVE_DSA
 static int setup_knownhosts_file_unsupported_type(void **state)
 {
     char *tmp_file = NULL;
@@ -175,7 +174,6 @@ close_fp:
 
     return rc;
 }
-#endif
 
 static int teardown_knownhosts_file(void **state)
 {
@@ -429,8 +427,7 @@ static void torture_knownhosts_get_algorithms_names(void **state)
     ssh_free(session);
 }
 
-#ifndef HAVE_DSA
-/* Do not remove this test if we completly remove DSA support! */
+/* Do not remove this test if we completely remove DSA support! */
 static void torture_knownhosts_get_algorithms_names_unsupported(void **state)
 {
     const char *knownhosts_file = *state;
@@ -452,7 +449,6 @@ static void torture_knownhosts_get_algorithms_names_unsupported(void **state)
 
     ssh_free(session);
 }
-#endif
 
 static void torture_knownhosts_algorithms_wanted(void **state)
 {
@@ -634,7 +630,9 @@ static void torture_knownhosts_algorithms(void **state)
     bool process_config = false;
     const char *expect = "ssh-ed25519,rsa-sha2-512,rsa-sha2-256,"
                          "ecdsa-sha2-nistp521,ecdsa-sha2-nistp384,"
-                         "ecdsa-sha2-nistp256";
+                         "ecdsa-sha2-nistp256,"
+                         "sk-ssh-ed25519@openssh.com,"
+                         "sk-ecdsa-sha2-nistp256@openssh.com";
     const char *expect_fips = "rsa-sha2-512,rsa-sha2-256,ecdsa-sha2-nistp521,"
                               "ecdsa-sha2-nistp384,ecdsa-sha2-nistp256";
 
@@ -669,7 +667,9 @@ static void torture_knownhosts_algorithms_global(void **state)
     bool process_config = false;
     const char *expect = "ssh-ed25519,rsa-sha2-512,rsa-sha2-256,"
                          "ecdsa-sha2-nistp521,ecdsa-sha2-nistp384,"
-                         "ecdsa-sha2-nistp256";
+                         "ecdsa-sha2-nistp256,"
+                         "sk-ssh-ed25519@openssh.com,"
+                         "sk-ecdsa-sha2-nistp256@openssh.com";
     const char *expect_fips = "rsa-sha2-512,rsa-sha2-256,ecdsa-sha2-nistp521,"
                               "ecdsa-sha2-nistp384,ecdsa-sha2-nistp256";
 
@@ -718,11 +718,9 @@ int torture_run_tests(void) {
         cmocka_unit_test_setup_teardown(torture_knownhosts_get_algorithms_names,
                                         setup_knownhosts_file,
                                         teardown_knownhosts_file),
-#ifndef HAVE_DSA
         cmocka_unit_test_setup_teardown(torture_knownhosts_get_algorithms_names_unsupported,
                                         setup_knownhosts_file_unsupported_type,
                                         teardown_knownhosts_file),
-#endif
         cmocka_unit_test_setup_teardown(torture_knownhosts_algorithms_wanted,
                                         setup_knownhosts_file,
                                         teardown_knownhosts_file),

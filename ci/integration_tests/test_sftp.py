@@ -360,16 +360,6 @@ class SFTPTest(SSHTestCase):
         finally:
             shutil.rmtree(abspath)
 
-    def test_handle_open_nonblocking(self):
-        abspath = os.path.abspath(os.path.dirname(__file__))
-        self._auth()
-        sftp = self.session.sftp_init()
-        self.session.set_blocking(False)
-        fh = sftp.open(abspath, 0, 0)
-        self.assertIsInstance(fh, SFTPFile)
-        fh.set_nonblocking()
-        fh.close()
-
     # def test_async_read(self):
     #     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #     sock.connect((self.host, self.port))

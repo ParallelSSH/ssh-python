@@ -15,7 +15,7 @@ clients must be made or how a client should react.
 
 /*
  Example:
-  ./sshd_direct-tcpip -v -p 2022 -d serverkey.dsa -r serverkey.rsa 127.0.0.1
+  ./sshd_direct-tcpip -v -p 2022 -r serverkey.rsa 127.0.0.1
 */
 
 #include "config.h"
@@ -26,6 +26,9 @@ clients must be made or how a client should react.
 
 #ifdef HAVE_ARGP_H
 #include <argp.h>
+#endif
+#ifndef _WIN32
+#include <netinet/in.h>
 #endif
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -91,6 +94,9 @@ cleanup_push(struct cleanup_node_struct** head_ref,
 {
     // Allocate memory for node
     struct cleanup_node_struct *new_node = malloc(sizeof *new_node);
+    if (new_node == NULL) {
+        return;
+    }
 
     if (*head_ref != NULL) {
         new_node->next = *head_ref;
@@ -197,7 +203,7 @@ subsystem_request(UNUSED_PARAM(ssh_session session),
                   UNUSED_PARAM(void *userdata))
 {
     _ssh_log(SSH_LOG_PROTOCOL,
-             "=== subsystem_request", "Channel subsystem reqeuest: %s",
+             "=== subsystem_request", "Channel subsystem request: %s",
              subsystem);
     return 0;
 }
@@ -293,7 +299,7 @@ my_channel_eof_function(ssh_session session,
 
     _ssh_log(SSH_LOG_PROTOCOL,
              "=== my_channel_eof_function",
-             "Got EOF on channel. Shuting down write on socket (fd = %d).",
+             "Got EOF on channel. Shutting down write on socket (fd = %d).",
              *event_fd_data->p_fd);
 
     stack_socket_close(session, event_fd_data);
@@ -520,7 +526,7 @@ message_callback(UNUSED_PARAM(ssh_session session),
                 }
 
                 pFd = malloc(sizeof *pFd);
-                cb_chan = malloc(sizeof *cb_chan);
+                cb_chan = calloc(1, sizeof *cb_chan);
                 event_fd_data = malloc(sizeof *event_fd_data);
                 if (pFd == NULL || cb_chan == NULL || event_fd_data == NULL) {
                     SAFE_FREE(pFd);
@@ -584,19 +590,11 @@ static struct argp_option options[] = {
         .group = 0
     },
     {
-        .name  = "dsakey",
-        .key   = 'd',
-        .arg   = "FILE",
-        .flags = 0,
-        .doc   = "Set the dsa key.",
-        .group = 0
-    },
-    {
         .name  = "rsakey",
         .key   = 'r',
         .arg   = "FILE",
         .flags = 0,
-        .doc   = "Set the rsa key.",
+        .doc   = "Set the rsa key (deprecated alias for 'k').",
         .group = 0
     },
     {
@@ -623,14 +621,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
         case 'p':
             ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_BINDPORT_STR, arg);
             break;
-        case 'd':
-            ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_DSAKEY, arg);
-            break;
+        case 'r':
         case 'k':
             ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_HOSTKEY, arg);
-            break;
-        case 'r':
-            ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_RSAKEY, arg);
             break;
         case 'v':
             ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_LOG_VERBOSITY_STR, "1");
@@ -682,8 +675,7 @@ main(int argc, char **argv)
     session = ssh_new();
     mainloop = ssh_event_new();
 
-    ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_DSAKEY, KEYS_FOLDER "ssh_host_dsa_key");
-    ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_RSAKEY, KEYS_FOLDER "ssh_host_rsa_key");
+    ssh_bind_options_set(sshbind, SSH_BIND_OPTIONS_HOSTKEY, KEYS_FOLDER "ssh_host_rsa_key");
 
 #ifdef HAVE_ARGP_H
     /*

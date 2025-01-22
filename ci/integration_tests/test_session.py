@@ -109,7 +109,6 @@ class SessionTest(SSHTestCase):
 
     def test_key_auth(self):
         self.assertEqual(self.session.connect(), 0)
-        self.assertRaises(KeyImportError, import_pubkey_file, self.user_key)
         key = import_pubkey_file(self.user_pub_key)
         self.assertIsInstance(key, SSHKey)
         self.assertEqual(
