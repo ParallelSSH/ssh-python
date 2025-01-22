@@ -36,6 +36,7 @@ jobs:
           command: |
             pip uninstall -y cython
             pip install -e .
+            python -c 'from ssh.session import Session; Session()'
             eval "$(ssh-agent -s)"
           name: Build
       - run:

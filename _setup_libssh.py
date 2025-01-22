@@ -46,7 +46,6 @@ def build_ssh():
     -DWITH_GSSAPI=ON \
     -DWITH_EXAMPLES=OFF \
     -DUNIT_TESTING=OFF \
-    -DWITH_SERVER=OFF \
     ../libssh""",
                shell=True, env=os.environ)
     check_call(['make', '-j%s' % (cpu_count(),), 'all', 'install'])
