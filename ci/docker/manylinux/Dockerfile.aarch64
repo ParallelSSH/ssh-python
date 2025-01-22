@@ -7,7 +7,7 @@ ENV KRB=1.21.3
 ENV CFLAGS="-g0 -s"
 ENV OPENSSL_ROOT_DIR=/usr/openssl
 
-RUN yum install epel-release -y && yum install zlib-devel cmake3 perl-IPC-Cmd -y
+RUN yum install epel-release -y && yum install zlib-devel cmake3 perl-IPC-Cmd -y && yum remove -y openssl
 
 ADD libssh-${LIBSSH}.tar.gz libssh.tar.gz
 ADD krb5-${KRB}.tar.gz krb5.tar.gz
