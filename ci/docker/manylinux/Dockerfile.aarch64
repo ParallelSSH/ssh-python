@@ -13,6 +13,9 @@ ADD krb5-${KRB}.tar.gz krb5.tar.gz
 ADD https://www.openssl.org/source/${OPENSSL}.tar.gz ${OPENSSL}.tar.gz
 
 
+RUN rm -rf /usr/lib && ln -s /usr/lib64 /usr/lib
+
+
 # Kerberos
 RUN cd krb5.tar.gz/krb5-${KRB}/src && \
     ./configure && \
@@ -27,14 +30,11 @@ RUN cd ${OPENSSL} && \
     make -j6 && make install_sw
 
 
-RUN cp -a /usr/lib/libssl* /usr/lib64/ && cp -a /usr/lib/libcrypto* /usr/lib64/ && \
-    cp -a /usr/lib/pkgconfig/* /usr/lib64/pkgconfig/ && cp -a /usr/lib/cmake /usr/lib64/
-
 
 # Libssh
 RUN cc --version; openssl version -a; mkdir -p build_libssh && cd build_libssh && \
     cmake3 ../libssh.tar.gz/libssh -DCMAKE_BUILD_TYPE=Release \
-          -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF -DWITH_SERVER=OFF && \
+          -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF -DWITH_SERVER=OFF -DUNIT_TESTING=OFF && \
     make -j6 install/strip
 
 RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-${KRB}.tar.xz
