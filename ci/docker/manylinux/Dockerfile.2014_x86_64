@@ -9,11 +9,12 @@ ENV CFLAGS="-g0 -s"
 RUN yum install zlib-devel cmake3 perl-IPC-Cmd -y
 
 ADD libssh-${LIBSSH_VERSION}.tar.gz libssh.tar.gz
+ADD krb5-${KRB}.tar.gz krb5.tar.gz
 ADD https://www.openssl.org/source/${OPENSSL}.tar.gz ${OPENSSL}.tar.gz
 
 
 # Kerberos
-RUN cd krb5-${KRB}/src && \
+RUN cd krb5.tar.gz/krb5-${KRB}/src && \
     ./configure && \
     make -j6 && \
     make install
