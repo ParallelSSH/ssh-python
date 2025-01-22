@@ -34,19 +34,7 @@
 #define CHUNKSIZE 4096
 #endif
 
-#ifdef _WIN32
-# ifdef HAVE_IO_H
-#  include <io.h>
-#  undef open
-#  define open _open
-#  undef close
-#  define close _close
-#  undef read
-#  define read _read
-#  undef unlink
-#  define unlink _unlink
-# endif /* HAVE_IO_H */
-#else
+#ifndef _WIN32
 # include <sys/types.h>
 # include <sys/socket.h>
 #endif
@@ -303,9 +291,11 @@ static void ssh_connector_fd_in_cb(ssh_connector connector)
                  * Loop around write in case the write blocks even for CHUNKSIZE
                  * bytes
                  */
-                while (total != r) {
-                    w = ssh_connector_fd_write(connector, buffer + total, r - total);
-                    if (w < 0){
+                while (total < r) {
+                    w = ssh_connector_fd_write(connector,
+                                               buffer + total,
+                                               r - total);
+                    if (w < 0) {
                         ssh_connector_except(connector, connector->out_fd);
                         return;
                     }
@@ -326,35 +316,40 @@ static void ssh_connector_fd_in_cb(ssh_connector connector)
 /** @internal
  * @brief Callback called when a poll event is received on an output fd
  */
-static void ssh_connector_fd_out_cb(ssh_connector connector){
+static void
+ssh_connector_fd_out_cb(ssh_connector connector)
+{
     unsigned char buffer[CHUNKSIZE];
     ssize_t r;
     ssize_t w;
     ssize_t total = 0;
-    SSH_LOG(SSH_LOG_TRACE, "connector POLLOUT event for fd %d", connector->out_fd);
+    SSH_LOG(SSH_LOG_TRACE, "connector POLLOUT event for fd %d",
+            connector->out_fd);
 
-    if(connector->in_available){
-        if (connector->in_channel != NULL){
-            r = ssh_channel_read_nonblocking(connector->in_channel, buffer, CHUNKSIZE, 0);
-            if(r == SSH_ERROR){
+    if (connector->in_available) {
+        if (connector->in_channel != NULL) {
+            r = ssh_channel_read_nonblocking(connector->in_channel, buffer,
+                                             CHUNKSIZE, 0);
+            if (r == SSH_ERROR) {
                 ssh_connector_except_channel(connector, connector->in_channel);
                 return;
-            } else if(r == 0 && ssh_channel_is_eof(connector->in_channel)){
+            } else if (r == 0 && ssh_channel_is_eof(connector->in_channel)) {
                 close(connector->out_fd);
                 connector->out_fd = SSH_INVALID_SOCKET;
                 return;
-            } else if(r>0) {
+            } else if (r > 0) {
                 /* loop around write in case the write blocks even for CHUNKSIZE bytes */
-                while (total != r){
-                        w = ssh_connector_fd_write(connector, buffer + total, r - total);
-                    if (w < 0){
+                while (total != r) {
+                    w = ssh_connector_fd_write(connector, buffer + total,
+                                               r - total);
+                    if (w < 0) {
                         ssh_connector_except(connector, connector->out_fd);
                         return;
                     }
                     total += w;
                 }
             }
-        } else if (connector->in_fd != SSH_INVALID_SOCKET){
+        } else if (connector->in_fd != SSH_INVALID_SOCKET) {
             /* fallback on the socket input callback */
             connector->out_wontblock = 1;
             ssh_connector_fd_in_cb(connector);

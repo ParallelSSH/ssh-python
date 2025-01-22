@@ -5,7 +5,6 @@ ENV LIBSSH=0.11.1
 ENV SYSTEM_LIBSSH=1
 ENV KRB=1.21.3
 ENV CFLAGS="-g0 -s"
-ENV OPENSSL_ROOT_DIR=/usr/openssl
 
 RUN yum install epel-release -y && yum install zlib-devel cmake3 perl-IPC-Cmd -y && yum remove -y openssl
 
@@ -31,7 +30,7 @@ RUN cd ${OPENSSL} && \
 # Libssh
 RUN cc --version; openssl version -a; mkdir -p build_libssh && cd build_libssh && \
     cmake3 ../libssh.tar.gz/libssh -DCMAKE_BUILD_TYPE=Release \
-          -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF -DUNIT_TESTING=OFF -DOPENSSL_ROOT_DIR=${OPENSSL_ROOT_DIR} && \
+          -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF -DUNIT_TESTING=OFF && \
     make -j6 install/strip
 
 RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-${KRB}.tar.xz
