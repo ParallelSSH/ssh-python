@@ -53,7 +53,7 @@ for docker_file in "${docker_files[@]}"; do
     fi
     echo "Docker tag is ${docker_tag}"
     docker pull $docker_tag || echo
-    docker build --pull --cache-from $docker_tag ci/docker/manylinux -t $docker_tag -f "${docker_file}"
+    docker build --progress=plain --pull --cache-from $docker_tag ci/docker/manylinux -t $docker_tag -f "${docker_file}"
     if [[ -z "${CIRCLE_PULL_REQUEST}" ]]; then docker push $docker_tag; fi
     docker run --rm -v "$(pwd)":/io $docker_tag /io/ci/build-wheels.sh
     ls wheelhouse/

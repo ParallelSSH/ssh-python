@@ -1,6 +1,22 @@
 Change Log
 =============
 
+1.1.1
++++++
+
+Changes
+--------
+
+No code changes.
+
+
+Packaging
+----------
+
+* Wheel builds now use embedded libssh.
+* Dockerfiles and scripts updates.
+
+
 1.1.0
 +++++
 
