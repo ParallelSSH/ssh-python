@@ -54,6 +54,7 @@ install:
   - cd %APPVEYOR_BUILD_FOLDER%
   - git remote add origin https://github.com/%APPVEYOR_REPO_NAME%.git
   - git fetch -q origin %APPVEYOR_REPO_COMMIT%
+  - git fetch --tags
   - git checkout -qf %APPVEYOR_REPO_COMMIT%
 
   - set OPENSSL_DIR="C:\OpenSSL-v34-Win64"
