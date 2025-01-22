@@ -14,7 +14,7 @@ ADD https://www.openssl.org/source/${OPENSSL}.tar.gz ${OPENSSL}.tar.gz
 
 
 # Kerberos
-RUN cd krb5-${KRB}/src && \
+RUN cd krb5.tar.gz/krb5-${KRB}/src && \
     ./configure && \
     make -j6 && \
     make install
@@ -28,7 +28,7 @@ RUN cd ${OPENSSL} && \
 
 
 # Libssh
-RUN mkdir -p build_libssh && cd build_libssh && \
+RUN cc --version; openssl version -a; mkdir -p build_libssh && cd build_libssh && \
     cmake3 ../libssh.tar.gz/libssh -DCMAKE_BUILD_TYPE=Release \
           -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF -DUNIT_TESTING=OFF && \
     make -j6 install/strip
