@@ -35,11 +35,8 @@ jobs:
       - run:
           command: |
             pip uninstall -y cython
-            python setup.py sdist
-            cd dist
-            pip install *
+            pip install -e .
             python -c 'from ssh.session import Session; Session()'
-            cd ..
             eval "$(ssh-agent -s)"
           name: Build
       - run:
@@ -55,6 +52,14 @@ jobs:
           command: |
             flake8 ssh
           name: Flake
+      - run:
+          command: |
+            python setup.py sdist
+            cd dist
+            pip install *
+            python -c 'from ssh.session import Session; Session()'
+            cd ..
+          name: Sdist Install
       - run:
           command: |
             cd doc
