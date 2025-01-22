@@ -15,7 +15,7 @@
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 
-tar -czf ci/docker/manylinux/libssh-${LIBSSH_VERSION}.tar.gz libssh
+tar -czf ci/docker/manylinux/libssh-${LIBSSH}.tar.gz libssh
 tar -czf ci/docker/manylinux/krb5-${KRB}.tar.gz krb5-${KRB}
 
 
