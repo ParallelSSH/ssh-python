@@ -4,7 +4,7 @@ ENV OPENSSL=openssl-3.4.0
 ENV LIBSSH_VERSION=0.11.1
 ENV SYSTEM_LIBSSH=1
 ENV CFLAGS="-g0 -s"
-ENV OPENSSL_ROOT_DIR /usr/lib
+ENV OPENSSL_ROOT_DIR=/usr/lib
 
 RUN apt-get update -y && apt-get install zlib1g-dev cmake -y
 
