@@ -26,7 +26,7 @@ done
 
 # Bundle external shared libraries into the wheels
 for whl in wheelhouse/*.whl; do
-    auditwheel show "$whl"
+#    auditwheel show "$whl"
     auditwheel repair "$whl" -w /io/wheelhouse/
     auditwheel show "$whl"
 done
