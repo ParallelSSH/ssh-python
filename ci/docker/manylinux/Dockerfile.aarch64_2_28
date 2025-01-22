@@ -5,7 +5,6 @@ ENV LIBSSH=0.11.1
 ENV SYSTEM_LIBSSH=1
 ENV KRB=1.21.3
 ENV CFLAGS="-g0 -s"
-ENV OPENSSL_ROOT_DIR=/usr/lib
 
 RUN yum install zlib-devel cmake3 -y
 
