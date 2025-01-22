@@ -7,7 +7,7 @@ ENV CFLAGS="-g0 -s"
 
 RUN yum install epel-release -y && yum install zlib-devel cmake3 perl-IPC-Cmd -y
 
-ADD libssh-${LIBSSH_VERSION}.tar.xz libssh.tar.gz
+ADD libssh-${LIBSSH_VERSION}.tar.gz libssh.tar.gz
 ADD https://www.openssl.org/source/${OPENSSL}.tar.gz ${OPENSSL}.tar.gz
 
 RUN tar -xzf ${OPENSSL}.tar.gz
@@ -23,6 +23,6 @@ RUN mkdir -p build_libssh && cd build_libssh && \
           -DWITH_GSSAPI=ON -DWITH_EXAMPLES=OFF -DUNIT_TESTING=OFF && \
     make -j6 install/strip
 
-RUN rm -rf ${OPENSSL}* libssh build_libssh krb5-${KRB}.tar.xz
+RUN rm -rf ${OPENSSL}* libssh build_libssh
 
 VOLUME /var/cache
