@@ -60,7 +60,6 @@ install:
   # do not cause a version change.
   - "%PYTHON_DEF%\\python.exe ci/appveyor/fix_version.py ."
   - mv -f .git .git.bak
-  - 7z x ci\appveyor\zlib1211.zip
   - ps: ls ssh/*.dll
   - ps: ls ssh
   - ps: ls
