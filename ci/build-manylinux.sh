@@ -22,7 +22,6 @@ tar -czf ci/docker/manylinux/krb5-${KRB}.tar.gz krb5-${KRB}
 docker_repo="parallelssh/ssh-manylinux"
 docker_files=(
               "ci/docker/manylinux/Dockerfile.2014_x86_64"
-#              "ci/docker/manylinux/Dockerfile.manylinux_2_24_x86_64"
 #              "ci/docker/manylinux/Dockerfile.manylinux_2_28_x86_64"
               )
 
@@ -32,24 +31,16 @@ python ci/appveyor/fix_version.py .
 if [[ $(uname -m) == "aarch64" ]]; then
     docker_files=(
                   "ci/docker/manylinux/Dockerfile.aarch64"
-#                  "ci/docker/manylinux/Dockerfile.aarch64_2_24"
-#                  "ci/docker/manylinux/Dockerfile.aarch64_2_28"
                   )
 fi
 
 for docker_file in "${docker_files[@]}"; do
     if [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.2014_x86_64" ]]; then
         docker_tag="${docker_repo}:2014_x86_64"
-    elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile" ]]; then
-        docker_tag="${docker_repo}:2010_x86_64"
-    elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.manylinux_2_24_x86_64" ]]; then
-        docker_tag="${docker_repo}:2_24_x86_64"
     elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.manylinux_2_28_x86_64" ]]; then
         docker_tag="${docker_repo}:2_28_x86_64"
     elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.aarch64" ]]; then
         docker_tag="${docker_repo}:2014_aarch64"
-    elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.aarch64_2_24" ]]; then
-        docker_tag="${docker_repo}:2_24_aarch64"
     elif [[ ${docker_file} == "ci/docker/manylinux/Dockerfile.aarch64_2_28" ]]; then
         docker_tag="${docker_repo}:2_28_aarch64"
     fi
