@@ -183,6 +183,10 @@ cdef extern from "libssh/libssh.h" nogil:
         SSH_KEYTYPE_ECDSA_P384_CERT01,
         SSH_KEYTYPE_ECDSA_P521_CERT01,
         SSH_KEYTYPE_ED25519_CERT01
+    enum ssh_file_format_e:
+        SSH_FILE_FORMAT_DEFAULT
+        SSH_FILE_FORMAT_OPENSSH
+        SSH_FILE_FORMAT_PEM
     enum ssh_keycmp_e:
         SSH_KEY_CMP_PUBLIC,
         SSH_KEY_CMP_PRIVATE
@@ -438,6 +442,13 @@ cdef extern from "libssh/libssh.h" nogil:
     int ssh_pki_export_privkey_file(
         const ssh_key privkey, const char *passphrase,
         ssh_auth_callback auth_fn, void *auth_data, const char *filename)
+    int ssh_pki_export_privkey_file_format(
+        const ssh_key privkey,
+        const char *passphrase,
+        ssh_auth_callback auth_fn,
+        void *auth_data,
+        const char *filename,
+        ssh_file_format_e format)
 
     int ssh_pki_copy_cert_to_privkey(const ssh_key cert_key,
                                      ssh_key privkey)

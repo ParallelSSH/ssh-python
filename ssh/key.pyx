@@ -24,6 +24,11 @@ from .exceptions import KeyExportError, KeyImportError, KeyGenerationError
 from . cimport c_ssh
 
 
+SSH_FILE_FORMAT_DEFAULT = c_ssh.ssh_file_format_e.SSH_FILE_FORMAT_DEFAULT
+SSH_FILE_FORMAT_OPENSSH = c_ssh.ssh_file_format_e.SSH_FILE_FORMAT_OPENSSH
+SSH_FILE_FORMAT_PEM = c_ssh.ssh_file_format_e.SSH_FILE_FORMAT_PEM
+
+
 cdef class SSHKey:
 
     @staticmethod
@@ -82,7 +87,7 @@ cdef class SSHKey:
         b_name = c_name
         return to_str(b_name)
 
-    def export_privkey_file(self, filepath, passphrase=None):
+    def export_privkey_file(self, filepath not None, passphrase=None):
         cdef bytes b_passphrase
         cdef bytes b_filepath = to_bytes(filepath)
         cdef const_char *c_passphrase = NULL
@@ -94,6 +99,31 @@ cdef class SSHKey:
         with nogil:
             rc = c_ssh.ssh_pki_export_privkey_file(
                 self._key, c_passphrase, NULL, NULL, c_filepath)
+        if rc != c_ssh.SSH_OK:
+            raise KeyExportError
+
+    def export_privkey_file_format(
+            self, filepath not None, keyformat not None, passphrase=None):
+        cdef bytes b_passphrase
+        cdef bytes b_filepath = to_bytes(filepath)
+        cdef const_char *c_passphrase = NULL
+        cdef const_char *c_filepath = b_filepath
+        cdef int rc
+        if not keyformat in (SSH_FILE_FORMAT_DEFAULT, SSH_FILE_FORMAT_OPENSSH, SSH_FILE_FORMAT_PEM):
+            raise ValueError(
+                "Keyformat must be one of SSH_FILE_DEFAULT, SSH_FILE_FORMAT_OPENSSH or SSH_FILE_FORMAT_PEM - got %s",
+                keyformat)
+        cdef c_ssh.ssh_file_format_e c_keyformat = keyformat
+        if not keyformat in (SSH_FILE_FORMAT_DEFAULT, SSH_FILE_FORMAT_OPENSSH, SSH_FILE_FORMAT_PEM):
+            raise ValueError(
+                "Keyformat must be one of SSH_FILE_DEFAULT, SSH_FILE_FORMAT_OPENSSH or SSH_FILE_FORMAT_PEM - got %s",
+                keyformat)
+        if passphrase is not None:
+            b_passphrase = to_bytes(passphrase)
+            c_passphrase = b_passphrase
+        with nogil:
+            rc = c_ssh.ssh_pki_export_privkey_file_format(
+                self._key, c_passphrase, NULL, NULL, c_filepath, c_keyformat)
         if rc != c_ssh.SSH_OK:
             raise KeyExportError
 

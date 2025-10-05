@@ -1,6 +1,17 @@
 Change Log
 =============
 
+1.2.0
+++++++
+
+Changes
+--------
+
+* Added private key file formats to `ssh.key` and `ssh.key.Key.export_privkey_file_format` for exporting private key
+  file with specified format - #96
+
+
+
 1.1.1
 +++++
 
