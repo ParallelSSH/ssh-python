@@ -168,7 +168,7 @@ uint32_t ssh_channel_new_id(ssh_session session)
  */
 SSH_PACKET_CALLBACK(ssh_packet_channel_open_conf){
   uint32_t channelid=0;
-  ssh_channel channel;
+  ssh_channel channel = NULL;
   int rc;
   (void)type;
   (void)user;
@@ -237,7 +237,7 @@ error:
  */
 SSH_PACKET_CALLBACK(ssh_packet_channel_open_fail){
 
-  ssh_channel channel;
+  ssh_channel channel = NULL;
   char *error = NULL;
   uint32_t code;
   int rc;
@@ -405,7 +405,7 @@ end:
 /* return channel with corresponding local id, or NULL if not found */
 ssh_channel ssh_channel_from_local(ssh_session session, uint32_t id) {
   struct ssh_iterator *it;
-  ssh_channel channel;
+  ssh_channel channel = NULL;
 
   for (it = ssh_list_get_iterator(session->channels); it != NULL ; it=it->next) {
     channel = ssh_iterator_value(ssh_channel, it);
@@ -501,7 +501,7 @@ error:
  */
 static ssh_channel channel_from_msg(ssh_session session, ssh_buffer packet)
 {
-  ssh_channel channel;
+  ssh_channel channel = NULL;
   uint32_t chan;
   int rc;
 
@@ -523,7 +523,7 @@ static ssh_channel channel_from_msg(ssh_session session, ssh_buffer packet)
 }
 
 SSH_PACKET_CALLBACK(channel_rcv_change_window) {
-  ssh_channel channel;
+  ssh_channel channel = NULL;
   uint32_t bytes;
   int rc;
   bool was_empty;
@@ -694,7 +694,7 @@ SSH_PACKET_CALLBACK(channel_rcv_data)
 }
 
 SSH_PACKET_CALLBACK(channel_rcv_eof) {
-  ssh_channel channel;
+  ssh_channel channel = NULL;
   (void)user;
   (void)type;
 
@@ -738,8 +738,9 @@ static bool ssh_channel_has_unread_data(ssh_channel channel)
     return false;
 }
 
-SSH_PACKET_CALLBACK(channel_rcv_close) {
-    ssh_channel channel;
+SSH_PACKET_CALLBACK(channel_rcv_close)
+{
+    ssh_channel channel = NULL;
     (void)user;
     (void)type;
 
@@ -980,7 +981,7 @@ int channel_default_bufferize(ssh_channel channel,
                               void *data, uint32_t len,
                               bool is_stderr)
 {
-  ssh_session session;
+  ssh_session session = NULL;
 
   if(channel == NULL) {
       return -1;
@@ -1119,7 +1120,7 @@ int ssh_channel_open_auth_agent(ssh_channel channel)
 int ssh_channel_open_forward(ssh_channel channel, const char *remotehost,
     int remoteport, const char *sourcehost, int localport)
 {
-  ssh_session session;
+  ssh_session session = NULL;
   ssh_buffer payload = NULL;
   ssh_string str = NULL;
   int rc = SSH_ERROR;
@@ -1257,7 +1258,7 @@ error:
  */
 void ssh_channel_free(ssh_channel channel)
 {
-    ssh_session session;
+    ssh_session session = NULL;
 
     if (channel == NULL) {
         return;
@@ -1289,6 +1290,11 @@ void ssh_channel_free(ssh_channel channel)
         }
     }
     channel->flags |= SSH_CHANNEL_FLAG_FREED_LOCAL;
+
+    if (channel->callbacks != NULL) {
+        ssh_list_free(channel->callbacks);
+        channel->callbacks = NULL;
+    }
 
     /* The idea behind the flags is the following : it is well possible
      * that a client closes a channel that still exists on the server side.
@@ -1359,7 +1365,7 @@ void ssh_channel_do_free(ssh_channel channel)
  */
 int ssh_channel_send_eof(ssh_channel channel)
 {
-    ssh_session session;
+    ssh_session session = NULL;
     int rc = SSH_ERROR;
     int err;
 
@@ -1420,7 +1426,7 @@ error:
  */
 int ssh_channel_close(ssh_channel channel)
 {
-    ssh_session session;
+    ssh_session session = NULL;
     int rc = 0;
 
     if(channel == NULL) {
@@ -1516,7 +1522,7 @@ static int channel_write_common(ssh_channel channel,
                                 const void *data,
                                 uint32_t len, int is_stderr)
 {
-  ssh_session session;
+  ssh_session session = NULL;
   uint32_t origlen = len;
   size_t effectivelen;
   int rc;
@@ -1616,7 +1622,8 @@ static int channel_write_common(ssh_channel channel,
     rc = ssh_buffer_pack(session->out_buffer,
                          "dP",
                          effectivelen,
-                         (size_t)effectivelen, data);
+                         (size_t)effectivelen,
+                         data);
     if (rc != SSH_OK) {
         ssh_set_error_oom(session);
         goto error;
@@ -1771,7 +1778,7 @@ void ssh_channel_set_blocking(ssh_channel channel, int blocking)
  * @brief handle a SSH_CHANNEL_SUCCESS packet and set the channel state.
  */
 SSH_PACKET_CALLBACK(ssh_packet_channel_success){
-  ssh_channel channel;
+  ssh_channel channel = NULL;
   (void)type;
   (void)user;
 
@@ -1807,7 +1814,7 @@ SSH_PACKET_CALLBACK(ssh_packet_channel_success){
  * @brief Handle a SSH_CHANNEL_FAILURE packet and set the channel state.
  */
 SSH_PACKET_CALLBACK(ssh_packet_channel_failure){
-  ssh_channel channel;
+  ssh_channel channel = NULL;
   (void)type;
   (void)user;
 
@@ -1956,7 +1963,7 @@ error:
 int ssh_channel_request_pty_size_modes(ssh_channel channel, const char *terminal,
     int col, int row, const unsigned char* modes, size_t modes_len)
 {
-  ssh_session session;
+  ssh_session session = NULL;
   ssh_buffer buffer = NULL;
   int rc = SSH_ERROR;
 
@@ -1991,7 +1998,8 @@ int ssh_channel_request_pty_size_modes(ssh_channel channel, const char *terminal
                        0, /* pix */
                        0, /* pix */
                        (uint32_t)modes_len,
-                       modes_len, modes);
+                       (size_t)modes_len,
+                       modes);
 
   if (rc != SSH_OK) {
     ssh_set_error_oom(session);
@@ -2284,7 +2292,7 @@ static ssh_channel ssh_channel_accept(ssh_session session, int channeltype,
 #endif
   ssh_message msg = NULL;
   ssh_channel channel = NULL;
-  struct ssh_iterator *iterator;
+  struct ssh_iterator *iterator = NULL;
   int t;
 
   /*
@@ -2947,7 +2955,7 @@ error:
 int channel_read_buffer(ssh_channel channel, ssh_buffer buffer, uint32_t count,
     int is_stderr)
 {
-  ssh_session session;
+  ssh_session session = NULL;
   char *buffer_tmp = NULL;
   int r;
   uint32_t total=0;
@@ -3083,7 +3091,7 @@ int ssh_channel_read_timeout(ssh_channel channel,
                              int is_stderr,
                              int timeout_ms)
 {
-  ssh_session session;
+  ssh_session session = NULL;
   ssh_buffer stdbuf;
   uint32_t len;
   struct ssh_channel_read_termination_struct ctx;
@@ -3193,7 +3201,7 @@ int ssh_channel_read_nonblocking(ssh_channel channel,
                                  uint32_t count,
                                  int is_stderr)
 {
-    ssh_session session;
+    ssh_session session = NULL;
     uint32_t to_read;
     int rc;
     int blocking;
@@ -3305,8 +3313,8 @@ int ssh_channel_poll(ssh_channel channel, int is_stderr)
  */
 int ssh_channel_poll_timeout(ssh_channel channel, int timeout, int is_stderr)
 {
-    ssh_session session;
-    ssh_buffer stdbuf;
+    ssh_session session = NULL;
+    ssh_buffer stdbuf = NULL;
     struct ssh_channel_read_termination_struct ctx;
     size_t len;
     int rc;
@@ -3508,7 +3516,7 @@ channel_protocol_select(ssh_channel *rchans, ssh_channel *wchans,
                         ssh_channel *echans, ssh_channel *rout,
                         ssh_channel *wout, ssh_channel *eout)
 {
-  ssh_channel chan;
+  ssh_channel chan = NULL;
   int i;
   int j = 0;
 
@@ -3589,7 +3597,7 @@ static size_t count_ptrs(ssh_channel *ptrs)
 int ssh_channel_select(ssh_channel *readchans, ssh_channel *writechans,
                        ssh_channel *exceptchans, struct timeval * timeout)
 {
-  ssh_channel *rchans, *wchans, *echans;
+  ssh_channel *rchans = NULL, *wchans = NULL, *echans = NULL;
   ssh_channel dummy = NULL;
   ssh_event event = NULL;
   int rc;
@@ -3782,7 +3790,7 @@ int ssh_channel_write_stderr(ssh_channel channel, const void *data, uint32_t len
 int ssh_channel_open_reverse_forward(ssh_channel channel, const char *remotehost,
                                      int remoteport, const char *sourcehost, int localport)
 {
-  ssh_session session;
+  ssh_session session = NULL;
   ssh_buffer payload = NULL;
   int rc = SSH_ERROR;
 
@@ -3846,7 +3854,7 @@ error:
 int ssh_channel_open_x11(ssh_channel channel,
                          const char *orig_addr, int orig_port)
 {
-  ssh_session session;
+  ssh_session session = NULL;
   ssh_buffer payload = NULL;
   int rc = SSH_ERROR;
 

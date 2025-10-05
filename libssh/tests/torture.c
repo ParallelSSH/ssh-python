@@ -52,6 +52,11 @@
 #include <valgrind/valgrind.h>
 #endif
 
+#ifdef WITH_GSSAPI
+/* for OPENSSL_cleanup() of GSSAPI's OpenSSL context */
+#include <openssl/crypto.h>
+#endif
+
 #define TORTURE_SSHD_SRV_IPV4 "127.0.0.10"
 /* socket wrapper IPv6 prefix  fd00::5357:5fxx */
 #define TORTURE_SSHD_SRV_IPV6 "fd00::5357:5f0a"
@@ -1385,70 +1390,48 @@ void torture_setup_tokens(const char *temp_dir,
 {
     char token_setup_start_cmd[1024] = {0};
     char socket_path[1204] = {0};
-#ifndef WITH_PKCS11_PROVIDER
     char conf_path[1024] = {0};
-#endif /* WITH_PKCS11_PROVIDER */
+#ifdef WITH_PKCS11_PROVIDER
     char *env = NULL;
+#endif /* WITH_PKCS11_PROVIDER */
     int rc;
 
     rc = snprintf(token_setup_start_cmd,
                   sizeof(token_setup_start_cmd),
-                  "%s/tests/pkcs11/setup-softhsm-tokens.sh %s %s %s %s %s %s",
+                  "%s/tests/pkcs11/setup-softhsm-tokens.sh %s %s %s %s %s",
                   BINARYDIR,
                   temp_dir,
                   filename,
                   object_name,
                   load_public,
-                  SOFTHSM2_LIBRARY,
-#ifdef WITH_PKCS11_PROVIDER
-                  P11_KIT_CLIENT
-#else
-                  ""
-#endif /* WITH_PKCS11_PROVIDER */
-    );
+                  SOFTHSM2_LIBRARY);
     assert_int_not_equal(rc, sizeof(token_setup_start_cmd));
 
     rc = system(token_setup_start_cmd);
     assert_return_code(rc, errno);
 
 #ifdef WITH_PKCS11_PROVIDER
-    rc = snprintf(socket_path,
-                  sizeof(socket_path),
-                  "unix:path=%s/p11-kit-server.socket",
-                  temp_dir);
-    assert_int_not_equal(rc, sizeof(socket_path));
-    setenv("P11_KIT_SERVER_ADDRESS", socket_path, 1);
+    setenv("PKCS11_PROVIDER_MODULE", SOFTHSM2_LIBRARY, 1);
 
-    setenv("PKCS11_PROVIDER_MODULE", P11_KIT_CLIENT, 1);
     /* This is useful for debugging PKCS#11 calls */
-
     env = getenv("TORTURE_PKCS11");
     if (env != NULL && env[0] != '\0') {
 #ifdef PKCS11SPY
-        setenv("PKCS11SPY", P11_KIT_CLIENT, 1);
+        setenv("PKCS11SPY", SOFTHSM2_LIBRARY, 1);
         setenv("PKCS11_PROVIDER_MODULE", PKCS11SPY, 1);
 #else
         fprintf(stderr, "[ TORTURE  ] >>> pkcs11-spy not found\n");
 #endif /* PKCS11SPY */
     }
-#else
-    (void)env;
+#endif /* WITH_PKCS11_PROVIDER */
 
     snprintf(conf_path, sizeof(conf_path), "%s/softhsm.conf", temp_dir);
     setenv("SOFTHSM2_CONF", conf_path, 1);
-#endif /* WITH_PKCS11_PROVIDER */
 }
 
 void torture_cleanup_tokens(const char *temp_dir)
 {
-#ifdef WITH_PKCS11_PROVIDER
-    char pidfile[1024] = {0};
-
-    snprintf(pidfile, sizeof(pidfile), "%s/p11-kit-server.pid", temp_dir);
-    torture_terminate_process(pidfile);
-#else
     unsetenv("SOFTHSM2_CONF");
-#endif /* WITH_PKCS11_PROVIDER */
 }
 #endif /* WITH_PKCS11_URI */
 
@@ -1870,9 +1853,31 @@ __attribute__((weak)) int torture_run_tests(void)
 }
 #endif /* defined(HAVE_WEAK_ATTRIBUTE) && defined(TORTURE_SHARED) */
 
-int main(int argc, char **argv) {
+/**
+ * Finalize the torture context. No-op except for OpenSSL or GSSAPI
+ *
+ * When OpenSSL is built without the at-exit handlers, it won't call the
+ * OPENSSL_cleanup() from destructor or at-exit handler, which means we need to
+ * do it manually in the tests.
+ *
+ * It is never a good idea to call this function from the library context as we
+ * can not be sure the libssh is really the last one using the OpenSSL.
+ *
+ * This needs to be called at the end of the main function or any time before
+ * any forked process (servers) exits.
+ */
+void torture_finalize(void)
+{
+#if defined(HAVE_LIBCRYPTO) || defined(WITH_GSSAPI)
+    OPENSSL_cleanup();
+#endif
+}
+
+int main(int argc, char **argv)
+{
     struct argument_s arguments;
     char *env = getenv("LIBSSH_VERBOSITY");
+    int rv;
 
     arguments.verbose=0;
     arguments.pattern=NULL;
@@ -1890,5 +1895,9 @@ int main(int argc, char **argv) {
     cmocka_set_test_filter(pattern);
 #endif
 
-    return torture_run_tests();
+    rv = torture_run_tests();
+
+    torture_finalize();
+
+    return rv;
 }
