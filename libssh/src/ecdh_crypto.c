@@ -191,6 +191,17 @@ static ssh_string ssh_ecdh_generate(ssh_session session)
 #endif /* OPENSSL_VERSION_NUMBER */
         return NULL;
     }
+
+    /* Free any previously allocated privkey */
+    if (session->next_crypto->ecdh_privkey != NULL) {
+#if OPENSSL_VERSION_NUMBER < 0x30000000L
+        EC_KEY_free(session->next_crypto->ecdh_privkey);
+#else
+        EVP_PKEY_free(session->next_crypto->ecdh_privkey);
+#endif
+        session->next_crypto->ecdh_privkey = NULL;
+    }
+
     session->next_crypto->ecdh_privkey = key;
     return pubkey_string;
 }
@@ -219,6 +230,7 @@ int ssh_client_ecdh_init(ssh_session session)
         return SSH_ERROR;
     }
 
+    ssh_string_free(session->next_crypto->ecdh_client_pubkey);
     session->next_crypto->ecdh_client_pubkey = client_pubkey;
 
     /* register the packet callbacks */
@@ -444,7 +456,7 @@ SSH_PACKET_CALLBACK(ssh_packet_server_ecdh_init)
     ssh_string q_c_string = NULL;
     ssh_string q_s_string = NULL;
     /* SSH host keys (rsa, ed25519 and ecdsa) */
-    ssh_key privkey;
+    ssh_key privkey = NULL;
     enum ssh_digest_e digest = SSH_DIGEST_AUTO;
     ssh_string sig_blob = NULL;
     ssh_string pubkey_blob = NULL;

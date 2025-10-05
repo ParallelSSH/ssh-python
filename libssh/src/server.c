@@ -85,8 +85,8 @@ int server_set_kex(ssh_session session)
 {
     struct ssh_kex_struct *server = &session->next_crypto->server_kex;
     int i, j, rc;
-    const char *wanted, *allowed;
-    char *kept;
+    const char *wanted = NULL, *allowed = NULL;
+    char *kept = NULL;
     char hostkeys[128] = {0};
     enum ssh_keytypes_e keytype;
     size_t len;
@@ -211,9 +211,10 @@ int ssh_server_init_kex(ssh_session session) {
     return server_set_kex(session);
 }
 
-static int ssh_server_send_extensions(ssh_session session) {
+static int ssh_server_send_extensions(ssh_session session)
+{
     int rc;
-    const char *hostkey_algorithms;
+    const char *hostkey_algorithms = NULL;
 
     SSH_LOG(SSH_LOG_PACKET, "Sending SSH_MSG_EXT_INFO");
 
@@ -278,8 +279,8 @@ ssh_get_key_params(ssh_session session,
                    ssh_key *privkey,
                    enum ssh_digest_e *digest)
 {
-    ssh_key pubkey;
-    ssh_string pubkey_blob;
+    ssh_key pubkey = NULL;
+    ssh_string pubkey_blob = NULL;
     int rc;
 
     switch(session->srv.hostkey) {
@@ -522,6 +523,7 @@ static int ssh_server_kex_termination(void *s){
   ssh_session session = s;
   if (session->session_state != SSH_SESSION_STATE_ERROR &&
       session->session_state != SSH_SESSION_STATE_AUTHENTICATING &&
+      session->session_state != SSH_SESSION_STATE_AUTHENTICATED &&
       session->session_state != SSH_SESSION_STATE_DISCONNECTED)
     return 0;
   else
@@ -720,8 +722,9 @@ static int ssh_message_service_request_reply_default(ssh_message msg) {
  *
  * @returns SSH_OK when success otherwise SSH_ERROR
  */
-int ssh_message_service_reply_success(ssh_message msg) {
-    ssh_session session;
+int ssh_message_service_reply_success(ssh_message msg)
+{
+    ssh_session session = NULL;
     int rc;
 
     if (msg == NULL) {
@@ -1128,8 +1131,9 @@ int ssh_message_auth_reply_pk_ok(ssh_message msg, ssh_string algo, ssh_string pu
  *
  * @returns SSH_OK on success, otherwise SSH_ERROR
  */
-int ssh_message_auth_reply_pk_ok_simple(ssh_message msg) {
-    ssh_string algo;
+int ssh_message_auth_reply_pk_ok_simple(ssh_message msg)
+{
+    ssh_string algo = NULL;
     ssh_string pubkey_blob = NULL;
     int ret;
 

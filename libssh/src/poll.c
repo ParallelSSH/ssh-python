@@ -422,7 +422,7 @@ void ssh_poll_set_events(ssh_poll_handle p, short events)
 {
     p->events = events;
     if (p->ctx != NULL) {
-        if (p->lock_cnt == 0) {
+        if (!ssh_poll_is_locked(p)) {
             p->ctx->pollfds[p->x.idx].events = events;
         } else if (!(p->ctx->pollfds[p->x.idx].events & POLLOUT)) {
             /* if locked, allow only setting POLLOUT to prevent recursive
@@ -560,8 +560,8 @@ void ssh_poll_ctx_free(ssh_poll_ctx ctx)
 
 static int ssh_poll_ctx_resize(ssh_poll_ctx ctx, size_t new_size)
 {
-  ssh_poll_handle *pollptrs;
-  ssh_pollfd_t *pollfds;
+  ssh_poll_handle *pollptrs = NULL;
+  ssh_pollfd_t *pollfds = NULL;
 
   pollptrs = realloc(ctx->pollptrs, sizeof(ssh_poll_handle) * new_size);
   if (pollptrs == NULL) {
@@ -670,6 +670,20 @@ void ssh_poll_ctx_remove(ssh_poll_ctx ctx, ssh_poll_handle p)
 }
 
 /**
+ * @brief  Returns if a poll object is locked.
+ *
+ * @param  p            Pointer to an already allocated poll object.
+ * @returns true if the poll object is locked; false otherwise.
+ */
+bool ssh_poll_is_locked(ssh_poll_handle p)
+{
+    if (p == NULL) {
+        return false;
+    }
+    return p->lock_cnt > 0;
+}
+
+/**
  * @brief  Poll all the sockets associated through a poll object with a
  *         poll context. If any of the events are set after the poll, the
  *         call back function of the socket will be called.
@@ -703,7 +717,7 @@ int ssh_poll_ctx_dopoll(ssh_poll_ctx ctx, int timeout)
      * output buffer */
     for (i = 0; i < ctx->polls_used; i++) {
         /* The lock allows only POLLOUT events: drop the rest */
-        if (ctx->pollptrs[i]->lock_cnt > 0) {
+        if (ssh_poll_is_locked(ctx->pollptrs[i])) {
             ctx->pollfds[i].events &= POLLOUT;
         }
     }
@@ -862,7 +876,7 @@ ssh_event_add_fd(ssh_event event, socket_t fd, short events,
                  ssh_event_callback cb, void *userdata)
 {
     ssh_poll_handle p;
-    struct ssh_event_fd_wrapper *pw;
+    struct ssh_event_fd_wrapper *pw = NULL;
 
     if(event == NULL || event->ctx == NULL || cb == NULL
                                            || fd == SSH_INVALID_SOCKET) {
@@ -932,7 +946,7 @@ int ssh_event_add_session(ssh_event event, ssh_session session)
 {
     ssh_poll_handle p;
 #ifdef WITH_SERVER
-    struct ssh_iterator *iterator;
+    struct ssh_iterator *iterator = NULL;
 #endif
 
     if(event == NULL || event->ctx == NULL || session == NULL) {
@@ -1079,7 +1093,7 @@ int ssh_event_remove_session(ssh_event event, ssh_session session)
     register size_t i, used;
     int rc = SSH_ERROR;
 #ifdef WITH_SERVER
-    struct ssh_iterator *iterator;
+    struct ssh_iterator *iterator = NULL;
 #endif
 
     if (event == NULL || event->ctx == NULL || session == NULL) {

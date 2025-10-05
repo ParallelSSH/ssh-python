@@ -46,7 +46,6 @@
 #include <openssl/param_build.h>
 #if defined(WITH_PKCS11_URI) && defined(WITH_PKCS11_PROVIDER)
 #include <openssl/store.h>
-#include <openssl/provider.h>
 #endif
 #endif /* OPENSSL_VERSION_NUMBER */
 
@@ -338,7 +337,7 @@ int pki_pubkey_build_ecdsa(ssh_key key, int nid, ssh_string e)
     int ok;
 #else
     const char *group_name = OSSL_EC_curve_nid2name(nid);
-    OSSL_PARAM_BLD *param_bld;
+    OSSL_PARAM_BLD *param_bld = NULL;
 #endif /* OPENSSL_VERSION_NUMBER */
 
     key->ecdsa_nid = nid;
@@ -1429,6 +1428,8 @@ ssh_string pki_key_to_blob(const ssh_key key, enum ssh_key_e type)
     if (buffer == NULL) {
         return NULL;
     }
+    /* The buffer will contain sensitive information. Make sure it is erased */
+    ssh_buffer_set_secure(buffer);
 
     if (key->cert != NULL) {
         rc = ssh_buffer_add_buffer(buffer, key->cert);
@@ -1632,6 +1633,7 @@ ssh_string pki_key_to_blob(const ssh_key key, enum ssh_key_e type)
             bignum_safe_free(bn);
             bignum_safe_free(be);
             OSSL_PARAM_free(params);
+            params = NULL;
 #endif /* OPENSSL_VERSION_NUMBER */
             break;
         }
@@ -1665,7 +1667,7 @@ ssh_string pki_key_to_blob(const ssh_key key, enum ssh_key_e type)
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
                 EC_GROUP *group = NULL;
                 EC_POINT *point = NULL;
-                const void *pubkey;
+                const void *pubkey = NULL;
                 size_t pubkey_len;
                 OSSL_PARAM *locate_param = NULL;
 #else
@@ -1803,6 +1805,7 @@ ssh_string pki_key_to_blob(const ssh_key key, enum ssh_key_e type)
 #if OPENSSL_VERSION_NUMBER >= 0x30000000L
                 bignum_safe_free(bd);
                 OSSL_PARAM_free(params);
+                params = NULL;
 #endif /* OPENSSL_VERSION_NUMBER */
                 break;
             }
@@ -1871,7 +1874,7 @@ static ssh_string pki_ecdsa_signature_to_blob(const ssh_signature sig)
     const unsigned char *raw_sig_data = NULL;
     size_t raw_sig_len;
 
-    ECDSA_SIG *ecdsa_sig;
+    ECDSA_SIG *ecdsa_sig = NULL;
 
     int rc;
 
@@ -2060,8 +2063,8 @@ static int pki_signature_from_ecdsa_blob(UNUSED_PARAM(const ssh_key pubkey),
     ECDSA_SIG *ecdsa_sig = NULL;
     BIGNUM *pr = NULL, *ps = NULL;
 
-    ssh_string r;
-    ssh_string s;
+    ssh_string r = NULL;
+    ssh_string s = NULL;
 
     ssh_buffer buf = NULL;
     uint32_t rlen;
@@ -2077,6 +2080,9 @@ static int pki_signature_from_ecdsa_blob(UNUSED_PARAM(const ssh_key pubkey),
     if (buf == NULL) {
         return SSH_ERROR;
     }
+
+    /* The buffer will contain sensitive information. Make sure it is erased */
+    ssh_buffer_set_secure(buf);
 
     rc = ssh_buffer_add_data(buf,
                              ssh_string_data(sig_blob),
@@ -2714,9 +2720,6 @@ error:
 }
 
 #ifdef WITH_PKCS11_URI
-#ifdef WITH_PKCS11_PROVIDER
-static bool pkcs11_provider_failed = false;
-#endif
 
 /**
  * @internal
@@ -2782,19 +2785,10 @@ int pki_uri_import(const char *uri_name,
 
     /* The provider can be either configured in openssl.cnf or dynamically
      * loaded, assuming it does not need any special configuration */
-    if (OSSL_PROVIDER_available(NULL, "pkcs11") == 0 &&
-        !pkcs11_provider_failed) {
-        OSSL_PROVIDER *pkcs11_provider = NULL;
-
-        pkcs11_provider = OSSL_PROVIDER_try_load(NULL, "pkcs11", 1);
-        if (pkcs11_provider == NULL) {
-            SSH_LOG(SSH_LOG_TRACE,
-                    "Failed to initialize provider: %s",
-                    ERR_error_string(ERR_get_error(), NULL));
-            /* Do not attempt to load it again */
-            pkcs11_provider_failed = true;
-            goto fail;
-        }
+    rv = pki_load_pkcs11_provider();
+    if (rv != SSH_OK) {
+        SSH_LOG(SSH_LOG_TRACE, "Failed to load or initialize pkcs11 provider");
+        goto fail;
     }
 
     store = OSSL_STORE_open(uri_name, NULL, NULL, NULL, NULL);
