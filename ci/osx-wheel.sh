@@ -17,13 +17,15 @@
 SYSTEM_LIBSSH_DIR="/opt/homebrew/opt/libssh/lib"
 MY_LIBSSH_DIR="local/lib"
 LIBSSH_INCLUDE_DIR="/opt/homebrew/opt/libssh/include"
-set +x
+set -x
 
 export CPPFLAGS="-I${LIBSSH_INCLUDE_DIR}"
 sudo cp -a libssh/include/* ${LIBSSH_INCLUDE_DIR}/
 
+set +x
 pip3 install -U virtualenv
 python3 -m virtualenv -p "$(which python3)" venv
+set -x
 
 source venv/bin/activate
 
@@ -52,6 +54,6 @@ pwd; mkdir -p temp; cd temp; pwd
 python3 -c "from ssh.session import Session; Session()" && echo "Import successful"
 cd ..; pwd
 
+set +x
 deactivate
-
 set -x
