@@ -123,6 +123,48 @@ class ChannelTest(SSHTestCase):
         status = chan.get_exit_status()
         self.assertEqual(status, 2)
 
+    def test_exit_state(self):
+        self._auth()
+        chan = self.session.channel_new()
+        self.assertEqual(chan.open_session(), 0)
+        self.assertEqual(chan.request_exec('exit 2'), 0)
+        self.assertEqual(chan.send_eof(), 0)
+        self.assertEqual(chan.close(), 0)
+        exit_code, signal, pcore_dumped = chan.get_exit_state()
+        self.assertEqual(exit_code, 2)
+
+    def test_exit_state_w_signal(self):
+        self._auth()
+        chan = self.session.channel_new()
+        my_sig = 'TERM'
+        chan.open_session()
+        chan.request_exec('sleep 5 && exit 0')
+        chan.send_eof()
+        chan.request_send_signal(my_sig)
+        chan.close()
+        exit_code, signal, pcore_dumped = chan.get_exit_state()
+        self.assertNotEqual(exit_code, 0)
+        self.assertEqual(signal, bytes(my_sig, 'utf-8'))
+
+    def test_exit_state_w_signal_non_blocking(self):
+        self._auth()
+        chan = self.session.channel_new()
+        my_sig = 'TERM'
+        chan.open_session()
+        chan.request_exec('sleep 5 && exit 0')
+        chan.send_eof()
+        chan.request_send_signal(my_sig)
+        chan.close()
+        self.session.set_blocking(0)
+        exit_code, signal, pcore_dumped = chan.get_exit_state()
+        while exit_code == SSH_AGAIN:
+            self.assertEqual(signal, b"")
+            self.assertFalse(pcore_dumped)
+            wait_socket(self.session, self.sock)
+            exit_code, signal, pcore_dumped = chan.get_exit_state()
+        self.assertNotEqual(exit_code, 0)
+        self.assertEqual(signal, bytes(my_sig, 'utf-8'))
+
     def test_long_running_execute(self):
         self._auth()
         chan = self.session.channel_new()
