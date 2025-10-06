@@ -9,7 +9,7 @@ Changes
 
 * Added private key file formats to `ssh.key` and `ssh.key.Key.export_privkey_file_format` for exporting private key
   file with specified format - #96
-
+* Added `ssh.channel.Channel.get_exit_status` implementation and tests.
 
 
 1.1.1
