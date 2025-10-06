@@ -62,6 +62,22 @@ cdef class Channel:
             rc = c_ssh.ssh_channel_get_exit_status(self._channel)
         return rc
 
+    def get_exit_state(self):
+        cdef int rc
+        cdef int exit_code
+        cdef bytes exit_signal = b""
+        cdef int c_pcore_dumped
+        cdef bint pcore_dumped
+        cdef unsigned int c_exit_code
+        cdef char *c_exit_signal = exit_signal
+        with nogil:
+            rc = c_ssh.ssh_channel_get_exit_state(
+                self._channel, &c_exit_code, &c_exit_signal, &c_pcore_dumped)
+        handle_error_codes(rc, self._session._session)
+        exit_code = c_exit_code
+        pcore_dumped = c_pcore_dumped == 1
+        return (exit_code, exit_signal, pcore_dumped)
+
     def get_session(self):
         return self.session
 

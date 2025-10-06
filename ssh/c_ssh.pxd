@@ -268,6 +268,10 @@ cdef extern from "libssh/libssh.h" nogil:
     int ssh_channel_change_pty_size(ssh_channel channel, int cols, int rows)
     int ssh_channel_close(ssh_channel channel)
     void ssh_channel_free(ssh_channel channel)
+    int ssh_channel_get_exit_state(ssh_channel channel,
+                                   uint32_t *pexit_code,
+                                   char **pexit_signal,
+                                   int *pcore_dumped)
     int ssh_channel_get_exit_status(ssh_channel channel)
     ssh_session ssh_channel_get_session(ssh_channel channel)
     int ssh_channel_is_closed(ssh_channel channel)

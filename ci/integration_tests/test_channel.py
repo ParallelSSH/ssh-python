@@ -123,6 +123,16 @@ class ChannelTest(SSHTestCase):
         status = chan.get_exit_status()
         self.assertEqual(status, 2)
 
+    def test_exit_state(self):
+        self._auth()
+        chan = self.session.channel_new()
+        self.assertEqual(chan.open_session(), 0)
+        self.assertEqual(chan.request_exec('exit 2'), 0)
+        self.assertEqual(chan.send_eof(), 0)
+        self.assertEqual(chan.close(), 0)
+        exit_code, signal, pcore_dumped = chan.get_exit_state()
+        self.assertEqual(exit_code, 2)
+
     def test_long_running_execute(self):
         self._auth()
         chan = self.session.channel_new()
