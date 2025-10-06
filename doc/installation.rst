@@ -43,7 +43,7 @@ Building on Windows
 
 Requirements:
 
-* Python >= 3.6
+* Python >= 3.8
 * Visual Studio 14 or above
 * OpenSSL 1.1
 * Zlib
@@ -60,3 +60,5 @@ Steps
 Note dependencies will need to be built statically to be distributable to other Windows systems.
 
 Cygwin/MingW probably do not work.
+
+No support is offered for building on Windows from source.
