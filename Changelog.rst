@@ -12,6 +12,14 @@ Changes
 * Added `ssh.channel.Channel.get_exit_status` implementation and tests.
 
 
+Packaging
+----------
+
+* OSX wheel builds now use embedded `libssh` rather than brew package.
+* Dropped Windows Python 3.7 builds.
+* Added Python 3.14 manylinux wheels.
+
+
 1.1.1
 +++++
 

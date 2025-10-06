@@ -25,7 +25,7 @@ Bindings for libssh_ C library.
 Installation
 _____________
 
-Binary wheels are provided for Linux (manylinux 2014, x86_64 and aarch64), OSX (12, 13 and 14 for brew Python), and Windows 64-bit (Python 3.7+).
+Binary wheels are provided for Linux (manylinux 2014, x86_64 and aarch64), OSX (12, 13 and 14 for brew Python), and Windows 64-bit (Python 3.8+).
 
 Wheels have *no dependencies*.
 
@@ -52,12 +52,12 @@ See `command execution script <https://github.com/ParallelSSH/ssh-python/blob/ma
 Features
 _________
 
-The library uses `Cython`_ based native code extensions as wrappers to ``libssh``.
+The library provides Python bindings to the ``libssh`` C library.
 
 * Thread safe - GIL released as much as possible
 
   * libssh threading limitations apply - anything not supported in C is not supported in Python
-* Very low overhead thin wrapper
+* Very low overhead bindings
 * Object oriented
 
   * Memory freed automatically and safely as objects are garbage collected by Python
@@ -69,4 +69,3 @@ The library uses `Cython`_ based native code extensions as wrappers to ``libssh`
 
 
 .. _libssh: https://www.libssh.org
-.. _Cython: https://www.cython.org
