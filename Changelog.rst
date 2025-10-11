@@ -10,6 +10,9 @@ Changes
 * Added private key file formats to `ssh.key` and `ssh.key.Key.export_privkey_file_format` for exporting private key
   file with specified format - #96
 * Added `ssh.channel.Channel.get_exit_status` implementation and tests.
+* Added key exchange types under `ssh.session`.
+* Added `ssh.session.Session.options_set_int_val` for setting an integer value `libssh` option - for example
+  compression level.
 
 
 Packaging
