@@ -205,3 +205,18 @@ class SessionTest(SSHTestCase):
     def test_get_server_publickey(self):
         self.session.connect()
         self.assertIsInstance(self.session.get_server_publickey(), SSHKey)
+
+    def test_compression_connect(self):
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect((self.host, self.port))
+        session = Session()
+        session.options_set(options.USER, self.user)
+        session.options_set(options.HOST, self.host)
+        session.options_set_port(self.port)
+        # Great API, "yes" "no" as booleans
+        self.assertEqual(session.options_set(options.COMPRESSION, "yes"), 0)
+        self.assertEqual(session.options_set_int_val(options.COMPRESSION_LEVEL, 2), 0)
+        self.assertEqual(session.set_socket(sock), 0)
+        self.assertEqual(session.connect(), 0)
+        self.assertEqual(
+            session.userauth_publickey(self.pkey), 0)

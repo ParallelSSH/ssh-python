@@ -37,6 +37,10 @@ SSH_CLOSED = c_ssh.SSH_CLOSED
 SSH_READ_PENDING = c_ssh.SSH_READ_PENDING
 SSH_CLOSED_ERROR = c_ssh.SSH_CLOSED_ERROR
 SSH_WRITE_PENDING = c_ssh.SSH_WRITE_PENDING
+SSH_CRYPT = c_ssh.SSH_CRYPT
+SSH_MAC = c_ssh.SSH_MAC
+SSH_COMP = c_ssh.SSH_COMP
+SSH_LANG = c_ssh.SSH_LANG
 
 
 # Authentication codes
@@ -46,6 +50,19 @@ SSH_AUTH_PARTIAL = c_ssh.ssh_auth_e.SSH_AUTH_PARTIAL
 SSH_AUTH_INFO = c_ssh.ssh_auth_e.SSH_AUTH_INFO
 SSH_AUTH_AGAIN = c_ssh.ssh_auth_e.SSH_AUTH_AGAIN
 SSH_AUTH_ERROR = c_ssh.ssh_auth_e.SSH_AUTH_ERROR
+
+
+# Key Exchange types
+SSH_KEX = c_ssh.ssh_kex_types_e.SSH_KEX
+SSH_HOSTKEYS = c_ssh.ssh_kex_types_e.SSH_HOSTKEYS
+SSH_CRYPT_C_S = c_ssh.ssh_kex_types_e.SSH_CRYPT_C_S
+SSH_CRYPT_S_C = c_ssh.ssh_kex_types_e.SSH_CRYPT_S_C
+SSH_MAC_C_S = c_ssh.ssh_kex_types_e.SSH_MAC_C_S
+SSH_MAC_S_C = c_ssh.ssh_kex_types_e.SSH_MAC_S_C
+SSH_COMP_C_S = c_ssh.ssh_kex_types_e.SSH_COMP_C_S
+SSH_COMP_S_C = c_ssh.ssh_kex_types_e.SSH_COMP_S_C
+SSH_LANG_C_S = c_ssh.ssh_kex_types_e.SSH_LANG_C_S
+SSH_LANG_S_C = c_ssh.ssh_kex_types_e.SSH_LANG_S_C
 
 
 cdef bint _check_connected(c_ssh.ssh_session session) except -1 nogil:
@@ -295,6 +312,12 @@ cdef class Session:
                 self._session, c_ssh.ssh_options_e.SSH_OPTIONS_PORT, &port)
         return handle_error_codes(rc, self._session)
 
+    def options_get_port(self, unsigned int port_target):
+        cdef int rc
+        with nogil:
+            rc = c_ssh.ssh_options_get_port(self._session, &port_target)
+        return handle_error_codes(rc, self._session)
+
     def options_set_gssapi_delegate_credentials(self, bint delegate):
         """
         Set delegating credentials to server on/off.
@@ -344,10 +367,13 @@ cdef class Session:
         c_ssh.ssh_string_free_char(_value)
         return to_str(b_value)
 
-    def options_get_port(self, unsigned int port_target):
+    def options_set_int_val(self, Option option, int value):
+        """
+        Set numeric value options when applicable.
+        """
         cdef int rc
         with nogil:
-            rc = c_ssh.ssh_options_get_port(self._session, &port_target)
+            rc = c_ssh.ssh_options_set(self._session, option._option, &value)
         return handle_error_codes(rc, self._session)
 
     def send_ignore(self, bytes data):
