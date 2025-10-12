@@ -108,7 +108,7 @@ setup(
     url='https://github.com/ParallelSSH/ssh-python',
     license='LGPL-2.1-only',
     author='Panos Kittenis',
-    author_email='22e889d8@opayq.com',
+    author_email='danst@tutanota.com',
     description="libssh C library bindings for Python.",
     long_description=open('README.rst').read(),
     packages=find_packages(
