@@ -1,3 +1,20 @@
+#  This file is part of ssh-python.
+#  Copyright (C) 2018-2025 Panos Kittenis.
+#  Copyright (C) 2018-2025 ssh-python Contributors.
+#
+#  This library is free software; you can redistribute it and/or
+#  modify it under the terms of the GNU Lesser General Public
+#  License as published by the Free Software Foundation, version 2.1.
+#
+#  This library is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+#  Lesser General Public License for more details.
+#
+#  You should have received a copy of the GNU Lesser General Public
+#  License along with this library; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-130
+
 import os
 import platform
 import sys
@@ -108,7 +125,7 @@ setup(
     url='https://github.com/ParallelSSH/ssh-python',
     license='LGPL-2.1-only',
     author='Panos Kittenis',
-    author_email='22e889d8@opayq.com',
+    author_email='danst@tutanota.com',
     description="libssh C library bindings for Python.",
     long_description=open('README.rst').read(),
     packages=find_packages(
