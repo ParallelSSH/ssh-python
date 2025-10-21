@@ -363,49 +363,35 @@ class SFTPTest(SSHTestCase):
             self.assertTrue(os.path.isdir(abspath))
         finally:
             shutil.rmtree(abspath)
-
-    # def test_async_read(self):
-    #     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #     sock.connect((self.host, self.port))
-    #     self.session = Session()
-    #     self.session.options_set(options.USER, self.user)
-    #     self.session.options_set(options.HOST, self.host)
-    #     self.session.options_set_port(self.port)
-    #     self.assertEqual(self.session.set_socket(sock), 0)
-    #     self.assertEqual(self.session.connect(), 0)
-    #     self.assertEqual(self.session.userauth_publickey(self.pkey), 0)
+    #
+    # def test_sftp_async_file_read(self):
+    #     self._auth()
     #     sftp = self.session.sftp_new()
-    #     sftp.init()
-    #     if int(platform.python_version_tuple()[0]) >= 3:
-    #         test_file_data = b'test' + bytes(os.linesep, 'utf-8')
-    #     else:
-    #         test_file_data = b'test' + os.linesep
+    #     while sftp == SSH_AGAIN:
+    #         wait_socket(self.session, self.sock)
+    #         sftp = self.session.sftp_new()
+    #     rc = sftp.init()
+    #     test_file_data = b'test' + bytes(os.linesep, 'utf-8')
     #     remote_filename = os.sep.join([os.path.dirname(__file__),
     #                                    'remote_test_file'])
     #     with open(remote_filename, 'wb') as test_fh:
     #         test_fh.write(test_file_data)
-    #     # self.session.set_blocking(False)
     #     try:
     #         with sftp.open(remote_filename, os.O_RDONLY, 0) as remote_fh:
     #             self.assertIsInstance(remote_fh, SFTPFile)
-    #             remote_fh.set_nonblocking()
+    #             self.assertFalse(remote_fh.closed)
+    #             self.session.set_blocking(0)
     #             remote_data = b""
-    #             async_id = remote_fh.async_read_begin()
-    #             self.assertNotEqual(async_id, 0)
-    #             import ipdb; ipdb.set_trace()
-    #             size, data = remote_fh.async_read(async_id)
-    #             while size > 0 or size == SSH_AGAIN:
-    #                 if size == SSH_AGAIN:
-    #                     print("Would try again")
-    #                     wait_socket(sock, self.session, timeout=1)
-    #                     size, data = remote_fh.async_read(async_id)
-    #                     continue
+    #             for rc, data in remote_fh:
     #                 remote_data += data
-    #                 size, data = remote_fh.async_read(async_id)
     #             self.assertFalse(remote_fh.closed)
     #             self.assertEqual(remote_fh.close(), 0)
     #             self.assertTrue(remote_fh.closed)
     #             self.assertEqual(remote_data, test_file_data)
+    #         self.assertTrue(remote_fh.closed)
+    #         del remote_fh
+    #         with sftp.open(remote_filename, os.O_RDONLY, 0) as remote_fh:
+    #             pass
     #         self.assertTrue(remote_fh.closed)
     #     finally:
     #         os.unlink(remote_filename)
