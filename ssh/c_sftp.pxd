@@ -162,8 +162,6 @@ cdef extern from "libssh/sftp.h" nogil:
     void sftp_file_set_nonblocking(sftp_file handle)
     void sftp_file_set_blocking(sftp_file handle)
     ssize_t sftp_read(sftp_file file, void *buf, size_t count)
-    int sftp_async_read_begin(sftp_file file, uint32_t len)
-    int sftp_async_read(sftp_file file, void *data, uint32_t len, uint32_t id)
     ssize_t sftp_write(sftp_file file, const void *buf, size_t count)
     int sftp_seek(sftp_file file, uint32_t new_offset)
     int sftp_seek64(sftp_file file, uint64_t new_offset)

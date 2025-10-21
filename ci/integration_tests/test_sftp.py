@@ -60,9 +60,11 @@ class SFTPTest(SSHTestCase):
         sftp = self.session.sftp_new()
         sftp.init()
         _dir = sftp.opendir('.')
+        self.assertFalse(_dir.closed)
         self.assertIsInstance(_dir, SFTPDir)
         self.assertFalse(_dir.eof())
         self.assertEqual(_dir.closedir(), 0)
+        self.assertTrue(_dir.closed)
         # dir handle from context manager
         with sftp.opendir('.') as _dir:
             for attr in _dir:
@@ -108,6 +110,7 @@ class SFTPTest(SSHTestCase):
         try:
             with sftp.open(remote_filename, os.O_RDONLY, 0) as remote_fh:
                 self.assertIsInstance(remote_fh, SFTPFile)
+                self.assertFalse(remote_fh.closed)
                 remote_data = b""
                 for rc, data in remote_fh:
                     remote_data += data

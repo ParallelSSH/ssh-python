@@ -35,6 +35,10 @@ cdef class SFTPFile:
         _fh.sftp = sftp
         return _fh
 
+    def __dealloc__(self):
+        if not self.closed:
+            self.close()
+
     def __enter__(self):
         return self
 
@@ -68,7 +72,7 @@ cdef class SFTPFile:
             rc = c_sftp.sftp_close(self._file)
         if rc < 0:
             raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
-        self.closed = True
+        self.closed = 1
         return rc
 
     def set_nonblocking(self):
@@ -95,36 +99,6 @@ cdef class SFTPFile:
         finally:
             free(c_buf)
         return _size, buf
-
-    def async_read_begin(self, uint32_t length=1048576):
-        cdef int rc
-        with nogil:
-            rc = c_sftp.sftp_async_read_begin(self._file, length)
-        if rc < 0:
-            raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
-        return rc
-
-    def async_read(self, uint32_t _id, uint32_t length=1048576):
-        cdef int size
-        cdef bytes buf = b''
-        cdef char *c_buf
-        with nogil:
-            c_buf = <char *>malloc(sizeof(char) * length)
-            if c_buf is NULL:
-                with gil:
-                    raise MemoryError
-            size = c_sftp.sftp_async_read(self._file, c_buf, length, _id)
-        try:
-            if size > 0:
-                buf = c_buf[:size]
-            elif size < 0:
-                if size == SSH_ERROR:
-                    raise SFTPError(ssh_get_error(self.sftp.session._session))
-                elif size == SSH_AGAIN:
-                    return SSH_AGAIN, buf
-        finally:
-            free(c_buf)
-        return size, buf
 
     def write(self, bytes data):
         cdef ssize_t rc
@@ -238,7 +212,7 @@ cdef class SFTPDir:
             rc = c_sftp.sftp_closedir(self._dir)
         if rc < 0:
             raise SFTPHandleError(ssh_get_error(self.sftp.session._session))
-        self.closed = True
+        self.closed = 1
         return rc
 
     cpdef SFTPAttributes readdir(self):
