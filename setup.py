@@ -39,13 +39,8 @@ except ImportError:
 else:
     USING_CYTHON = True
 
-_PYTHON_MAJOR_VERSION = int(platform.python_version_tuple()[0])
 ON_WINDOWS = platform.system() == 'Windows'
 SYSTEM_LIBSSH = bool(os.environ.get('SYSTEM_LIBSSH', 0)) or ON_WINDOWS
-
-if ON_WINDOWS and _PYTHON_MAJOR_VERSION < 3:
-    raise ImportError(
-        "ssh-python requires Python 3 or above on Windows platforms.")
 
 
 # Only build libssh if SYSTEM_LIBSSH is not set and running a build
@@ -111,7 +106,7 @@ if USING_CYTHON:
     sys.stdout.write("Cython arguments: %s%s" % (cython_args, os.linesep))
 
 
-sys.stdout.write("Windows platform: %s, Python major version: %s.%s" % (ON_WINDOWS, _PYTHON_MAJOR_VERSION, os.linesep))
+sys.stdout.write("Windows platform: %s%s" % (ON_WINDOWS, os.linesep))
 
 setup(
     version=versioneer.get_version(),
