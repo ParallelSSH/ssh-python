@@ -22,7 +22,7 @@ from glob import glob
 
 from setuptools import setup, find_packages
 
-# PEP 517 builds do not automatically add the source directory to sys.path.
+# Make the local libssh build helper importable in PEP 517 builds.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import versioneer
