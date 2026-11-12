@@ -64,7 +64,8 @@ install:
   - cp %OPENSSL_DIR%/bin/*.dll ssh/
 
   - for %%I in (%PYTHONVERS%) do %%I\python.exe -V
-  - for %%I in (%PYTHONVERS%) do %%I\Scripts\pip install -U wheel setuptools twine cython
+  # Windows builds need Cython in the build environment to regenerate C files.
+  - for %%I in (%PYTHONVERS%) do %%I\python.exe -m pip install -U build wheel "setuptools>=61.0" "versioneer[toml]>=0.29" twine cython
 
   # .c files need to be generated on Windows to handle platform
   # specific code.
@@ -89,9 +90,9 @@ build_script:
   # Clean C files before build
   - rm -f ssh/*.c
   - for %%I in (%PYTHONVERS%) do %%I\python.exe -V
-  - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py build_ext
-  - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py build
-  - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py install
+  # Disable isolation so the build uses the explicitly installed Cython.
+  - for %%I in (%PYTHONVERS%) do %%I\python.exe -m build --wheel --no-isolation
+  - for %%I in (%PYTHONVERS%) do %%I\python.exe -m pip install --no-index --find-links dist --no-deps --force-reinstall ssh-python
   - ps: ls ssh
 
 test_script:
@@ -100,7 +101,6 @@ test_script:
   - cd ..
 
 after_test:
-  - for %%I in (%PYTHONVERS%) do %%I\python.exe setup.py bdist_wheel
   - mv dist/* .
 
 artifacts:

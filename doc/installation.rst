@@ -27,17 +27,23 @@ The following libraries are required:
 Pip Installation Methods
 -------------------------
 
-``pip install .`` in the sources root directory will build and install a wheel.
+``python -m pip install .`` in the sources root directory will build and install a wheel.
 
-``pip wheel .`` to build a wheel alone.
+``python -m pip wheel --no-deps .`` to build a wheel alone.
+
+``SYSTEM_LIBSSH=1 python -m pip install .`` to build against system libssh.
 
 
-System Installation Methods
-----------------------------
+Building Distributions
+----------------------
 
-``python setup.py install`` when wanting to make a system package, or to install in ``site-packages``.
+Install the build frontend with ``python -m pip install build``.
 
-``SYSTEM_LIBSSH=1 python setup.py install`` to build against system libssh and install to ``site-packages``.
+``python -m build`` builds a source distribution and then a wheel from it,
+placing both in ``dist/``.
+
+Use ``python -m build --sdist`` or ``python -m build --wheel`` to build only
+one distribution format.
 
 
 Building on Windows
@@ -56,8 +62,13 @@ Steps
 ++++++
 
 * Build and install dependencies
-* Install python package via ``python setup.py install`` or ``pip install .``
-  * ``pip wheel .`` as before for creating a wheel.
+* Install the build dependencies with
+  ``python -m pip install build wheel "setuptools>=61.0" "versioneer[toml]>=0.29" cython``.
+* Install the Python package via ``python -m pip install --no-build-isolation .``.
+* To build a wheel instead, use ``python -m build --wheel --no-isolation``.
+
+Windows builds need Cython to regenerate platform-specific C sources. Build
+isolation is disabled here so that the build can use the installed Cython.
 
 Note dependencies will need to be built statically to be distributable to other Windows systems.
 
