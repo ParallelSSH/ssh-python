@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=61.0", "versioneer>=0.29"]
+requires = ["setuptools>=61.0", "versioneer[toml]>=0.29"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -41,6 +41,12 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/ParallelSSH/ssh-python"
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "ssh/_version.py"
+tag_prefix = ""
 
 [tool.setuptools]
 zip-safe = false
