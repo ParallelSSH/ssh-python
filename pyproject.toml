@@ -1,3 +1,59 @@
 [build-system]
 requires = ["setuptools>=61.0", "versioneer>=0.29"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "ssh-python"
+description = "libssh C library bindings for Python."
+readme = "README.rst"
+requires-python = ">=3.8"
+license = {text = "LGPL-2.1-only"}
+authors = [
+    {name = "Panos Kittenis", email = "danst@tutanota.com"},
+]
+dynamic = ["version"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: C",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: System :: Shells",
+    "Topic :: System :: Networking",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Operating System :: POSIX",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: POSIX :: BSD",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS :: MacOS X",
+]
+
+[project.urls]
+Homepage = "https://github.com/ParallelSSH/ssh-python"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = false
+
+[tool.setuptools.packages.find]
+where = ["."]
+namespaces = false
+exclude = [
+    "embedded_server",
+    "embedded_server.*",
+    "tests",
+    "tests.*",
+    "*.tests",
+    "*.tests.*",
+]

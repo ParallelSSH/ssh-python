@@ -20,7 +20,7 @@ import platform
 import sys
 from glob import glob
 
-from setuptools import setup, find_packages
+from setuptools import setup
 
 # Make the local libssh build helper importable in PEP 517 builds.
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -122,48 +122,9 @@ if USING_CYTHON:
 sys.stdout.write("Windows platform: %s, Python major version: %s.%s" % (ON_WINDOWS, _PYTHON_MAJOR_VERSION, os.linesep))
 
 setup(
-    name='ssh-python',
     version=versioneer.get_version(),
     cmdclass=cmdclass,
-    url='https://github.com/ParallelSSH/ssh-python',
-    license='LGPL-2.1-only',
-    author='Panos Kittenis',
-    author_email='danst@tutanota.com',
-    description="libssh C library bindings for Python.",
-    long_description=open('README.rst').read(),
-    packages=find_packages(
-        '.', exclude=('embedded_server', 'embedded_server.*',
-                      'tests', 'tests.*',
-                      '*.tests', '*.tests.*')),
-    zip_safe=False,
-    include_package_data=False,
     platforms='any',
-    classifiers=[
-        'Development Status :: 5 - Production/Stable',
-        'Intended Audience :: Developers',
-        'Operating System :: OS Independent',
-        'Programming Language :: C',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Programming Language :: Python :: 3.11',
-        'Programming Language :: Python :: 3.12',
-        'Programming Language :: Python :: 3.13',
-        'Programming Language :: Python :: 3.14',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy',
-        'Topic :: System :: Shells',
-        'Topic :: System :: Networking',
-        'Topic :: Software Development :: Libraries',
-        'Topic :: Software Development :: Libraries :: Python Modules',
-        'Operating System :: POSIX',
-        'Operating System :: POSIX :: Linux',
-        'Operating System :: POSIX :: BSD',
-        'Operating System :: Microsoft :: Windows',
-        'Operating System :: MacOS :: MacOS X',
-    ],
     ext_modules=extensions,
     package_data=package_data,
 )
