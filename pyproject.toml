@@ -46,6 +46,17 @@ Homepage = "https://github.com/ParallelSSH/ssh-python"
 zip-safe = false
 include-package-data = false
 
+[tool.setuptools.package-data]
+ssh = [
+    "*.pxd",
+    "libssh.so*",
+    "libcrypto*.dll",
+    "libssl*.dll",
+    "ssh.dll",
+    "msvc*.dll",
+    "vcruntime*.dll",
+]
+
 [tool.setuptools.packages.find]
 where = ["."]
 namespaces = false

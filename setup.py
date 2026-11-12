@@ -105,14 +105,6 @@ extensions = [
     )
     for i in range(len(sources))]
 
-package_data = {'ssh': ['*.pxd', 'libssh.so*']}
-
-if ON_WINDOWS:
-    package_data['ssh'].extend([
-        'libcrypto*.dll', 'libssl*.dll',
-        'ssh.dll', 'msvc*.dll', 'vcruntime*.dll',
-    ])
-
 cmdclass = versioneer.get_cmdclass()
 if USING_CYTHON:
     cmdclass['build_ext'] = build_ext
@@ -124,7 +116,5 @@ sys.stdout.write("Windows platform: %s, Python major version: %s.%s" % (ON_WINDO
 setup(
     version=versioneer.get_version(),
     cmdclass=cmdclass,
-    platforms='any',
     ext_modules=extensions,
-    package_data=package_data,
 )
