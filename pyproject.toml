@@ -42,6 +42,10 @@ classifiers = [
 [project.urls]
 Homepage = "https://github.com/ParallelSSH/ssh-python"
 
+[tool.pytest.ini_options]
+addopts = "-v --durations=10 --reruns=5"
+testpaths = ["tests"]
+
 [tool.versioneer]
 VCS = "git"
 style = "pep440"
