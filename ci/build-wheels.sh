@@ -20,7 +20,7 @@
 rm -rf /io/build
 # For testing
 #for PYBIN in $(ls -1d /opt/python/cp310-cp310/bin | grep -v cpython); do
-for PYBIN in $(ls -1d /opt/python/*/bin | grep -v cpython | grep -v cp313t); do
+for PYBIN in $(ls -1d /opt/python/*/bin | grep -v cpython | grep -Ev 'cp31[345]t'); do
     echo "Building for Python binary ${PYBIN}"
     "${PYBIN}/pip" wheel /io/ -w wheelhouse/
 done
@@ -33,7 +33,7 @@ for whl in wheelhouse/*.whl; do
 done
 
 # Install packages and test
-for PYBIN in $(ls -1d /opt/python/*/bin | grep -v cpython | grep -v cp313t); do
+for PYBIN in $(ls -1d /opt/python/*/bin | grep -v cpython | grep -Ev 'cp31[345]t'); do
 # for PYBIN in `ls -1d /opt/python/cp310-cp310/bin | grep -v cpython`; do
     echo "Installing for Python binary ${PYBIN}"
     "${PYBIN}/pip" install ssh-python --no-index -f /io/wheelhouse

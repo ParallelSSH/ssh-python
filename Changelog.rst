@@ -1,6 +1,16 @@
 Change Log
 =============
 
+1.3.0
++++++
+
+Packaging
+----------
+
+* Switched Linux x86_64 and aarch64 wheel builds from manylinux2014 to
+  manylinux_2_28. Linux wheels now require glibc 2.28 or newer.
+
+
 1.2.0
 ++++++
 

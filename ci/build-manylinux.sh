@@ -22,20 +22,16 @@ tar -czf ci/docker/manylinux/krb5-${KRB}.tar.gz krb5-${KRB}
 
 docker_repo="parallelssh/ssh-manylinux"
 docker_files=(
-              "ci/docker/manylinux/Dockerfile.2014_x86_64"
-#              "ci/docker/manylinux/Dockerfile.manylinux_2_24_x86_64"
-#              "ci/docker/manylinux/Dockerfile.manylinux_2_28_x86_64"
-              )
+    "ci/docker/manylinux/Dockerfile.manylinux_2_28_x86_64"
+)
 
 rm -rf local build ssh/libssh.* ssh/*.so
 python ci/appveyor/fix_version.py .
 
 if [[ $(uname -m) == "aarch64" ]]; then
     docker_files=(
-                  "ci/docker/manylinux/Dockerfile.aarch64"
-#                  "ci/docker/manylinux/Dockerfile.aarch64_2_24"
-#                  "ci/docker/manylinux/Dockerfile.aarch64_2_28"
-                  )
+        "ci/docker/manylinux/Dockerfile.aarch64_2_28"
+    )
 fi
 
 for docker_file in "${docker_files[@]}"; do

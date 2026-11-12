@@ -25,7 +25,9 @@ Bindings for libssh_ C library.
 Installation
 _____________
 
-Binary wheels are provided for Linux (manylinux 2014, x86_64 and aarch64), OSX (12, 13 and 14 for brew Python), and Windows 64-bit (Python 3.8+).
+Binary wheels are provided for Linux (manylinux_2_28, x86_64 and aarch64), OSX (12, 13 and 14 for brew Python), and Windows 64-bit (Python 3.8+).
+
+Linux wheels require glibc 2.28 or newer (for example, RHEL 8+, Debian 10+, or Ubuntu 20.04+).
 
 Wheels have *no dependencies*.
 
