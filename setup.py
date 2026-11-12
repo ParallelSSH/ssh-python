@@ -22,6 +22,9 @@ from glob import glob
 
 from setuptools import setup, find_packages
 
+# PEP 517 builds do not automatically add the source directory to sys.path.
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 import versioneer
 from _setup_libssh import build_ssh
 
