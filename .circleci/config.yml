@@ -31,11 +31,13 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt-get install cmake openssh-server
-            pip install -r requirements_dev.txt
+            python -m pip install build -r requirements_dev.txt
+            # Refresh pyenv shims for newly installed command-line tools.
+            pyenv rehash
       - run:
           command: |
-            pip uninstall -y cython
-            pip install -e .
+            python -m pip uninstall -y cython
+            python -m pip install -e .
             python -c 'from ssh.session import Session; Session()'
             eval "$(ssh-agent -s)"
           name: Build
@@ -56,9 +58,9 @@ jobs:
           name: Flake
       - run:
           command: |
-            python setup.py sdist
+            python -m build --sdist
             cd dist
-            pip install *
+            python -m pip install --force-reinstall *.tar.gz
             python -c 'from ssh.session import Session; Session()'
             cd ..
           name: Sdist Install
@@ -110,8 +112,8 @@ jobs:
           name: Deps
           command: |
             sudo apt-get install python3-pip
-            pip install -U pip setuptools
-            pip install twine
+            python3 -m pip install -U pip setuptools
+            python3 -m pip install build twine
             which twine
             which python3
       - run:
@@ -127,7 +129,7 @@ jobs:
           name: sdist
           command: |
             sudo chown circleci -R *
-            python3 setup.py sdist
+            python3 -m build --sdist
       - run:
           name: Upload Wheels
           command: |

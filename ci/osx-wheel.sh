@@ -33,10 +33,10 @@ source venv/bin/activate
 
 python -V
 pip3 install -U setuptools pip
-pip3 install -U delocate wheel
+python3 -m pip install -U build delocate wheel
 unset SYSTEM_LIBSSH
 
-python3 setup.py bdist_wheel
+python3 -m build --wheel
 
 sudo cp -a ${MY_LIBSSH_DIR}/libssh* ${SYSTEM_LIBSSH_DIR}/
 ls -lhtr ${SYSTEM_LIBSSH_DIR}
