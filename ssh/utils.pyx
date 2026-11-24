@@ -33,10 +33,13 @@ ENCODING='utf-8'
 
 
 cdef bytes to_bytes(_str):
+    # bytes() turns subclasses of bytes, and the result of encode() on
+    # subclasses of str, into an exact bytes object as required by the
+    # return type. An exact bytes object is returned as-is without a copy.
     if isinstance(_str, bytes):
-        return _str
+        return bytes(_str)
     elif isinstance(_str, unicode):
-        return _str.encode(ENCODING)
+        return bytes(_str.encode(ENCODING))
     return _str
 
 

@@ -36,6 +36,17 @@ from ssh.utils import wait_socket
 from .base_case import SSHTestCase, PUB_FILE
 
 
+class _BytesSubclass(bytes):
+    pass
+
+
+class _StrSubclass(str):
+    """str subclass whose encode() returns a bytes subclass."""
+
+    def encode(self, *args, **kwargs):
+        return _BytesSubclass(str.encode(self, *args, **kwargs))
+
+
 class SessionTest(SSHTestCase):
 
     def test_should_not_segfault(self):
@@ -60,6 +71,18 @@ class SessionTest(SSHTestCase):
         self.assertIsNone(session.get_hmac_out())
         self.assertIsNotNone(session.get_error_code())
         session.connector_new()
+
+    def test_str_and_bytes_subclasses(self):
+        session = Session()
+        for user in (_BytesSubclass(b'a user'), _StrSubclass('a user')):
+            self.assertEqual(session.options_set(options.USER, user), 0)
+        for host in (_BytesSubclass(self.host.encode()),
+                     _StrSubclass(self.host)):
+            self.assertEqual(session.options_set(options.HOST, host), 0)
+        self.assertRaises(InvalidAPIUse, session.userauth_password,
+                          _StrSubclass('a user'), _StrSubclass('a password'))
+        key = import_pubkey_file(_StrSubclass(PUB_FILE))
+        self.assertFalse(key.is_private())
 
     def test_set_timeout(self):
         session = Session()
